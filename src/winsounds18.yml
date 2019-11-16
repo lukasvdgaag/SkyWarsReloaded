@@ -1,0 +1,190 @@
+sounds:
+  thunder:
+    sound: AMBIENCE_THUNDER
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bThunder and Lighting"
+    level: 5
+    cost: 100
+  anvilbreak:
+    sound: ANVIL_BREAK
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bAnvil Break"
+    level: 10
+    cost: 100
+  blazedeath:
+    sound: BLAZE_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bBlaze Death"
+    level: 15
+    cost: 100
+  wolfgrowl:
+    sound: WOLF_GROWL
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bWolf Growl"
+    level: 20
+    cost: 100
+  wolfhowl:
+    sound: WOLF_HOWL
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bWolf Howl"
+    level: 25
+    cost: 100    
+  portaltravel:
+    sound: PORTAL_TRAVEL
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bRecord 11"
+    level: 30
+    cost: 100
+  portaltrigger:
+    sound: PORTAL_TRIGGER
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bDragon Music"
+    level: 35
+    cost: 100    
+  endermanscream:
+    sound: ENDERMAN_SCREAM
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bMenu Music"
+    level: 40
+    cost: 100    
+  anvilbreak:
+    sound: ANVIL_BREAK
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bRecord 13"
+    level: 45
+    cost: 100    
+  enderdragondeath:
+    sound: ENDERDRAGON_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bEnder Dragon Death"
+    level: 50
+    cost: 100    
+  zombiecure:
+    sound: ZOMBIE_REMEDY
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bZombie Cure"
+    level: 55
+    cost: 100    
+  golemdeath:
+    sound: IRONGOLEM_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bIron Golem Death"
+    level: 60
+    cost: 100    
+  rain:
+    sound: AMBIENCE_RAIN
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bAmbience Rain"
+    level: 65
+    cost: 100
+  ghastdeath:
+    sound: GHAST_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bGhast Death"
+    level: 70
+    cost: 100    
+  ghastscream:
+    sound: GHAST_SCREAM
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bGhast Scream"
+    level: 75 
+    cost: 100
+  ghastscream2:
+    sound: GHAST_SCREAM2
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bGhast Scream 2"
+    level: 80
+    cost: 100    
+  witherdeath:
+    sound: WITHER_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bWither Death"
+    level: 85
+    cost: 100
+  witherspawn:
+    sound: WITHER_SPAWN
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bWither Spawn"
+    level: 90
+    cost: 100
+  enderdragongrowl:
+    sound: ENDERDRAGON_GROWL
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bEnder Dragon Growl"
+    level: 95
+    cost: 100
+  strad:
+    sound: ENDERDRAGON_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bEnder Dragon Death"
+    level: 100
+    cost: 100
+  none:
+    sound: blank
+    isCustomSound: true
+    volume: 10
+    pitch: 1
+    icon: JUKEBOX
+    displayName: "&bNo Sound"
+    level: 0
+    cost: 0

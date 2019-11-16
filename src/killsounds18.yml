@@ -1,0 +1,190 @@
+sounds:
+  pigdeath:
+    sound: PIG_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bPig Death"
+    level: 4
+    cost: 100
+  cathiss:
+    sound: CAT_HISS
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bCat Hiss"
+    level: 9
+    cost: 100
+  donekydeath:
+    sound: DONKEY_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bDonkey Death"
+    level: 14
+    cost: 100
+  lightning:
+    sound: AMBIENCE_THUNDER
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bLightning Impact"
+    level: 19
+    cost: 100
+  fireworkblast:
+    sound: FIREWORK_BLAST
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bFirework Blast"
+    level: 24
+    cost: 100    
+  explosion:
+    sound: EXPLODE
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bExplosion"
+    level: 29
+    cost: 100
+  ghastwarn:
+    sound: GHAST_SCREAM
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bGhast Scream"
+    level: 34
+    cost: 100
+  wolfgrowl:
+    sound: WOLF_GROWL
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bWolf Growl"
+    level: 39
+    cost: 100    
+  skeletondeath:
+    sound: SKELETON_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bSkeleton Death"
+    level: 44
+    cost: 100
+  horsedeath:
+    sound: HORSE_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bHorse Death"
+    level: 49
+    cost: 100    
+  zombieconverted:
+    sound: ZOMBIE_REMEDY
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bCure Villager"
+    level: 54
+    cost: 100    
+  zombiedeath:
+    sound: ZOMBIE_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bZombie Death"
+    level: 59
+    cost: 100    
+  blazedeath:
+    sound: BLAZE_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bBlaze Death"
+    level: 64
+    cost: 100
+  villagerdeath:
+    sound: VILLAGER_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bVillager Death"
+    level: 69
+    cost: 100    
+  endermandeath:
+    sound: ENDERMAN_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bEndermen Death"
+    level: 74
+    cost: 100    
+  ghastmoan:
+    sound: GHAST_MOAN
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bGhast Moan"
+    level: 79
+    cost: 100    
+  golemdeath:
+    sound: IRONGOLEM_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bIron Golem Death"
+    level: 84
+    cost: 100    
+  endermanscream:
+    sound: ENDERMAN_SCREAM
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bEnderman Scream"
+    level: 89
+    cost: 100
+  witherdeath:
+    sound: WITHER_DEATH
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bWither Death"
+    level: 94
+    cost: 100
+  dragongrowl:
+    sound: ENDERDRAGON_GROWL
+    isCustomSound: false
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bEnder Dragon Growl"
+    level: 99
+    cost: 100
+  none:
+    sound: blank
+    isCustomSound: true
+    volume: 10
+    pitch: 1
+    icon: NOTE_BLOCK
+    displayName: "&bNo Sound"
+    level: 0
+    cost: 0

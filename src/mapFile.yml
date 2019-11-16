@@ -1,0 +1,208 @@
+displayName:
+minplayers:
+creator:
+registered:
+cage: standard
+teamSize: 1
+allowFriendlyFire: false
+environment: NORMAL
+allowScanvenger: true
+events:
+  DisableRegenEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cNo More Hearts"
+    subtitle: "&1Health Regeneration Disabled"
+    startMessage: "&cNo More Hearts &bevent has begun!"
+    endMessage: "&cNo More Hearts &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+  HealthDecayEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cHealth Decay"
+    subtitle: "&1Players lose half a heart per second"
+    startMessage: "&cHealth Decay &bevent has begun!"
+    endMessage: "&cHealth Decay &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+  EnderDragonEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cEnderDragon"
+    subtitle: "&1An EnderDragon has Spawned"
+    startMessage: "&cEnderDragon &bevent has begun!"
+    endMessage: "&cEnderDragon &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+  WitherEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cWither"
+    subtitle: "&1A Wither has Spawned"
+    startMessage: "&cWither &bevent has begun!"
+    endMessage: "&cWither &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+  MobSpawnEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cMob Rush"
+    subtitle: "&1They're Coming for You"
+    startMessage: "&cMob Rush &bevent has begun!"
+    endMessage: "&cMob Rush &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+    minMobsPerPlayer: 5
+    maxMobsPerPlayer: 5
+    mobs:
+      - CREEPER
+      - ZOMBIE
+      - SPIDER
+      - SKELETON
+  CrateDropEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: '&cCrate Drop'
+    subtitle: '&1Is it a bird?'
+    startMessage: '&cCrate Drop &bevent has begun!'
+    endMessage: '&cCrate drop &bevent has ended!'
+    announceTimer: false
+    repeatable: false
+    maxItemsPerCrate: 5
+    maxNumOfCrates: 3
+  ChestRefillEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cChest Refill"
+    subtitle: "&1Chests have been refilled"
+    startMessage: "&cChest refill &bevent has begun!"
+    endMessage: "&cChest refill &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+  DeathMatchEvent:
+    enabled: false
+    minStart: 900
+    maxStart: 900
+    length: -1
+    chance: 100
+    title: "&cDeathMatch"
+    subtitle: "&1Time to End This"
+    startMessage: "&cDeathMatch &bevent has begun!"
+    endMessage: "&cFIGHT"
+    announceTimer: false
+    repeatable: false
+  ArrowRainEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: 15
+    chance: 100
+    title: "&cArrow Rain"
+    subtitle: "&1Make it Rain"
+    startMessage: "&cArrow Rain &bevent has begun!"
+    endMessage: "&cArrow Rain &bevent has ended!"
+    announceTimer: false
+    repeatable: true
+    spawnPer2Tick: 1
+  AnvilRainEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: 15
+    chance: 100
+    title: "&cAnvil Rain"
+    subtitle: "&1Watch your head"
+    startMessage: "&cAnvil Rain &bevent has begun!"
+    endMessage: "&cAnvil Rain &bevent has ended!"
+    announceTimer: false
+    repeatable: true
+    spawnPer5Tick: 2
+  ShrinkingBorderEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cShrinking Border"
+    subtitle: "&1The walls are closing around you!"
+    startMessage: "&cShrinking Border &bevent has begun!"
+    endMessage: "&cShrinking Border &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+    startingBorderSize: 300
+    shrinkRepeatDelay: 1
+  ProjectilesOnlyEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cProjectiles Only"
+    subtitle: "&1No PVP - Projectiles Only!"
+    startMessage: "&cProjectiles Only &bevent has begun!"
+    endMessage: "&cProjectiles Only &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+  ProjectileSpleefEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cProjectile Spleef"
+    subtitle: "&1Projectiles Instantly Break Blocks!"
+    startMessage: "&cProjectile Spleef &bevent has begun!"
+    endMessage: "&cProjectile Spleef &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+    eggsAddedToInventory: 64
+  DoubleDamageEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cDouble Damage"
+    subtitle: "&1All attacks do Double Damage"
+    startMessage: "&cDouble Damage &bevent has begun!"
+    endMessage: "&cDouble Damage &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+  GhastEvent:
+    enabled: false
+    minStart: 300
+    maxStart: 600
+    length: -1
+    chance: 100
+    title: "&cGhasts Everywhere"
+    subtitle: "&1A Ghasts have Spawned"
+    startMessage: "&cGhasts Everywhere &bevent has begun!"
+    endMessage: "&cGhasts Everywhere &bevent has ended!"
+    announceTimer: false
+    repeatable: false
+spectateSpawn:
+spawns:
+signs:
+chests:

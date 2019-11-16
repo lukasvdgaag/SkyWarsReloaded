@@ -1,0 +1,228 @@
+debugMode: false
+spawn: null
+bungeeMode: false
+bungeeLobby: lobby
+gameEndCommands:
+tauntCooldown: 10
+enablePressurePlateJoin: true
+teleportToSpawnOnJoin: false
+teleportToSpawnOnWorldEnter: true
+resourcepack: https://www.dropbox.com/s/8scs6c911y3mqbg/taunts-resource-pack.zip?dl=1
+promptForResourcePackOnJoin: false
+lobbyBoardEnabled: false
+displayPlayerLevelOnXpBar: true
+enabledLobbyGuard: false
+economyEnabled: false
+game:
+  enableLookDirection: true
+  worldBorder:
+    enabled: false
+    borderSize: 400
+  showHealth: true
+  snowballDamage: 1
+  eggDamage: 1
+  ecoForWin: 5
+  ecoForKill: 1
+  xpForWin: 5
+  winCommands: 
+  xpForKill: 1
+  killCommands:
+  vip1Multiplier: 2
+  vip2Multiplier: 3
+  vip3Multiplier: 4
+  vip4Multiplier: 5
+  vip5Multiplier: 10
+  timeAfterMatch: 15
+  waitTimer: 10
+  resetTimerOnJoin: false
+  kitVotingEnabled: false
+  spectateEnabled: true
+  allowFallDamage: false
+  maxMapSize: 400
+  tauntsEnabled: true
+  modifierLevel:
+    speed:
+    strength:
+    jump: 
+teams:
+  usePlayerNames: true
+  usePlayerGlassColors: true
+  teamCageMaterial: STAINED_GLASS
+chat:
+  enableFormatter: true
+  limitGameChatToGame: true
+  limitLobbyChatToLobby: true
+  limitSpecChatToSpec: true
+  externalChat:
+    useExternalChat: false
+    addPrefix: false  
+parties:
+  enabled: true
+  maxPartySize: 4
+holograms: 
+  enabled: false
+chests:
+  maxItemsChest: 26
+  maxItemsDoubleChest: 53 
+kit:
+  menuSize: 45
+  randPos: 0
+  randItem: NETHER_STAR
+  noKitPos: 44
+  noKitItem: GLASS
+titles:
+  enabled: true
+fireworks:
+  enabled: true
+  per5Ticks: 1
+sounds:
+  enabled: true
+  countdown: BLOCK_NOTE_BLOCK_BASS
+  join: BLOCK_WOODEN_DOOR_OPEN
+  leave: BLOCK_WOODEN_DOOR_CLOSE
+  openJoinMenu: BLOCK_FENCE_GATE_OPEN
+  openSpectateMenu: BLOCK_FENCE_GATE_OPEN
+  openOptionsMenu: ENTITY_ZOMBIE_VILLAGER_CURE
+  openGlassMenu: BLOCK_GLASS_BREAK
+  openWinSoundMenu: ENTITY_FIREWORK_ROCKET_BLAST
+  openKillSoundMenu: ENTITY_PIG_DEATH
+  openParticleMenu: BLOCK_GRAVEL_STEP
+  openProjectileMenu: ENTITY_ARROW_SHOOT
+  openTauntMenu: ENTITY_ENDER_DRAGON_FLAP
+  openKitMenu: ENTITY_PLAYER_ATTACK_SWEEP
+  openChestMenu: BLOCK_CHEST_OPEN
+  openHealthMenu: ENTITY_SPLASH_POTION_BREAK
+  openTimeMenu: ITEM_BOTTLE_FILL_DRAGONBREATH
+  openWeatherMenu: WEATHER_RAIN
+  openModifierMenu: ENTITY_SPLASH_POTION_BREAK
+  confirmSelectionSound: ENTITY_VILLAGER_YES
+  errorSound: ENTITY_VILLAGER_NO
+signs:
+  enabled: true
+  blockoffline: COAL_BLOCK
+  blockwaiting: EMERALD_BLOCK
+  blockplaying: REDSTONE_BLOCK
+  blockending: LAPIS_BLOCK
+  almostfull: DIAMOND_HELMET
+  threefull: GOLDEN_HELMET
+  halffull: IRON_HELMET
+  almostempty: LEATHER_HELMET
+items:
+  kitsEnabled: true
+  kitVotePosition: 0
+  kitvote: ENDER_EYE
+  voteEnabled: true
+  votingPosition: 4
+  votingItem: COMPASS
+  exitGameItem: IRON_DOOR
+  exitPosition: 8
+  exitMenuItem: BARRIER
+  prevPageItem: FEATHER
+  nextPageItem: FEATHER
+  chestVoteEnabled: true
+  chestVotePosition: 9
+  chestvote: SHIELD
+  chestrandom: NETHER_STAR
+  chestbasic: STONE_SWORD
+  chestnormal: IRON_SWORD
+  chestop: DIAMOND_SWORD
+  chestscavenger: WOODED_HOE
+  healthVoteEnabled: true
+  healthVotePosition: 11
+  healthvote: EXPERIENCE_BOTTLE
+  healthrandom: NETHER_STAR
+  healthfive: REDSTONE
+  healthten: REDSTONE
+  healthfifteen: REDSTONE
+  healthtwenty: REDSTONE
+  nopermission: BARRIER
+  timeVoteEnabled: true
+  timeVotePosition: 13
+  timevote: CLOCK
+  timerandom: NETHER_STAR
+  timedawn: CLOCK
+  timenoon: CLOCK
+  timedusk: CLOCK
+  timemidnight: CLOCK
+  weatherVoteEnabled: true
+  weatherVotePosition: 15
+  weathervote: BLAZE_POWDER
+  weatherrandom: NETHER_STAR
+  weathersunny: PRISMARINE_SHARD
+  weatherrain: PRISMARINE_SHARD
+  weatherstorm: PRISMARINE_SHARD
+  weathersnow: PRISMARINE_SHARD
+  modifierVoteEnabled: true
+  modifierVotePosition: 17
+  modifiervote: DRAGON_BREATH
+  modifierspeed: BOOK
+  modifierjump: BOOK
+  modifierstrength: BOOK
+  modifiernone: BOOK
+  modifierrandom: NETHER_STAR
+  joinselect: DIAMOND_HELMET
+  singleSlot: 11
+  singlemenu: REDSTONE_TORCH
+  teamSlot: 15
+  teammenu: COMPARATOR
+  spectateselect: LEATHER_HELMET
+  optionselect: ENDER_EYE
+  particleselect: BLAZE_POWDER
+  particleselectslot: 11
+  projectileselect: ARROW
+  projectileselectslot: 12 
+  killsoundselect: DIAMOND_SWORD
+  killsoundselectslot: 14
+  killsounditem: NOTE_BLOCK
+  winsoundselect: DRAGON_EGG
+  winsoundselectslot: 15
+  glassselect: GLASS
+  glassselectslot: 9 
+  tauntselect: SHIELD
+  tauntselectslot: 17
+particles:
+  enabled: true
+  ticksperupdate: 3
+enabledMenus:
+  join: true
+  joinSlot: 0
+  spectate: true
+  spectateSlot: 4
+  options: true
+  optionsSlot: 8
+  glass: true
+  particle: true
+  projectile: true
+  killsound: true
+  winsound: true
+  taunts: true
+sqldatabase:
+  enabled: false
+  hostname: localhost
+  port: 3306
+  database: database
+  username: username
+  password: password
+leaderboards:
+  length: 10
+  leaderboardUpdateInterval: 300
+  signsEnabled: true
+  headsEnabled: true  
+  eloLeaderboardEnabled: true
+  winsLeaderboardEnabled: false
+  lossesLeaderboardEnabled: false  
+  killsLeaderboardEnabled: false
+  deathsLeaderboardEnabled: false
+  xpLeaderboardEnabled: false
+disable-commands:
+  exceptions:
+  - msg
+  - r
+  - sw quit
+  enabled: true
+disable-commands-spectate:
+  exceptions:
+  - msg
+  - r
+  - sw quit
+  enabled: true

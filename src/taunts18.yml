@@ -1,0 +1,98 @@
+taunts:
+  playwithfire:
+    name: "&4Play with Fire"
+    icon: FLINT_AND_STEEL
+    level: 5
+    cost: 100
+    addGlow: true
+    lore:
+    - "&b*Plays ambient fire sound."
+    - "&6*Surrounds player in fire and"
+    - "&6lava particles."
+    message: "&eWhen you play with fire you get burned!"
+    sound: FIRE
+    useCustomSound: false
+    volume: 10
+    pitch: 1
+    particleSpeed: 0
+    particleDensity: 8
+    particles:
+    - FLAME
+    - LAVA
+    - SMOKE_NORMAL
+  chicken:
+    name: "&4Who's a Chicken"
+    icon: EGG
+    level: 10
+    cost: 100
+    addGlow: true
+    lore:
+    - "&b*Plays chicken hurt sound."
+    - "&6*Surrounds player in snowball and"
+    - "&6angry villager particles."
+    message: "&eSomeone's a yellow belly!"
+    sound: CHICKEN_HURT
+    useCustomSound: false
+    volume: 10
+    pitch: 1
+    particleSpeed: 0.5
+    particleDensity: 35
+    particles:
+    - SNOWBALL
+    - VILLAGER_ANGRY
+  pig:
+    name: "&4Here Piggy Piggy"
+    icon: PORK
+    level: 15
+    cost: 100
+    addGlow: true
+    lore:
+    - "&b*Plays pig hurt sound."
+    - "&6*Surrounds player in fire and"
+    - "&6lava particles."
+    message: "&eHere Piggy Piggy Piggy!"
+    sound: PIG_DEATH
+    useCustomSound: false
+    volume: 10
+    pitch: 1
+    particleSpeed: 0.5
+    particleDensity: 35
+    particles:
+    - SNOWBALL
+    - VILLAGER_ANGRY
+  dragon:
+    name: "&4Fear Me!"
+    icon: DRAGON_EGG
+    level: 20
+    cost: 100
+    addGlow: true
+    lore:
+    - "&b*Plays dragon growl."
+    - "&6*Surrounds player in fire and lava particles."
+    message: "&4Sniff....Sniff....I smell fear!!"
+    sound: ENDERDRAGON_GROWL
+    useCustomSound: false
+    volume: 10
+    pitch: 1
+    particleSpeed: 0.5
+    particleDensity: 35
+    particles:
+    - DRAGON_BREATH
+    - SMOKE_NORMAL
+  none:
+    name: "&eNo Taunt"
+    icon: NETHER_STAR
+    level: 0
+    cost: 0
+    addGlow: false
+    lore:
+    - ""
+    message: ""
+    sound: 
+    useCustomSound: true
+    customSound: 
+    volume: 10
+    pitch: 1
+    particleSpeed: 0.5
+    particleDensity: 30
+    particles:

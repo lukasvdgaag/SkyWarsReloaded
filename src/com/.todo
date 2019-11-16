@@ -1,0 +1,25 @@
+# version: 4.2.4
+FIXED teleporting to not-game players being cancelled.
+NOW WORKING WITH THE EXTENSION
+
+# version: 4.2.3
+FIXED spawn bug being thrown on startup when it wasn't set.
+ADDED look direction for arenas. You can set the location players will look at when they spawn in their cages. This is configurable in the config
+FIXED wall sign bug for 1.13+
+
+# version: 4.2.2
+FIXED sign bug for 1.13+ where it was only detecting POST signs
+ADDED when deleting a world, all players in that world are being teleported to the lobby spawn
+FIXED a bug where normal players where able to break signs. You now need the permission 'sw.signs'. You also need to sneak now
+FIXED a bug where the gamemode was set before teleporting to arena. Could cause interruptions with perWorld plugins
+
+# version: 4.2.1
+FIXED spectate skulls being duplicated
+FIXED the player spawnpoints not being remembered
+
+# version: 4.2.0
+ADDED an option in the config that allows you to stop the timer from being reset every time a new player joins (game.resetTimerOnJoin)
+ADDED 1.14 support
+FIXED PlaceholderAPI hook using old methods
+FIXED holograms giving errors when HolographicDisplays was not installed
+
