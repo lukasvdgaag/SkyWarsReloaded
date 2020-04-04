@@ -2,6 +2,8 @@ displayName:
 minplayers:
 creator:
 registered:
+enableCustomJoinMenuItem: false
+customJoinMenuItem: LEATHER_HELMET
 cage: standard
 teamSize: 1
 allowFriendlyFire: false

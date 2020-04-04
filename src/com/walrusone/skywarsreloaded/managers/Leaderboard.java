@@ -1,31 +1,25 @@
 package com.walrusone.skywarsreloaded.managers;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.database.DataStorage;
+import com.walrusone.skywarsreloaded.enums.LeaderType;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.Skull;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.database.DataStorage;
-import com.walrusone.skywarsreloaded.enums.LeaderType;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.Util;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class Leaderboard {
-    private static HashMap<LeaderType, List<LeaderData>> topLeaders =  new HashMap<>();
+    private static HashMap<LeaderType, List<LeaderData>> topLeaders = new HashMap<>();
     private static HashMap<LeaderType, ArrayList<LeaderData>> leaders = new HashMap<>();
     private static HashMap<LeaderType, Boolean> loaded = new HashMap<>();
     private static HashMap<LeaderType, HashMap<Integer, ArrayList<Location>>> signs = new HashMap<>();
@@ -38,7 +32,7 @@ public class Leaderboard {
         loaded.put(LeaderType.LOSSES, false);
         loaded.put(LeaderType.XP, false);
 
-        for (LeaderType type: LeaderType.values()) {
+        for (LeaderType type : LeaderType.values()) {
             if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
                 leaders.put(type, new ArrayList<>());
                 if (SkyWarsReloaded.getCfg().leaderSignsEnabled()) {
@@ -49,7 +43,7 @@ public class Leaderboard {
         }
 
         SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncRepeatingTask(SkyWarsReloaded.get(), () -> {
-            for (LeaderType type: LeaderType.values()) {
+            for (LeaderType type : LeaderType.values()) {
                 if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
                     DataStorage.get().updateTop(type, SkyWarsReloaded.getCfg().getLeaderSize());
                 }
@@ -110,7 +104,7 @@ public class Leaderboard {
                 List<String> locations = storage.getStringList(type.toString().toLowerCase() + ".signs." + i);
                 if (locations != null) {
                     ArrayList<Location> locs = new ArrayList<>();
-                    for (String location: locations) {
+                    for (String location : locations) {
                         Location loc = Util.get().stringToLocation(location);
                         locs.add(loc);
                     }
@@ -130,10 +124,10 @@ public class Leaderboard {
 
         if (leaderboardsFile.exists()) {
             FileConfiguration storage = YamlConfiguration.loadConfiguration(leaderboardsFile);
-            for (int pos: signs.get(type).keySet()) {
+            for (int pos : signs.get(type).keySet()) {
                 if (signs.get(type).get(pos) != null) {
                     List<String> locs = new ArrayList<>();
-                    for (Location loc: signs.get(type).get(pos)) {
+                    for (Location loc : signs.get(type).get(pos)) {
                         locs.add(Util.get().locationToString(loc));
                     }
                     storage.set(type.toString().toLowerCase() + ".signs." + pos, locs);
@@ -157,8 +151,8 @@ public class Leaderboard {
     }
 
     public boolean removeLeaderSign(Location loc) {
-        for (LeaderType type: signs.keySet()) {
-            for (int pos: signs.get(type).keySet()) {
+        for (LeaderType type : signs.keySet()) {
+            for (int pos : signs.get(type).keySet()) {
                 if (signs.get(type).get(pos).contains(loc)) {
                     signs.get(type).get(pos).remove(loc);
                     saveSigns(type);
@@ -172,31 +166,27 @@ public class Leaderboard {
     private void updateSigns(LeaderType type) {
         List<LeaderData> top = getTopList(type);
         if (top != null) {
-            for (int pos: signs.get(type).keySet()) {
-                if (pos-1 < top.size()) {
-                    for (Location loc: signs.get(type).get(pos)) {
-                        BlockState bs = loc.getBlock().getState();
-                        Sign sign = null;
-                        if (bs instanceof Sign) {
-                            sign = (Sign) bs;
-                        }
+            for (int pos : signs.get(type).keySet()) {
+                if (pos - 1 < top.size()) {
+                    for (Location loc : signs.get(type).get(pos)) {
+                        Sign sign = (Sign) loc.getBlock().getState();
                         if (sign != null) {
                             sign.getBlock().getChunk().load();
                             for (int i = 0; i < 4; i++) {
-                                sign.setLine(i, new Messaging.MessageFormatter().setVariable("name", top.get(pos-1).getName())
-                                        .setVariable("elo", "" + top.get(pos-1).getElo())
-                                        .setVariable("kills", "" + top.get(pos-1).getKills())
-                                        .setVariable("wins", "" + top.get(pos-1).getWins())
-                                        .setVariable("xp", "" + top.get(pos-1).getXp())
-                                        .setVariable("deaths", "" + top.get(pos-1).getDeaths())
-                                        .setVariable("losses", "" + top.get(pos-1).getLoses())
+                                sign.setLine(i, new Messaging.MessageFormatter().setVariable("name", top.get(pos - 1).getName())
+                                        .setVariable("elo", "" + top.get(pos - 1).getElo())
+                                        .setVariable("kills", "" + top.get(pos - 1).getKills())
+                                        .setVariable("wins", "" + top.get(pos - 1).getWins())
+                                        .setVariable("xp", "" + top.get(pos - 1).getXp())
+                                        .setVariable("deaths", "" + top.get(pos - 1).getDeaths())
+                                        .setVariable("losses", "" + top.get(pos - 1).getLoses())
                                         .setVariable("position", "" + pos)
                                         .setVariable("type", type.toString())
                                         .format("leaderboard.signformats." + type.toString().toLowerCase() + ".line" + (i + 1)));
                             }
                             sign.update();
                             if (SkyWarsReloaded.getCfg().leaderHeadsEnabled()) {
-                                updateHead(sign, top.get(pos-1).getUUID());
+                                updateHead(sign, top.get(pos - 1).getUUID());
                             }
                         }
                     }
@@ -236,8 +226,7 @@ public class Leaderboard {
         }
     }
 
-    public class RankComparator implements Comparator<LeaderData>
-    {
+    public class RankComparator implements Comparator<LeaderData> {
         private LeaderType type;
 
         RankComparator(LeaderType deaths) {

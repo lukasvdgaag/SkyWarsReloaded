@@ -59,6 +59,7 @@ chat:
 parties:
   enabled: true
   maxPartySize: 4
+  lobbyWorlds: []
 holograms: 
   enabled: false
 chests:

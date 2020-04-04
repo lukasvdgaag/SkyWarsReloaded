@@ -1,23 +1,22 @@
 package com.walrusone.skywarsreloaded.menus.playeroptions;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
+import com.walrusone.skywarsreloaded.menus.playeroptions.objects.ParticleEffect;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.managers.PlayerStat;
-import com.walrusone.skywarsreloaded.menus.playeroptions.objects.ParticleEffect;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.Util;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class ProjectileEffectOption extends PlayerOption {
 
@@ -35,6 +34,7 @@ public class ProjectileEffectOption extends PlayerOption {
         this.page = page;
         this.menuSize = menuSize;
     }
+
     public static void loadPlayerOptions() {
         playerOptions.clear();
         File particleFile = new File(SkyWarsReloaded.get().getDataFolder(), "projectileeffects.yml");
@@ -47,7 +47,7 @@ public class ProjectileEffectOption extends PlayerOption {
             FileConfiguration storage = YamlConfiguration.loadConfiguration(particleFile);
 
             if (storage.getConfigurationSection("effects") != null) {
-                for (String key: storage.getConfigurationSection("effects").getKeys(false)) {
+                for (String key : storage.getConfigurationSection("effects").getKeys(false)) {
                     String name = storage.getString("effects." + key + ".displayname");
                     String material = storage.getString("effects." + key + ".icon");
                     int level = storage.getInt("effects." + key + ".level");
@@ -59,7 +59,7 @@ public class ProjectileEffectOption extends PlayerOption {
 
                     List<ParticleEffect> effects = new ArrayList<>();
                     if (particles != null) {
-                        for (String part: particles) {
+                        for (String part : particles) {
                             final String[] parts = part.split(":");
                             if (parts.length == 6
                                     && SkyWarsReloaded.getNMS().isValueParticle(parts[0].toUpperCase())
@@ -96,7 +96,7 @@ public class ProjectileEffectOption extends PlayerOption {
         storage.set("menuSize", 45);
         for (int i = 0; i < playerOptions.size(); i++) {
             playerOptions.get(i).setPosition(placement.get(i) % 45);
-            playerOptions.get(i).setPage((Math.floorDiv(placement.get(i), 45))+1);
+            playerOptions.get(i).setPage((Math.floorDiv(placement.get(i), 45)) + 1);
             playerOptions.get(i).setMenuSize(45);
             storage.set("effects." + playerOptions.get(i).getKey() + ".position", playerOptions.get(i).getPosition());
             storage.set("effects." + playerOptions.get(i).getKey() + ".page", playerOptions.get(i).getPage());
@@ -106,6 +106,28 @@ public class ProjectileEffectOption extends PlayerOption {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    static PlayerOption getPlayerOptionByName(String name) {
+        for (PlayerOption pOption : playerOptions) {
+            if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pOption.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
+                return pOption;
+            }
+        }
+        return null;
+    }
+
+    public static PlayerOption getPlayerOptionByKey(String key) {
+        for (PlayerOption pOption : playerOptions) {
+            if (pOption.getKey().equalsIgnoreCase(key)) {
+                return pOption;
+            }
+        }
+        return null;
+    }
+
+    static ArrayList<PlayerOption> getPlayerOptions() {
+        return playerOptions;
     }
 
     public List<ParticleEffect> getEffects() {
@@ -132,34 +154,14 @@ public class ProjectileEffectOption extends PlayerOption {
     public String getUseMessage() {
         return new Messaging.MessageFormatter().setVariable("effect", name).format("menu.useeffect-playermsg");
     }
+
     @Override
     public void setEffect(PlayerStat stat) {
         stat.setProjectileEffect(key);
     }
+
     @Override
     public String getUseLore() {
         return "menu.useprojeffect-seteffect";
-    }
-
-    static PlayerOption getPlayerOptionByName(String name) {
-        for (PlayerOption pOption: playerOptions) {
-            if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pOption.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
-                return pOption;
-            }
-        }
-        return null;
-    }
-
-    public static PlayerOption getPlayerOptionByKey(String key) {
-        for (PlayerOption pOption: playerOptions) {
-            if (pOption.getKey().equalsIgnoreCase(key)) {
-                return pOption;
-            }
-        }
-        return null;
-    }
-
-    static ArrayList<PlayerOption> getPlayerOptions() {
-        return playerOptions;
     }
 }

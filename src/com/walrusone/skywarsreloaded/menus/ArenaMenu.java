@@ -1,13 +1,15 @@
 package com.walrusone.skywarsreloaded.menus;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.game.SWRSign;
+import com.walrusone.skywarsreloaded.game.cages.CageType;
+import com.walrusone.skywarsreloaded.listeners.ChatListener;
+import com.walrusone.skywarsreloaded.managers.MatchManager;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
+import me.rayzr522.jsonmessage.JSONMessage;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -18,16 +20,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.enums.MatchState;
-import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.game.SWRSign;
-import com.walrusone.skywarsreloaded.game.cages.CageType;
-import com.walrusone.skywarsreloaded.listeners.ChatListener;
-import com.walrusone.skywarsreloaded.managers.MatchManager;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
-
-import me.rayzr522.jsonmessage.JSONMessage;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArenaMenu {
 
@@ -136,7 +130,7 @@ public class ArenaMenu {
                 if (gMap.allowFriendlyFire()) {
                     lores.add(ChatColor.GREEN + "Freindly Fire Enabled: " + ChatColor.GREEN + "TRUE");
                 } else {
-                    lores.add(ChatColor.GREEN + "Freindly Fire Enabled: " + ChatColor.RED+ "FALSE");
+                    lores.add(ChatColor.GREEN + "Freindly Fire Enabled: " + ChatColor.RED + "FALSE");
                 }
                 if (gMap.isRegistered()) {
                     lores.add(" ");
@@ -179,8 +173,8 @@ public class ArenaMenu {
                 }.runTaskLater(SkyWarsReloaded.get(), 2);
                 return;
             }
-            if(player.hasPermission("sw.map.arenas")) {
-                if(event.getClick().equals(ClickType.SHIFT_LEFT) && event.getSlot() == 0) {
+            if (player.hasPermission("sw.map.arenas")) {
+                if (event.getClick().equals(ClickType.SHIFT_LEFT) && event.getSlot() == 0) {
                     if (gMap.isRegistered()) {
                         gMap.setRegistered(false);
                         gMap.unregister(true);
@@ -212,7 +206,7 @@ public class ArenaMenu {
                 } else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 8) {
                     player.closeInventory();
                     for (int i = 1; i <= gMap.getSigns().size(); i++) {
-                        SWRSign swSign = gMap.getSigns().get(i-1);
+                        SWRSign swSign = gMap.getSigns().get(i - 1);
                         BlockState bs = swSign.getLocation().getBlock().getState();
                         Sign sign;
                         if (bs instanceof Sign) {
@@ -222,9 +216,9 @@ public class ArenaMenu {
                             BlockFace facing = meteSign.getFacing();
                             Location loc = block.getLocation();
 
-                            switch(facing) {
+                            switch (facing) {
                                 case NORTH:
-                                    loc.setX(loc.getX() -1);
+                                    loc.setX(loc.getX() - 1);
                                     break;
                                 case SOUTH:
                                     loc.setX(loc.getX() + 1);

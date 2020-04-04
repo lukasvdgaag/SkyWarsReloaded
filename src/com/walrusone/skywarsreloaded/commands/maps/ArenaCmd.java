@@ -6,26 +6,23 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ArenaCmd
-  extends BaseCmd
-{
-  public ArenaCmd(String t)
-  {
-    type = t;
-    forcePlayer = true;
-    cmdName = "arenas";
-    alias = new String[] { "a" };
-    argLength = 1;
-  }
-  
-  public boolean run()
-  {
-    GameMap.openArenasManager(player);
-    new BukkitRunnable()
-    {
+        extends BaseCmd {
+    public ArenaCmd(String t) {
+        type = t;
+        forcePlayer = true;
+        cmdName = "arenas";
+        alias = new String[]{"a"};
+        argLength = 1;
+    }
 
-      public void run() {}
+    public boolean run() {
+        GameMap.openArenasManager(player);
+        new BukkitRunnable() {
 
-    }.runTaskLater(SkyWarsReloaded.get(), 2L);
-    return true;
-  }
+            public void run() {
+            }
+
+        }.runTaskLater(SkyWarsReloaded.get(), 2L);
+        return true;
+    }
 }

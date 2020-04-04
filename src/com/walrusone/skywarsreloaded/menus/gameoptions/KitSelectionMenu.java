@@ -1,27 +1,26 @@
 package com.walrusone.skywarsreloaded.menus.gameoptions;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.events.SkyWarsSelectKitEvent;
+import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.MatchManager;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.google.common.collect.Lists;
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.managers.MatchManager;
-import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.Util;
+import java.util.ArrayList;
+import java.util.List;
 
 public class KitSelectionMenu {
 
-    private static int menuSize = SkyWarsReloaded.getCfg().getKitMenuSize();
     private static final String menuName = new Messaging.MessageFormatter().format("menu.kit-section-menu");
+    private static int menuSize = SkyWarsReloaded.getCfg().getKitMenuSize();
 
     public KitSelectionMenu(final Player player) {
         GameMap gMap = MatchManager.get().getPlayerMap(player);
@@ -29,11 +28,11 @@ public class KitSelectionMenu {
         if (availableItems.size() > 0) {
             ArrayList<Inventory> invs = new ArrayList<>();
 
-            for (GameKit kit: availableItems) {
+            for (GameKit kit : availableItems) {
                 int pos = kit.getPosition();
                 int page = kit.getPage() - 1;
 
-                if(invs.isEmpty() || invs.size() < page + 1) {
+                if (invs.isEmpty() || invs.size() < page + 1) {
                     while (invs.size() < page + 1) {
                         invs.add(Bukkit.createInventory(null, menuSize + 9, menuName));
                     }
@@ -75,7 +74,7 @@ public class KitSelectionMenu {
                     player.closeInventory();
                     Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                     gMap.setKitVote(player, kit);
-                    Bukkit.getPluginManager().callEvent(new SkyWarsSelectKitEvent(player,gMap,kit));
+                    Bukkit.getPluginManager().callEvent(new SkyWarsSelectKitEvent(player, gMap, kit));
                     player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", kit.getColorName()).format("game.select-kit"));
                 });
             }

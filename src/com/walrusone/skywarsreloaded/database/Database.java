@@ -1,17 +1,12 @@
 package com.walrusone.skywarsreloaded.database;
 
-import java.io.IOException;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+
+import java.io.IOException;
+import java.net.URL;
+import java.sql.*;
 
 public class Database {
 

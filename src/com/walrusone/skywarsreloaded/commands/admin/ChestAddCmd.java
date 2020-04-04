@@ -1,16 +1,15 @@
 package com.walrusone.skywarsreloaded.commands.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.ChestType;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChestAddCmd extends BaseCmd {
 
@@ -39,7 +38,7 @@ public class ChestAddCmd extends BaseCmd {
             ct = ChestType.OP;
         } else if (type.equalsIgnoreCase("opcenter")) {
             ct = ChestType.OPCENTER;
-        }  else if (type.equalsIgnoreCase("crate")) {
+        } else if (type.equalsIgnoreCase("crate")) {
             ct = ChestType.CRATE;
         } else {
             player.sendMessage(new Messaging.MessageFormatter().format("error.chesttype"));
@@ -54,7 +53,7 @@ public class ChestAddCmd extends BaseCmd {
             return false;
         }
 
-        if (!(percent > 0 && percent <=100)) {
+        if (!(percent > 0 && percent <= 100)) {
             player.sendMessage(new Messaging.MessageFormatter().format("error.chestpercent"));
             return false;
         }

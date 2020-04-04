@@ -9,6 +9,14 @@ import org.bukkit.event.HandlerList;
 public class SkyWarsVoteEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
+    private Player player;
+    private GameMap map;
+    private Vote vote;
+    public SkyWarsVoteEvent(Player p, GameMap game, Vote vote) {
+        this.player = p;
+        this.map = game;
+        this.vote = vote;
+    }
 
     public static HandlerList getHandlerList() {
         return handlers;
@@ -19,18 +27,16 @@ public class SkyWarsVoteEvent extends Event {
         return handlers;
     }
 
-    private Player player;
-    private GameMap map;
-    private Vote vote;
-
-    public SkyWarsVoteEvent(Player p, GameMap game, Vote vote) {
-        this.player = p;
-        this.map = game;
-        this.vote = vote;
+    public Player getPlayer() {
+        return player;
     }
 
-    public Player getPlayer() { return player; }
-    public GameMap getGame() { return map; }
-    public Vote getVote() { return vote; }
+    public GameMap getGame() {
+        return map;
+    }
+
+    public Vote getVote() {
+        return vote;
+    }
 
 }

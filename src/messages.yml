@@ -55,7 +55,8 @@ maps:
   deleted: '&bMap {mapname} has been Deleted!'
   listHeader: '&L&5======================MAPS======================'
   listResult: '&F{filename} - {displayname}: {status}'
-  minplayer: '&bThe minimum number of players for map {mapname} has been set to {min}!'  
+  minplayer: '&bThe minimum number of players for map {mapname} has been set to {min}!'
+  teamsize: '&bThe team size for the map {mapname} has been set to {size}!'
   name: '&bThe display name for map {mapname} has been set to {displayname}!' 
   refreshed: '&bMap data for {mapname} &bhas been reloaded!'
   registered: '&bMap {mapname} &bhas been successfully registered!'
@@ -131,6 +132,8 @@ error:
   nopermission: '&4You do not have permission to use the voting menu!'
   elochange: '&cPlayer ELO cannot be changed while player is in game!'
 game:
+  pvp-timer-disabled-message: '&aPVP is now enabled!'
+  pvp-timer-disabled-title: '&a&&lFIGHT!\n&7Good luck &b{player}'
   command-disabled-spec: '&4That command is disabled while Spectating!'
   command-disabled: '&4That command is disabled during SkyWars matches!'
   votekit: '&3{player} &4voted for Kit: {kit}'
@@ -194,6 +197,27 @@ spectate:
   playeritemlore: '&bClick to teleport to {player}'
   stayinarena: '&cPlease stay within the bouncewars Arena!'
 menu:
+  join_menu:
+    item_title:
+      waiting-start: '&b{arena} &7[&f{teamsize}&7]'
+      playing: '&b{arena} &7[&f{teamsize}&7]'
+      ending: '&b{arena} &7[&f{teamsize}&7]'
+    lore:
+      waiting-start:
+        - '&bArena: &7{name}'
+        - '&bPlayers: &7{playercount}/{maxplayers}'
+        - ''
+        - '&aClick here to join this game'
+      playing:
+        - '&bArena: &7{name}'
+        - '&bAlive players: {aliveplayers}'
+        - ''
+        - '&cThis game is currently playing'
+      ending:
+        - '&bArena: &7{name}'
+        - ''
+        - '&cThis game has ended and will now restart'
+
   usetaunt-menu-title: '&5Taunt Menu'
   usetaunt-settaunt: '&aClick to Set Your Taunt'
   purchase-taunt: '&aYou purchased Taunt {item} &afor &4${cost}'
@@ -466,6 +490,7 @@ helpList:
     edit: '&a/swmap edit &e[mapname] &e- &2Opens a map named &e[mapname] &2for editing'
     list: '&a/swmap list    &e- &2Lists available maps'
     minimum: '&a/swmap min &e[mapname] [min] &e- &2Sets the minimum number of players for the map named [mapname]'
+    teamsize: '&a/swmap teamsize [mapname] [size] &e- &2Sets the team size for the map names [mapname]'
     name: '&a/swmap name &e[mapname] [name] &e- &2Sets the display name for the map named [mapname]'
     refresh: '&a/swmap refresh &e[mapname] &e- &2Reloads the maps data file.'
     register: '&a/swmap register &e[mapname] &e- &2Registers a map named &e[mapname]'

@@ -1,12 +1,11 @@
 package com.walrusone.skywarsreloaded.commands.admin;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 public class HoloAddCmd extends BaseCmd {
 

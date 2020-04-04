@@ -1,11 +1,8 @@
 package com.walrusone.skywarsreloaded.menus.playeroptions;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,9 +11,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.managers.PlayerStat;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class KillSoundOption extends PlayerOption {
 
@@ -70,7 +69,7 @@ public class KillSoundOption extends PlayerOption {
             FileConfiguration storage = YamlConfiguration.loadConfiguration(soundFile);
 
             if (storage.getConfigurationSection("sounds") != null) {
-                for (String key: storage.getConfigurationSection("sounds").getKeys(false)) {
+                for (String key : storage.getConfigurationSection("sounds").getKeys(false)) {
                     String sound = storage.getString("sounds." + key + ".sound");
                     String name = storage.getString("sounds." + key + ".displayName");
                     int volume = storage.getInt("sounds." + key + ".volume");
@@ -116,7 +115,7 @@ public class KillSoundOption extends PlayerOption {
         storage.set("menuSize", 45);
         for (int i = 0; i < playerOptions.size(); i++) {
             playerOptions.get(i).setPosition(placement.get(i) % 45);
-            playerOptions.get(i).setPage((Math.floorDiv(placement.get(i), 45))+1);
+            playerOptions.get(i).setPage((Math.floorDiv(placement.get(i), 45)) + 1);
             playerOptions.get(i).setMenuSize(45);
             storage.set("sounds." + playerOptions.get(i).getKey() + ".position", playerOptions.get(i).getPosition());
             storage.set("sounds." + playerOptions.get(i).getKey() + ".page", playerOptions.get(i).getPage());
@@ -126,6 +125,28 @@ public class KillSoundOption extends PlayerOption {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    static PlayerOption getPlayerOptionByName(String name) {
+        for (PlayerOption pOption : playerOptions) {
+            if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pOption.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
+                return pOption;
+            }
+        }
+        return null;
+    }
+
+    public static PlayerOption getPlayerOptionByKey(String key) {
+        for (PlayerOption pOption : playerOptions) {
+            if (pOption.getKey().equalsIgnoreCase(key)) {
+                return pOption;
+            }
+        }
+        return null;
+    }
+
+    static ArrayList<PlayerOption> getPlayerOptions() {
+        return playerOptions;
     }
 
     public String getSound() {
@@ -167,27 +188,5 @@ public class KillSoundOption extends PlayerOption {
     @Override
     public String getUseLore() {
         return "menu.usekill-setsound";
-    }
-
-    static PlayerOption getPlayerOptionByName(String name) {
-        for (PlayerOption pOption: playerOptions) {
-            if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pOption.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
-                return pOption;
-            }
-        }
-        return null;
-    }
-
-    public static PlayerOption getPlayerOptionByKey(String key) {
-        for (PlayerOption pOption: playerOptions) {
-            if (pOption.getKey().equalsIgnoreCase(key)) {
-                return pOption;
-            }
-        }
-        return null;
-    }
-
-    static ArrayList<PlayerOption> getPlayerOptions() {
-        return playerOptions;
     }
 }

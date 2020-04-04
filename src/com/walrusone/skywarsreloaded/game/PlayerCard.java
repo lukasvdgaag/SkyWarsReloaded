@@ -1,12 +1,11 @@
 package com.walrusone.skywarsreloaded.game;
 
-import java.util.UUID;
-
+import com.walrusone.skywarsreloaded.enums.Vote;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.walrusone.skywarsreloaded.enums.Vote;
-import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
+import java.util.UUID;
 
 public class PlayerCard {
 
@@ -47,10 +46,6 @@ public class PlayerCard {
         this.uuid = null;
     }
 
-    public void setPlayer (Player player) {
-        this.uuid = player.getUniqueId();
-    }
-
     public Player getPlayer() {
         if (uuid == null) {
             return null;
@@ -58,20 +53,24 @@ public class PlayerCard {
         return Bukkit.getPlayer(uuid);
     }
 
-    void setPreElo(int x) {
-        this.preElo = x;
+    public void setPlayer(Player player) {
+        this.uuid = player.getUniqueId();
     }
 
     int getPreElo() {
         return this.preElo;
     }
 
-    void setKitVote(GameKit kitVote) {
-        this.kitVote = kitVote;
+    void setPreElo(int x) {
+        this.preElo = x;
     }
 
     public GameKit getKitVote() {
         return this.kitVote;
+    }
+
+    void setKitVote(GameKit kitVote) {
+        this.kitVote = kitVote;
     }
 
     public void setGameTime(Vote gameTime) {
@@ -119,16 +118,16 @@ public class PlayerCard {
 
     public void calculateELO() {
         int n = tCard.getGameMap().getPlayerCount();
-        float K = 32 / (float)(n - 1);
+        float K = 32 / (float) (n - 1);
 
         int curPlace = tCard.getPlace();
-        int curELO   = preElo;
+        int curELO = preElo;
 
-        for (TeamCard tCard: tCard.getGameMap().getTeamCards()) {
+        for (TeamCard tCard : tCard.getGameMap().getTeamCards()) {
             PlayerCard opponent = tCard.getPlayerCards().get(0);
             if (opponent.getUUID() != null && !opponent.getUUID().equals(uuid)) {
                 int opponentPlace = opponent.tCard.getPlace();
-                int opponentELO   = opponent.getPreElo();
+                int opponentELO = opponent.getPreElo();
 
                 float S;
                 if (curPlace < opponentPlace)
@@ -138,7 +137,7 @@ public class PlayerCard {
                 else
                     S = 0.0F;
 
-                float EA = 1 / (1.0f + (float)Math.pow(10.0f, (opponentELO - curELO) / 400.0f));
+                float EA = 1 / (1.0f + (float) Math.pow(10.0f, (opponentELO - curELO) / 400.0f));
 
                 this.eloChange += Math.round(K * (S - EA));
             }

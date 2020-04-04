@@ -130,7 +130,7 @@ public class GameBoard {
                             scoreboard.getTeam("line" + i).removeEntry(currentLineText.get(i));
                         }
                         scoreboard.getTeam("line" + i).addEntry(s.toString());
-                        objective.getScore(s.toString()).setScore(17-i);
+                        objective.getScore(s.toString()).setScore(17 - i);
                         currentLineText.put(i, s.toString());
                     }
                 }
@@ -174,7 +174,7 @@ public class GameBoard {
                     scoreboard.getTeam("line" + position).removeEntry(currentLineText.get(position));
                 }
                 scoreboard.getTeam("line" + position).addEntry(newLine);
-                objective.getScore(newLine).setScore(17-position);
+                objective.getScore(newLine).setScore(17 - position);
                 currentLineText.put(position, newLine);
             }
         }
@@ -236,7 +236,7 @@ public class GameBoard {
     }
 
     private void resetScoreboard() {
-        for (Team team: scoreboard.getTeams()) {
+        for (Team team : scoreboard.getTeams()) {
             team.unregister();
         }
         if (objective != null) {

@@ -46,7 +46,7 @@ public class SpectateTeamMenu {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            SkyWarsReloaded.getIC().getMenu( n + "teamselect").update();
+                            SkyWarsReloaded.getIC().getMenu(n + "teamselect").update();
                         }
                     }.runTaskLater(SkyWarsReloaded.get(), 5);
                 }

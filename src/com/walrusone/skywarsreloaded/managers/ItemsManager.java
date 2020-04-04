@@ -25,6 +25,26 @@ public class ItemsManager {
         getSignItems();
     }
 
+    public void addExtraItem(String materialref, List<String> lore, String message) {
+        String mat = message;
+        int data = -1;
+        String matWithData = "";
+        String[] matParts = mat.split(":");
+        if (matParts.length == 2) {
+            matWithData = matParts[0];
+            data = Integer.parseInt(matParts[1]);
+        }
+        ItemStack item;
+        if (data != -1) {
+            item = SkyWarsReloaded.getNMS().getColorItem(matWithData, (byte) data);
+        } else {
+            item = new ItemStack(Material.valueOf(message.toUpperCase()), 1);
+        }
+
+        ItemStack addItem = SkyWarsReloaded.getNMS().getItemStack(item, lore, message);
+        gameItems.put(materialref, addItem);
+    }
+
     private void addItem(String materialref, List<String> lore, String message) {
         String mat = SkyWarsReloaded.getCfg().getMaterial(materialref);
         int data = -1;

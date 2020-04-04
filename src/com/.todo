@@ -1,3 +1,33 @@
+# version: 4.3.3
+ADDED pvp wait timer after cages opened.
+
+# version: 4.3.2
+FIXED arenas menu being empty
+ADDED option to disable the win broadcast message
+
+# version: 4.3.1
+ADDED customization for the join menus. Item lores are now editable in the messages.yml file.
+ADDED per-arena customization for join menu items. Each arena can now have its own join menu icon.
+FIXED a sign interaction error
+FIXED leaderboards signs giving errors when on wall
+
+
+# version: 4.3.0
+ADDED 1.15 support
+ADDED a command to set the team size: /swm teamsize
+Fixed join signs not working smoothly. You now no longer need to have an empty hand for joining through signs.
+Fixed a bug where the plugin wouldn't load due spawn issues
+
+
+
+
+
+
+
+
+
+
+
 # version: 4.2.4
 FIXED teleporting to not-game players being cancelled.
 NOW WORKING WITH THE EXTENSION

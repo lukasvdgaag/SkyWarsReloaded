@@ -5,7 +5,6 @@ package com.dumptruckman.bukkit.configuration.json;
 
 import com.dumptruckman.bukkit.configuration.SerializableSet;
 import com.dumptruckman.bukkit.configuration.util.SerializationHelper;
-import com.google.common.base.Charsets;
 import net.minidev.json.JSONValue;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
@@ -17,18 +16,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.IllegalCharsetNameException;
-import java.util.*;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * A JSON Configuration for Bukkit based on {@link FileConfiguration}.
- *
+ * <p>
  * Able to store all the things you'd expect from a Bukkit configuration.
  */
 public class JsonConfiguration extends FileConfiguration {
@@ -36,6 +31,36 @@ public class JsonConfiguration extends FileConfiguration {
     protected static final String BLANK_CONFIG = "{}\n";
 
     private static final Logger LOG = Logger.getLogger(JsonConfiguration.class.getName());
+
+    public JsonConfiguration() {
+        ConfigurationSerialization.registerClass(SerializableSet.class);
+    }
+
+    private static JsonConfiguration loadConfiguration(@NotNull final JsonConfiguration config, @NotNull final File file) {
+        try {
+            config.load(file);
+        } catch (FileNotFoundException ex) {
+            LOG.log(Level.SEVERE, "Cannot find file " + file, ex);
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, "Cannot load " + file, ex);
+        } catch (InvalidConfigurationException ex) {
+            LOG.log(Level.SEVERE, "Cannot load " + file, ex);
+        }
+        return config;
+    }
+
+    /**
+     * Loads up a configuration from a json formatted file.
+     * <p>
+     * If the file does not exist, it will be created.  This will attempt to use UTF-8 encoding for the file, if it fails
+     * to do so, the system default will be used instead.
+     *
+     * @param file The file to load the configuration from.
+     * @return The configuration loaded from the file contents.
+     */
+    public static JsonConfiguration loadConfiguration(@NotNull final File file) {
+        return loadConfiguration(new JsonConfiguration(), file);
+    }
 
     @NotNull
     @Override
@@ -103,35 +128,5 @@ public class JsonConfiguration extends FileConfiguration {
         }
 
         return (JsonConfigurationOptions) options;
-    }
-
-    private static JsonConfiguration loadConfiguration(@NotNull final JsonConfiguration config, @NotNull final File file) {
-        try {
-            config.load(file);
-        } catch (FileNotFoundException ex) {
-            LOG.log(Level.SEVERE, "Cannot find file " + file, ex);
-        } catch (IOException ex) {
-            LOG.log(Level.SEVERE, "Cannot load " + file, ex);
-        } catch (InvalidConfigurationException ex) {
-            LOG.log(Level.SEVERE, "Cannot load " + file , ex);
-        }
-        return config;
-    }
-
-    /**
-     * Loads up a configuration from a json formatted file.
-     *
-     * If the file does not exist, it will be created.  This will attempt to use UTF-8 encoding for the file, if it fails
-     * to do so, the system default will be used instead.
-     *
-     * @param file The file to load the configuration from.
-     * @return The configuration loaded from the file contents.
-     */
-    public static JsonConfiguration loadConfiguration(@NotNull final File file) {
-        return loadConfiguration(new JsonConfiguration(), file);
-    }
-
-    public JsonConfiguration() {
-        ConfigurationSerialization.registerClass(SerializableSet.class);
     }
 }

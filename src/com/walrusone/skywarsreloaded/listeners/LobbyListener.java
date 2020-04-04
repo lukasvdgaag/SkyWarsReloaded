@@ -4,13 +4,11 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.game.SWRSign;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -129,13 +127,11 @@ public class LobbyListener implements org.bukkit.event.Listener {
                             if (!removed) {
                                 if (event.getPlayer().hasPermission("sw.signs")) {
                                     removed = map.removeSign(loc);
-                                }
-                                else {
+                                } else {
                                     event.setCancelled(true);
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             event.setCancelled(true);
                         }
                     }

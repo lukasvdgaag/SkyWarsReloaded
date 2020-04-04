@@ -5,26 +5,16 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.game.Crate;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.menus.playeroptions.GlassColorOption;
-import com.walrusone.skywarsreloaded.menus.playeroptions.KillSoundOption;
-import com.walrusone.skywarsreloaded.menus.playeroptions.ParticleEffectOption;
-import com.walrusone.skywarsreloaded.menus.playeroptions.ProjectileEffectOption;
-import com.walrusone.skywarsreloaded.menus.playeroptions.TauntOption;
-import com.walrusone.skywarsreloaded.menus.playeroptions.WinSoundOption;
+import com.walrusone.skywarsreloaded.menus.playeroptions.*;
 import com.walrusone.skywarsreloaded.menus.playeroptions.objects.ParticleEffect;
 import com.walrusone.skywarsreloaded.utilities.Util;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerOptionsManager {
 
@@ -37,7 +27,7 @@ public class PlayerOptionsManager {
             crateEffects.add(new ParticleEffect("CRIT", 0, 2, 0, 8, 4));
             crateEffects.add(new ParticleEffect("CRIT_MAGIC", 0, 2, 0, 8, 4));
             SkyWarsReloaded.get().getServer().getScheduler().scheduleSyncRepeatingTask(SkyWarsReloaded.get(), () -> {
-                for (Projectile projectile: projectileMap.keySet()) {
+                for (Projectile projectile : projectileMap.keySet()) {
                     if (projectile.isDead()) {
                         projectileMap.remove(projectile);
                     } else {
@@ -45,7 +35,7 @@ public class PlayerOptionsManager {
                         doEffects(projectile.getLocation(), effects, true);
                     }
                 }
-                for (UUID p: playerMap.keySet()) {
+                for (UUID p : playerMap.keySet()) {
                     Player player = Bukkit.getPlayer(p);
                     if (player == null) {
                         playerMap.remove(p);
@@ -55,8 +45,8 @@ public class PlayerOptionsManager {
                     }
                 }
 
-                for (GameMap gMap: GameMap.getPlayableArenas(GameType.ALL)) {
-                    for (Crate crate: gMap.getCrates()) {
+                for (GameMap gMap : GameMap.getPlayableArenas(GameType.ALL)) {
+                    for (Crate crate : gMap.getCrates()) {
                         doEffects(crate.getEntity().getLocation(), crateEffects, false);
                     }
                 }
@@ -73,11 +63,11 @@ public class PlayerOptionsManager {
     /*Handles projectile effects*/
 
     public void addProjectile(Projectile p, List<ParticleEffect> e) {
-        projectileMap.put(p,  e);
+        projectileMap.put(p, e);
     }
 
     void addPlayer(UUID p, List<ParticleEffect> e) {
-        playerMap.put(p,  e);
+        playerMap.put(p, e);
     }
 
     void removePlayer(UUID p) {
@@ -87,20 +77,20 @@ public class PlayerOptionsManager {
     private void doEffects(Location location, List<ParticleEffect> effects, boolean isProjectile) {
         Random random = new Random();
         if (isProjectile) {
-            for (ParticleEffect p: effects) {
+            for (ParticleEffect p : effects) {
                 Util.get().sendParticles(location.getWorld(), p.getType(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), 0, 0, 0, getData(p), 2);
                 new BukkitRunnable() {
                     @Override
                     public void run() {
                         for (int i = 0; i < 3; i++) {
-                            Util.get().sendParticles(location.getWorld(), p.getType(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), (float)(random.nextFloat() * (0.5 - -0.5) + - 0.5), (float)(random.nextFloat() * (0.5 - -0.5) + - 0.5), (float)(random.nextFloat() * (0.5 - -0.5) + - 0.5), getData(p), 1);
+                            Util.get().sendParticles(location.getWorld(), p.getType(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), (float) (random.nextFloat() * (0.5 - -0.5) + -0.5), (float) (random.nextFloat() * (0.5 - -0.5) + -0.5), (float) (random.nextFloat() * (0.5 - -0.5) + -0.5), getData(p), 1);
                         }
                     }
                 }.runTaskLater(SkyWarsReloaded.get(), 3);
             }
         } else {
-            for (ParticleEffect p: effects) {
-                Util.get().sendParticles(location.getWorld(), p.getType(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat() * (p.getOffsetYU() - p.getOffsetYL()) + p.getOffsetYL() , random.nextFloat(), getData(p), random.nextInt((p.getAmountU() - p.getAmountL()) + p.getAmountL()) + 1);
+            for (ParticleEffect p : effects) {
+                Util.get().sendParticles(location.getWorld(), p.getType(), (float) location.getX(), (float) location.getY(), (float) location.getZ(), random.nextFloat(), random.nextFloat() * (p.getOffsetYU() - p.getOffsetYL()) + p.getOffsetYL(), random.nextFloat(), getData(p), random.nextInt((p.getAmountU() - p.getAmountL()) + p.getAmountL()) + 1);
             }
         }
     }

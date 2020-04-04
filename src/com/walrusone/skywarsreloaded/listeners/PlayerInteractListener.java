@@ -23,7 +23,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -164,28 +163,25 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
                 Player player = a1.getPlayer();
-                if (a1.getAction() == Action.RIGHT_CLICK_BLOCK && (SkyWarsReloaded.getNMS().getMainHandItem(player) == null || SkyWarsReloaded.getNMS().getMainHandItem(player).getType() == Material.AIR)) {
-                    if (a1.getClickedBlock().getState() instanceof Sign) {
-                        Sign s = (Sign) a1.getClickedBlock().getState();
-                        Location loc = s.getLocation();
-                        boolean joined;
-                        for (GameMap gMap : GameMap.getMaps()) {
-                            if (gMap.hasSign(loc) && gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
-                                Party party = Party.getParty(player);
-                                if (party != null) {
-                                    if (party.getLeader().equals(player.getUniqueId())) {
-                                        joined = gMap.addPlayers(null, party);
-                                        if (!joined) {
-                                            player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
-                                        }
-                                    } else {
-                                        player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
-                                    }
-                                } else {
-                                    joined = gMap.addPlayers(null, player);
+                if (a1.getClickedBlock() != null && a1.getClickedBlock().getType().toString().toUpperCase().contains("SIGN")) {
+                    Location loc = a1.getClickedBlock().getLocation();
+                    boolean joined;
+                    for (GameMap gMap : GameMap.getMaps()) {
+                        if (gMap.hasSign(loc) && gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+                            Party party = Party.getParty(player);
+                            if (party != null) {
+                                if (party.getLeader().equals(player.getUniqueId())) {
+                                    joined = gMap.addPlayers(null, party);
                                     if (!joined) {
                                         player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
                                     }
+                                } else {
+                                    player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
+                                }
+                            } else {
+                                joined = gMap.addPlayers(null, player);
+                                if (!joined) {
+                                    player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
                                 }
                             }
                         }

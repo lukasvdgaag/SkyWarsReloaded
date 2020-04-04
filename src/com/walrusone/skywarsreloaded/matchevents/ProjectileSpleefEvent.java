@@ -59,10 +59,10 @@ public class ProjectileSpleefEvent extends MatchEvent {
             sendTitle();
             gMap.setProjectileSpleefEnabled(true);
             if (eggsToAdd > 0) {
-                for (Player player: gMap.getAlivePlayers()) {
-                    HashMap<Integer,ItemStack> leftOvers = player.getInventory().addItem(new ItemStack(Material.EGG, eggsToAdd));
+                for (Player player : gMap.getAlivePlayers()) {
+                    HashMap<Integer, ItemStack> leftOvers = player.getInventory().addItem(new ItemStack(Material.EGG, eggsToAdd));
                     if (!leftOvers.isEmpty()) {
-                        for (ItemStack stack: leftOvers.values()) {
+                        for (ItemStack stack : leftOvers.values()) {
                             player.getWorld().dropItemNaturally(player.getLocation(), stack);
                         }
                     }
@@ -116,7 +116,7 @@ public class ProjectileSpleefEvent extends MatchEvent {
             fc.set("events." + eventName + ".chance", this.chance);
             fc.set("events." + eventName + ".title", this.title);
             fc.set("events." + eventName + ".subtitle", this.subtitle);
-            fc.set("events." + eventName + ".startMessage",  this.startMessage);
+            fc.set("events." + eventName + ".startMessage", this.startMessage);
             fc.set("events." + eventName + ".endMessage", this.endMessage);
             fc.set("events." + eventName + ".announceTimer", this.announceEvent);
             fc.set("events." + eventName + ".repeatable", this.repeatable);

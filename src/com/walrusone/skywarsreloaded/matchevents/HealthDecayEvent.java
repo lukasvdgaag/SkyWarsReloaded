@@ -1,8 +1,9 @@
 package com.walrusone.skywarsreloaded.matchevents;
 
-import java.io.File;
-import java.io.IOException;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,14 +13,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.enums.MatchState;
-import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.managers.MatchManager;
+import java.io.File;
+import java.io.IOException;
 
 public class HealthDecayEvent extends MatchEvent {
     private int count;
     private BukkitTask br;
+
     public HealthDecayEvent(GameMap map, boolean b) {
         this.gMap = map;
         this.enabled = b;
@@ -64,7 +64,7 @@ public class HealthDecayEvent extends MatchEvent {
                     }
                     if (gMap.getMatchState().equals(MatchState.PLAYING)) {
                         if (gMap.getAlivePlayers().size() > 1) {
-                            for (Player player: gMap.getAlivePlayers()) {
+                            for (Player player : gMap.getAlivePlayers()) {
                                 if (player != null) {
                                     double newHealth = player.getHealth() - 1;
                                     if (newHealth < 0) {
@@ -117,7 +117,7 @@ public class HealthDecayEvent extends MatchEvent {
             fc.set("events." + eventName + ".chance", this.chance);
             fc.set("events." + eventName + ".title", this.title);
             fc.set("events." + eventName + ".subtitle", this.subtitle);
-            fc.set("events." + eventName + ".startMessage",  this.startMessage);
+            fc.set("events." + eventName + ".startMessage", this.startMessage);
             fc.set("events." + eventName + ".endMessage", this.endMessage);
             fc.set("events." + eventName + ".announceTimer", this.announceEvent);
             fc.set("events." + eventName + ".repeatable", this.repeatable);

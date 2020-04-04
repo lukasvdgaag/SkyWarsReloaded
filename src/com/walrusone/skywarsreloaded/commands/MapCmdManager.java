@@ -1,17 +1,15 @@
 package com.walrusone.skywarsreloaded.commands;
 
 
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.walrusone.skywarsreloaded.commands.maps.*;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.Util;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapCmdManager implements CommandExecutor {
     private List<BaseCmd> mapcmds = new ArrayList<>();
@@ -25,6 +23,7 @@ public class MapCmdManager implements CommandExecutor {
         mapcmds.add(new SaveCmd("map"));
         mapcmds.add(new UnregisterCmd("map"));
         mapcmds.add(new RefreshData("map"));
+        mapcmds.add(new TeamSizeCmd("map")); // new
         mapcmds.add(new NameCmd("map"));
         mapcmds.add(new DeleteCmd("map"));
         mapcmds.add(new MinimumCmd("map"));
@@ -67,7 +66,7 @@ public class MapCmdManager implements CommandExecutor {
             if (cmd.cmdName.equalsIgnoreCase(s)) {
                 return cmd;
             }
-            for (String alias: cmd.alias) {
+            for (String alias : cmd.alias) {
                 if (alias.equalsIgnoreCase(s))
                     return cmd;
             }

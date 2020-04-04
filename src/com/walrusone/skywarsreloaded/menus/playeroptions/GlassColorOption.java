@@ -1,20 +1,19 @@
 package com.walrusone.skywarsreloaded.menus.playeroptions;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.managers.PlayerStat;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class GlassColorOption extends PlayerOption {
     private static ArrayList<PlayerOption> playerOptions = new ArrayList<>();
@@ -53,7 +52,7 @@ public class GlassColorOption extends PlayerOption {
             FileConfiguration storage = YamlConfiguration.loadConfiguration(glassFile);
 
             if (storage.getConfigurationSection("colors") != null) {
-                for (String key: storage.getConfigurationSection("colors").getKeys(false)) {
+                for (String key : storage.getConfigurationSection("colors").getKeys(false)) {
                     String name = storage.getString("colors." + key + ".displayname");
                     String material = storage.getString("colors." + key + ".material");
                     int level = storage.getInt("colors." + key + ".level");
@@ -91,7 +90,7 @@ public class GlassColorOption extends PlayerOption {
         storage.set("menuSize", 45);
         for (int i = 0; i < playerOptions.size(); i++) {
             playerOptions.get(i).setPosition(placement.get(i) % 45);
-            playerOptions.get(i).setPage((Math.floorDiv(placement.get(i), 45))+1);
+            playerOptions.get(i).setPage((Math.floorDiv(placement.get(i), 45)) + 1);
             playerOptions.get(i).setMenuSize(45);
             storage.set("colors." + playerOptions.get(i).getKey() + ".position", playerOptions.get(i).getPosition());
             storage.set("colors." + playerOptions.get(i).getKey() + ".page", playerOptions.get(i).getPage());
@@ -101,6 +100,28 @@ public class GlassColorOption extends PlayerOption {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    static PlayerOption getPlayerOptionByName(String name) {
+        for (PlayerOption pOption : playerOptions) {
+            if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pOption.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
+                return pOption;
+            }
+        }
+        return null;
+    }
+
+    public static PlayerOption getPlayerOptionByKey(String key) {
+        for (PlayerOption pOption : playerOptions) {
+            if (pOption.getKey().equalsIgnoreCase(key)) {
+                return pOption;
+            }
+        }
+        return null;
+    }
+
+    static ArrayList<PlayerOption> getPlayerOptions() {
+        return playerOptions;
     }
 
     @Override
@@ -132,28 +153,6 @@ public class GlassColorOption extends PlayerOption {
     @Override
     public void setEffect(PlayerStat stat) {
         stat.setGlassColor(key);
-    }
-
-    static PlayerOption getPlayerOptionByName(String name) {
-        for (PlayerOption pOption: playerOptions) {
-            if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pOption.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
-                return pOption;
-            }
-        }
-        return null;
-    }
-
-    public static PlayerOption getPlayerOptionByKey(String key) {
-        for (PlayerOption pOption: playerOptions) {
-            if (pOption.getKey().equalsIgnoreCase(key)) {
-                return pOption;
-            }
-        }
-        return null;
-    }
-
-    static ArrayList<PlayerOption> getPlayerOptions() {
-        return playerOptions;
     }
 
 }

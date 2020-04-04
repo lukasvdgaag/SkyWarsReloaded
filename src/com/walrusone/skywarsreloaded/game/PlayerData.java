@@ -1,8 +1,9 @@
 package com.walrusone.skywarsreloaded.game;
 
-import java.util.ArrayList;
-import java.util.UUID;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
+import com.walrusone.skywarsreloaded.utilities.Tagged;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -14,13 +15,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.managers.PlayerStat;
-import com.walrusone.skywarsreloaded.utilities.Tagged;
-import com.walrusone.skywarsreloaded.utilities.Util;
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class PlayerData {
     private static ArrayList<PlayerData> playerData;
+
+    static {
+        PlayerData.playerData = new ArrayList<>();
+    }
+
     private UUID uuid;
     private Scoreboard sb;
     private Tagged taggedBy;
@@ -79,7 +83,9 @@ public class PlayerData {
             player.closeInventory();
             player.setGameMode(GameMode.SURVIVAL);
             if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
-                if (pStats != null) { Util.get().setPlayerExperience(player, pStats.getXp()); }
+                if (pStats != null) {
+                    Util.get().setPlayerExperience(player, pStats.getXp());
+                }
             }
             Util.get().clear(player);
             player.getInventory().clear();
@@ -148,15 +154,11 @@ public class PlayerData {
         return this.uuid;
     }
 
-    static {
-        PlayerData.playerData = new ArrayList<>();
+    public Tagged getTaggedBy() {
+        return taggedBy;
     }
 
     public void setTaggedBy(Player player) {
         taggedBy = new Tagged(player, System.currentTimeMillis());
-    }
-
-    public Tagged getTaggedBy() {
-        return taggedBy;
     }
 }

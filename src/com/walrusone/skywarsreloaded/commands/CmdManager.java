@@ -1,17 +1,16 @@
 package com.walrusone.skywarsreloaded.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.admin.*;
 import com.walrusone.skywarsreloaded.commands.player.*;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.Util;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CmdManager implements CommandExecutor {
     private List<BaseCmd> admincmds = new ArrayList<>();
@@ -93,7 +92,7 @@ public class CmdManager implements CommandExecutor {
             if (cmd.cmdName.equalsIgnoreCase(s)) {
                 return cmd;
             }
-            for (String alias: cmd.alias) {
+            for (String alias : cmd.alias) {
                 if (alias.equalsIgnoreCase(s))
                     return cmd;
             }

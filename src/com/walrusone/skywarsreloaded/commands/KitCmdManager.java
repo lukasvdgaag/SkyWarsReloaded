@@ -1,25 +1,14 @@
 package com.walrusone.skywarsreloaded.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.walrusone.skywarsreloaded.commands.kits.*;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import com.walrusone.skywarsreloaded.commands.kits.CreateCmd;
-import com.walrusone.skywarsreloaded.commands.kits.EnableCmd;
-import com.walrusone.skywarsreloaded.commands.kits.IconCmd;
-import com.walrusone.skywarsreloaded.commands.kits.ListCmd;
-import com.walrusone.skywarsreloaded.commands.kits.LoadCmd;
-import com.walrusone.skywarsreloaded.commands.kits.LockedIconCmd;
-import com.walrusone.skywarsreloaded.commands.kits.LoreCmd;
-import com.walrusone.skywarsreloaded.commands.kits.NameCmd;
-import com.walrusone.skywarsreloaded.commands.kits.PermCmd;
-import com.walrusone.skywarsreloaded.commands.kits.PositionCmd;
-import com.walrusone.skywarsreloaded.commands.kits.UpdateCmd;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.Util;
+import java.util.ArrayList;
+import java.util.List;
 
 public class KitCmdManager implements CommandExecutor {
     private List<BaseCmd> kitcmds = new ArrayList<>();
@@ -71,7 +60,7 @@ public class KitCmdManager implements CommandExecutor {
             if (cmd.cmdName.equalsIgnoreCase(s)) {
                 return cmd;
             }
-            for (String alias: cmd.alias) {
+            for (String alias : cmd.alias) {
                 if (alias.equalsIgnoreCase(s))
                     return cmd;
             }

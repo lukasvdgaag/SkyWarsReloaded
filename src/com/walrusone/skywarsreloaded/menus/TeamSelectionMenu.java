@@ -37,21 +37,21 @@ public class TeamSelectionMenu {
         Runnable update = () -> {
             if (SkyWarsReloaded.getIC().hasViewers(gMap.getName() + "teamselect") || SkyWarsReloaded.getIC().hasViewers(gMap.getName() + "teamspectate")) {
                 ArrayList<Inventory> invs1 = SkyWarsReloaded.getIC().getMenu(gMap.getName() + "teamselect").getInventories();
-                for (Inventory inv: invs1) {
+                for (Inventory inv : invs1) {
                     for (int i = 0; i < menuSize; i++) {
                         inv.setItem(i, new ItemStack(Material.AIR, 1));
                     }
                 }
                 String mat = SkyWarsReloaded.getCfg().getTeamMaterial();
                 List<String> lores = new ArrayList<>();
-                for (TeamCard tCard: gMap.getTeamCards()) {
+                for (TeamCard tCard : gMap.getTeamCards()) {
                     String name = tCard.getTeamName();
                     byte color = tCard.getByte();
                     ItemStack item = SkyWarsReloaded.getNMS().getColorItem(mat, color);
                     lores.clear();
                     lores.add((new Messaging.MessageFormatter().setVariable("playercount", "" + tCard.getPlayersSize())
                             .setVariable("maxplayers", "" + tCard.getSize()).format("signs.line4")));
-                    for (PlayerCard pCard: tCard.getPlayerCards()) {
+                    for (PlayerCard pCard : tCard.getPlayerCards()) {
                         Player p = pCard.getPlayer();
                         if (p != null) {
                             lores.add(ChatColor.GREEN + p.getName());
@@ -62,7 +62,7 @@ public class TeamSelectionMenu {
                 if (SkyWarsReloaded.getCfg().spectateMenuEnabled()) {
                     ArrayList<Inventory> specs = SkyWarsReloaded.getIC().getMenu(gMap.getName() + "teamspectate").getInventories();
                     int i = 0;
-                    for (Inventory inv: invs1) {
+                    for (Inventory inv : invs1) {
                         if (specs.get(i) == null) {
                             specs.add(Bukkit.createInventory(null, menuSize, new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName()).format("menu.teamspectate-menu-title")));
                         }

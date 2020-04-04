@@ -1,14 +1,5 @@
 package com.walrusone.skywarsreloaded.menus.playeroptions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
@@ -17,25 +8,40 @@ import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OptionSelectionMenu {
 
     public OptionSelectionMenu(final Player player, PlayerOptions p, boolean commandOpen) {
         List<PlayerOption> availableItems;
-        switch(p) {
-            case GLASSCOLOR: availableItems = GlassColorOption.getPlayerOptions();
+        switch (p) {
+            case GLASSCOLOR:
+                availableItems = GlassColorOption.getPlayerOptions();
                 break;
-            case PARTICLEEFFECT: availableItems = ParticleEffectOption.getPlayerOptions();
+            case PARTICLEEFFECT:
+                availableItems = ParticleEffectOption.getPlayerOptions();
                 break;
-            case PROJECTILEEFFECT: availableItems = ProjectileEffectOption.getPlayerOptions();
+            case PROJECTILEEFFECT:
+                availableItems = ProjectileEffectOption.getPlayerOptions();
                 break;
-            case WINSOUND: availableItems = WinSoundOption.getPlayerOptions();
+            case WINSOUND:
+                availableItems = WinSoundOption.getPlayerOptions();
                 break;
-            case KILLSOUND: availableItems = KillSoundOption.getPlayerOptions();
+            case KILLSOUND:
+                availableItems = KillSoundOption.getPlayerOptions();
                 break;
-            case TAUNT: availableItems = TauntOption.getPlayerOptions();
+            case TAUNT:
+                availableItems = TauntOption.getPlayerOptions();
                 break;
-            default: availableItems = GlassColorOption.getPlayerOptions();
+            default:
+                availableItems = GlassColorOption.getPlayerOptions();
         }
 
         String menuName = new Messaging.MessageFormatter().format(availableItems.get(0).getMenuName());
@@ -45,7 +51,7 @@ public class OptionSelectionMenu {
 
         int level = Util.get().getPlayerLevel(player);
 
-        for (PlayerOption option: availableItems) {
+        for (PlayerOption option : availableItems) {
             int page = option.getPage() - 1;
             int position = option.getPosition();
 
@@ -57,7 +63,7 @@ public class OptionSelectionMenu {
                 position = 1;
             }
 
-            if(invs.isEmpty() || invs.size() < page + 1) {
+            if (invs.isEmpty() || invs.size() < page + 1) {
                 while (invs.size() < page + 1) {
                     invs.add(Bukkit.createInventory(null, menuSize + 9, menuName));
                 }
@@ -81,7 +87,7 @@ public class OptionSelectionMenu {
                     }
                 } else {
                     if (option instanceof TauntOption) {
-                        for (String lore: ((TauntOption) option).getLore()) {
+                        for (String lore : ((TauntOption) option).getLore()) {
                             loreList.add(ChatColor.translateAlternateColorCodes('&', lore));
                         }
                     }
@@ -105,20 +111,27 @@ public class OptionSelectionMenu {
                 return;
             }
             PlayerOption option;
-            switch(p) {
-                case GLASSCOLOR: option = GlassColorOption.getPlayerOptionByName(name);
+            switch (p) {
+                case GLASSCOLOR:
+                    option = GlassColorOption.getPlayerOptionByName(name);
                     break;
-                case PARTICLEEFFECT: option = ParticleEffectOption.getPlayerOptionByName(name);
+                case PARTICLEEFFECT:
+                    option = ParticleEffectOption.getPlayerOptionByName(name);
                     break;
-                case PROJECTILEEFFECT: option = ProjectileEffectOption.getPlayerOptionByName(name);
+                case PROJECTILEEFFECT:
+                    option = ProjectileEffectOption.getPlayerOptionByName(name);
                     break;
-                case WINSOUND: option = WinSoundOption.getPlayerOptionByName(name);
+                case WINSOUND:
+                    option = WinSoundOption.getPlayerOptionByName(name);
                     break;
-                case KILLSOUND: option = KillSoundOption.getPlayerOptionByName(name);
+                case KILLSOUND:
+                    option = KillSoundOption.getPlayerOptionByName(name);
                     break;
-                case TAUNT: option = TauntOption.getPlayerOptionByName(name);
+                case TAUNT:
+                    option = TauntOption.getPlayerOptionByName(name);
                     break;
-                default: option = null;
+                default:
+                    option = null;
             }
 
             if (option == null) {

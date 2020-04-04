@@ -22,7 +22,7 @@ public enum ScoreVar {
     MODIFIERVOTE;
 
     public static ScoreVar matchType(String string) {
-        for (ScoreVar var: ScoreVar.values()) {
+        for (ScoreVar var : ScoreVar.values()) {
             if (var.toString().equalsIgnoreCase(string)) {
                 return var;
             }

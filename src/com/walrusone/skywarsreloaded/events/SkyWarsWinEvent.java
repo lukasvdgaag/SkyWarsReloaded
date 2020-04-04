@@ -9,10 +9,9 @@ import org.bukkit.event.HandlerList;
 
 public class SkyWarsWinEvent extends Event {
 
+    private static final HandlerList handlers = new HandlerList();
     private PlayerStat stat;
     private GameMap g;
-
-    private static final HandlerList handlers = new HandlerList();
 
 
     public SkyWarsWinEvent(PlayerStat pl, GameMap map) {
@@ -20,21 +19,24 @@ public class SkyWarsWinEvent extends Event {
         this.g = map;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     public PlayerStat getPlayerStat() {
         return stat;
     }
+
     public Player getPlayer() {
         return Bukkit.getPlayer(stat.getPlayerName());
     }
 
-    public GameMap getGame() { return g; }
+    public GameMap getGame() {
+        return g;
+    }
 
     @Override
     public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
         return handlers;
     }
 

@@ -4,7 +4,6 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.ChestType;
 import com.walrusone.skywarsreloaded.enums.Vote;
 import com.walrusone.skywarsreloaded.utilities.Util;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -59,7 +58,7 @@ public class ChestManager {
             toAddTo.put(percent, Bukkit.createInventory(null, 54, fileName + " " + percent));
         }
 
-        for (ItemStack iStack: items) {
+        for (ItemStack iStack : items) {
             toAddTo.get(percent).addItem(iStack);
         }
         save(toAddTo, ct);
@@ -78,14 +77,14 @@ public class ChestManager {
             FileConfiguration storage = YamlConfiguration.loadConfiguration(chestFile);
 
             if (storage.getConfigurationSection("chestItems") != null) {
-                for (String key: storage.getConfigurationSection("chestItems").getKeys(false)) {
+                for (String key : storage.getConfigurationSection("chestItems").getKeys(false)) {
                     if (Util.get().isInteger(key)) {
                         int percent = Integer.valueOf(key);
                         List<ItemStack> items = (List<ItemStack>) storage.getList("chestItems." + key + ".items");
                         if (!itemList.containsKey(percent)) {
                             itemList.put(percent, Bukkit.createInventory(null, 54, fileName + " " + percent));
                         }
-                        for (ItemStack iStack: items) {
+                        for (ItemStack iStack : items) {
                             itemList.get(percent).addItem(iStack);
                         }
                     }
@@ -114,9 +113,9 @@ public class ChestManager {
         if (chestFile.exists()) {
             try {
                 FileConfiguration storage = YamlConfiguration.loadConfiguration(chestFile);
-                for (int percent: chestList.keySet()) {
+                for (int percent : chestList.keySet()) {
                     List<ItemStack> items = new ArrayList<>();
-                    for (ItemStack item: chestList.get(percent).getContents()) {
+                    for (ItemStack item : chestList.get(percent).getContents()) {
                         if (item != null && !item.getType().equals(Material.AIR)) {
                             items.add(item);
                         }
@@ -154,7 +153,7 @@ public class ChestManager {
             if (chest instanceof DoubleChest) {
                 inventory = ((DoubleChest) chest).getInventory();
             } else if (chest instanceof Chest) {
-                inventory = ((Chest)chest).getInventory();
+                inventory = ((Chest) chest).getInventory();
             }
             if (inventory != null) {
                 inventory.clear();
@@ -174,8 +173,8 @@ public class ChestManager {
             int added = 0;
             Collections.shuffle(randomLoc);
             Collections.shuffle(randomDLoc);
-            for (int chance: fill.keySet()) {
-                for (ItemStack item: fill.get(chance)) {
+            for (int chance : fill.keySet()) {
+                for (ItemStack item : fill.get(chance)) {
                     if (item != null && !item.getType().equals(Material.AIR)) {
                         if (chest instanceof Chest) {
                             if (random.nextInt(100) + 1 <= chance) {
@@ -207,7 +206,7 @@ public class ChestManager {
             int added = 0;
             Collections.shuffle(randomLoc);
 
-            for (int chance: crateItemList.keySet()) {
+            for (int chance : crateItemList.keySet()) {
                 for (ItemStack item : crateItemList.get(chance)) {
                     if (item != null && !item.getType().equals(Material.AIR)) {
                         if (random.nextInt(100) + 1 <= chance) {
@@ -235,7 +234,7 @@ public class ChestManager {
     private String getFileName(ChestType ct) {
         if (ct == ChestType.BASIC) {
             return "basicchest.yml";
-        } else 	if (ct == ChestType.BASICCENTER) {
+        } else if (ct == ChestType.BASICCENTER) {
             return "basiccenterchest.yml";
         } else if (ct == ChestType.OP) {
             return "opchest.yml";
@@ -259,7 +258,7 @@ public class ChestManager {
             return ChestType.OPCENTER;
         } else if (fileName.equalsIgnoreCase("centerchest.yml")) {
             return ChestType.NORMALCENTER;
-        } else if (fileName.equalsIgnoreCase("chest.yml")){
+        } else if (fileName.equalsIgnoreCase("chest.yml")) {
             return ChestType.NORMAL;
         }
         return null;

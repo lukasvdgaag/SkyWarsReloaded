@@ -9,6 +9,14 @@ import org.bukkit.event.entity.EntityDamageEvent;
 public class SkyWarsDeathEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
+    private Player player;
+    private GameMap map;
+    private EntityDamageEvent.DamageCause cause;
+    public SkyWarsDeathEvent(Player p, EntityDamageEvent.DamageCause cause, GameMap game) {
+        this.player = p;
+        this.map = game;
+        this.cause = cause;
+    }
 
     public static HandlerList getHandlerList() {
         return handlers;
@@ -19,18 +27,14 @@ public class SkyWarsDeathEvent extends Event {
         return handlers;
     }
 
-    private Player player;
-    private GameMap map;
-    private EntityDamageEvent.DamageCause cause;
-
-    public SkyWarsDeathEvent(Player p, EntityDamageEvent.DamageCause cause, GameMap game) {
-        this.player = p;
-        this.map = game;
-        this.cause = cause;
+    public Player getPlayer() {
+        return player;
     }
 
-    public Player getPlayer() { return player; }
-    public GameMap getGame() { return map; }
+    public GameMap getGame() {
+        return map;
+    }
+
     public EntityDamageEvent.DamageCause getCause() {
         return cause;
     }

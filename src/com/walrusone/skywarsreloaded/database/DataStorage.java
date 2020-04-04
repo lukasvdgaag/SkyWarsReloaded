@@ -1,5 +1,13 @@
 package com.walrusone.skywarsreloaded.database;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.LeaderType;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,15 +19,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import com.walrusone.skywarsreloaded.enums.LeaderType;
-import com.walrusone.skywarsreloaded.managers.PlayerStat;
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 
 public class DataStorage {
 
@@ -328,7 +327,7 @@ public class DataStorage {
                     File playerDirectory = new File(dataDirectory, "player_data");
 
                     if (!playerDirectory.exists()) {
-                        if (!playerDirectory.mkdirs())  {
+                        if (!playerDirectory.mkdirs()) {
                             return;
                         }
                     }
@@ -377,7 +376,7 @@ public class DataStorage {
                         FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
 
                         List<String> perms = fc.getStringList("permissions");
-                        for (String perm: perms) {
+                        for (String perm : perms) {
                             playerStat.addPerm(perm, false);
                         }
                     } catch (IOException ioException) {
@@ -393,7 +392,7 @@ public class DataStorage {
                     ResultSet resultSet = null;
 
                     try {
-                        String query= "SELECT `permissions` FROM `sw_permissions` WHERE `uuid` = ?;";
+                        String query = "SELECT `permissions` FROM `sw_permissions` WHERE `uuid` = ?;";
 
                         preparedStatement = connection.prepareStatement(query);
                         preparedStatement.setString(1, playerStat.getId());
@@ -464,7 +463,7 @@ public class DataStorage {
                         PreparedStatement preparedStatement = null;
                         try {
                             if (playerStat.getPerms().getPermissions().size() >= 1) {
-                                for (String perm: playerStat.getPerms().getPermissions().keySet()) {
+                                for (String perm : playerStat.getPerms().getPermissions().keySet()) {
                                     String query = "INSERT INTO `sw_permissions` (`uuid`, `playername`, `permissions`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE " +
                                             "`uuid`=`uuid`, `playername`=`playername`, `permissions`=`permissions` ";
 

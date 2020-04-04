@@ -1,13 +1,9 @@
 package com.walrusone.skywarsreloaded.menus.playeroptions;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.managers.PlayerStat;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,12 +11,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.managers.PlayerStat;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.Util;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
-public class TauntOption extends PlayerOption{
+public class TauntOption extends PlayerOption {
 
     private static ArrayList<PlayerOption> playerOptions = new ArrayList<>();
     private List<String> lore;
@@ -82,7 +77,7 @@ public class TauntOption extends PlayerOption{
             FileConfiguration storage = YamlConfiguration.loadConfiguration(tauntFile);
 
             if (storage.getConfigurationSection("taunts") != null) {
-                for (String key: storage.getConfigurationSection("taunts").getKeys(false)) {
+                for (String key : storage.getConfigurationSection("taunts").getKeys(false)) {
                     String name = storage.getString("taunts." + key + ".name");
                     List<String> lore = storage.getStringList("taunts." + key + ".lore");
                     int level = storage.getInt("taunts." + key + ".level");
@@ -116,7 +111,7 @@ public class TauntOption extends PlayerOption{
         storage.set("menuSize", 45);
         for (int i = 0; i < playerOptions.size(); i++) {
             playerOptions.get(i).setPosition(placement.get(i) % 45);
-            playerOptions.get(i).setPage((Math.floorDiv(placement.get(i), 45))+1);
+            playerOptions.get(i).setPage((Math.floorDiv(placement.get(i), 45)) + 1);
             playerOptions.get(i).setMenuSize(45);
             storage.set("taunts." + playerOptions.get(i).getKey() + ".position", playerOptions.get(i).getPosition());
             storage.set("taunts." + playerOptions.get(i).getKey() + ".page", playerOptions.get(i).getPage());
@@ -126,6 +121,28 @@ public class TauntOption extends PlayerOption{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    static PlayerOption getPlayerOptionByName(String name) {
+        for (PlayerOption pOption : playerOptions) {
+            if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pOption.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
+                return pOption;
+            }
+        }
+        return null;
+    }
+
+    public static PlayerOption getPlayerOptionByKey(String key) {
+        for (PlayerOption pOption : playerOptions) {
+            if (pOption.getKey().equalsIgnoreCase(key)) {
+                return pOption;
+            }
+        }
+        return null;
+    }
+
+    static ArrayList<PlayerOption> getPlayerOptions() {
+        return playerOptions;
     }
 
     public List<String> getLore() {
@@ -140,7 +157,8 @@ public class TauntOption extends PlayerOption{
         return this.volume;
     }
 
-    /**Does the taunt for a player
+    /**
+     * Does the taunt for a player
      */
     public void performTaunt(Player player) {
         if (!this.getKey().equalsIgnoreCase("none")) {
@@ -151,8 +169,8 @@ public class TauntOption extends PlayerOption{
             if (this.getMessage() != null && this.getMessage().length() != 0) {
                 String prefix = new Messaging.MessageFormatter().setVariable("player", player.getDisplayName()).format("taunt.prefix");
                 List<Player> players = player.getWorld().getPlayers();
-                for (Player p: players) {
-                    if(p.getLocation().distance(player.getLocation()) < this.getVolume()*15) {
+                for (Player p : players) {
+                    if (p.getLocation().distance(player.getLocation()) < this.getVolume() * 15) {
                         p.sendMessage(ChatColor.translateAlternateColorCodes('&', prefix + " " + this.getMessage()));
                     }
                 }
@@ -160,7 +178,8 @@ public class TauntOption extends PlayerOption{
         }
     }
 
-    /**Creates a sphere of particles around the player
+    /**
+     * Creates a sphere of particles around the player
      */
     private void doTauntParticles(String uuid) {
         Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
@@ -198,28 +217,6 @@ public class TauntOption extends PlayerOption{
     @Override
     public String getUseLore() {
         return "menu.usetaunt-settaunt";
-    }
-
-    static PlayerOption getPlayerOptionByName(String name) {
-        for (PlayerOption pOption: playerOptions) {
-            if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', pOption.getName())).equalsIgnoreCase(ChatColor.stripColor(name))) {
-                return pOption;
-            }
-        }
-        return null;
-    }
-
-    public static PlayerOption getPlayerOptionByKey(String key) {
-        for (PlayerOption pOption: playerOptions) {
-            if (pOption.getKey().equalsIgnoreCase(key)) {
-                return pOption;
-            }
-        }
-        return null;
-    }
-
-    static ArrayList<PlayerOption> getPlayerOptions() {
-        return playerOptions;
     }
 
 }

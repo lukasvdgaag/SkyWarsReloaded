@@ -1,20 +1,7 @@
 package com.walrusone.skywarsreloaded.menus.gameoptions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import com.walrusone.skywarsreloaded.events.SkyWarsSelectKitEvent;
-import com.walrusone.skywarsreloaded.events.SkyWarsVoteEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.events.SkyWarsSelectKitEvent;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
@@ -22,6 +9,13 @@ import com.walrusone.skywarsreloaded.menus.IconMenu;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.*;
 
 public class KitVoteOption {
 
@@ -30,7 +24,7 @@ public class KitVoteOption {
     private IconMenu iconMenu;
     private Map<GameKit, Boolean> availableKits = new HashMap<>();
 
-    public KitVoteOption (GameMap gameMap, String key) {
+    public KitVoteOption(GameMap gameMap, String key) {
         this.gameMap = gameMap;
         createMenu(key, new Messaging.MessageFormatter().format("menu.kit-voting-menu"));
 
@@ -41,9 +35,9 @@ public class KitVoteOption {
         this.key = key;
         int menuSize = SkyWarsReloaded.getCfg().getKitMenuSize();
         ArrayList<Inventory> invs = new ArrayList<>();
-        for (GameKit gameKit: GameKit.getAvailableKits()) {
+        for (GameKit gameKit : GameKit.getAvailableKits()) {
             int page = gameKit.getPage() - 1;
-            if(invs.isEmpty() || invs.size() < page + 1) {
+            if (invs.isEmpty() || invs.size() < page + 1) {
                 while (invs.size() < page + 1) {
                     invs.add(Bukkit.createInventory(null, menuSize + 9, name));
                 }
@@ -57,7 +51,7 @@ public class KitVoteOption {
                 return;
             }
             GameKit kit = GameKit.getKit(itemName);
-            if(kit != null) {
+            if (kit != null) {
                 if (isKitLocked(kit)) {
                     if (event.getPlayer().hasPermission("sw.kit." + kit.getFilename())) {
                         loadKit(event.getPlayer(), gameMap, kit);
@@ -66,7 +60,7 @@ public class KitVoteOption {
                     }
                 }
                 gameMap.setKitVote(event.getPlayer(), kit);
-                Bukkit.getPluginManager().callEvent(new SkyWarsSelectKitEvent(event.getPlayer(),gameMap,kit));
+                Bukkit.getPluginManager().callEvent(new SkyWarsSelectKitEvent(event.getPlayer(), gameMap, kit));
                 updateKitVotes();
                 Util.get().playSound(event.getPlayer(), event.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                 event.getPlayer().closeInventory();
@@ -76,14 +70,14 @@ public class KitVoteOption {
             }
         });
         iconMenu = SkyWarsReloaded.getIC().getMenu(key);
-        for (GameKit gameKit: GameKit.getAvailableKits()) {
+        for (GameKit gameKit : GameKit.getAvailableKits()) {
             loadKit(null, null, gameKit);
         }
     }
 
     public void restore() {
         availableKits.clear();
-        for (GameKit gameKit: GameKit.getAvailableKits()) {
+        for (GameKit gameKit : GameKit.getAvailableKits()) {
             loadKit(null, null, gameKit);
         }
     }
@@ -107,7 +101,7 @@ public class KitVoteOption {
             lores.add(gameKit.getColoredLockedLore());
         }
         kit = SkyWarsReloaded.getNMS().getItemStack(kit, lores, gameKit.getColorName());
-        iconMenu.getInventories().get(gameKit.getPage()-1).setItem(gameKit.getPosition(), kit);
+        iconMenu.getInventories().get(gameKit.getPage() - 1).setItem(gameKit.getPosition(), kit);
         availableKits.put(gameKit, state);
         if (player != null && gMap != null) {
             MatchManager.get().message(gMap, new Messaging.MessageFormatter().setVariable("player", player.getName()).setVariable("kit", gameKit.getColorName()).format("game.unlock-kit"));
@@ -115,12 +109,12 @@ public class KitVoteOption {
     }
 
     public void updateKitVotes() {
-        HashMap <GameKit, Integer> votes = new HashMap<>();
-        for (GameKit gKit: availableKits.keySet()) {
+        HashMap<GameKit, Integer> votes = new HashMap<>();
+        for (GameKit gKit : availableKits.keySet()) {
             votes.put(gKit, 0);
         }
 
-        for (PlayerCard pCard: gameMap.getPlayerCards()) {
+        for (PlayerCard pCard : gameMap.getPlayerCards()) {
             Player player = pCard.getPlayer();
             if (player != null) {
                 GameKit gKit = pCard.getKitVote();
@@ -130,7 +124,7 @@ public class KitVoteOption {
                 }
             }
         }
-        for (GameKit gKit: votes.keySet()) {
+        for (GameKit gKit : votes.keySet()) {
             boolean locked = availableKits.get(gKit);
             ItemStack kit;
             List<String> lores = gKit.getColorLores();
@@ -146,18 +140,18 @@ public class KitVoteOption {
             kit.setAmount(votes.get(gKit) == 0 ? 1 : votes.get(gKit));
             kit = SkyWarsReloaded.getNMS().getItemStack(kit, lores, ChatColor.translateAlternateColorCodes('&', gKit.getColorName()));
 
-            iconMenu.getInventories().get(gKit.getPage()-1).setItem(gKit.getPosition(), kit);
+            iconMenu.getInventories().get(gKit.getPage() - 1).setItem(gKit.getPosition(), kit);
         }
 
     }
 
     public void getVotedKit() {
-        HashMap <GameKit, Integer> votes = new HashMap<>();
-        for (GameKit gKit: availableKits.keySet()) {
+        HashMap<GameKit, Integer> votes = new HashMap<>();
+        for (GameKit gKit : availableKits.keySet()) {
             votes.put(gKit, 0);
         }
 
-        for (PlayerCard pCard: gameMap.getPlayerCards()) {
+        for (PlayerCard pCard : gameMap.getPlayerCards()) {
             Player player = pCard.getPlayer();
             if (player != null) {
                 GameKit gKit = pCard.getKitVote();
@@ -174,7 +168,7 @@ public class KitVoteOption {
         }
         int highest = 0;
         GameKit voted = null;
-        for (GameKit gKit: votes.keySet()) {
+        for (GameKit gKit : votes.keySet()) {
             if (votes.get(gKit) >= highest) {
                 highest = votes.get(gKit);
                 voted = gKit;

@@ -117,7 +117,7 @@ public class ShrinkingBorderEvent extends MatchEvent {
             fc.set("events." + eventName + ".chance", this.chance);
             fc.set("events." + eventName + ".title", this.title);
             fc.set("events." + eventName + ".subtitle", this.subtitle);
-            fc.set("events." + eventName + ".startMessage",  this.startMessage);
+            fc.set("events." + eventName + ".startMessage", this.startMessage);
             fc.set("events." + eventName + ".endMessage", this.endMessage);
             fc.set("events." + eventName + ".announceTimer", this.announceEvent);
             fc.set("events." + eventName + ".repeatable", this.repeatable);

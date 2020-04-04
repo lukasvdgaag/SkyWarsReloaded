@@ -8,6 +8,14 @@ import org.bukkit.event.HandlerList;
 public class SkyWarsKillEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
+    private Player killer;
+    private Player killed;
+    private GameMap map;
+    public SkyWarsKillEvent(Player killer, Player killed, GameMap game) {
+        this.killed = killed;
+        this.killer = killer;
+        this.map = game;
+    }
 
     public static HandlerList getHandlerList() {
         return handlers;
@@ -18,18 +26,16 @@ public class SkyWarsKillEvent extends Event {
         return handlers;
     }
 
-    private Player killer;
-    private Player killed;
-    private GameMap map;
-
-    public SkyWarsKillEvent(Player killer, Player killed, GameMap game) {
-        this.killed = killed;
-        this.killer = killer;
-        this.map = game;
+    public Player getKiller() {
+        return killer;
     }
 
-    public Player getKiller() { return killer; }
-    public Player getKilled() { return killed; }
-    public GameMap getGame() { return map; }
+    public Player getKilled() {
+        return killed;
+    }
+
+    public GameMap getGame() {
+        return map;
+    }
 
 }

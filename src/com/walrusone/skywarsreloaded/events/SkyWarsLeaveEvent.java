@@ -8,6 +8,13 @@ import org.bukkit.event.HandlerList;
 public class SkyWarsLeaveEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
+    private Player player;
+    private GameMap map;
+
+    public SkyWarsLeaveEvent(Player p, GameMap game) {
+        this.player = p;
+        this.map = game;
+    }
 
     public static HandlerList getHandlerList() {
         return handlers;
@@ -18,15 +25,12 @@ public class SkyWarsLeaveEvent extends Event {
         return handlers;
     }
 
-    private Player player;
-    private GameMap map;
-
-    public SkyWarsLeaveEvent(Player p, GameMap game) {
-        this.player = p;
-        this.map = game;
+    public Player getPlayer() {
+        return player;
     }
 
-    public Player getPlayer() { return player; }
-    public GameMap getGame() { return map; }
+    public GameMap getGame() {
+        return map;
+    }
 
 }

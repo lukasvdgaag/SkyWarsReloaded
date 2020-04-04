@@ -6,7 +6,6 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
@@ -64,7 +63,7 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
     @org.bukkit.event.EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
     public void onTP(PlayerTeleportEvent e) {
         GameMap g = MatchManager.get().getPlayerMap(e.getPlayer());
-        if (g!=null) {
+        if (g != null) {
             if (!e.getTo().getWorld().getName().equals(g.getCurrentWorld().getName())) {
                 e.setCancelled(true);
             }

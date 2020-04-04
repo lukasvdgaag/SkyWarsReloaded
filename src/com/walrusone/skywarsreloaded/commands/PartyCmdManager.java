@@ -1,24 +1,15 @@
 package com.walrusone.skywarsreloaded.commands;
 
 
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.walrusone.skywarsreloaded.commands.party.*;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import com.walrusone.skywarsreloaded.commands.party.AcceptCmd;
-import com.walrusone.skywarsreloaded.commands.party.CreateCmd;
-import com.walrusone.skywarsreloaded.commands.party.DeclineCmd;
-import com.walrusone.skywarsreloaded.commands.party.DisbandCmd;
-import com.walrusone.skywarsreloaded.commands.party.InfoCmd;
-import com.walrusone.skywarsreloaded.commands.party.InviteCmd;
-import com.walrusone.skywarsreloaded.commands.party.LeaveCmd;
-import com.walrusone.skywarsreloaded.commands.party.NameCmd;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.Util;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PartyCmdManager implements CommandExecutor {
     private List<BaseCmd> partycmds = new ArrayList<>();
@@ -67,7 +58,7 @@ public class PartyCmdManager implements CommandExecutor {
             if (cmd.cmdName.equalsIgnoreCase(s)) {
                 return cmd;
             }
-            for (String alias: cmd.alias) {
+            for (String alias : cmd.alias) {
                 if (alias.equalsIgnoreCase(s))
                     return cmd;
             }

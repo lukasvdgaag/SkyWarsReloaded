@@ -1,22 +1,21 @@
 package com.walrusone.skywarsreloaded.game.cages;
 
-import java.util.ArrayList;
-import java.util.Random;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerCard;
+import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
+import com.walrusone.skywarsreloaded.menus.playeroptions.GlassColorOption;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.enums.MatchState;
-import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.game.TeamCard;
-import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
-import com.walrusone.skywarsreloaded.menus.playeroptions.GlassColorOption;
-import com.walrusone.skywarsreloaded.utilities.Util;
+import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class Cage {
 
@@ -27,17 +26,17 @@ public abstract class Cage {
 
     public void createSpawnPlatforms(GameMap gMap) {
         World world = gMap.getCurrentWorld();
-        for(TeamCard tCard: gMap.getTeamCards()) {
+        for (TeamCard tCard : gMap.getTeamCards()) {
             int x = tCard.getSpawn().getX();
             int y = tCard.getSpawn().getY();
             int z = tCard.getSpawn().getZ();
-            for (CoordLoc loc: bottomCoordOffsets) {
+            for (CoordLoc loc : bottomCoordOffsets) {
                 world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.GLASS);
             }
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    for (CoordLoc loc: middleCoordOffsets) {
+                    for (CoordLoc loc : middleCoordOffsets) {
                         world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.GLASS);
                     }
                 }
@@ -45,7 +44,7 @@ public abstract class Cage {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    for (CoordLoc loc: topCoordOffsets) {
+                    for (CoordLoc loc : topCoordOffsets) {
                         world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.GLASS);
                     }
                 }
@@ -67,7 +66,7 @@ public abstract class Cage {
                 if (gMap.getTeamSize() > 1 && !SkyWarsReloaded.getCfg().usePlayerGlassColors()) {
                     colors.add(new MaterialWithByte(SkyWarsReloaded.getNMS().getColorItem(SkyWarsReloaded.getCfg().getTeamMaterial(), tCard.getByte()).getType(), tCard.getByte()));
                 } else {
-                    for (PlayerCard p: tCard.getPlayerCards()) {
+                    for (PlayerCard p : tCard.getPlayerCards()) {
                         Player player = p.getPlayer();
                         if (player != null) {
                             PlayerStat pStat = PlayerStat.getPlayerStats(player);
@@ -89,13 +88,13 @@ public abstract class Cage {
                     }
                 }
 
-                for (CoordLoc loc: bottomCoordOffsets) {
+                for (CoordLoc loc : bottomCoordOffsets) {
                     setBlockColor(loc, x, y, z, world, colors.get(rand.nextInt(colors.size())));
                 }
-                for (CoordLoc loc: middleCoordOffsets) {
+                for (CoordLoc loc : middleCoordOffsets) {
                     setBlockColor(loc, x, y, z, world, colors.get(rand.nextInt(colors.size())));
                 }
-                for (CoordLoc loc: topCoordOffsets) {
+                for (CoordLoc loc : topCoordOffsets) {
                     setBlockColor(loc, x, y, z, world, colors.get(rand.nextInt(colors.size())));
                 }
                 return true;
@@ -121,30 +120,36 @@ public abstract class Cage {
                 gMap.setAllowFallDamage(SkyWarsReloaded.getCfg().allowFallDamage());
             }
         }.runTaskLater(SkyWarsReloaded.get(), 100L);
-        for(TeamCard tCard: gMap.getTeamCards()) {
-            int x = tCard.getSpawn().getX();
-            int y = tCard.getSpawn().getY();
-            int z = tCard.getSpawn().getZ();
-            for (CoordLoc loc: bottomCoordOffsets) {
-                world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
-            }
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    for (CoordLoc loc: middleCoordOffsets) {
-                        world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
-                    }
-                }
-            }.runTaskLater(SkyWarsReloaded.get(), 7L);
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    for (CoordLoc loc: topCoordOffsets) {
-                        world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
-                    }
-                }
-            }.runTaskLater(SkyWarsReloaded.get(), 14L);
+        for (TeamCard tCard : gMap.getTeamCards()) {
+            removeSpawnHousing(gMap, tCard);
         }
+    }
+
+    public void removeSpawnHousing(GameMap gMap, TeamCard tCard) {
+        World world = gMap.getCurrentWorld();
+
+        int x = tCard.getSpawn().getX();
+        int y = tCard.getSpawn().getY();
+        int z = tCard.getSpawn().getZ();
+        for (CoordLoc loc : bottomCoordOffsets) {
+            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
+        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (CoordLoc loc : middleCoordOffsets) {
+                    world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
+                }
+            }
+        }.runTaskLater(SkyWarsReloaded.get(), 7L);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (CoordLoc loc : topCoordOffsets) {
+                    world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
+                }
+            }
+        }.runTaskLater(SkyWarsReloaded.get(), 14L);
     }
 
     public CageType getType() {

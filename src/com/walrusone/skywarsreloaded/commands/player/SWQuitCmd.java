@@ -4,26 +4,22 @@ import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-public class SWQuitCmd extends BaseCmd
-{
-  public SWQuitCmd(String t)
-  {
-    type = t;
-    forcePlayer = true;
-    cmdName = "quit";
-    alias = new String[] { "q", "leave", "l" };
-    argLength = 1;
-  }
-  
-  public boolean run()
-  {
-    GameMap map = MatchManager.get().getPlayerMap(player);
-    if (map == null) {
-      return false;
+public class SWQuitCmd extends BaseCmd {
+    public SWQuitCmd(String t) {
+        type = t;
+        forcePlayer = true;
+        cmdName = "quit";
+        alias = new String[]{"q", "leave", "l"};
+        argLength = 1;
     }
-    MatchManager.get().playerLeave(player, EntityDamageEvent.DamageCause.CUSTOM, true, true, true);
-    return true;
-  }
+
+    public boolean run() {
+        GameMap map = MatchManager.get().getPlayerMap(player);
+        if (map == null) {
+            return false;
+        }
+        MatchManager.get().playerLeave(player, EntityDamageEvent.DamageCause.CUSTOM, true, true, true);
+        return true;
+    }
 }

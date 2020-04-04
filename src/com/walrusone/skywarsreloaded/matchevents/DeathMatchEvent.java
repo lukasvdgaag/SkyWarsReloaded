@@ -1,9 +1,10 @@
 package com.walrusone.skywarsreloaded.matchevents;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,11 +15,9 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.enums.MatchState;
-import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
-import com.walrusone.skywarsreloaded.utilities.Util;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
 
 public class DeathMatchEvent extends MatchEvent {
 
@@ -133,7 +132,7 @@ public class DeathMatchEvent extends MatchEvent {
             fc.set("events." + eventName + ".chance", this.chance);
             fc.set("events." + eventName + ".title", this.title);
             fc.set("events." + eventName + ".subtitle", this.subtitle);
-            fc.set("events." + eventName + ".startMessage",  this.startMessage);
+            fc.set("events." + eventName + ".startMessage", this.startMessage);
             fc.set("events." + eventName + ".endMessage", this.endMessage);
             fc.set("events." + eventName + ".announceTimer", this.announceEvent);
             fc.set("events." + eventName + ".repeatable", this.repeatable);

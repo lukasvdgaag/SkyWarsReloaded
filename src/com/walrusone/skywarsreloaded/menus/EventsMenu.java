@@ -1,8 +1,8 @@
 package com.walrusone.skywarsreloaded.menus;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.matchevents.MatchEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -11,9 +11,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.matchevents.MatchEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 class EventsMenu {
 
@@ -24,7 +23,7 @@ class EventsMenu {
         int menuSize = 27;
         Inventory inv = Bukkit.createInventory(null, menuSize + 9, menuName + gMap.getName());
         List<String> lores = new ArrayList<>();
-        for (MatchEvent event: gMap.getEvents()) {
+        for (MatchEvent event : gMap.getEvents()) {
             lores.clear();
             String part1;
             String part2;
@@ -69,8 +68,8 @@ class EventsMenu {
                 return;
             }
             MatchEvent mEvent = null;
-            for (MatchEvent e: gMap.getEvents()) {
-                if(ChatColor.translateAlternateColorCodes('&', e.getTitle()).equals(name)) {
+            for (MatchEvent e : gMap.getEvents()) {
+                if (ChatColor.translateAlternateColorCodes('&', e.getTitle()).equals(name)) {
                     mEvent = e;
                     break;
                 }

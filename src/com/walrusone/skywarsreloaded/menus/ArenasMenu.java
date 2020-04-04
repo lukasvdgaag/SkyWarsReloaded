@@ -1,8 +1,7 @@
 package com.walrusone.skywarsreloaded.menus;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.game.GameMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -10,15 +9,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.game.GameMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArenasMenu {
 
-    private static int menuSize = 27;
     private static final String menuName = ChatColor.DARK_PURPLE + "Arenas Manager";
+    private static int menuSize = 27;
 
     public ArenasMenu() {
         Inventory menu = Bukkit.createInventory(null, menuSize + 9, menuName);
@@ -27,10 +25,12 @@ public class ArenasMenu {
 
         Runnable update = () -> {
             if ((SkyWarsReloaded.getIC().hasViewers("arenasmenu"))) {
+                Bukkit.getConsoleSender().sendMessage("DEBUG #1 : Arenasmenu has viewers");
                 ArrayList<GameMap> maps = GameMap.getSortedArenas();
+                Bukkit.getConsoleSender().sendMessage("DEBUG #2 : " + maps.size() + " maps have been fetched");
                 ArrayList<Inventory> invs1 = SkyWarsReloaded.getIC().getMenu("arenasmenu").getInventories();
 
-                for (Inventory inv: invs1) {
+                for (Inventory inv : invs1) {
                     for (int i = 0; i < menuSize; i++) {
                         inv.setItem(i, new ItemStack(Material.AIR, 1));
                     }
@@ -38,9 +38,9 @@ public class ArenasMenu {
 
                 List<String> lores = new ArrayList<>();
                 int i = 0;
-                for(GameMap gMap: maps) {
+                for (GameMap gMap : maps) {
                     int index = Math.floorDiv(i, menuSize);
-                    if(invs1.isEmpty() || invs1.size() < index + 1) {
+                    if (invs1.isEmpty() || invs1.size() < index + 1) {
                         invs1.add(Bukkit.createInventory(null, menuSize + 9, menuName));
                     }
                     ItemStack item = SkyWarsReloaded.getNMS().getColorItem("WOOL", (byte) 13);
@@ -62,6 +62,7 @@ public class ArenasMenu {
                     lores.add(ChatColor.AQUA + "Number of Join Signs: " + ChatColor.GOLD + gMap.getSigns().size());
                     lores.add(ChatColor.AQUA + "Cage Type: " + ChatColor.GOLD + gMap.getCage().getType().toString());
                     invs1.get(index).setItem(i % menuSize, SkyWarsReloaded.getNMS().getItemStack(item, lores, ChatColor.DARK_PURPLE + gMap.getName()));
+                    Bukkit.getConsoleSender().sendMessage("DEBUG #3 : inv " + index + ", slot " + (i % menuSize) + " has been set to arena: " + gMap.getName());
                     i++;
                 }
             }
@@ -98,12 +99,7 @@ public class ArenasMenu {
         GameMap gMap = GameMap.getMap(name);
         if (gMap != null) {
             SkyWarsReloaded.getIC().show(player, gMap.getArenaKey());
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    gMap.updateArenaManager();
-                }
-            }.runTaskLater(SkyWarsReloaded.get(), 2);
+            gMap.updateArenaManager();
         }
     }
 

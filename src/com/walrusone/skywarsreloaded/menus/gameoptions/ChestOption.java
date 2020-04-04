@@ -61,7 +61,7 @@ public class ChestOption extends GameOption {
     private void finishEvent(GameMap gameMap, Player player, Vote vote, String type) {
         if (vote != null) {
             setVote(player, vote);
-            Bukkit.getPluginManager().callEvent(new SkyWarsVoteEvent(player,gameMap,vote));
+            Bukkit.getPluginManager().callEvent(new SkyWarsVoteEvent(player, gameMap, vote));
             updateVotes();
             Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1.0F, 1.0F);
             if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {

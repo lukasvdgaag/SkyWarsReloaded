@@ -1,15 +1,5 @@
 package com.walrusone.skywarsreloaded.menus.gameoptions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.Vote;
@@ -19,25 +9,44 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.menus.IconMenu;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public abstract class GameOption {
 
+    protected GameMap gameMap;
+    protected String key;
     ArrayList<String> itemList;
     ArrayList<Vote> voteList;
     private IconMenu iconMenu;
-    protected GameMap gameMap;
-    protected String key;
 
     protected abstract void doSlotNine(Player player);
+
     protected abstract void doSlotEleven(Player player);
+
     protected abstract void doSlotThriteen(Player player);
+
     protected abstract void doSlotFifteen(Player player);
+
     protected abstract void doSlotSeventeen(Player player);
-    public  abstract void setCard(PlayerCard pCard, Vote vote);
+
+    public abstract void setCard(PlayerCard pCard, Vote vote);
+
     public abstract Vote getVote(PlayerCard pCard);
+
     public abstract Vote getRandomVote();
+
     protected abstract void updateScoreboard();
+
     protected abstract Vote getDefault();
+
     public abstract void completeOption();
 
     void createMenu(String key, String name) {
@@ -93,14 +102,14 @@ public abstract class GameOption {
         if (!(this instanceof ChestOption) || (this instanceof ChestOption && gameMap.allowScanvenger())) {
             inv.setItem(17, SkyWarsReloaded.getIM().getItem(itemList.get(4)));
         }
-        if(this instanceof ChestOption && gameMap.allowScanvenger()) {
+        if (this instanceof ChestOption && gameMap.allowScanvenger()) {
 
         }
         updateScoreboard();
     }
 
     void setVote(Player player, Vote vote) {
-        for (PlayerCard pCard: gameMap.getPlayerCards()) {
+        for (PlayerCard pCard : gameMap.getPlayerCards()) {
             if (pCard.getUUID() != null && pCard.getUUID().equals(player.getUniqueId())) {
                 setCard(pCard, vote);
             }
@@ -108,14 +117,14 @@ public abstract class GameOption {
     }
 
     private HashMap<Vote, Integer> getVotes(boolean getRandom) {
-        HashMap <Vote, Integer> votes = new HashMap<>();
+        HashMap<Vote, Integer> votes = new HashMap<>();
         votes.put(voteList.get(0), 0);
         votes.put(voteList.get(1), 0);
         votes.put(voteList.get(2), 0);
         votes.put(voteList.get(3), 0);
         votes.put(voteList.get(4), 0);
 
-        for (PlayerCard pCard: gameMap.getPlayerCards()) {
+        for (PlayerCard pCard : gameMap.getPlayerCards()) {
             Player player = pCard.getPlayer();
             if (player != null) {
                 Vote vote = getVote(pCard);
@@ -132,9 +141,9 @@ public abstract class GameOption {
     }
 
     void updateVotes() {
-        HashMap <Vote, Integer> votes = getVotes(false);
+        HashMap<Vote, Integer> votes = getVotes(false);
 
-        for (Vote vote: votes.keySet()) {
+        for (Vote vote : votes.keySet()) {
             if (vote == voteList.get(0)) {
                 updateSlot(votes, vote, 0, 9, itemList);
             } else if (vote == voteList.get(1)) {
@@ -152,7 +161,7 @@ public abstract class GameOption {
         updateScoreboard();
     }
 
-    private void updateSlot(HashMap <Vote, Integer> votes, Vote vote, int count, int slot, ArrayList<String> itemList) {
+    private void updateSlot(HashMap<Vote, Integer> votes, Vote vote, int count, int slot, ArrayList<String> itemList) {
         ItemStack item = SkyWarsReloaded.getIM().getItem(itemList.get(count));
         item.setAmount(votes.get(vote) == 0 ? 1 : votes.get(vote));
         ItemMeta itemMeta = item.getItemMeta();
@@ -165,10 +174,10 @@ public abstract class GameOption {
     }
 
     Vote getVoted() {
-        HashMap <Vote, Integer> votes = getVotes(true);
+        HashMap<Vote, Integer> votes = getVotes(true);
         int highest = 0;
         Vote voted = null;
-        for (Vote vote: votes.keySet()) {
+        for (Vote vote : votes.keySet()) {
             if (votes.get(vote) >= highest) {
                 highest = votes.get(vote);
                 voted = vote;
@@ -181,33 +190,59 @@ public abstract class GameOption {
     }
 
     String getVoteString(Vote vote) {
-        switch(vote) {
-            case CHESTRANDOM: return new Messaging.MessageFormatter().format("items.chest-random");
-            case CHESTBASIC: return new Messaging.MessageFormatter().format("items.chest-basic");
-            case CHESTNORMAL: return new Messaging.MessageFormatter().format("items.chest-normal");
-            case CHESTOP: return new Messaging.MessageFormatter().format("items.chest-op");
-            case CHESTSCAVENGER: return new Messaging.MessageFormatter().format("items.chest-scavenger");
-            case TIMERANDOM: return new Messaging.MessageFormatter().format("items.time-random");
-            case TIMEDAWN: return new Messaging.MessageFormatter().format("items.time-dawn");
-            case TIMENOON: return new Messaging.MessageFormatter().format("items.time-noon");
-            case TIMEDUSK: return new Messaging.MessageFormatter().format("items.time-dusk");
-            case TIMEMIDNIGHT: return new Messaging.MessageFormatter().format("items.time-midnight");
-            case WEATHERRANDOM: return new Messaging.MessageFormatter().format("items.weather-random");
-            case WEATHERSUN: return new Messaging.MessageFormatter().format("items.weather-sunny");
-            case WEATHERRAIN: return new Messaging.MessageFormatter().format("items.weather-rain");
-            case WEATHERTHUNDER: return new Messaging.MessageFormatter().format("items.weather-storm");
-            case WEATHERSNOW: return new Messaging.MessageFormatter().format("items.weather-snow");
-            case MODIFIERRANDOM: return new Messaging.MessageFormatter().format("items.modifier-random");
-            case MODIFIERSPEED: return new Messaging.MessageFormatter().format("items.modifier-speed");
-            case MODIFIERJUMP: return new Messaging.MessageFormatter().format("items.modifier-jump");
-            case MODIFIERSTRENGTH: return new Messaging.MessageFormatter().format("items.modifier-strength");
-            case MODIFIERNONE: return new Messaging.MessageFormatter().format("items.modifier-none");
-            case HEALTHRANDOM: return new Messaging.MessageFormatter().format("items.health-random");
-            case HEALTHFIVE: return new Messaging.MessageFormatter().format("items.health-five");
-            case HEALTHTEN: return new Messaging.MessageFormatter().format("items.health-ten");
-            case HEALTHFIFTEEN: return new Messaging.MessageFormatter().format("items.health-fifteen");
-            case HEALTHTWENTY: return new Messaging.MessageFormatter().format("items.health-twenty");
-            default: return "";
+        switch (vote) {
+            case CHESTRANDOM:
+                return new Messaging.MessageFormatter().format("items.chest-random");
+            case CHESTBASIC:
+                return new Messaging.MessageFormatter().format("items.chest-basic");
+            case CHESTNORMAL:
+                return new Messaging.MessageFormatter().format("items.chest-normal");
+            case CHESTOP:
+                return new Messaging.MessageFormatter().format("items.chest-op");
+            case CHESTSCAVENGER:
+                return new Messaging.MessageFormatter().format("items.chest-scavenger");
+            case TIMERANDOM:
+                return new Messaging.MessageFormatter().format("items.time-random");
+            case TIMEDAWN:
+                return new Messaging.MessageFormatter().format("items.time-dawn");
+            case TIMENOON:
+                return new Messaging.MessageFormatter().format("items.time-noon");
+            case TIMEDUSK:
+                return new Messaging.MessageFormatter().format("items.time-dusk");
+            case TIMEMIDNIGHT:
+                return new Messaging.MessageFormatter().format("items.time-midnight");
+            case WEATHERRANDOM:
+                return new Messaging.MessageFormatter().format("items.weather-random");
+            case WEATHERSUN:
+                return new Messaging.MessageFormatter().format("items.weather-sunny");
+            case WEATHERRAIN:
+                return new Messaging.MessageFormatter().format("items.weather-rain");
+            case WEATHERTHUNDER:
+                return new Messaging.MessageFormatter().format("items.weather-storm");
+            case WEATHERSNOW:
+                return new Messaging.MessageFormatter().format("items.weather-snow");
+            case MODIFIERRANDOM:
+                return new Messaging.MessageFormatter().format("items.modifier-random");
+            case MODIFIERSPEED:
+                return new Messaging.MessageFormatter().format("items.modifier-speed");
+            case MODIFIERJUMP:
+                return new Messaging.MessageFormatter().format("items.modifier-jump");
+            case MODIFIERSTRENGTH:
+                return new Messaging.MessageFormatter().format("items.modifier-strength");
+            case MODIFIERNONE:
+                return new Messaging.MessageFormatter().format("items.modifier-none");
+            case HEALTHRANDOM:
+                return new Messaging.MessageFormatter().format("items.health-random");
+            case HEALTHFIVE:
+                return new Messaging.MessageFormatter().format("items.health-five");
+            case HEALTHTEN:
+                return new Messaging.MessageFormatter().format("items.health-ten");
+            case HEALTHFIFTEEN:
+                return new Messaging.MessageFormatter().format("items.health-fifteen");
+            case HEALTHTWENTY:
+                return new Messaging.MessageFormatter().format("items.health-twenty");
+            default:
+                return "";
         }
     }
 

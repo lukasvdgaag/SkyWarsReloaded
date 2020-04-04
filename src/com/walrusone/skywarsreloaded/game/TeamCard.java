@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.game;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.events.SkyWarsJoinEvent;
+import com.walrusone.skywarsreloaded.game.cages.SchematicCage;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -90,6 +91,14 @@ public class TeamCard {
                 if ((pCard.getUUID() == null) && (spawn != null)) {
                     pCard.setPlayer(player);
                     pCard.setPreElo(ps.getElo());
+
+                    if (ps.getGlassColor().startsWith("custom-")) {
+                        if (Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
+                            gMap.getCage().removeSpawnHousing(gMap, this);
+                            new SchematicCage().createSpawnPlatform(gMap, player);
+                        }
+                    }
+
                     boolean glassReader = gMap.getCage().setGlassColor(gMap, this);
                     if (glassReader) {
                         return this;
@@ -105,7 +114,7 @@ public class TeamCard {
             if (pCard.getUUID().equals(player.getUniqueId())) {
                 team.addEntry(player.getName());
                 gMap.getJoinQueue().add(pCard);
-                Bukkit.getPluginManager().callEvent(new SkyWarsJoinEvent(player,gMap));
+                Bukkit.getPluginManager().callEvent(new SkyWarsJoinEvent(player, gMap));
                 if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
                     gMap.getKitVoteOption().updateKitVotes();
                 }

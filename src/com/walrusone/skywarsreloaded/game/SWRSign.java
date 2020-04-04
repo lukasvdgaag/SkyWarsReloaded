@@ -3,19 +3,15 @@ package com.walrusone.skywarsreloaded.game;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.WallSign;
-import org.bukkit.material.Attachable;
 import org.bukkit.material.Directional;
 import org.bukkit.material.MaterialData;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class SWRSign {
@@ -27,11 +23,34 @@ public class SWRSign {
         location = loc;
     }
 
+    private static void setMaterial(GameMap gMap, Block attachedBlock) {
+        attachedBlock.getWorld().loadChunk(attachedBlock.getChunk());
+        if (gMap == null) {
+            updateBlock(attachedBlock, "blockoffline");
+        } else if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+            updateBlock(attachedBlock, "blockwaiting");
+        } else if (gMap.getMatchState().equals(MatchState.PLAYING)) {
+            updateBlock(attachedBlock, "blockplaying");
+        } else if (gMap.getMatchState().equals(MatchState.ENDING)) {
+            updateBlock(attachedBlock, "blockending");
+        } else if (gMap.getMatchState().equals(MatchState.OFFLINE)) {
+            updateBlock(attachedBlock, "blockoffline");
+        }
+    }
+
+    private static void updateBlock(Block block, String item) {
+        block.setType(SkyWarsReloaded.getIM().getItem(item).getType());
+        if ((SkyWarsReloaded.getNMS().getVersion() < 13) && (
+                (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("WOOL"))) || (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("STAINED_GLASS"))) || (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("STAINED_CLAY"))))) {
+            SkyWarsReloaded.getNMS().setBlockWithColor(block.getWorld(), block.getX(), block.getY(), block.getZ(), SkyWarsReloaded.getIM().getItem(item).getType(), SkyWarsReloaded.getIM().getItem(item).getData().getData());
+        }
+    }
+
     public Block getAttachedBlock(final Block b) {
         final MaterialData m = b.getState().getData();
         BlockFace face = BlockFace.DOWN;
         if (m instanceof Directional) {
-            face = ((Directional)m).getFacing().getOppositeFace();
+            face = ((Directional) m).getFacing().getOppositeFace();
         }
         return b.getRelative(face);
     }
@@ -45,12 +64,12 @@ public class SWRSign {
             Sign sign = (Sign) loc.getBlock().getState();
             //attachedBlock = getAttachedBlock(loc.getBlock());
 
-            if (Material.getMaterial("RED_WOOL")!=null && loc.getBlock().getType().name().contains("WALL")) {
+            if (Material.getMaterial("RED_WOOL") != null && loc.getBlock().getType().name().contains("WALL")) {
                 try {
                     Class cls = Class.forName("org.bukkit.block.Block");
                     Method method = cls.getMethod("getBlockData");
                     BlockData blockdata = (BlockData) method.invoke(loc.getBlock());
-                    attachedBlock = loc.getBlock().getRelative(((WallSign)blockdata).getFacing().getOppositeFace());
+                    attachedBlock = loc.getBlock().getRelative(((WallSign) blockdata).getFacing().getOppositeFace());
                 } catch (Exception e1) {
                     attachedBlock = loc.add(0, -1, 0).getBlock();
                 }
@@ -113,30 +132,6 @@ public class SWRSign {
             sign.update();
         }
     }
-
-    private static void setMaterial(GameMap gMap, Block attachedBlock) {
-        attachedBlock.getWorld().loadChunk(attachedBlock.getChunk());
-        if (gMap == null) {
-            updateBlock(attachedBlock, "blockoffline");
-        } else if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
-            updateBlock(attachedBlock, "blockwaiting");
-        } else if (gMap.getMatchState().equals(MatchState.PLAYING)) {
-            updateBlock(attachedBlock, "blockplaying");
-        } else if (gMap.getMatchState().equals(MatchState.ENDING)) {
-            updateBlock(attachedBlock, "blockending");
-        } else if (gMap.getMatchState().equals(MatchState.OFFLINE)) {
-            updateBlock(attachedBlock, "blockoffline");
-        }
-    }
-
-    private static void updateBlock(Block block, String item) {
-        block.setType(SkyWarsReloaded.getIM().getItem(item).getType());
-        if ((SkyWarsReloaded.getNMS().getVersion() < 13) && (
-                (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("WOOL"))) || (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("STAINED_GLASS"))) || (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("STAINED_CLAY"))))) {
-            SkyWarsReloaded.getNMS().setBlockWithColor(block.getWorld(), block.getX(), block.getY(), block.getZ(), SkyWarsReloaded.getIM().getItem(item).getType(), SkyWarsReloaded.getIM().getItem(item).getData().getData());
-        }
-    }
-
 
     public org.bukkit.Location getLocation() {
         return location;

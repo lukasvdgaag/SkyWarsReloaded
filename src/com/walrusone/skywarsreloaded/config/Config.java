@@ -1,181 +1,19 @@
 package com.walrusone.skywarsreloaded.config;
 
-import java.util.ArrayList;
+import com.google.common.collect.Lists;
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.LeaderType;
+import com.walrusone.skywarsreloaded.utilities.Util;
+import org.bukkit.Location;
+import org.bukkit.Material;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Lists;
-import org.bukkit.Location;
-import org.bukkit.Material;
-
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.enums.LeaderType;
-import com.walrusone.skywarsreloaded.utilities.Util;
-
 public class Config {
 
-    private boolean debug;
-
-    private boolean bungeeMode;
-    private boolean economyEnabled;
-    private String bungeeLobby;
-    private List<String> gameEndCommands;
-
-    private boolean resetTimerOnJoin;
-    private String resourcePack;
-    private boolean promptResource;
-
-    private int kitvotepos;
-    private boolean kitsEnabled;
-    private int votepos;
-    private boolean voteEnabled;
-    private int exitpos;
-    private int chestvotepos;
-    private boolean chestVoteEnabled;
-    private int healthvotepos;
-    private boolean healthVoteEnabled;
-    private int timevotepos;
-    private boolean timeVoteEnabled;
-    private int weathervotepos;
-    private boolean weatherVoteEnabled;
-    private int modifiervotepos;
-    private boolean modifierVoteEnabled;
-    private int particleselectslot;
-    private int projectileselectslot;
-    private int killsoundselectslot;
-    private int winsoundselectslot;
-    private int glassselectslot;
-    private int tauntselectslot;
-
-    private int leaderSize;
-    private boolean leaderSignsEnabled;
-    private boolean leaderHeadsEnabled;
-    private int leaderboardUpdateInterval;
-    private boolean eloEnabled;
-    private boolean winsEnabled;
-    private boolean lossesEnabled;
-    private boolean killsEnabled;
-    private boolean deathsEnabled;
-    private boolean xpEnabled;
-    private boolean lobbyBoardEnabled;
-    private boolean protectlobby;
-    private boolean displayPlayerExeperience;
-
-    private boolean borderEnabled;
-    private int borderSize;
-    private boolean showHealth;
-    private int winnerEco;
-    private int killerEco;
-    private int snowballDamage;
-    private int eggDamage;
-    private int winnerXP;
-    private List<String> winCommands;
-    private int killerXP;
-    private List<String> killCommands;
-    private int vip1;
-    private int vip2;
-    private int vip3;
-    private int vip4;
-    private int vip5;
-    private boolean tauntsEnabled;
-    private boolean titlesEnabled;
-    private boolean allowFallDamage;
-    private boolean kitVotingEnabled;
-    private int waitTimer;
-    private int strength;
-    private int speed;
-    private int jump;
-
-    private boolean usePlayerNames;
-    private boolean usePlayerGlassColors;
-    private String teamMaterial;
-
-    private int timeAfterMatch;
-    private boolean fireworksEnabled;
-    private int fireworksPer5Tick;
-    private int maxMapSize;
-    private Location spawn;
-    private boolean lookDirectionEnabled;
-    private boolean pressurePlate;
-    private boolean teleportOnJoin;
-    private boolean teleportOnWorldEnter;
-
-    private int maxPartySize;
-    private boolean partyEnabled;
-    private List<String> lobbyWorlds;
-
-    private int maxChest;
-    private int maxDoubleChest;
-
-    private boolean useHolograms;
-
-    private int cooldown;
-
-    private int kitMenuSize;
-    private int randPos;
-    private int noKitPos;
-    private String randMat;
-    private String noKitMat;
-
-    private boolean particlesEnabled;
-    private int ticksPerUpdate;
-
-    private boolean joinEnabled;
-    private int joinSlot;
-    private int singleSlot;
-    private int teamSlot;
-    private boolean spectateMenuEnabled;
-    private int spectateSlot;
-    private boolean optionsEnabled;
-    private int optionsSlot;
-    private boolean glassEnabled;
-    private boolean particleEnabled;
-    private boolean projectEnabled;
-    private boolean killsoundEnabled;
-    private boolean winsoundEnabled;
-    private boolean tauntsMenuEnabled;
-
-    private boolean playSounds;
-    private String countdown;
-    private String joinSound;
-    private String leaveSound;
-    private String openJoinMenu;
-    private String openSpectateMenu;
-    private String openOptionsMenu;
-    private String openGlassMenu;
-    private String openWinSoundMenu;
-    private String openKillSoundMenu;
-    private String openParticleMenu;
-    private String openProjectileMenu;
-    private String openTauntMenu;
-    private String openKitMenu;
-    private String openChestMenu;
-    private String openTimeMenu;
-    private String openWeatherMenu;
-    private String openHealthMenu;
-    private String openModifierMenu;
-    private String confirmSelection;
-    private String errorSound;
-
-    private boolean spectateEnabled;
-
-    private boolean disableCommands;
-    private List<String> enabledCommands;
-
-    private boolean disableCommandsSpectate;
-    private List<String> enabledCommandsSpectate;
-
-    private boolean useExternalChat;
-    private boolean addPrefix;
-    private boolean enableFormatter;
-    private boolean limitGameChat;
-    private boolean limitSpecChat;
-    private boolean limitLobbyChat;
-
-
-    private Map<String, String> materials = new HashMap<>();
     private final List<String> itemNames = Arrays.asList("kitvote", "votingItem",
             "exitMenuItem", "nextPageItem", "prevPageItem",
             "exitGameItem",
@@ -234,7 +72,7 @@ public class Config {
             "DRAGON_EGG",
             "STAINED_GLASS", "SHIELD");
     private final List<String> defItems8 = Arrays.asList("EYE_OF_ENDER", "COMPASS",
-            "BARRIER",  "FEATHER", "FEATHER",
+            "BARRIER", "FEATHER", "FEATHER",
             "IRON_DOOR",
             "DIAMOND", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOOD_HOE",
             "EXP_BOTTLE", "NETHER_STAR", "REDSTONE", "REDSTONE", "REDSTONE", "REDSTONE",
@@ -252,12 +90,153 @@ public class Config {
             "DIAMOND_SWORD", "NOTE_BLOCK",
             "DRAGON_EGG",
             "STAINED_GLASS", "DRAGON_EGG");
-
     private final List<String> signItems = Arrays.asList("blockoffline", "blockwaiting", "blockplaying", "blockending", "almostfull", "threefull", "halffull", "almostempty");
     private final List<String> signDef8 = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_HELMET", "GOLD_HELMET", "IRON_HELMET", "LEATHER_HELMET");
     private final List<String> signDef13 = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_HELMET", "GOLDEN_HELMET", "IRON_HELMET", "LEATHER_HELMET");
-
+    private boolean debug;
+    private boolean bungeeMode;
+    private boolean economyEnabled;
+    private String bungeeLobby;
+    private List<String> gameEndCommands;
+    private boolean resetTimerOnJoin;
+    private String resourcePack;
+    private boolean promptResource;
+    private int kitvotepos;
+    private boolean kitsEnabled;
+    private int votepos;
+    private boolean voteEnabled;
+    private int exitpos;
+    private int chestvotepos;
+    private boolean chestVoteEnabled;
+    private int healthvotepos;
+    private boolean healthVoteEnabled;
+    private int timevotepos;
+    private boolean timeVoteEnabled;
+    private int weathervotepos;
+    private boolean weatherVoteEnabled;
+    private int modifiervotepos;
+    private boolean modifierVoteEnabled;
+    private int particleselectslot;
+    private int projectileselectslot;
+    private int killsoundselectslot;
+    private int winsoundselectslot;
+    private int glassselectslot;
+    private int tauntselectslot;
+    private int leaderSize;
+    private boolean leaderSignsEnabled;
+    private boolean leaderHeadsEnabled;
+    private int leaderboardUpdateInterval;
+    private boolean eloEnabled;
+    private boolean winsEnabled;
+    private boolean lossesEnabled;
+    private boolean killsEnabled;
+    private boolean deathsEnabled;
+    private boolean xpEnabled;
+    private boolean lobbyBoardEnabled;
+    private boolean protectlobby;
+    private boolean displayPlayerExeperience;
+    private boolean borderEnabled;
+    private int borderSize;
+    private boolean showHealth;
+    private int winnerEco;
+    private int killerEco;
+    private int snowballDamage;
+    private int eggDamage;
+    private int winnerXP;
+    private List<String> winCommands;
+    private int killerXP;
+    private List<String> killCommands;
+    private int vip1;
+    private int vip2;
+    private int vip3;
+    private int vip4;
+    private int vip5;
+    private boolean tauntsEnabled;
+    private boolean titlesEnabled;
+    private boolean allowFallDamage;
+    private boolean kitVotingEnabled;
+    private int waitTimer;
+    private int strength;
+    private int speed;
+    private int jump;
+    private boolean usePlayerNames;
+    private boolean usePlayerGlassColors;
+    private String teamMaterial;
+    private int timeAfterMatch;
+    private boolean fireworksEnabled;
+    private int fireworksPer5Tick;
+    private int maxMapSize;
+    private Location spawn;
+    private boolean lookDirectionEnabled;
+    private boolean pressurePlate;
+    private boolean teleportOnJoin;
+    private boolean teleportOnWorldEnter;
+    private int maxPartySize;
+    private boolean partyEnabled;
+    private List<String> lobbyWorlds;
+    private int maxChest;
+    private int maxDoubleChest;
+    private boolean useHolograms;
+    private int cooldown;
+    private int kitMenuSize;
+    private int randPos;
+    private int noKitPos;
+    private String randMat;
+    private String noKitMat;
+    private boolean particlesEnabled;
+    private int ticksPerUpdate;
+    private boolean joinEnabled;
+    private int joinSlot;
+    private int singleSlot;
+    private int teamSlot;
+    private boolean spectateMenuEnabled;
+    private int spectateSlot;
+    private boolean optionsEnabled;
+    private int optionsSlot;
+    private boolean glassEnabled;
+    private boolean particleEnabled;
+    private boolean projectEnabled;
+    private boolean killsoundEnabled;
+    private boolean winsoundEnabled;
+    private boolean tauntsMenuEnabled;
+    private boolean playSounds;
+    private String countdown;
+    private String joinSound;
+    private String leaveSound;
+    private String openJoinMenu;
+    private String openSpectateMenu;
+    private String openOptionsMenu;
+    private String openGlassMenu;
+    private String openWinSoundMenu;
+    private String openKillSoundMenu;
+    private String openParticleMenu;
+    private String openProjectileMenu;
+    private String openTauntMenu;
+    private String openKitMenu;
+    private String openChestMenu;
+    private String openTimeMenu;
+    private String openWeatherMenu;
+    private String openHealthMenu;
+    private String openModifierMenu;
+    private String confirmSelection;
+    private String errorSound;
+    private boolean spectateEnabled;
+    private boolean disableCommands;
+    private List<String> enabledCommands;
+    private boolean disableCommandsSpectate;
+    private List<String> enabledCommandsSpectate;
+    private boolean useExternalChat;
+    private boolean addPrefix;
+    private boolean enableFormatter;
+    private boolean limitGameChat;
+    private boolean limitSpecChat;
+    private boolean limitLobbyChat;
+    private Map<String, String> materials = new HashMap<>();
     private boolean loading = false;
+
+    private boolean enableWinMessage = true;
+    private boolean enablePVPTimer = true;
+    private int PVPTimerTime = 0;
 
     public Config() {
         load();
@@ -289,6 +268,9 @@ public class Config {
             xpEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.xpLeaderboardEnabled");
             leaderboardUpdateInterval = SkyWarsReloaded.get().getConfig().getInt("leaderboards.leaderboardUpdateInterval");
 
+            enablePVPTimer = SkyWarsReloaded.get().getConfig().getBoolean("game.enablePVPTimer");
+            PVPTimerTime = SkyWarsReloaded.get().getConfig().getInt("game.PVPTimerTime");
+            enableWinMessage = SkyWarsReloaded.get().getConfig().getBoolean("game.enableWinMessage");
             borderEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.worldBorder.enabled");
             lookDirectionEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.enableLookDirection");
             borderSize = SkyWarsReloaded.get().getConfig().getInt("game.worldBorder.borderSize");
@@ -327,7 +309,7 @@ public class Config {
 
             usePlayerNames = SkyWarsReloaded.get().getConfig().getBoolean("teams.usePlayerNames");
             usePlayerGlassColors = SkyWarsReloaded.get().getConfig().getBoolean("teams.usePlayerGlassColors");
-            teamMaterial= SkyWarsReloaded.get().getConfig().getString("teams.teamCageMaterial");
+            teamMaterial = SkyWarsReloaded.get().getConfig().getString("teams.teamCageMaterial");
             if (teamMaterial == null || (!teamMaterial.equalsIgnoreCase("wool") && !teamMaterial.equalsIgnoreCase("stained_glass") && !teamMaterial.equalsIgnoreCase("banner"))) {
                 teamMaterial = "STAINED_GLASS";
             }
@@ -336,7 +318,7 @@ public class Config {
             partyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("parties.enabled");
             lobbyWorlds = SkyWarsReloaded.get().getConfig().getStringList("parties.lobbyWorlds");
 
-            maxChest =SkyWarsReloaded.get().getConfig().getInt("chests.maxItemsChest");
+            maxChest = SkyWarsReloaded.get().getConfig().getInt("chests.maxItemsChest");
             maxDoubleChest = SkyWarsReloaded.get().getConfig().getInt("chests.maxItemsDoubleChest");
 
             useHolograms = SkyWarsReloaded.get().getConfig().getBoolean("holograms.enabled");
@@ -346,10 +328,14 @@ public class Config {
             if (spawn != null) {
                 if (lobbyWorlds == null) {
                     lobbyWorlds = Lists.newArrayList();
-                }
-                if (!lobbyWorlds.contains(spawn.getWorld().getName())) {
-                    lobbyWorlds.add(spawn.getWorld().getName());
-                    requireSave = true;
+                } else {
+                    // todo remove debug
+                    String world = SkyWarsReloaded.get().getConfig().getString("spawn").split(":")[0];
+                    if (!lobbyWorlds.contains(world)) {
+                        lobbyWorlds.add(world);
+
+                        requireSave = true;
+                    }
                 }
             }
 
@@ -386,7 +372,7 @@ public class Config {
             particlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("particles.enabled");
             ticksPerUpdate = SkyWarsReloaded.get().getConfig().getInt("particles.ticksperupdate");
 
-            spectateMenuEnabled= SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.spectate");
+            spectateMenuEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.spectate");
             spectateSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.spectateSlot");
             joinEnabled = SkyWarsReloaded.get().getConfig().getBoolean("enabledMenus.join");
             joinSlot = SkyWarsReloaded.get().getConfig().getInt("enabledMenus.joinSlot");
@@ -518,6 +504,9 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("leaderboards.xpLeaderboardEnabled", xpEnabled);
         SkyWarsReloaded.get().getConfig().set("leaderboards.leaderboardUpdateInterval", leaderboardUpdateInterval);
 
+        SkyWarsReloaded.get().getConfig().set("game.enablePVPTimer", enablePVPTimer);
+        SkyWarsReloaded.get().getConfig().set("game.PVPTimerTime", PVPTimerTime);
+        SkyWarsReloaded.get().getConfig().set("game.enableWinMessage", enableWinMessage);
         SkyWarsReloaded.get().getConfig().set("game.enableLookDirection", lookDirectionEnabled);
         SkyWarsReloaded.get().getConfig().set("game.worldBorder.enabled", borderEnabled);
         SkyWarsReloaded.get().getConfig().set("game.worldBorder.borderSize", borderSize);
@@ -537,7 +526,7 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("game.vip5Multiplier", vip5);
         SkyWarsReloaded.get().getConfig().set("titles.enabled", titlesEnabled);
         SkyWarsReloaded.get().getConfig().set("game.waitTimer", waitTimer);
-        SkyWarsReloaded.get().getConfig().set("game.resetTimerOnJoin",resetTimerOnJoin);
+        SkyWarsReloaded.get().getConfig().set("game.resetTimerOnJoin", resetTimerOnJoin);
         SkyWarsReloaded.get().getConfig().set("game.timeAfterMatch", timeAfterMatch);
         SkyWarsReloaded.get().getConfig().set("fireworks.per5Ticks", fireworksPer5Tick);
         SkyWarsReloaded.get().getConfig().set("fireworks.enabled", fireworksEnabled);
@@ -650,7 +639,7 @@ public class Config {
         SkyWarsReloaded.get().getConfig().getBoolean("chat.limitSpecChatToSpec", limitSpecChat);
         SkyWarsReloaded.get().getConfig().getBoolean("chat.limitLobbyChatToLobby", limitLobbyChat);
 
-        for (String name: itemNames) {
+        for (String name : itemNames) {
             SkyWarsReloaded.get().getConfig().set("items." + name, materials.get(name));
         }
 
@@ -717,16 +706,16 @@ public class Config {
         return maxMapSize;
     }
 
+    public Location getSpawn() {
+        return spawn;
+    }
+
     public void setSpawn(Location location) {
         this.spawn = location;
         if (!lobbyWorlds.contains(spawn.getWorld().getName())) {
             lobbyWorlds.add(spawn.getWorld().getName());
             save();
         }
-    }
-
-    public Location getSpawn() {
-        return spawn;
     }
 
     public boolean bungeeMode() {
@@ -749,7 +738,13 @@ public class Config {
         return pressurePlate;
     }
 
-    public boolean resetTimerOnJoin() { return resetTimerOnJoin; }
+    public boolean resetTimerOnJoin() {
+        return resetTimerOnJoin;
+    }
+
+    public boolean enableWinMessage() {
+        return enableWinMessage;
+    }
 
     public String getCountdownSound() {
         return countdown;
@@ -1073,13 +1068,20 @@ public class Config {
 
     public boolean isTypeEnabled(LeaderType type) {
         switch (type) {
-            case ELO: return eloEnabled;
-            case WINS: return winsEnabled;
-            case LOSSES: return lossesEnabled;
-            case KILLS: return killsEnabled;
-            case DEATHS: return deathsEnabled;
-            case XP: return xpEnabled;
-            default: return false;
+            case ELO:
+                return eloEnabled;
+            case WINS:
+                return winsEnabled;
+            case LOSSES:
+                return lossesEnabled;
+            case KILLS:
+                return killsEnabled;
+            case DEATHS:
+                return deathsEnabled;
+            case XP:
+                return xpEnabled;
+            default:
+                return false;
         }
     }
 
@@ -1171,15 +1173,25 @@ public class Config {
         return limitLobbyChat;
     }
 
-    public int getSingleSlot() { return singleSlot; }
+    public int getSingleSlot() {
+        return singleSlot;
+    }
 
-    public int getTeamSlot() { return teamSlot; }
+    public int getTeamSlot() {
+        return teamSlot;
+    }
 
-    public boolean usePlayerNames() { return usePlayerNames; }
+    public boolean usePlayerNames() {
+        return usePlayerNames;
+    }
 
-    public String getTeamMaterial() {	return teamMaterial; }
+    public String getTeamMaterial() {
+        return teamMaterial;
+    }
 
-    public boolean usePlayerGlassColors() { return usePlayerGlassColors; }
+    public boolean usePlayerGlassColors() {
+        return usePlayerGlassColors;
+    }
 
     public boolean showHealth() {
         return showHealth;
@@ -1189,12 +1201,19 @@ public class Config {
         return borderSize;
     }
 
-    public boolean borderEnabled() { return borderEnabled; }
+    public boolean borderEnabled() {
+        return borderEnabled;
+    }
 
     public List<String> getGameEndCommands() {
         return gameEndCommands;
     }
 
-    public boolean getLookDirectionEnabled() { return lookDirectionEnabled; }
+    public boolean getLookDirectionEnabled() {
+        return lookDirectionEnabled;
+    }
+
+    public boolean getEnablePVPTimer() { return enablePVPTimer; }
+    public int getPVPTimerTime() { return PVPTimerTime; }
 }
 

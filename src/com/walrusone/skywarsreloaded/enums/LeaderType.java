@@ -9,7 +9,7 @@ public enum LeaderType {
     XP;
 
     public static LeaderType matchType(String string) {
-        for (LeaderType type: LeaderType.values()) {
+        for (LeaderType type : LeaderType.values()) {
             if (type.toString().equalsIgnoreCase(string)) {
                 return type;
             }

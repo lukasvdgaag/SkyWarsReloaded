@@ -1,25 +1,5 @@
 package com.walrusone.skywarsreloaded;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.UUID;
-
-import com.walrusone.skywarsreloaded.listeners.*;
-import com.walrusone.skywarsreloaded.menus.*;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -35,26 +15,34 @@ import com.walrusone.skywarsreloaded.database.Database;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
-import com.walrusone.skywarsreloaded.managers.ChestManager;
-import com.walrusone.skywarsreloaded.managers.PlayerOptionsManager;
-import com.walrusone.skywarsreloaded.managers.PlayerStat;
-import com.walrusone.skywarsreloaded.managers.ItemsManager;
-import com.walrusone.skywarsreloaded.managers.Leaderboard;
-import com.walrusone.skywarsreloaded.managers.MatchManager;
-import com.walrusone.skywarsreloaded.managers.WorldManager;
+import com.walrusone.skywarsreloaded.listeners.*;
+import com.walrusone.skywarsreloaded.managers.*;
+import com.walrusone.skywarsreloaded.menus.*;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.holograms.HoloDisUtil;
 import com.walrusone.skywarsreloaded.utilities.holograms.HologramsUtil;
 import com.walrusone.skywarsreloaded.utilities.placeholders.SWRMVdWPlaceholder;
 import com.walrusone.skywarsreloaded.utilities.placeholders.SWRPlaceholderAPI;
-
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.io.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 
     private static SkyWarsReloaded instance;
+    private static Database db;
     private ArrayList<String> useable = new ArrayList<>();
     private Messaging messaging;
     private Leaderboard leaderboard;
@@ -62,7 +50,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private ItemsManager im;
     private PlayerOptionsManager pom;
     private Config config;
-    private static Database db;
     private ChestManager cm;
     private WorldManager wm;
     private String servername;
@@ -71,7 +58,57 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private boolean loaded;
     private BukkitTask specObserver;
 
-    public boolean isNewVersion() { return true; }
+    public static SkyWarsReloaded get() {
+        return instance;
+    }
+
+    public static Messaging getMessaging() {
+        return instance.messaging;
+    }
+
+    public static Leaderboard getLB() {
+        return instance.leaderboard;
+    }
+
+    public static Config getCfg() {
+        return instance.config;
+    }
+
+    public static IconMenuController getIC() {
+        return instance.ic;
+    }
+
+    public static WorldManager getWM() {
+        return instance.wm;
+    }
+
+    public static Database getDb() {
+        return db;
+    }
+
+    public static ChestManager getCM() {
+        return instance.cm;
+    }
+
+    public static ItemsManager getIM() {
+        return instance.im;
+    }
+
+    public static NMS getNMS() {
+        return instance.nmsHandler;
+    }
+
+    public static HologramsUtil getHoloManager() {
+        return instance.hu;
+    }
+
+    public static PlayerOptionsManager getOM() {
+        return instance.pom;
+    }
+
+    public boolean isNewVersion() {
+        return true;
+    }
 
     public void onEnable() {
         loaded = false;
@@ -209,7 +246,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             if (gameMap.isEditing()) {
                 gameMap.saveMap(null);
             }
-            for (final UUID uuid: gameMap.getSpectators()) {
+            for (final UUID uuid : gameMap.getSpectators()) {
                 final Player player = getServer().getPlayer(uuid);
                 if (player != null) {
                     MatchManager.get().removeSpectator(player);
@@ -248,7 +285,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
         useable.clear();
 
-        for (LeaderType type: LeaderType.values()) {
+        for (LeaderType type : LeaderType.values()) {
             if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
                 useable.add(type.toString());
             }
@@ -309,34 +346,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         loaded = true;
     }
 
-    public static SkyWarsReloaded get() {
-        return instance;
-    }
-
-    public static Messaging getMessaging() {
-        return instance.messaging;
-    }
-
-    public static Leaderboard getLB() {
-        return instance.leaderboard;
-    }
-
-    public static Config getCfg() {
-        return instance.config;
-    }
-
-    public static IconMenuController getIC() {
-        return instance.ic;
-    }
-
-    public static WorldManager getWM() {
-        return instance.wm;
-    }
-
-    public static Database getDb() {
-        return db;
-    }
-
     private void getFWDatabase() {
         try {
             db = new Database();
@@ -348,14 +357,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public static ChestManager getCM() {
-        return instance.cm;
-    }
-
-    public static ItemsManager getIM() {
-        return instance.im;
     }
 
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
@@ -414,7 +415,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
         DataOutputStream msgout = new DataOutputStream(msgbytes);
         try {
-            for (String msg: messages) {
+            for (String msg : messages) {
                 msgout.writeUTF(msg);
             }
         } catch (IOException e) {
@@ -430,10 +431,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         return servername;
     }
 
-    public static NMS getNMS() {
-        return instance.nmsHandler;
-    }
-
     public ArrayList<String> getUseable() {
         return useable;
     }
@@ -444,14 +441,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
     public boolean serverLoaded() {
         return loaded;
-    }
-
-    public static HologramsUtil getHoloManager() {
-        return instance.hu;
-    }
-
-    public static PlayerOptionsManager getOM() {
-        return instance.pom;
     }
 
 }
