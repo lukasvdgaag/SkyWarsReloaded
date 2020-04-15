@@ -92,16 +92,25 @@ public class TeamCard {
                     pCard.setPlayer(player);
                     pCard.setPreElo(ps.getElo());
 
-                    if (ps.getGlassColor().startsWith("custom-")) {
+                    String cageName = ps.getGlassColor();
+                    // todo check this is beta
+                    if (cageName.startsWith("custom-")) {
                         if (Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
-                            gMap.getCage().removeSpawnHousing(gMap, this);
-                            new SchematicCage().createSpawnPlatform(gMap, player);
+                            //cage.removeSpawnHousing(this, reserved,false);
+                            Bukkit.getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {
+                                boolean b = new SchematicCage().createSpawnPlatform(gMap, player);
+                                if (!b) {
+                                    gMap.getCage().setGlassColor(gMap, this);
+                                }
+                            }, 10L);
+                            return this;
                         }
                     }
-
-                    boolean glassReader = gMap.getCage().setGlassColor(gMap, this);
-                    if (glassReader) {
-                        return this;
+                    else {
+                        boolean glassReader = gMap.getCage().setGlassColor(gMap, this);
+                        if (glassReader) {
+                            return this;
+                        }
                     }
                 }
             }

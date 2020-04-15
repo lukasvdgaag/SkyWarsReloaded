@@ -9,6 +9,7 @@ import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.playeroptions.GlassColorOption;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -120,36 +121,41 @@ public abstract class Cage {
                 gMap.setAllowFallDamage(SkyWarsReloaded.getCfg().allowFallDamage());
             }
         }.runTaskLater(SkyWarsReloaded.get(), 100L);
+        SchematicCage scage = new SchematicCage();
         for (TeamCard tCard : gMap.getTeamCards()) {
-            removeSpawnHousing(gMap, tCard);
+            Bukkit.getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {
+                removeSpawnHousing(gMap, tCard, true);
+            }, 10L);
+
         }
     }
 
-    public void removeSpawnHousing(GameMap gMap, TeamCard tCard) {
+    public void removeSpawnHousing(GameMap gMap, TeamCard tCard, boolean gameStarted) {
+        if (gameStarted) {
+            if (gMap.getTeamSize() == 1) {
+                // todo test this
+                new SchematicCage().removeSpawnPlatform(gMap, tCard.getPlayerCards().get(0).getPlayer());
+            }
+        }
+
+
         World world = gMap.getCurrentWorld();
 
         int x = tCard.getSpawn().getX();
         int y = tCard.getSpawn().getY();
         int z = tCard.getSpawn().getZ();
-        for (CoordLoc loc : bottomCoordOffsets) {
-            world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
-        }
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (CoordLoc loc : middleCoordOffsets) {
-                    world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
-                }
+
+        Bukkit.getScheduler().runTask(SkyWarsReloaded.get(), () -> {
+            for (CoordLoc loc : bottomCoordOffsets) {
+                world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
             }
-        }.runTaskLater(SkyWarsReloaded.get(), 7L);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (CoordLoc loc : topCoordOffsets) {
-                    world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
-                }
+            for (CoordLoc loc : middleCoordOffsets) {
+                world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
             }
-        }.runTaskLater(SkyWarsReloaded.get(), 14L);
+            for (CoordLoc loc : topCoordOffsets) {
+                world.getBlockAt(x + loc.getX(), y + loc.getY(), z + loc.getZ()).setType(Material.AIR);
+            }
+        });
     }
 
     public CageType getType() {

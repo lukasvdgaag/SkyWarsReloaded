@@ -5,6 +5,7 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -12,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -39,6 +41,27 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         v2.setDeathMessage("");
 
         MatchManager.get().playerLeave(player, dCause, false, true, true);
+    }
+
+    @EventHandler
+    public void onQuickDeath(PlayerMoveEvent e) {
+        GameMap gameMap = MatchManager.get().getPlayerMap(e.getPlayer());
+
+        if (gameMap == null) {
+            return;
+        }
+
+        if (e.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
+            if (SkyWarsReloaded.getCfg().getEnableQuickDeath()) {
+                if (e.getTo().getY() <= SkyWarsReloaded.getCfg().getPVPTimerTime()) {
+                    EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.CUSTOM;
+                    if (e.getPlayer().getLastDamageCause() != null) {
+                        damageCause = e.getPlayer().getLastDamageCause().getCause();
+                    }
+                    MatchManager.get().playerLeave(e.getPlayer(), damageCause, false, true, true);
+                }
+            }
+        }
     }
 
     @EventHandler

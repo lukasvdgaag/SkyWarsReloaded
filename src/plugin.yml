@@ -5,7 +5,7 @@ api-version: 1.13
 author: Walrusone
 authors:
   - GaagjesCraft Network Team (GCNT)
-softdepend: [Vault, PlaceholderAPI, MVdWPlaceholderAPI, HolographicDisplays, Multiverse-Core, PerWorldInventory, Skywars-Extension]
+softdepend: [Vault, PlaceholderAPI, MVdWPlaceholderAPI, HolographicDisplays, Multiverse-Core, PerWorldInventory, Skywars-Extension, WorldEdit]
 
 commands:
   skywars:

@@ -89,8 +89,8 @@ public class LobbyListener implements org.bukkit.event.Listener {
                         if (SkyWarsReloaded.get().getUseable().contains(lines[1].toUpperCase())) {
                             LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
                             if (Util.get().isInteger(lines[2])) {
-                                if (Integer.valueOf(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {
-                                    SkyWarsReloaded.getLB().addLeaderSign(Integer.valueOf(lines[2]), type, signLocation);
+                                if (Integer.parseInt(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {
+                                    SkyWarsReloaded.getLB().addLeaderSign(Integer.parseInt(lines[2]), type, signLocation);
                                     event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.addedleader"));
                                 } else {
                                     event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-range"));
@@ -203,8 +203,8 @@ public class LobbyListener implements org.bukkit.event.Listener {
                         player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join"));
                     }
                 } else {
-                    e.getPlayer().sendMessage(org.bukkit.ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
-                    SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SWR SETSPAWN BEFORE STARTING A GAME");
+                    e.getPlayer().sendMessage(org.bukkit.ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SW SETSPAWN BEFORE STARTING A GAME");
+                    SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SW SETSPAWN BEFORE STARTING A GAME");
                 }
             }
         }

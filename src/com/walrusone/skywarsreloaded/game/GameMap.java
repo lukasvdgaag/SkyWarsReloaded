@@ -544,15 +544,6 @@ public class GameMap {
                 }
             }
             if (reserved != null) {
-                String cageName = ps.getGlassColor();
-                // todo check this is beta
-                if (cageName.startsWith("custom-")) {
-                    if (Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
-                        cage.removeSpawnHousing(this, reserved);
-                        new SchematicCage().createSpawnPlatform(this, player);
-                    }
-                }
-
                 result = reserved.joinGame(player);
             }
             this.update();
@@ -1003,7 +994,15 @@ public class GameMap {
                 wb.setCenter(teamCards.get(0).getSpawn().getX(), teamCards.get(0).getSpawn().getZ());
                 wb.setSize(SkyWarsReloaded.getCfg().getBorderSize());
             }
-            cage.createSpawnPlatforms(this);
+            if (teamSize>1) {
+                // todo test this
+                cage.createSpawnPlatforms(this);
+            }
+            else {
+                for (TeamCard tc : getTeamCards()) {
+                    getCurrentWorld().getBlockAt(tc.getSpawn().getX(),tc.getSpawn().getY(),tc.getSpawn().getZ()).setType(Material.AIR);
+                }
+            }
         }
     }
 

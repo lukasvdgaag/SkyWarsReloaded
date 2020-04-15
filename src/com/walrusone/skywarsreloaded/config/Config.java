@@ -237,6 +237,9 @@ public class Config {
     private boolean enableWinMessage = true;
     private boolean enablePVPTimer = true;
     private int PVPTimerTime = 0;
+    private boolean enableQuickDeath = true;
+    private int quickDeathY = 0;
+    private boolean kickOnWorldTeleport = true;
 
     public Config() {
         load();
@@ -268,6 +271,9 @@ public class Config {
             xpEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.xpLeaderboardEnabled");
             leaderboardUpdateInterval = SkyWarsReloaded.get().getConfig().getInt("leaderboards.leaderboardUpdateInterval");
 
+            kickOnWorldTeleport = SkyWarsReloaded.get().getConfig().getBoolean("game.kickOnWorldTeleport");
+            enableQuickDeath = SkyWarsReloaded.get().getConfig().getBoolean("game.enableQuickDeath");
+            quickDeathY = SkyWarsReloaded.get().getConfig().getInt("game.quickDeathY");
             enablePVPTimer = SkyWarsReloaded.get().getConfig().getBoolean("game.enablePVPTimer");
             PVPTimerTime = SkyWarsReloaded.get().getConfig().getInt("game.PVPTimerTime");
             enableWinMessage = SkyWarsReloaded.get().getConfig().getBoolean("game.enableWinMessage");
@@ -504,6 +510,9 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("leaderboards.xpLeaderboardEnabled", xpEnabled);
         SkyWarsReloaded.get().getConfig().set("leaderboards.leaderboardUpdateInterval", leaderboardUpdateInterval);
 
+        SkyWarsReloaded.get().getConfig().set("game.kickOnWorldTeleport", kickOnWorldTeleport);
+        SkyWarsReloaded.get().getConfig().set("game.enableQuickDeath", enableQuickDeath);
+        SkyWarsReloaded.get().getConfig().set("game.quickDeathY", quickDeathY);
         SkyWarsReloaded.get().getConfig().set("game.enablePVPTimer", enablePVPTimer);
         SkyWarsReloaded.get().getConfig().set("game.PVPTimerTime", PVPTimerTime);
         SkyWarsReloaded.get().getConfig().set("game.enableWinMessage", enableWinMessage);
@@ -1215,5 +1224,11 @@ public class Config {
 
     public boolean getEnablePVPTimer() { return enablePVPTimer; }
     public int getPVPTimerTime() { return PVPTimerTime; }
+
+    public boolean getEnableQuickDeath() { return enableQuickDeath; }
+    public int getQuickDeathY() { return quickDeathY; }
+
+    public boolean getKickOnWorldTeleport() { return kickOnWorldTeleport; }
+
 }
 

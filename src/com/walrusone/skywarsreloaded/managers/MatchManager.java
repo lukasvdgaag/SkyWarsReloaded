@@ -720,6 +720,20 @@ public class MatchManager {
                 prepareSpectateInv(spec, gameMap);
             }
         } else {
+            if (gameMap.getMatchState() == MatchState.WAITINGSTART) {
+                PlayerStat ps = PlayerStat.getPlayerStats(player);
+                if (ps != null) {
+                    String cageName = ps.getGlassColor();
+                    // todo check this is beta
+                    if (cageName.startsWith("custom-")) {
+                        new SchematicCage().removeSpawnPlatform(gameMap, player);
+                    }
+                    else {
+                        gameMap.getCage().removeSpawnHousing(gameMap, gameMap.getTeamCard(player),false);
+                    }
+                }
+            }
+
             gameMap.removePlayer(playerUuid);
             Bukkit.getPluginManager().callEvent(new SkyWarsLeaveEvent(player, gameMap));
 
@@ -746,15 +760,6 @@ public class MatchManager {
             if (playerData != null) {
                 playerData.restore(playerQuit);
                 PlayerData.getPlayerData().remove(playerData);
-            }
-
-            PlayerStat ps = PlayerStat.getPlayerStats(player);
-            if (ps != null) {
-                String cageName = ps.getGlassColor();
-                // todo check this is beta
-                if (cageName.startsWith("custom-")) {
-                    new SchematicCage().removeSpawnPlatform(gameMap, player);
-                }
             }
 
         }

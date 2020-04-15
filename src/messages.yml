@@ -110,6 +110,7 @@ error:
   map-not-editing: '&cYou must be in a editable map to use this command!'
   map-fail-load: '&cSkyWars could not load that map!'
   map-not-registered: '&cSkyWars could not register that map!'
+  map-failed-to-register: '&cSkyWars could not register that map. Check the console for more information. If you see this message, it''s most likely that the map does not have at least 2 player spawns. If you already set these spawns, please set them again.'
   map-register-is-it-saved: '&cSkyWars could not register that map! Is it saved?'
   map-register-not-exist: '&cSkyWars could not register that map! Is does not exist!'
   map-not-in-edit: '&cThat map is not currently being edited! Make sure you used the correct name for saving!'

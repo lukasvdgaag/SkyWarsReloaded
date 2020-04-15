@@ -6,6 +6,7 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
@@ -18,6 +19,7 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
     public void onPlayerTeleport(PlayerTeleportEvent a1) {
         Player player = a1.getPlayer();
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
+        
         if (gameMap == null) {
             if (SkyWarsReloaded.getCfg().getSpawn() != null) {
                 if ((!a1.getFrom().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) && (a1.getTo().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld()))) {
@@ -65,7 +67,17 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
         GameMap g = MatchManager.get().getPlayerMap(e.getPlayer());
         if (g != null) {
             if (!e.getTo().getWorld().getName().equals(g.getCurrentWorld().getName())) {
-                e.setCancelled(true);
+                if (SkyWarsReloaded.getCfg().getKickOnWorldTeleport()) {
+                    Player player = e.getPlayer();
+                    EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.CUSTOM;
+                    if (player.getLastDamageCause() != null) {
+                        damageCause = player.getLastDamageCause().getCause();
+                    }
+                    MatchManager.get().playerLeave(player, damageCause, true, true, true);
+                }
+                else {
+                    e.setCancelled(true);
+                }
             }
         }
     }

@@ -168,6 +168,9 @@ public class PlayerInteractListener implements Listener {
                     boolean joined;
                     for (GameMap gMap : GameMap.getMaps()) {
                         if (gMap.hasSign(loc) && gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+                            if (player.hasPermission("sw.signs") && player.isSneaking()) {
+                                return;
+                            }
                             Party party = Party.getParty(player);
                             if (party != null) {
                                 if (party.getLeader().equals(player.getUniqueId())) {

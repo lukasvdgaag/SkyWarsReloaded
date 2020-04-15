@@ -1,5 +1,13 @@
 # version: 4.3.3
 ADDED pvp wait timer after cages opened.
+ADDED schematic cages for solo games.
+ADDED quick death.
+ADDED kick on world teleport option. If a player teleports out of an arena, they get kicked from the game.
+    This could be useful if you have a command such as '/hub' which teleports the player to the hub without kicking them from the game.
+FIXED not being able to die in the void when fallDamage was disabled.
+FIXED not being able to remove a join sign because you joined when u tried to do it.
+FIXED map failed to register message not being shown in the chat.
+
 
 # version: 4.3.2
 FIXED arenas menu being empty
