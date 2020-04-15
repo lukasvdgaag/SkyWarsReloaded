@@ -173,24 +173,26 @@ public class ChestManager {
             int added = 0;
             Collections.shuffle(randomLoc);
             Collections.shuffle(randomDLoc);
-            for (int chance : fill.keySet()) {
-                for (ItemStack item : fill.get(chance)) {
-                    if (item != null && !item.getType().equals(Material.AIR)) {
-                        if (chest instanceof Chest) {
-                            if (random.nextInt(100) + 1 <= chance) {
-                                inventory.setItem(randomLoc.get(added), item);
-                                added++;
-                                if (added >= inventory.getSize() - 1 || added >= SkyWarsReloaded.getCfg().getMaxChest()) {
-                                    break;
+            adding: {
+                for (int chance : fill.keySet()) {
+                    for (ItemStack item : fill.get(chance)) {
+                        if (item != null && !item.getType().equals(Material.AIR)) {
+                            if (chest instanceof Chest) {
+                                if (random.nextInt(100) + 1 <= chance) {
+                                    inventory.setItem(randomLoc.get(added), item);
+                                    added++;
+                                    if (added >= inventory.getSize() - 1 || added >= SkyWarsReloaded.getCfg().getMaxChest()) {
+                                        break adding;
+                                    }
                                 }
                             }
-                        }
-                        if (chest instanceof DoubleChest) {
-                            if (random.nextInt(100) + 1 <= chance) {
-                                inventory.setItem(randomDLoc.get(added), item);
-                                added++;
-                                if (added >= inventory.getSize() - 1 || added >= SkyWarsReloaded.getCfg().getMaxDoubleChest()) {
-                                    break;
+                            if (chest instanceof DoubleChest) {
+                                if (random.nextInt(100) + 1 <= chance) {
+                                    inventory.setItem(randomDLoc.get(added), item);
+                                    added++;
+                                    if (added >= inventory.getSize() - 1 || added >= SkyWarsReloaded.getCfg().getMaxDoubleChest()) {
+                                        break adding;
+                                    }
                                 }
                             }
                         }
