@@ -13,7 +13,7 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerCard;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.game.TeamCard;
-import com.walrusone.skywarsreloaded.game.cages.SchematicCage;
+import com.walrusone.skywarsreloaded.game.cages.schematics.SchematicCage;
 import com.walrusone.skywarsreloaded.matchevents.MatchEvent;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
@@ -34,7 +34,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import sun.applet.Main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,11 +155,13 @@ public class MatchManager {
             player.teleport(newSpawn, TeleportCause.END_PORTAL);
 
             if (SkyWarsReloaded.getCfg().getLookDirectionEnabled()) {
-                CoordLoc a = gameMap.getLookDirection();
-                Location b = new Location(gameMap.getCurrentWorld(), a.getX(), a.getY(), a.getZ());
-                Vector v = b.clone().subtract(player.getEyeLocation()).toVector();
-                Location l = player.getLocation().setDirection(v);
-                player.teleport(l, TeleportCause.END_PORTAL);
+                if (gameMap.getCurrentWorld() == player.getWorld()) {
+                    CoordLoc a = gameMap.getLookDirection();
+                    Location b = new Location(gameMap.getCurrentWorld(), a.getX(), a.getY(), a.getZ());
+                    Vector v = b.clone().subtract(player.getEyeLocation()).toVector();
+                    Location l = player.getLocation().setDirection(v);
+                    player.teleport(l, TeleportCause.END_PORTAL);
+                }
             }
 
             player.setGameMode(GameMode.ADVENTURE);
@@ -365,16 +366,15 @@ public class MatchManager {
                         if (!SkyWarsReloaded.getMessaging().getFile().getString("game.pvp-timer-disabled-title").isEmpty()) {
                             String[] lines = new Messaging.MessageFormatter().setVariable("{player}", player.getName()).setVariable("{arena}", gameMap.getName()).format("game.pvp-timer-disabled-title").split("\\\\n");
                             if (lines.length == 1) {
-                                SkyWarsReloaded.getNMS().sendTitle(player,20,50,20,lines[0],"");
-                            }
-                            else {
-                                SkyWarsReloaded.getNMS().sendTitle(player,20,50,20,lines[0],lines[1]);
+                                SkyWarsReloaded.getNMS().sendTitle(player, 20, 50, 20, lines[0], "");
+                            } else {
+                                SkyWarsReloaded.getNMS().sendTitle(player, 20, 50, 20, lines[0], lines[1]);
                             }
                         }
                     }
                     // todo send title and message
                 }
-            }, 20*SkyWarsReloaded.getCfg().getPVPTimerTime());
+            }, 20 * SkyWarsReloaded.getCfg().getPVPTimerTime());
         }
     }
 
@@ -727,9 +727,8 @@ public class MatchManager {
                     // todo check this is beta
                     if (cageName.startsWith("custom-")) {
                         new SchematicCage().removeSpawnPlatform(gameMap, player);
-                    }
-                    else {
-                        gameMap.getCage().removeSpawnHousing(gameMap, gameMap.getTeamCard(player),false);
+                    } else {
+                        gameMap.getCage().removeSpawnHousing(gameMap, gameMap.getTeamCard(player), false);
                     }
                 }
             }

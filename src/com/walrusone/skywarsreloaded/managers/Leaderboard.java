@@ -92,10 +92,10 @@ public class Leaderboard {
     }
 
     private void getSigns(LeaderType type) {
-        File leaderboardsFile = new File(SkyWarsReloaded.get().getDataFolder(), "leaderboards.yml");
+        File leaderboardsFile = new File(SkyWarsReloaded.get().getDataFolder(), "src/leaderboards.yml");
 
         if (!leaderboardsFile.exists()) {
-            SkyWarsReloaded.get().saveResource("leaderboards.yml", false);
+            SkyWarsReloaded.get().saveResource("src/leaderboards.yml", false);
         }
 
         if (leaderboardsFile.exists()) {
@@ -116,10 +116,10 @@ public class Leaderboard {
     }
 
     private void saveSigns(LeaderType type) {
-        File leaderboardsFile = new File(SkyWarsReloaded.get().getDataFolder(), "leaderboards.yml");
+        File leaderboardsFile = new File(SkyWarsReloaded.get().getDataFolder(), "src/leaderboards.yml");
 
         if (!leaderboardsFile.exists()) {
-            SkyWarsReloaded.get().saveResource("leaderboards.yml", false);
+            SkyWarsReloaded.get().saveResource("src/leaderboards.yml", false);
         }
 
         if (leaderboardsFile.exists()) {

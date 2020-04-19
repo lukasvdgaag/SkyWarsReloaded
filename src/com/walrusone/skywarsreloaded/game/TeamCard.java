@@ -2,7 +2,7 @@ package com.walrusone.skywarsreloaded.game;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.events.SkyWarsJoinEvent;
-import com.walrusone.skywarsreloaded.game.cages.SchematicCage;
+import com.walrusone.skywarsreloaded.game.cages.schematics.SchematicCage;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -105,8 +105,7 @@ public class TeamCard {
                             }, 10L);
                             return this;
                         }
-                    }
-                    else {
+                    } else {
                         boolean glassReader = gMap.getCage().setGlassColor(gMap, this);
                         if (glassReader) {
                             return this;

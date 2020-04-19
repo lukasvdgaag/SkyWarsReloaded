@@ -11,8 +11,6 @@ import com.sk89q.worldedit.schematic.MCEditSchematicFormat;
 import com.sk89q.worldedit.world.DataException;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.game.TeamCard;
-import com.walrusone.skywarsreloaded.game.cages.SchematicCage;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -30,7 +28,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
 
 public class ChatListener implements Listener {
 
@@ -106,7 +106,7 @@ public class ChatListener implements Listener {
                 } catch (MaxChangedBlocksException | DataException | IOException e) {
                     e.printStackTrace();
                 }
-            },20L);
+            }, 20L);
 
         }
 

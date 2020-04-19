@@ -162,30 +162,30 @@ public class PlayerInteractListener implements Listener {
                         }
                     }
                 }
-                Player player = a1.getPlayer();
-                if (a1.getClickedBlock() != null && a1.getClickedBlock().getType().toString().toUpperCase().contains("SIGN")) {
-                    Location loc = a1.getClickedBlock().getLocation();
-                    boolean joined;
-                    for (GameMap gMap : GameMap.getMaps()) {
-                        if (gMap.hasSign(loc) && gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
-                            if (player.hasPermission("sw.signs") && player.isSneaking()) {
-                                return;
-                            }
-                            Party party = Party.getParty(player);
-                            if (party != null) {
-                                if (party.getLeader().equals(player.getUniqueId())) {
-                                    joined = gMap.addPlayers(null, party);
-                                    if (!joined) {
-                                        player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
-                                    }
-                                } else {
-                                    player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
-                                }
-                            } else {
-                                joined = gMap.addPlayers(null, player);
+            }
+            Player player = a1.getPlayer();
+            if (a1.getClickedBlock() != null && a1.getClickedBlock().getType().toString().toUpperCase().contains("SIGN")) {
+                Location loc = a1.getClickedBlock().getLocation();
+                boolean joined;
+                for (GameMap gMap : GameMap.getMaps()) {
+                    if (gMap.hasSign(loc) && gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+                        if (player.hasPermission("sw.signs") && player.isSneaking()) {
+                            return;
+                        }
+                        Party party = Party.getParty(player);
+                        if (party != null) {
+                            if (party.getLeader().equals(player.getUniqueId())) {
+                                joined = gMap.addPlayers(null, party);
                                 if (!joined) {
                                     player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
                                 }
+                            } else {
+                                player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
+                            }
+                        } else {
+                            joined = gMap.addPlayers(null, player);
+                            if (!joined) {
+                                player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
                             }
                         }
                     }
@@ -267,7 +267,7 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
             }
-        } else if (inView.getTitle().contains("chest.yml")) {
+        } else if (inView.getTitle().contains("src/chest.yml")) {
             SkyWarsReloaded.getCM().save(inView.getTitle());
         }
 

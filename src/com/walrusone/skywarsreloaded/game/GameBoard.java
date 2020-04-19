@@ -38,7 +38,7 @@ public class GameBoard {
 
     private void setupFormats(String board) {
         Pattern PATTERN = Pattern.compile("(?i)(\\{[a-z0-9_]+})");
-        File storageFile = new File(SkyWarsReloaded.get().getDataFolder(), "messages.yml");
+        File storageFile = new File(SkyWarsReloaded.get().getDataFolder(), "src/messages.yml");
         FileConfiguration storage = YamlConfiguration.loadConfiguration(storageFile);
         for (int i = 1; i < 17; i++) {
             String message = storage.getString("scoreboards." + board + ".line" + i);

@@ -36,13 +36,13 @@ public class ChestManager {
 
 
     public ChestManager() {
-        load(chestItemList, "chest.yml");
-        load(opChestItemList, "opchest.yml");
-        load(basicChestItemList, "basicchest.yml");
-        load(centerChestItemList, "centerchest.yml");
-        load(opCenterChestItemList, "opcenterchest.yml");
-        load(basicCenterChestItemList, "basiccenterchest.yml");
-        load(crateItemList, "crates.yml");
+        load(chestItemList, "src/chest.yml");
+        load(opChestItemList, "src/opchest.yml");
+        load(basicChestItemList, "src/basicchest.yml");
+        load(centerChestItemList, "src/centerchest.yml");
+        load(opCenterChestItemList, "src/opcenterchest.yml");
+        load(basicCenterChestItemList, "src/basiccenterchest.yml");
+        load(crateItemList, "src/crates.yml");
         for (int i = 0; i < 27; i++) {
             randomLoc.add(i);
         }
@@ -173,7 +173,8 @@ public class ChestManager {
             int added = 0;
             Collections.shuffle(randomLoc);
             Collections.shuffle(randomDLoc);
-            adding: {
+            adding:
+            {
                 for (int chance : fill.keySet()) {
                     for (ItemStack item : fill.get(chance)) {
                         if (item != null && !item.getType().equals(Material.AIR)) {
@@ -235,32 +236,32 @@ public class ChestManager {
 
     private String getFileName(ChestType ct) {
         if (ct == ChestType.BASIC) {
-            return "basicchest.yml";
+            return "src/basicchest.yml";
         } else if (ct == ChestType.BASICCENTER) {
-            return "basiccenterchest.yml";
+            return "src/basiccenterchest.yml";
         } else if (ct == ChestType.OP) {
-            return "opchest.yml";
+            return "src/opchest.yml";
         } else if (ct == ChestType.OPCENTER) {
-            return "opcenterchest.yml";
+            return "src/opcenterchest.yml";
         } else if (ct == ChestType.NORMALCENTER) {
-            return "centerchest.yml";
+            return "src/centerchest.yml";
         } else {
-            return "chest.yml";
+            return "src/chest.yml";
         }
     }
 
     private ChestType getChestType(String fileName) {
-        if (fileName.equalsIgnoreCase("basicchest.yml")) {
+        if (fileName.equalsIgnoreCase("src/basicchest.yml")) {
             return ChestType.BASIC;
-        } else if (fileName.equalsIgnoreCase("basiccenterchest.yml")) {
+        } else if (fileName.equalsIgnoreCase("src/basiccenterchest.yml")) {
             return ChestType.BASICCENTER;
-        } else if (fileName.equalsIgnoreCase("opchest.yml")) {
+        } else if (fileName.equalsIgnoreCase("src/opchest.yml")) {
             return ChestType.OP;
-        } else if (fileName.equalsIgnoreCase("opcenterchest.yml")) {
+        } else if (fileName.equalsIgnoreCase("src/opcenterchest.yml")) {
             return ChestType.OPCENTER;
-        } else if (fileName.equalsIgnoreCase("centerchest.yml")) {
+        } else if (fileName.equalsIgnoreCase("src/centerchest.yml")) {
             return ChestType.NORMALCENTER;
-        } else if (fileName.equalsIgnoreCase("chest.yml")) {
+        } else if (fileName.equalsIgnoreCase("src/chest.yml")) {
             return ChestType.NORMAL;
         }
         return null;

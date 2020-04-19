@@ -52,7 +52,7 @@ public class TauntOption extends PlayerOption {
         SkyWarsReloaded.get().saveResource(filename, false);
         File sf = new File(SkyWarsReloaded.get().getDataFolder(), filename);
         if (sf.exists()) {
-            boolean result = sf.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "taunts.yml"));
+            boolean result = sf.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "src/taunts.yml"));
             if (!result) {
                 SkyWarsReloaded.get().getLogger().info("Failed to rename Taunts File");
             }
@@ -61,15 +61,15 @@ public class TauntOption extends PlayerOption {
 
     public static void loadPlayerOptions() {
         playerOptions.clear();
-        File tauntFile = new File(SkyWarsReloaded.get().getDataFolder(), "taunts.yml");
+        File tauntFile = new File(SkyWarsReloaded.get().getDataFolder(), "src/taunts.yml");
 
         if (!tauntFile.exists()) {
             if (SkyWarsReloaded.getNMS().getVersion() < 9) {
-                saveTauntFile("taunts18.yml");
+                saveTauntFile("src/taunts18.yml");
             } else if (SkyWarsReloaded.getNMS().getVersion() < 13 && SkyWarsReloaded.getNMS().getVersion() > 8) {
-                saveTauntFile("taunts112.yml");
+                saveTauntFile("src/taunts112.yml");
             } else {
-                SkyWarsReloaded.get().saveResource("taunts.yml", false);
+                SkyWarsReloaded.get().saveResource("src/taunts.yml", false);
             }
         }
 

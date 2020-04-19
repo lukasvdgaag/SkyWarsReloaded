@@ -12,6 +12,7 @@ public class SkyWarsDeathEvent extends Event {
     private Player player;
     private GameMap map;
     private EntityDamageEvent.DamageCause cause;
+
     public SkyWarsDeathEvent(Player p, EntityDamageEvent.DamageCause cause, GameMap game) {
         this.player = p;
         this.map = game;

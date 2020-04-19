@@ -11,6 +11,7 @@ public class SkyWarsKillEvent extends Event {
     private Player killer;
     private Player killed;
     private GameMap map;
+
     public SkyWarsKillEvent(Player killer, Player killed, GameMap game) {
         this.killed = killed;
         this.killer = killer;

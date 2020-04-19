@@ -137,8 +137,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         if (nmsHandler.getVersion() < 9) {
             File config = new File(SkyWarsReloaded.get().getDataFolder(), "config.yml");
             if (!config.exists()) {
-                SkyWarsReloaded.get().saveResource("config18.yml", false);
-                config = new File(SkyWarsReloaded.get().getDataFolder(), "config18.yml");
+                SkyWarsReloaded.get().saveResource("src/config18.yml", false);
+                config = new File(SkyWarsReloaded.get().getDataFolder(), "src/config18.yml");
                 if (config.exists()) {
                     boolean result = config.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "config.yml"));
                     if (result) {
@@ -149,8 +149,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         } else if (nmsHandler.getVersion() < 13 && nmsHandler.getVersion() > 8) {
             File config = new File(SkyWarsReloaded.get().getDataFolder(), "config.yml");
             if (!config.exists()) {
-                SkyWarsReloaded.get().saveResource("config112.yml", false);
-                config = new File(SkyWarsReloaded.get().getDataFolder(), "config112.yml");
+                SkyWarsReloaded.get().saveResource("src/config112.yml", false);
+                config = new File(SkyWarsReloaded.get().getDataFolder(), "src/config112.yml");
                 if (config.exists()) {
                     boolean result = config.renameTo(new File(SkyWarsReloaded.get().getDataFolder(), "config.yml"));
                     if (result) {

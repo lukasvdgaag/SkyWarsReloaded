@@ -4,10 +4,11 @@ ADDED schematic cages for solo games.
 ADDED quick death.
 ADDED kick on world teleport option. If a player teleports out of an arena, they get kicked from the game.
     This could be useful if you have a command such as '/hub' which teleports the player to the hub without kicking them from the game.
+ADDED join sign support for worlds other than the lobby one. You can now place join signs in every world.
 FIXED not being able to die in the void when fallDamage was disabled.
 FIXED not being able to remove a join sign because you joined when u tried to do it.
 FIXED map failed to register message not being shown in the chat.
-
+FIXED a bug in the chest manager
 
 # version: 4.3.2
 FIXED arenas menu being empty

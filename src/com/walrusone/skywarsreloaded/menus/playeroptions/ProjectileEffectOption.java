@@ -37,10 +37,10 @@ public class ProjectileEffectOption extends PlayerOption {
 
     public static void loadPlayerOptions() {
         playerOptions.clear();
-        File particleFile = new File(SkyWarsReloaded.get().getDataFolder(), "projectileeffects.yml");
+        File particleFile = new File(SkyWarsReloaded.get().getDataFolder(), "src/projectileeffects.yml");
 
         if (!particleFile.exists()) {
-            SkyWarsReloaded.get().saveResource("projectileeffects.yml", false);
+            SkyWarsReloaded.get().saveResource("src/projectileeffects.yml", false);
         }
 
         if (particleFile.exists()) {

@@ -19,7 +19,7 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
     public void onPlayerTeleport(PlayerTeleportEvent a1) {
         Player player = a1.getPlayer();
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
-        
+
         if (gameMap == null) {
             if (SkyWarsReloaded.getCfg().getSpawn() != null) {
                 if ((!a1.getFrom().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) && (a1.getTo().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld()))) {
@@ -74,8 +74,7 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
                         damageCause = player.getLastDamageCause().getCause();
                     }
                     MatchManager.get().playerLeave(player, damageCause, true, true, true);
-                }
-                else {
+                } else {
                     e.setCancelled(true);
                 }
             }

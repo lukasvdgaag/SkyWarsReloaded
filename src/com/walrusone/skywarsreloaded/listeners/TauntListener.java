@@ -16,6 +16,7 @@ import java.util.HashMap;
 public class TauntListener implements org.bukkit.event.Listener {
     private final HashMap<String, Long> lastHandSwap = new HashMap();
     private final HashMap<String, Long> lastTaunt = new HashMap();
+
     public TauntListener() {
     }
 

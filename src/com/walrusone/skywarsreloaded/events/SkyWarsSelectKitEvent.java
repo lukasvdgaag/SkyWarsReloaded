@@ -12,6 +12,7 @@ public class SkyWarsSelectKitEvent extends Event {
     private Player player;
     private GameMap map;
     private GameKit kit;
+
     public SkyWarsSelectKitEvent(Player p, GameMap game, GameKit kit) {
         this.player = p;
         this.map = game;

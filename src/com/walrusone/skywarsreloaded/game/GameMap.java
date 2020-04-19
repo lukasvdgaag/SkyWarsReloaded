@@ -429,7 +429,7 @@ public class GameMap {
 
     private static void copyDefaults(File mapFile) {
         FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(mapFile);
-        Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("mapFile.yml"));
+        Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("src/mapFile.yml"));
         YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
         playerConfig.options().copyDefaults(true);
         playerConfig.setDefaults(defConfig);
@@ -994,13 +994,12 @@ public class GameMap {
                 wb.setCenter(teamCards.get(0).getSpawn().getX(), teamCards.get(0).getSpawn().getZ());
                 wb.setSize(SkyWarsReloaded.getCfg().getBorderSize());
             }
-            if (teamSize>1) {
+            if (teamSize > 1) {
                 // todo test this
                 cage.createSpawnPlatforms(this);
-            }
-            else {
+            } else {
                 for (TeamCard tc : getTeamCards()) {
-                    getCurrentWorld().getBlockAt(tc.getSpawn().getX(),tc.getSpawn().getY(),tc.getSpawn().getZ()).setType(Material.AIR);
+                    getCurrentWorld().getBlockAt(tc.getSpawn().getX(), tc.getSpawn().getY(), tc.getSpawn().getZ()).setType(Material.AIR);
                 }
             }
         }
@@ -1879,8 +1878,13 @@ public class GameMap {
         this.chestPlacementType = chestPlacementType;
     }
 
-    public boolean isDisableDamage() { return disableDamage; }
-    public void setDisableDamage(boolean b) { disableDamage = b; }
+    public boolean isDisableDamage() {
+        return disableDamage;
+    }
+
+    public void setDisableDamage(boolean b) {
+        disableDamage = b;
+    }
 
     public class TeamCardComparator implements Comparator<TeamCard> {
         @Override

@@ -5,6 +5,7 @@ import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerCard;
 import com.walrusone.skywarsreloaded.game.TeamCard;
+import com.walrusone.skywarsreloaded.game.cages.schematics.SchematicCage;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.playeroptions.GlassColorOption;
@@ -121,7 +122,6 @@ public abstract class Cage {
                 gMap.setAllowFallDamage(SkyWarsReloaded.getCfg().allowFallDamage());
             }
         }.runTaskLater(SkyWarsReloaded.get(), 100L);
-        SchematicCage scage = new SchematicCage();
         for (TeamCard tCard : gMap.getTeamCards()) {
             Bukkit.getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {
                 removeSpawnHousing(gMap, tCard, true);
@@ -134,7 +134,9 @@ public abstract class Cage {
         if (gameStarted) {
             if (gMap.getTeamSize() == 1) {
                 // todo test this
-                new SchematicCage().removeSpawnPlatform(gMap, tCard.getPlayerCards().get(0).getPlayer());
+                if (Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
+                    new SchematicCage().removeSpawnPlatform(gMap, tCard.getPlayerCards().get(0).getPlayer());
+                }
             }
         }
 

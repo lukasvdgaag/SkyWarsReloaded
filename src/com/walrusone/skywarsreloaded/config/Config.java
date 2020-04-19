@@ -1222,13 +1222,25 @@ public class Config {
         return lookDirectionEnabled;
     }
 
-    public boolean getEnablePVPTimer() { return enablePVPTimer; }
-    public int getPVPTimerTime() { return PVPTimerTime; }
+    public boolean getEnablePVPTimer() {
+        return enablePVPTimer;
+    }
 
-    public boolean getEnableQuickDeath() { return enableQuickDeath; }
-    public int getQuickDeathY() { return quickDeathY; }
+    public int getPVPTimerTime() {
+        return PVPTimerTime;
+    }
 
-    public boolean getKickOnWorldTeleport() { return kickOnWorldTeleport; }
+    public boolean getEnableQuickDeath() {
+        return enableQuickDeath;
+    }
+
+    public int getQuickDeathY() {
+        return quickDeathY;
+    }
+
+    public boolean getKickOnWorldTeleport() {
+        return kickOnWorldTeleport;
+    }
 
 }
 

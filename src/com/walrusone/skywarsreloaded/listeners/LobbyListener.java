@@ -57,57 +57,57 @@ public class LobbyListener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void signPlaced(SignChangeEvent event) {
-        if (Util.get().isSpawnWorld(event.getBlock().getWorld())) {
-            String[] lines = event.getLines();
-            if ((lines[0].equalsIgnoreCase("[sw]")) && (lines.length >= 2)) {
-                if (event.getPlayer().hasPermission("sw.signs")) {
-                    Location signLocation = event.getBlock().getLocation();
-                    World w = signLocation.getWorld();
-                    Block b = w.getBlockAt(signLocation);
-                    if (b.getState() instanceof Sign) {
-                        event.setCancelled(true);
-                        String arenaName = lines[1];
-                        GameMap gMap = GameMap.getMap(arenaName);
-                        if (gMap != null) {
-                            gMap.addSign(signLocation);
-                            event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
-                        } else {
-                            event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
-                        }
-                    }
-                } else {
-                    event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.signs-no-perm"));
+        //if (Util.get().isSpawnWorld(event.getBlock().getWorld())) {
+        String[] lines = event.getLines();
+        if ((lines[0].equalsIgnoreCase("[sw]")) && (lines.length >= 2)) {
+            if (event.getPlayer().hasPermission("sw.signs")) {
+                Location signLocation = event.getBlock().getLocation();
+                World w = signLocation.getWorld();
+                Block b = w.getBlockAt(signLocation);
+                if (b.getState() instanceof Sign) {
                     event.setCancelled(true);
+                    String arenaName = lines[1];
+                    GameMap gMap = GameMap.getMap(arenaName);
+                    if (gMap != null) {
+                        gMap.addSign(signLocation);
+                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
+                    } else {
+                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
+                    }
                 }
-            } else if ((lines[0].equalsIgnoreCase("[swl]")) && (lines.length >= 3)) {
-                if (event.getPlayer().hasPermission("sw.signs")) {
-                    Location signLocation = event.getBlock().getLocation();
-                    World w = signLocation.getWorld();
-                    Block b = w.getBlockAt(signLocation);
-                    if (b.getState() instanceof Sign) {
-                        event.setCancelled(true);
-                        if (SkyWarsReloaded.get().getUseable().contains(lines[1].toUpperCase())) {
-                            LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
-                            if (Util.get().isInteger(lines[2])) {
-                                if (Integer.parseInt(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {
-                                    SkyWarsReloaded.getLB().addLeaderSign(Integer.parseInt(lines[2]), type, signLocation);
-                                    event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.addedleader"));
-                                } else {
-                                    event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-range"));
-                                }
+            } else {
+                event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.signs-no-perm"));
+                event.setCancelled(true);
+            }
+        } else if ((lines[0].equalsIgnoreCase("[swl]")) && (lines.length >= 3)) {
+            if (event.getPlayer().hasPermission("sw.signs")) {
+                Location signLocation = event.getBlock().getLocation();
+                World w = signLocation.getWorld();
+                Block b = w.getBlockAt(signLocation);
+                if (b.getState() instanceof Sign) {
+                    event.setCancelled(true);
+                    if (SkyWarsReloaded.get().getUseable().contains(lines[1].toUpperCase())) {
+                        LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
+                        if (Util.get().isInteger(lines[2])) {
+                            if (Integer.parseInt(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {
+                                SkyWarsReloaded.getLB().addLeaderSign(Integer.parseInt(lines[2]), type, signLocation);
+                                event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.addedleader"));
                             } else {
-                                event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.position"));
+                                event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-range"));
                             }
                         } else {
-                            event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-type"));
+                            event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.position"));
                         }
+                    } else {
+                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-type"));
                     }
-                } else {
-                    event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.signs-no-perm"));
-                    event.setCancelled(true);
                 }
+            } else {
+                event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.signs-no-perm"));
+                event.setCancelled(true);
             }
         }
+        //}
     }
 
     @EventHandler

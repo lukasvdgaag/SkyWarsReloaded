@@ -12,6 +12,7 @@ public class SkyWarsVoteEvent extends Event {
     private Player player;
     private GameMap map;
     private Vote vote;
+
     public SkyWarsVoteEvent(Player p, GameMap game, Vote vote) {
         this.player = p;
         this.map = game;
