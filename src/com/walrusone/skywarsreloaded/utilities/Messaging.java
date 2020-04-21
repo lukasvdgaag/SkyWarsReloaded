@@ -21,10 +21,10 @@ public final class Messaging {
     private final FileConfiguration storage;
 
     public Messaging(Plugin plugin) {
-        File storageFile = new File(plugin.getDataFolder(), "src/messages.yml");
+        File storageFile = new File(plugin.getDataFolder(), "messages.yml");
 
         if (!storageFile.exists()) {
-            plugin.saveResource("src/messages.yml", false);
+            plugin.saveResource("messages.yml", false);
         }
 
         copyDefaults(storageFile);
@@ -56,7 +56,7 @@ public final class Messaging {
 
     private void copyDefaults(File playerFile) {
         FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
-        Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("src/messages.yml"));
+        Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("messages.yml"));
         YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
         playerConfig.options().copyDefaults(true);
         playerConfig.setDefaults(defConfig);

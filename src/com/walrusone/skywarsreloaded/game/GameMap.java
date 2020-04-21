@@ -429,7 +429,7 @@ public class GameMap {
 
     private static void copyDefaults(File mapFile) {
         FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(mapFile);
-        Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("src/mapFile.yml"));
+        Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("mapFile.yml"));
         YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
         playerConfig.options().copyDefaults(true);
         playerConfig.setDefaults(defConfig);

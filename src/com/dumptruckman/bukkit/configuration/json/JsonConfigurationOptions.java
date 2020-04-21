@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class JsonConfigurationOptions
         extends FileConfigurationOptions {
-    protected JsonConfigurationOptions(@NotNull JsonConfiguration configuration) {
+    protected JsonConfigurationOptions( JsonConfiguration configuration) {
         super(configuration);
     }
 

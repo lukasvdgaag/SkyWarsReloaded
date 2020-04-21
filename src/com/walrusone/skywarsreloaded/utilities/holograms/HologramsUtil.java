@@ -26,10 +26,10 @@ public abstract class HologramsUtil {
     public abstract boolean removeHologram(Location loc);
 
     void getFC() {
-        holoFile = new File(SkyWarsReloaded.get().getDataFolder(), "src/holograms.yml");
+        holoFile = new File(SkyWarsReloaded.get().getDataFolder(), "holograms.yml");
 
         if (!holoFile.exists()) {
-            SkyWarsReloaded.get().saveResource("src/holograms.yml", false);
+            SkyWarsReloaded.get().saveResource("holograms.yml", false);
         }
 
         if (holoFile.exists()) {

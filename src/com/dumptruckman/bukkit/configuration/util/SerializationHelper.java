@@ -19,7 +19,7 @@ public class SerializationHelper {
     public SerializationHelper() {
     }
 
-    public static Object serialize(@NotNull Object value) {
+    public static Object serialize( Object value) {
         if ((value instanceof Object[])) {
             value = new ArrayList(Arrays.asList((Object[]) value));
         }
@@ -43,8 +43,8 @@ public class SerializationHelper {
     }
 
 
-    @NotNull
-    private static Map<String, Object> buildMap(@NotNull Map<?, ?> map) {
+
+    private static Map<String, Object> buildMap( Map<?, ?> map) {
         Map<String, Object> result = new LinkedHashMap(map.size());
         try {
             for (Entry<?, ?> entry : map.entrySet()) {
@@ -57,7 +57,7 @@ public class SerializationHelper {
     }
 
 
-    private static List<Object> buildList(@NotNull Collection<?> collection) {
+    private static List<Object> buildList( Collection<?> collection) {
         List<Object> result = new ArrayList(collection.size());
         try {
             for (Object o : collection) {
@@ -70,7 +70,7 @@ public class SerializationHelper {
     }
 
 
-    public static Object deserialize(@NotNull Map<?, ?> input) {
+    public static Object deserialize( Map<?, ?> input) {
         Map<String, Object> output = new LinkedHashMap(input.size());
         for (Entry<?, ?> e : input.entrySet()) {
             if ((e.getValue() instanceof Map)) {
@@ -92,7 +92,7 @@ public class SerializationHelper {
     }
 
 
-    private static Object deserialize(@NotNull List<?> input) {
+    private static Object deserialize( List<?> input) {
         List<Object> output = new ArrayList(input.size());
         for (Object o : input) {
             if ((o instanceof Map)) {

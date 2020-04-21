@@ -267,7 +267,7 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
             }
-        } else if (inView.getTitle().contains("src/chest.yml")) {
+        } else if (inView.getTitle().contains("chest.yml")) {
             SkyWarsReloaded.getCM().save(inView.getTitle());
         }
 

@@ -36,7 +36,7 @@ public class JsonConfiguration extends FileConfiguration {
         ConfigurationSerialization.registerClass(SerializableSet.class);
     }
 
-    private static JsonConfiguration loadConfiguration(@NotNull final JsonConfiguration config, @NotNull final File file) {
+    private static JsonConfiguration loadConfiguration( final JsonConfiguration config,  final File file) {
         try {
             config.load(file);
         } catch (FileNotFoundException ex) {
@@ -58,11 +58,11 @@ public class JsonConfiguration extends FileConfiguration {
      * @param file The file to load the configuration from.
      * @return The configuration loaded from the file contents.
      */
-    public static JsonConfiguration loadConfiguration(@NotNull final File file) {
+    public static JsonConfiguration loadConfiguration( final File file) {
         return loadConfiguration(new JsonConfiguration(), file);
     }
 
-    @NotNull
+
     @Override
     public String saveToString() {
         String dump = JSONValue.toJSONString(SerializationHelper.serialize(getValues(false)));
@@ -75,7 +75,7 @@ public class JsonConfiguration extends FileConfiguration {
     }
 
     @Override
-    public void loadFromString(@NotNull final String contents) throws InvalidConfigurationException {
+    public void loadFromString( final String contents) throws InvalidConfigurationException {
         if (contents.isEmpty()) {
             return;
         }
@@ -96,7 +96,7 @@ public class JsonConfiguration extends FileConfiguration {
         }
     }
 
-    private void convertMapsToSections(@NotNull Map<?, ?> input, @NotNull final ConfigurationSection section) {
+    private void convertMapsToSections( Map<?, ?> input,  final ConfigurationSection section) {
         final Object result = SerializationHelper.deserialize(input);
         if (result instanceof Map) {
             input = (Map<?, ?>) result;

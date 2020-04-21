@@ -227,7 +227,7 @@ public class DataStorage {
 
     private void copyDefaults(File playerFile) {
         FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
-        Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("src/playerFile.yml"));
+        Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("playerFile.yml"));
         YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
         playerConfig.options().copyDefaults(true);
         playerConfig.setDefaults(defConfig);

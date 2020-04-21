@@ -85,7 +85,7 @@ public class Database {
 
     @SuppressWarnings("UnstableApiUsage")
     public void createTables() throws IOException, SQLException {
-        URL resource = Resources.getResource(SkyWarsReloaded.class, "/src/tables.sql");
+        URL resource = Resources.getResource(SkyWarsReloaded.class, "/tables.sql");
         String[] databaseStructure = Resources.toString(resource, Charsets.UTF_8).split(";");
 
         if (databaseStructure.length == 0) {

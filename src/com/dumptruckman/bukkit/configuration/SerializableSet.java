@@ -2,7 +2,6 @@ package com.dumptruckman.bukkit.configuration;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -11,14 +10,13 @@ import java.util.stream.Stream;
 
 @SerializableAs("set")
 public class SerializableSet implements Set, ConfigurationSerializable {
-    @NotNull
     private final Set backingSet;
 
-    public SerializableSet(@NotNull Set backingSet) {
+    public SerializableSet(Set backingSet) {
         this.backingSet = backingSet;
     }
 
-    public SerializableSet(@NotNull Map<String, Object> serializedForm) {
+    public SerializableSet( Map<String, Object> serializedForm) {
         Object o = serializedForm.get("contents");
         if ((o instanceof List)) {
             backingSet = new HashSet((List) o);
@@ -47,18 +45,18 @@ public class SerializableSet implements Set, ConfigurationSerializable {
         return backingSet.contains(o);
     }
 
-    @NotNull
+    
     public Iterator iterator() {
         return backingSet.iterator();
     }
 
-    @NotNull
+    
     public Object[] toArray() {
         return backingSet.toArray();
     }
 
-    @NotNull
-    public Object[] toArray(@NotNull Object[] a) {
+    
+    public Object[] toArray( Object[] a) {
         return backingSet.toArray(a);
     }
 
@@ -72,22 +70,22 @@ public class SerializableSet implements Set, ConfigurationSerializable {
     }
 
 
-    public boolean containsAll(@NotNull Collection c) {
+    public boolean containsAll( Collection c) {
         return backingSet.containsAll(c);
     }
 
 
-    public boolean addAll(@NotNull Collection c) {
+    public boolean addAll( Collection c) {
         return backingSet.addAll(c);
     }
 
 
-    public boolean retainAll(@NotNull Collection c) {
+    public boolean retainAll( Collection c) {
         return backingSet.retainAll(c);
     }
 
 
-    public boolean removeAll(@NotNull Collection c) {
+    public boolean removeAll( Collection c) {
         return backingSet.removeAll(c);
     }
 

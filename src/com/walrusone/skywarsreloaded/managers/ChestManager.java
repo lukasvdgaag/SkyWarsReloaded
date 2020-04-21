@@ -36,13 +36,13 @@ public class ChestManager {
 
 
     public ChestManager() {
-        load(chestItemList, "src/chest.yml");
-        load(opChestItemList, "src/opchest.yml");
-        load(basicChestItemList, "src/basicchest.yml");
-        load(centerChestItemList, "src/centerchest.yml");
-        load(opCenterChestItemList, "src/opcenterchest.yml");
-        load(basicCenterChestItemList, "src/basiccenterchest.yml");
-        load(crateItemList, "src/crates.yml");
+        load(chestItemList, "chest.yml");
+        load(opChestItemList, "opchest.yml");
+        load(basicChestItemList, "basicchest.yml");
+        load(centerChestItemList, "centerchest.yml");
+        load(opCenterChestItemList, "opcenterchest.yml");
+        load(basicCenterChestItemList, "basiccenterchest.yml");
+        load(crateItemList, "crates.yml");
         for (int i = 0; i < 27; i++) {
             randomLoc.add(i);
         }
@@ -236,32 +236,32 @@ public class ChestManager {
 
     private String getFileName(ChestType ct) {
         if (ct == ChestType.BASIC) {
-            return "src/basicchest.yml";
+            return "basicchest.yml";
         } else if (ct == ChestType.BASICCENTER) {
-            return "src/basiccenterchest.yml";
+            return "basiccenterchest.yml";
         } else if (ct == ChestType.OP) {
-            return "src/opchest.yml";
+            return "opchest.yml";
         } else if (ct == ChestType.OPCENTER) {
-            return "src/opcenterchest.yml";
+            return "opcenterchest.yml";
         } else if (ct == ChestType.NORMALCENTER) {
-            return "src/centerchest.yml";
+            return "centerchest.yml";
         } else {
-            return "src/chest.yml";
+            return "chest.yml";
         }
     }
 
     private ChestType getChestType(String fileName) {
-        if (fileName.equalsIgnoreCase("src/basicchest.yml")) {
+        if (fileName.equalsIgnoreCase("basicchest.yml")) {
             return ChestType.BASIC;
-        } else if (fileName.equalsIgnoreCase("src/basiccenterchest.yml")) {
+        } else if (fileName.equalsIgnoreCase("basiccenterchest.yml")) {
             return ChestType.BASICCENTER;
-        } else if (fileName.equalsIgnoreCase("src/opchest.yml")) {
+        } else if (fileName.equalsIgnoreCase("opchest.yml")) {
             return ChestType.OP;
-        } else if (fileName.equalsIgnoreCase("src/opcenterchest.yml")) {
+        } else if (fileName.equalsIgnoreCase("opcenterchest.yml")) {
             return ChestType.OPCENTER;
-        } else if (fileName.equalsIgnoreCase("src/centerchest.yml")) {
+        } else if (fileName.equalsIgnoreCase("centerchest.yml")) {
             return ChestType.NORMALCENTER;
-        } else if (fileName.equalsIgnoreCase("src/chest.yml")) {
+        } else if (fileName.equalsIgnoreCase("chest.yml")) {
             return ChestType.NORMAL;
         }
         return null;
