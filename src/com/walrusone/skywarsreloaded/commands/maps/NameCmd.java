@@ -14,12 +14,14 @@ public class NameCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
 
     public boolean run() {
         String worldName = args[1];
-        StringBuilder displayName = new StringBuilder();
-        for (int i = 2; i < args.length; i++) {
-            displayName.append(args[i]);
-            displayName.append(" ");
+
+        StringBuilder b = new StringBuilder();
+        for (int i = 2;i<args.length;i++) {
+            b.append(i > 2 ? " " + args[i] : args[i]);
         }
-        displayName.substring(0, displayName.length() - 1);
+        String displayName = b.toString();
+
+        //displayName.substring(0, displayName.length() - 1);
         if (displayName.length() == 0) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.map-name"));
             return false;
@@ -27,8 +29,8 @@ public class NameCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
 
         GameMap map = GameMap.getMap(worldName);
         if (map != null) {
-            map.setDisplayName(displayName.toString());
-            sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).setVariable("displayname", args[2]).format("maps.name"));
+            map.setDisplayName(displayName.trim());
+            sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).setVariable("displayname", displayName.trim()).format("maps.name"));
 
             return true;
         }

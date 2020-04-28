@@ -119,9 +119,12 @@ public abstract class Cage {
         new BukkitRunnable() {
             @Override
             public void run() {
-                gMap.setAllowFallDamage(SkyWarsReloaded.getCfg().allowFallDamage());
+                gMap.setAllowFallDamage(true);
             }
         }.runTaskLater(SkyWarsReloaded.get(), 100L);
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            Util.get().logToFile("SWR[" + gMap.getName() + "] Now removing all player cage");
+        }
         for (TeamCard tCard : gMap.getTeamCards()) {
             Bukkit.getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {
                 removeSpawnHousing(gMap, tCard, true);

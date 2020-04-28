@@ -153,7 +153,6 @@ public class Config {
     private int vip5;
     private boolean tauntsEnabled;
     private boolean titlesEnabled;
-    private boolean allowFallDamage;
     private boolean kitVotingEnabled;
     private int waitTimer;
     private int strength;
@@ -241,6 +240,9 @@ public class Config {
     private int quickDeathY = 0;
     private boolean kickOnWorldTeleport = true;
 
+    private boolean clearInventoryOnWin = true;
+    private boolean enableFlightOnWin = false;
+
     public Config() {
         load();
     }
@@ -271,6 +273,8 @@ public class Config {
             xpEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.xpLeaderboardEnabled");
             leaderboardUpdateInterval = SkyWarsReloaded.get().getConfig().getInt("leaderboards.leaderboardUpdateInterval");
 
+            enableFlightOnWin = SkyWarsReloaded.get().getConfig().getBoolean("game.win.enableFlight");
+            clearInventoryOnWin = SkyWarsReloaded.get().getConfig().getBoolean("game.win.clearInventory");
             kickOnWorldTeleport = SkyWarsReloaded.get().getConfig().getBoolean("game.kickOnWorldTeleport");
             enableQuickDeath = SkyWarsReloaded.get().getConfig().getBoolean("game.enableQuickDeath");
             quickDeathY = SkyWarsReloaded.get().getConfig().getInt("game.quickDeathY");
@@ -302,7 +306,6 @@ public class Config {
             resetTimerOnJoin = SkyWarsReloaded.get().getConfig().getBoolean("game.resetTimerOnJoin");
             tauntsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.tauntsEnabled");
             titlesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("titles.enabled");
-            allowFallDamage = SkyWarsReloaded.get().getConfig().getBoolean("game.allowFallDamage");
             kitVotingEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.kitVotingEnabled");
             spectateEnabled = SkyWarsReloaded.get().getConfig().getBoolean("game.spectateEnabled");
             maxMapSize = SkyWarsReloaded.get().getConfig().getInt("game.maxMapSize");
@@ -510,6 +513,8 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("leaderboards.xpLeaderboardEnabled", xpEnabled);
         SkyWarsReloaded.get().getConfig().set("leaderboards.leaderboardUpdateInterval", leaderboardUpdateInterval);
 
+        SkyWarsReloaded.get().getConfig().set("game.win.clearInventory", clearInventoryOnWin);
+        SkyWarsReloaded.get().getConfig().set("game.win.enableFlight", enableFlightOnWin);
         SkyWarsReloaded.get().getConfig().set("game.kickOnWorldTeleport", kickOnWorldTeleport);
         SkyWarsReloaded.get().getConfig().set("game.enableQuickDeath", enableQuickDeath);
         SkyWarsReloaded.get().getConfig().set("game.quickDeathY", quickDeathY);
@@ -545,7 +550,6 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("enablePressurePlateJoin", pressurePlate);
         SkyWarsReloaded.get().getConfig().set("teleportToSpawnOnJoin", teleportOnJoin);
         SkyWarsReloaded.get().getConfig().set("teleportToSpawnOnWorldEnter", teleportOnWorldEnter);
-        SkyWarsReloaded.get().getConfig().set("game.allowFallDamage", allowFallDamage);
         SkyWarsReloaded.get().getConfig().set("game.kitVotingEnabled", kitVotingEnabled);
         SkyWarsReloaded.get().getConfig().set("game.modifierLevel.strength", strength);
         SkyWarsReloaded.get().getConfig().set("game.modifierLevel.speed", speed);
@@ -885,10 +889,6 @@ public class Config {
 
     public long getTicksPerUpdate() {
         return ticksPerUpdate;
-    }
-
-    public boolean allowFallDamage() {
-        return allowFallDamage;
     }
 
     public boolean kitVotingEnabled() {
@@ -1241,6 +1241,10 @@ public class Config {
     public boolean getKickOnWorldTeleport() {
         return kickOnWorldTeleport;
     }
+
+    public boolean getClearInventoryOnWin() { return clearInventoryOnWin; }
+
+    public boolean getEnableFlightOnWin() { return enableFlightOnWin; }
 
 }
 

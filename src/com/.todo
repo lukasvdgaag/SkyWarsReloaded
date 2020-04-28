@@ -1,3 +1,15 @@
+# version: 4.3.4
+Added a new clear inventory on win option to the config
+Added a new enable flight on win option to the config (this already was a feature, but now it's configurable)
+Added quickRespawn for players that won a game. If they jump into the void and reach y=-10, they will be teleported to the spectator spawn
+Fixed cages folder not being created automatically.
+Fixed cages to support .schem files as well (for 1.13+)
+Fixed players not getting damage in games
+Fixed a bug regarding quickDeath
+Fixed team cages being removed when a team member left
+Removed the allowFallDamage option from the plugin
+
+
 # version: 4.3.3
 ADDED pvp wait timer after cages opened.
 ADDED schematic cages for solo games.

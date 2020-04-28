@@ -63,7 +63,10 @@ public class SpectateListener implements org.bukkit.event.Listener {
             return;
         }
         gameMap.getSpectators().remove(player.getUniqueId());
+        gameMap.getAlivePlayers().remove(player);
+        gameMap.getAllPlayers().remove(player);
         MatchManager.get().removeSpectator(player);
+
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

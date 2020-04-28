@@ -15,6 +15,8 @@ public class PlayerCard {
     private int postElo;
     private int eloChange;
 
+    private int kills;
+
     private GameKit kitVote;
     private Vote gameTime;
     private Vote weather;
@@ -32,6 +34,7 @@ public class PlayerCard {
         this.chestVote = null;
         this.modifier = null;
         this.health = null;
+        this.kills = 0;
     }
 
     public void reset() {
@@ -44,6 +47,7 @@ public class PlayerCard {
         this.chestVote = null;
         this.modifier = null;
         this.uuid = null;
+        this.kills = 0;
     }
 
     public Player getPlayer() {
@@ -152,5 +156,12 @@ public class PlayerCard {
 
     public TeamCard getTeamCard() {
         return tCard;
+    }
+
+    public int getKills() {
+        return kills;
+    }
+    public void addKill() {
+        kills++;
     }
 }

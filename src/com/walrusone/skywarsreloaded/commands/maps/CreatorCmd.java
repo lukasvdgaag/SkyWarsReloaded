@@ -19,15 +19,15 @@ public class CreatorCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
             creator.append(args[i]);
             creator.append(" ");
         }
-        creator.substring(0, creator.length() - 1);
+        //creator.substring(0, creator.length() - 1);
         if (creator.length() == 0) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.map-creator"));
             return false;
         }
         GameMap map = GameMap.getMap(worldName);
         if (map != null) {
-            map.setCreator(creator.toString());
-            sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).setVariable("creator", args[2]).format("maps.creator"));
+            map.setCreator(creator.toString().trim());
+            sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).setVariable("creator", creator.toString().trim()).format("maps.creator"));
 
             return true;
         }

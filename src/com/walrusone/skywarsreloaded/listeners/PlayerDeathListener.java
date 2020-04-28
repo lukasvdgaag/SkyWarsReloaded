@@ -1,9 +1,11 @@
 package com.walrusone.skywarsreloaded.listeners;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -51,14 +53,21 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
             return;
         }
 
+        if (gameMap.getMatchState() == MatchState.ENDING && gameMap.getAlivePlayers().contains(e.getPlayer()) && e.getTo().getY() <= -10) {
+            CoordLoc loc = gameMap.getSpectateSpawn();
+            e.getPlayer().teleport(new Location(gameMap.getCurrentWorld(), loc.getX(), loc.getY(), loc.getZ()));
+        }
+
         if (e.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
             if (SkyWarsReloaded.getCfg().getEnableQuickDeath()) {
-                if (e.getTo().getY() <= SkyWarsReloaded.getCfg().getPVPTimerTime()) {
-                    EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.CUSTOM;
-                    if (e.getPlayer().getLastDamageCause() != null) {
-                        damageCause = e.getPlayer().getLastDamageCause().getCause();
+                if (e.getTo().getY() <= SkyWarsReloaded.getCfg().getQuickDeathY()) {
+                    if (gameMap.getMatchState() == MatchState.PLAYING) {
+                        EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.CUSTOM;
+                        if (e.getPlayer().getLastDamageCause() != null) {
+                            damageCause = e.getPlayer().getLastDamageCause().getCause();
+                        }
+                        MatchManager.get().playerLeave(e.getPlayer(), damageCause, false, true, true);
                     }
-                    MatchManager.get().playerLeave(e.getPlayer(), damageCause, false, true, true);
                 }
             }
         }
