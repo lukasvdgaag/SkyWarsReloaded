@@ -7,12 +7,14 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class SchematicCage {
@@ -23,8 +25,8 @@ public class SchematicCage {
         List<File> files = Lists.newArrayList();
         File folder = new File(SkyWarsReloaded.get().getDataFolder(), "cages");
         if (folder.exists() && folder.isDirectory()) {
-            for (File f : folder.listFiles()) {
-                if (f.getName().endsWith(".schematic")) {
+            for (File f : Objects.requireNonNull(folder.listFiles())) {
+                if (f.getName().endsWith(".schematic") || f.getName().endsWith(".schem")) {
                     files.add(f);
                 }
             }
@@ -52,7 +54,7 @@ public class SchematicCage {
                     cage = cage.replace("custom-", "");
                     File schematicFile = null;
                     for (File f : getSchematics()) {
-                        if (f.getName().equals(cage + ".schematic")) {
+                        if (f.getName().equals(cage + ".schematic") || f.getName().equals(cage + ".schem")) {
                             schematicFile = f;
                         }
                     }
@@ -64,11 +66,15 @@ public class SchematicCage {
                     TeamCard team = map.getTeamCard(player);
                     CoordLoc spawn = team.getSpawn();
 
+                    if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                        Util.get().logToFile("SWR[" + map.getName() + "] Now pasting the cage for player " + player.getName() + " with schematic " + schematicFile.getName());
+                    }
                     if (SkyWarsReloaded.getNMS().getVersion() < 13) {
                         new Schematic12().pasteSchematic(schematicFile, map, spawn, player);
                     } else {
                         new Schematic13().pasteSchematic(schematicFile, map, spawn, player);
                     }
+                    return true;
                 }
             }
         }
@@ -76,11 +82,18 @@ public class SchematicCage {
     }
 
     public void removeSpawnPlatform(GameMap map, Player player) {
-        if (pastedSessions.containsKey(map)) {
-            if (pastedSessions.get(map).containsKey(player.getUniqueId())) {
+        if (player==null || map == null) { return; }
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            Util.get().logToFile("SWR[" + map.getName() + "] Now removing the cage of player " + player.getName());
+        }
+        if (pastedSessions != null && pastedSessions.containsKey(map)) {
+            if (pastedSessions.get(map) != null && pastedSessions.get(map).containsKey(player.getUniqueId())) {
                 EditSession session = pastedSessions.get(map).get(player.getUniqueId());
                 session.undo(session);
                 pastedSessions.get(map).remove(player.getUniqueId());
+                if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                    Util.get().logToFile("SWR[" + map.getName() + "] Cage of " + player.getName() + " has successfully been removed");
+                }
             }
         }
     }

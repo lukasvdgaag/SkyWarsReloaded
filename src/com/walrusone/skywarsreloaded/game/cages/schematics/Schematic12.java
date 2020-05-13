@@ -1,6 +1,6 @@
 package com.walrusone.skywarsreloaded.game.cages.schematics;
 
-/*import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEdit;
@@ -11,9 +11,8 @@ import com.sk89q.worldedit.function.mask.ExistingBlockMask;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.transform.AffineTransform;
-import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.World;
-import com.sk89q.worldedit.world.registry.WorldData;*/
+import com.sk89q.worldedit.world.registry.WorldData;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import org.bukkit.entity.Player;
@@ -27,7 +26,7 @@ import java.util.UUID;
 public class Schematic12 {
 
     public void pasteSchematic(File schematicFile, GameMap map, CoordLoc spawn, Player player) {
-       /* try {
+        try {
             World weWorld = new BukkitWorld(map.getCurrentWorld());
             WorldData worldData = weWorld.getWorldData();
             Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(schematicFile)).read(worldData);
@@ -46,6 +45,6 @@ public class Schematic12 {
             SchematicCage.pastedSessions.put(map, sessions);
         } catch (IOException | MaxChangedBlocksException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 }

@@ -134,6 +134,11 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
         servername = "none";
 
+        File cagesFolder = new File(getDataFolder(),"cages");
+        if (!cagesFolder.exists()) {
+            cagesFolder.mkdir();
+        }
+
         if (nmsHandler.getVersion() < 9) {
             File config = new File(SkyWarsReloaded.get().getDataFolder(), "config.yml");
             if (!config.exists()) {

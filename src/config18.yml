@@ -13,6 +13,15 @@ displayPlayerLevelOnXpBar: true
 enabledLobbyGuard: false
 economyEnabled: false
 game:
+  win:
+    clearInventory: true
+    enableFlight: false
+  kickOnWorldTeleport: true
+  enableQuickDeath: true
+  quickDeathY: -10
+  enablePVPTimer: true
+  PVPTimerTime: 10 # this is the time in seconds
+  enableWinMessage: true
   enableLookDirection: true
   worldBorder:
     enabled: false
@@ -34,7 +43,6 @@ game:
   resetTimerOnJoin: false
   kitVotingEnabled: false
   spectateEnabled: true
-  allowFallDamage: false
   maxMapSize: 400
   tauntsEnabled: true
   modifierLevel:
