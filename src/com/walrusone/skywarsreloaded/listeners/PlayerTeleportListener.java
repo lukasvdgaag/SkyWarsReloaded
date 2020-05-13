@@ -28,6 +28,7 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
                 }
                 if ((a1.getFrom().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) && (!a1.getTo().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld()))) {
                     if (SkyWarsReloaded.getCfg().lobbyBoardEnabled()) {
+                        SkyWarsReloaded.getNMS().removeFromScoreboardCollection(player.getScoreboard());//for 1.13+
                         player.setScoreboard(org.bukkit.Bukkit.getScoreboardManager().getNewScoreboard());
                     }
                     if ((SkyWarsReloaded.getCfg().optionsMenuEnabled()) &&

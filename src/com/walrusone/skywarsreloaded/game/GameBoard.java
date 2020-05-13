@@ -5,6 +5,7 @@ import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import me.gaagjescraft.network.team.advancedevents.plugins.events.SkywarsReloaded;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -236,13 +237,14 @@ public class GameBoard {
     }
 
     private void resetScoreboard() {
-        for (Team team : scoreboard.getTeams()) {
-            team.unregister();
+        if(!SkyWarsReloaded.getNMS().removeFromScoreboardCollection(scoreboard)) {
+            for (Team team : scoreboard.getTeams()) {
+                team.unregister();
+            }
+            if (objective != null) {
+                objective.unregister();
+            }
         }
-        if (objective != null) {
-            objective.unregister();
-        }
-
         if (scoreboard != null) {
             scoreboard = null;
         }

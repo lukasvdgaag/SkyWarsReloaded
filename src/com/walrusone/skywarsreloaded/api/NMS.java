@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract interface NMS {
+    public abstract boolean removeFromScoreboardCollection(Scoreboard scoreboard);
+
     public abstract void respawnPlayer(Player paramPlayer);
 
     public abstract void sendParticles(World paramWorld, String paramString, float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4, float paramFloat5, float paramFloat6, float paramFloat7, int paramInt);

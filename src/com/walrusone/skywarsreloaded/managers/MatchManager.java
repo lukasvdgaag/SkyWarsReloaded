@@ -25,6 +25,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
+import me.gaagjescraft.network.team.advancedevents.plugins.events.SkywarsReloaded;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -241,7 +242,10 @@ public class MatchManager {
         player.setHealth(20.0);
         player.setExp(0.0f);
         player.setLevel(0);
-        player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
+
+        if(!SkyWarsReloaded.getNMS().removeFromScoreboardCollection(player.getScoreboard())) { //1.13+
+            player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
+        }
         player.setScoreboard(gameMap.getGameBoard().getScoreboard());
 
         Util.get().clear(player);
