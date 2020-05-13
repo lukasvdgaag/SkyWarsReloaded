@@ -193,12 +193,14 @@ public class MatchManager {
                         Util.get().sendTitle(p, 2, 20, 2, "",
                                 new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
                                         .setVariable("players", "" + gameMap.getPlayerCount())
+                                        .setVariable("playercount", gameMap.getPlayerCount() + "")
                                         .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-joined-the-game"));
                     }
                 }
             }
             new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
                     .setVariable("players", "" + gameMap.getPlayerCount())
+                    .setVariable("playercount", gameMap.getPlayerCount() + "")
                     .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-joined-the-game");
 
             for (final Player p : gameMap.getAlivePlayers()) {

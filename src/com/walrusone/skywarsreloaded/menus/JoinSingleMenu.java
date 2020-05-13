@@ -25,9 +25,10 @@ public class JoinSingleMenu {
 
     private static final String menuName = new Messaging.MessageFormatter().format("menu.joinsinglegame-menu-title");
     private static int menuSize = 45;
+    public static Map<Integer, String> arenaSlots = new HashMap<>();
+
 
     public JoinSingleMenu() {
-        Map<Integer, String> arenaSlots = new HashMap<>();
         Inventory menu = Bukkit.createInventory(null, menuSize + 9, menuName);
         ArrayList<Inventory> invs = new ArrayList<>();
         invs.add(menu);

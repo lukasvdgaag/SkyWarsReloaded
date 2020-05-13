@@ -1,6 +1,6 @@
 package com.walrusone.skywarsreloaded.game.cages.schematics;
 
-/*import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
@@ -14,7 +14,7 @@ import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.session.ClipboardHolder;*/
+import com.sk89q.worldedit.session.ClipboardHolder;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import org.bukkit.entity.Player;
@@ -28,7 +28,7 @@ import java.util.UUID;
 public class Schematic13 {
 
     public void pasteSchematic(File schematicFile, GameMap map, CoordLoc spawn, Player player) {
-        /*try {
+        try {
             Clipboard clipboard;
             ClipboardFormat format = ClipboardFormats.findByFile(schematicFile);
             try (ClipboardReader reader = format.getReader(new FileInputStream(schematicFile))) {
@@ -49,6 +49,6 @@ public class Schematic13 {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 }

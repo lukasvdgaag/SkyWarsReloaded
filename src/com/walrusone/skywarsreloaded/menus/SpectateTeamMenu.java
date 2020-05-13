@@ -30,12 +30,18 @@ public class SpectateTeamMenu {
             if (gMap != null) {
                 return;
             }
+
             String name = event.getName();
             if (name.equalsIgnoreCase(SkyWarsReloaded.getNMS().getItemName(SkyWarsReloaded.getIM().getItem("exitMenuItem")))) {
                 player.closeInventory();
                 return;
             }
-            gMap = GameMap.getMapByDisplayName(ChatColor.stripColor(name));
+
+            if (!JoinTeamMenu.arenaSlots.containsKey(event.getSlot())) {
+                return;
+            }
+
+            gMap = GameMap.getMap(JoinTeamMenu.arenaSlots.get(event.getSlot()));
             if (gMap == null) {
                 return;
             }

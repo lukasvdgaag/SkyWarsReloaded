@@ -19,8 +19,7 @@ public enum ScoreVar {
     TIMEVOTE,
     HEALTHVOTE,
     WEATHERVOTE,
-    MODIFIERVOTE,
-    PLAYERKILLS;
+    MODIFIERVOTE;
 
     public static ScoreVar matchType(String string) {
         for (ScoreVar var : ScoreVar.values()) {

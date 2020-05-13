@@ -6,7 +6,6 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -34,7 +33,12 @@ public class SpectateSingleMenu {
                 player.closeInventory();
                 return;
             }
-            gMap = GameMap.getMapByDisplayName(ChatColor.stripColor(name));
+
+            if (!JoinSingleMenu.arenaSlots.containsKey(event.getSlot())) {
+                return;
+            }
+
+            gMap = GameMap.getMap(JoinSingleMenu.arenaSlots.get(event.getSlot()));
             if (gMap == null) {
                 return;
             }

@@ -27,11 +27,11 @@ public class JoinTeamMenu {
 
     private static final String menuName = new Messaging.MessageFormatter().format("menu.jointeamgame-menu-title");
     private static int menuSize = 45;
+    public static Map<Integer, String> arenaSlots = new HashMap<>();
 
     public JoinTeamMenu() {
         Inventory menu = Bukkit.createInventory(null, menuSize + 9, menuName);
         ArrayList<Inventory> invs = new ArrayList<>();
-        Map<Integer, String> arenaSlots = new HashMap<>();
         invs.add(menu);
 
         Runnable update = () -> {

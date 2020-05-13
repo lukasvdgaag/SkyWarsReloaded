@@ -182,7 +182,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
                 ChunkData chunkData = createChunkData(world);
                 for (int i = 0; i < 16; i++) {
                     for (int j = 0; j < 16; j++) {
-                        chunkGererator.setBiome(i, j, org.bukkit.block.Biome.VOID);
+                        chunkGererator.setBiome(i, j, org.bukkit.block.Biome.valueOf("VOID"));
                     }
                 }
                 return chunkData;
@@ -203,11 +203,11 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     }
 
     public boolean headCheck(Block h1) {
-        return h1.getType() == Material.SKULL;
+        return h1.getType() == Material.matchMaterial("SKULL");
     }
 
     public org.bukkit.inventory.ItemStack getBlankPlayerHead() {
-        return new org.bukkit.inventory.ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+        return new org.bukkit.inventory.ItemStack(Material.matchMaterial("SKULL_ITEM"), 1, (short) 3);
     }
 
     public int getVersion() {
@@ -216,7 +216,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
 
     public org.bukkit.inventory.ItemStack getMaterial(String item) {
         if (item.equalsIgnoreCase("SKULL_ITEM")) {
-            return new org.bukkit.inventory.ItemStack(Material.SKULL_ITEM, 1, (short) 1);
+            return new org.bukkit.inventory.ItemStack(Material.matchMaterial("SKULL_ITEM"), 1, (short) 1);
         }
         return new org.bukkit.inventory.ItemStack(Material.valueOf(item), 1);
     }
@@ -224,13 +224,13 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
 
     public org.bukkit.inventory.ItemStack getColorItem(String mat, byte color) {
         if (mat.equalsIgnoreCase("wool"))
-            return new org.bukkit.inventory.ItemStack(Material.WOOL, 1, (short) color);
+            return new org.bukkit.inventory.ItemStack(Material.matchMaterial("WOOL"), 1, (short) color);
         if (mat.equalsIgnoreCase("glass"))
-            return new org.bukkit.inventory.ItemStack(Material.STAINED_GLASS, 1, (short) color);
+            return new org.bukkit.inventory.ItemStack(Material.matchMaterial("STAINED_GLASS"), 1, (short) color);
         if (mat.equalsIgnoreCase("banner")) {
-            return new org.bukkit.inventory.ItemStack(Material.BANNER, 1, (short) color);
+            return new org.bukkit.inventory.ItemStack(Material.matchMaterial("BANNER"), 1, (short) color);
         }
-        return new org.bukkit.inventory.ItemStack(Material.STAINED_GLASS, 1, (short) color);
+        return new org.bukkit.inventory.ItemStack(Material.matchMaterial("STAINED_GLASS"), 1, (short) color);
     }
 
 

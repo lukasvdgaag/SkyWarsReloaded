@@ -27,7 +27,9 @@ public final class Messaging {
             plugin.saveResource("messages.yml", false);
         }
 
-        copyDefaults(storageFile);
+        if (storageFile.exists()) {
+            copyDefaults(storageFile);
+        }
         storage = YamlConfiguration.loadConfiguration(storageFile);
     }
 
