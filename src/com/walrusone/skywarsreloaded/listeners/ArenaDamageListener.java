@@ -85,7 +85,7 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
                     event.setCancelled(true);
                     return;
                 }
-                if (!gameMap.allowFallDamage() && event.getEntity().getLocation().getY() < -50 && event.getCause().equals(EntityDamageEvent.DamageCause.FALL)) {
+                if (!gameMap.allowFallDamage() && event.getEntity().getLocation().getY() > -50 && event.getCause().equals(EntityDamageEvent.DamageCause.FALL)) {
                     event.setCancelled(true);
                 }
                 if (gameMap.isDisableDamage() && event.getCause() != EntityDamageEvent.DamageCause.VOID) {

@@ -1,7 +1,6 @@
 package com.dumptruckman.bukkit.configuration.json;
 
 import org.bukkit.configuration.file.FileConfigurationOptions;
-import org.jetbrains.annotations.NotNull;
 
 
 public class JsonConfigurationOptions

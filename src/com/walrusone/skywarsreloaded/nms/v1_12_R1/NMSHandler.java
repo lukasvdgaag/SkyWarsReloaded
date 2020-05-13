@@ -11,6 +11,7 @@ import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
@@ -26,6 +27,10 @@ import java.util.Random;
 
 public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     public NMSHandler() {
+    }
+
+    public boolean removeFromScoreboardCollection(Scoreboard scoreboard) {
+        return false;
     }
 
     public void respawnPlayer(Player player) {

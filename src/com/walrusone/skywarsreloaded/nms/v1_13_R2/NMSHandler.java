@@ -10,6 +10,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboard;
+import org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboardManager;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -19,11 +21,26 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
 public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
+    private Collection<CraftScoreboard> scoreboardCollection;
+
     public NMSHandler() {
+        CraftScoreboardManager manager = (CraftScoreboardManager) Bukkit.getScoreboardManager();
+        try {
+            Field field = manager.getClass().getDeclaredField("scoreboards");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean removeFromScoreboardCollection(Scoreboard scoreboard) {
+        scoreboardCollection.remove((CraftScoreboard) scoreboard);
+        return true;
     }
 
     public void respawnPlayer(Player player) {

@@ -30,6 +30,10 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     public NMSHandler() {
     }
 
+    public boolean removeFromScoreboardCollection(Scoreboard scoreboard) {
+        return false;
+    }
+
     public void respawnPlayer(Player player) {
         ((org.bukkit.craftbukkit.v1_8_R2.CraftServer) org.bukkit.Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer) player).getHandle(), 0, false);
     }
