@@ -39,8 +39,13 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     }
 
     public boolean removeFromScoreboardCollection(Scoreboard scoreboard) {
-        scoreboardCollection.remove((CraftScoreboard) scoreboard);
-        return true;
+        if(scoreboardCollection.contains((CraftScoreboard) scoreboard)) {
+            scoreboardCollection.remove((CraftScoreboard) scoreboard);
+            return true;
+        }
+
+        return false;
+
     }
 
     public void respawnPlayer(Player player) {

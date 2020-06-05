@@ -278,7 +278,7 @@ public class GameKit {
         return availableKits;
     }
 
-    private ItemStack[] getArmor() {
+    public ItemStack[] getArmor() {
         return armor;
     }
 
@@ -286,7 +286,7 @@ public class GameKit {
         this.armor = items.clone();
     }
 
-    private ItemStack[] getInventory() {
+    public ItemStack[] getInventory() {
         return inventory;
     }
 
@@ -377,7 +377,7 @@ public class GameKit {
         return colorLores;
     }
 
-    private Map<Integer, String> getLores() {
+    public Map<Integer, String> getLores() {
         return this.lores;
     }
 
@@ -385,7 +385,7 @@ public class GameKit {
         return ChatColor.translateAlternateColorCodes('&', lockedLore);
     }
 
-    private String getLockedLore() {
+    public String getLockedLore() {
         return lockedLore;
     }
 
