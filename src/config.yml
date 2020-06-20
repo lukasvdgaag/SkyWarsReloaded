@@ -2,6 +2,9 @@ debugMode: false
 spawn: null
 bungeeMode: false
 bungeeLobby: lobby
+isLobbyServer: false
+gameServers:
+  - server-name:port:display name:max players:team size
 gameEndCommands:
 tauntCooldown: 10
 enablePressurePlateJoin: true
@@ -117,6 +120,11 @@ signs:
   halffull: IRON_HELMET
   almostempty: LEATHER_HELMET
 items:
+  randomVoteEnabled: true
+  scavengerChestEnabled: false
+  joinGameItemEnabled: true
+  spectateGameItemEnabled: true
+  optionsItemEnabled: true
   kitsEnabled: true
   kitVotePosition: 0
   kitvote: ENDER_EYE

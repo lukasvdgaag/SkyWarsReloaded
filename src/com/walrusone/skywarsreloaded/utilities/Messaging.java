@@ -106,6 +106,15 @@ public final class Messaging {
                 return "";
             }
 
+           /* for (String s : variableMap.keySet()) {
+                if (!s.startsWith("{") && !s.endsWith("}")) {
+                    message = message.replace("{" + s + "}", variableMap.get(s));
+                }
+                else {
+                    message = message.replace(s, variableMap.get(s));
+                }
+            }*/
+
             Matcher matcher = PATTERN.matcher(message);
 
             while (matcher.find()) {

@@ -1,6 +1,6 @@
 displayName:
-minplayers:
-creator:
+minplayers: 2
+creator: GCNT
 registered:
 enableCustomJoinMenuItem: false
 customJoinMenuItem: LEATHER_HELMET
@@ -8,7 +8,7 @@ cage: standard
 teamSize: 1
 allowFriendlyFire: false
 environment: NORMAL
-allowScanvenger: true
+allowScanvenger: false
 events:
   DisableRegenEvent:
     enabled: false

@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.utilities.placeholders;
 
 import be.maximvdw.placeholderapi.PlaceholderAPI;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -54,6 +55,11 @@ public class SWRMVdWPlaceholder {
             Player player = e.getPlayer();
             double stat = (double) ((SkyWarsReloaded) p).getPlayerStat(player).getWins() / (double) ((SkyWarsReloaded) p).getPlayerStat(player).getLosses();
             return String.format("%1$,.2f", stat);
+        });
+
+        PlaceholderAPI.registerPlaceholder(p, "swr_level", e -> {
+            Player player = e.getPlayer();
+            return "" + Util.get().getPlayerLevel(player);
         });
     }
 }

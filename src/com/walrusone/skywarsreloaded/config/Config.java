@@ -106,6 +106,13 @@ public class Config {
     private int votepos;
     private boolean voteEnabled;
     private int exitpos;
+
+    private boolean randomOptionVoteEnabled;
+    private boolean scavengerChestEnabled;
+    private boolean joinGameItemEnabled;
+    private boolean spectateGameItemEnabled;
+    private boolean optionsGameItemEnabled;
+
     private int chestvotepos;
     private boolean chestVoteEnabled;
     private int healthvotepos;
@@ -243,6 +250,9 @@ public class Config {
     private boolean clearInventoryOnWin = true;
     private boolean enableFlightOnWin = false;
 
+    private List<String> gameServers = Lists.newArrayList();
+    private boolean isLobbyServer = false;
+
     public Config() {
         load();
     }
@@ -252,7 +262,10 @@ public class Config {
             loading = true;
             debug = SkyWarsReloaded.get().getConfig().getBoolean("debugMode");
 
+            gameServers = SkyWarsReloaded.get().getConfig().getStringList("gameServers");
+
             bungeeMode = SkyWarsReloaded.get().getConfig().getBoolean("bungeeMode");
+            isLobbyServer = SkyWarsReloaded.get().getConfig().getBoolean("isLobbyServer");
             economyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("economyEnabled");
             bungeeLobby = SkyWarsReloaded.get().getConfig().getString("bungeeLobby");
             gameEndCommands = SkyWarsReloaded.get().getConfig().getStringList("gameEndCommands");
@@ -338,7 +351,6 @@ public class Config {
                 if (lobbyWorlds == null) {
                     lobbyWorlds = Lists.newArrayList();
                 } else {
-                    // todo remove debug
                     String world = SkyWarsReloaded.get().getConfig().getString("spawn").split(":")[0];
                     if (!lobbyWorlds.contains(world)) {
                         lobbyWorlds.add(world);
@@ -347,6 +359,12 @@ public class Config {
                     }
                 }
             }
+
+            randomOptionVoteEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.randomVoteEnabled");
+            scavengerChestEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.scavengerChestEnabled");
+            joinGameItemEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.joinGameItemEnabled");
+            spectateGameItemEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.spectateGameItemEnabled");
+            optionsGameItemEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.optionsItemEnabled");
 
             kitvotepos = SkyWarsReloaded.get().getConfig().getInt("items.kitVotePosition");
             kitsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.kitsEnabled");
@@ -486,6 +504,8 @@ public class Config {
 
     public void save() {
         SkyWarsReloaded.get().getConfig().set("debugMode", debug);
+        SkyWarsReloaded.get().getConfig().set("gameServers", gameServers);
+        SkyWarsReloaded.get().getConfig().set("isLobbyServer", isLobbyServer);
 
         if (spawn != null) {
             SkyWarsReloaded.get().getConfig().set("spawn", Util.get().locationToString(spawn));
@@ -568,6 +588,12 @@ public class Config {
 
 
         SkyWarsReloaded.get().getConfig().set("holograms.enabled", useHolograms);
+
+        SkyWarsReloaded.get().getConfig().set("items.randomVoteEnabled", randomOptionVoteEnabled);
+        SkyWarsReloaded.get().getConfig().set("items.scavengerChestEnabled", scavengerChestEnabled);
+        SkyWarsReloaded.get().getConfig().set("items.joinGameItemEnabled", joinGameItemEnabled);
+        SkyWarsReloaded.get().getConfig().set("items.spectateGameItemEnabled", spectateGameItemEnabled);
+        SkyWarsReloaded.get().getConfig().set("items.optionsItemEnabled", optionsGameItemEnabled);
 
         SkyWarsReloaded.get().getConfig().set("items.kitVotePosition", kitvotepos);
         SkyWarsReloaded.get().getConfig().set("items.kitsEnabled", kitsEnabled);
@@ -1245,6 +1271,16 @@ public class Config {
     public boolean getClearInventoryOnWin() { return clearInventoryOnWin; }
 
     public boolean getEnableFlightOnWin() { return enableFlightOnWin; }
+
+    public List<String> getGameServers() { return gameServers; }
+
+    public boolean isLobbyServer() { return isLobbyServer; }
+
+    public boolean isRandomVoteEnabled() { return randomOptionVoteEnabled; }
+    public boolean isScavengerChestEnabled() { return scavengerChestEnabled; }
+    public boolean isJoinGameItemEnabled() { return joinGameItemEnabled; }
+    public boolean isSpectateGameItemEnabled() { return spectateGameItemEnabled; }
+    public boolean isOptionsItemEnabled() { return optionsGameItemEnabled; }
 
 }
 

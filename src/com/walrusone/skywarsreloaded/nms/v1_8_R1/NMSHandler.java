@@ -195,10 +195,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     }
 
     public boolean checkMaterial(FallingBlock fb, Material mat) {
-        if (fb.getMaterial().equals(mat)) {
-            return true;
-        }
-        return false;
+        return fb.getMaterial().equals(mat);
     }
 
     public org.bukkit.scoreboard.Objective getNewObjective(Scoreboard scoreboard, String criteria, String DisplayName) {
@@ -231,13 +228,13 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
 
     public org.bukkit.inventory.ItemStack getColorItem(String mat, byte color) {
         if (mat.equalsIgnoreCase("wool"))
-            return new org.bukkit.inventory.ItemStack(Material.valueOf("WOOL"), 1, (short) color);
+            return new org.bukkit.inventory.ItemStack(Material.valueOf("WOOL"), 1,  color);
         if (mat.equalsIgnoreCase("glass"))
-            return new org.bukkit.inventory.ItemStack(Material.valueOf("STAINED_GLASS"), 1, (short) color);
+            return new org.bukkit.inventory.ItemStack(Material.valueOf("STAINED_GLASS"), 1,  color);
         if (mat.equalsIgnoreCase("banner")) {
-            return new org.bukkit.inventory.ItemStack(Material.valueOf("BANNER"), 1, (short) color);
+            return new org.bukkit.inventory.ItemStack(Material.valueOf("BANNER"), 1,  color);
         }
-        return new org.bukkit.inventory.ItemStack(Material.valueOf("STAINED_GLASS"), 1, (short) color);
+        return new org.bukkit.inventory.ItemStack(Material.valueOf("STAINED_GLASS"), 1,  color);
     }
 
 

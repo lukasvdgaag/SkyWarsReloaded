@@ -1,6 +1,6 @@
 name: Skywars
 main: com.walrusone.skywarsreloaded.SkyWarsReloaded
-version: 4.3.5
+version: 4.4.3
 api-version: 1.13
 author: Walrusone
 authors:
@@ -11,19 +11,19 @@ commands:
   skywars:
     description: This is the main plugin command.
     aliases: [sw]
-    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here http://beta.gaagjescraft.net/discord/ !
+    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here https://gaagjescraft.net/discord !
   swparty:
     description: This is the main party command.
     aliases: [swp]
-    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here http://beta.gaagjescraft.net/discord/ !
+    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here https://gaagjescraft.net/discord !
   swkit:
     description: This is the main party command.
     aliases: [swk]
-    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here http://beta.gaagjescraft.net/discord/ !
+    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here https://gaagjescraft.net/discord !
   swmap:
     description: This is the main party command.
     aliases: [swm]
-    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here http://beta.gaagjescraft.net/discord/ !
+    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here https://gaagjescraft.net/discord !
 permissions:
   sw.*:
     description: Gives access to all sw commands

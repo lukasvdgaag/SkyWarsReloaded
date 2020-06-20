@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 public class ListCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public ListCmd(String t) {
         type = t;
-        forcePlayer = true;
+        forcePlayer = false;
         cmdName = "list";
         alias = new String[]{"l"};
         argLength = 1;

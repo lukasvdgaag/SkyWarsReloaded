@@ -1,3 +1,23 @@
+# version: 4.4.2
+Added a new feature that removes the player's join and quit messages.
+Fixed bug where players were instantly being returned to the lobby when joining a game on Bungeecord servers.
+Fixed the join menu being empty on Bungeecord game servers (this shouldn't really be used though).
+
+# version: 4.4.1
+Added console support for the '/swm list' command.
+Added a new option to disable the scavenger chest.
+Added a new option to just disable the join items without disabling the menus completely.
+Fixed some issues in the NMS (version based method) handlers causing the plugin to crash on some versions.
+
+# version: 4.4.0
+Added bungeecord support. The previous system was not working.
+Added sign support for bungeecord lobbies. Previously, it wasn't possible to join through signs on bungeecord networks.
+Added a {level} placeholder to the lobby scoreboard, and %swr_level% and {swr_level} to (MVdW)PAPI.
+Fixed some issues with the Messenger system that sends skywars messages.
+Fixed a bug regarding the PvP-wait-timer.
+Fixed the bug in Bungeecord games where you were teleported to a normal world first before being put in the game.
+Fixed the bug in Bungeecord games where you were teleported to a normal world first after leaving a game before being sent back to the lobby.
+
 # version: 4.3.4
 Added a new clear inventory on win option to the config
 Added a new enable flight on win option to the config (this already was a feature, but now it's configurable)

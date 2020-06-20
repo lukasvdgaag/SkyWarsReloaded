@@ -8,6 +8,7 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
+import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,7 +36,15 @@ public class JoinSingleMenu {
 
         Runnable update = () -> {
             if ((SkyWarsReloaded.getIC().hasViewers("joinsinglemenu") || SkyWarsReloaded.getIC().hasViewers("spectatesinglemenu"))) {
-                ArrayList<GameMap> games = GameMap.getPlayableArenas(GameType.SINGLE);
+                ArrayList<GameMap> normalGames = GameMap.getPlayableArenas(GameType.SINGLE);
+                ArrayList<SWRServer> bungeeGames = Lists.newArrayList();
+                
+                for (SWRServer s : SWRServer.getServers()) {
+                    if (s.getTeamSize() == 1) {
+                        bungeeGames.add(s);
+                    }
+                }
+                
                 ArrayList<Inventory> invs1 = SkyWarsReloaded.getIC().getMenu("joinsinglemenu").getInventories();
 
                 for (Inventory inv : invs1) {
@@ -44,72 +53,94 @@ public class JoinSingleMenu {
                     }
                 }
 
-                for (int iii = 0; iii < games.size(); iii++) {
+                int gameSize = SkyWarsReloaded.getCfg().bungeeMode() && SkyWarsReloaded.getCfg().isLobbyServer() ? bungeeGames.size() : normalGames.size();
+                
+                for (int iii = 0; iii < gameSize; iii++) {
                     int invent = Math.floorDiv(iii, menuSize);
                     if (invs1.isEmpty() || invs1.size() < invent + 1) {
                         invs1.add(Bukkit.createInventory(null, menuSize + 9, menuName));
                     }
 
-                    GameMap gMap = games.get(iii);
+                    MatchState state;
+                    int alivePlayers = 0;
+                    int maxPlayers = 0;
+                    String displayName = "";
+                    int teamsize = 1;
+                    String name = "";
+                    
+                    GameMap gMap = null;
+                    SWRServer server = null;
+                    if (!SkyWarsReloaded.getCfg().bungeeMode() || !SkyWarsReloaded.getCfg().isLobbyServer()) {
+                        gMap = normalGames.get(iii);
+                        state = gMap.getMatchState();
+                        alivePlayers = gMap.getAlivePlayers().size();
+                        maxPlayers = gMap.getMaxPlayers();
+                        displayName = gMap.getDisplayName();
+                        teamsize = gMap.getTeamSize();
+                        name = gMap.getName();
+                    }
+                    else {
+                        server = bungeeGames.get(iii);
+                        state = server.getMatchState();
+                        alivePlayers = server.getPlayerCount();
+                        maxPlayers = server.getMaxPlayers();
+                        displayName = server.getDisplayName();
+                        teamsize = server.getTeamSize();
+                        name = server.getServerName();
+                    }
+
+                    
 
                     List<String> loreList = Lists.newLinkedList();
-                    if (gMap.getMatchState() != MatchState.OFFLINE) {
-                        if (gMap.getMatchState() == MatchState.WAITINGSTART) {
+                    if (state != MatchState.OFFLINE) {
+                        if (state == MatchState.WAITINGSTART) {
                             for (String a : SkyWarsReloaded.getMessaging().getFile().getStringList("menu.join_menu.lore.waiting-start")) {
                                 loreList.add(ChatColor.translateAlternateColorCodes('&',
-                                        a.replace("{playercount}", "" + gMap.getAlivePlayers().size())
-                                                .replace("{maxplayers}", "" + gMap.getMaxPlayers())
-                                                .replace("{arena}", gMap.getDisplayName())
-                                                .replace("{teamsize}", gMap.getTeamSize() + "")
-                                                .replace("{aliveplayers}", gMap.getAlivePlayers().size() + "")
-                                                .replace("{name}", gMap.getName())
+                                        a.replace("{playercount}", "" + alivePlayers)
+                                                .replace("{maxplayers}", "" + maxPlayers)
+                                                .replace("{arena}", displayName)
+                                                .replace("{teamsize}", teamsize + "")
+                                                .replace("{aliveplayers}", alivePlayers + "")
+                                                .replace("{name}", name)
                                 ));
                             }
-                            /*loreList.add((new Messaging.MessageFormatter()
-                                    .setVariable("playercount", "" + gMap.getAlivePlayers().size())
-                                    .setVariable("maxplayers", "" + gMap.getMaxPlayers())
-                                    .setVariable("arena", gMap.getDisplayName())
-                                    .setVariable("teamsize", gMap.getTeamSize() + "")
-                                    .setVariable("aliveplayers", gMap.getAlivePlayers().size() + "")
-                                    .setVariable("name",gMap.getName())
-                                    .format("menu.join_menu.lore.waiting-start")));*/
-                        } else if (gMap.getMatchState().equals(MatchState.PLAYING)) {
+                        } else if (state.equals(MatchState.PLAYING)) {
                             for (String a : SkyWarsReloaded.getMessaging().getFile().getStringList("menu.join_menu.lore.playing")) {
                                 loreList.add(ChatColor.translateAlternateColorCodes('&',
-                                        a.replace("{playercount}", "" + gMap.getAlivePlayers().size())
-                                                .replace("{maxplayers}", "" + gMap.getMaxPlayers())
-                                                .replace("{arena}", gMap.getDisplayName())
-                                                .replace("{teamsize}", gMap.getTeamSize() + "")
-                                                .replace("{aliveplayers}", gMap.getAlivePlayers().size() + "")
-                                                .replace("{name}", gMap.getName())
+                                        a.replace("{playercount}", "" + alivePlayers)
+                                                .replace("{maxplayers}", "" + maxPlayers)
+                                                .replace("{arena}", displayName)
+                                                .replace("{teamsize}", teamsize + "")
+                                                .replace("{aliveplayers}", alivePlayers + "")
+                                                .replace("{name}", name)
                                 ));
                             }
-                        } else if (gMap.getMatchState().equals(MatchState.ENDING)) {
+                        } else if (state.equals(MatchState.ENDING)) {
                             for (String a : SkyWarsReloaded.getMessaging().getFile().getStringList("menu.join_menu.lore.ending")) {
                                 loreList.add(ChatColor.translateAlternateColorCodes('&',
-                                        a.replace("{playercount}", "" + gMap.getAlivePlayers().size())
-                                                .replace("{maxplayers}", "" + gMap.getMaxPlayers())
-                                                .replace("{arena}", gMap.getDisplayName())
-                                                .replace("{teamsize}", gMap.getTeamSize() + "")
-                                                .replace("{aliveplayers}", gMap.getAlivePlayers().size() + "")
-                                                .replace("{name}", gMap.getName())
+                                        a.replace("{playercount}", "" + alivePlayers)
+                                                .replace("{maxplayers}", "" + maxPlayers)
+                                                .replace("{arena}", displayName)
+                                                .replace("{teamsize}", teamsize + "")
+                                                .replace("{aliveplayers}", alivePlayers + "")
+                                                .replace("{name}", name)
                                 ));
                             }
                         }
 
-                        double xy = ((double) (gMap.getAlivePlayers().size() / gMap.getMaxPlayers()));
+                        double xy = ((double) (alivePlayers / maxPlayers));
 
-                        ItemStack gameIcon = SkyWarsReloaded.getNMS().getItemStack(SkyWarsReloaded.getIM().getItem("blockwaiting"), loreList, ChatColor.translateAlternateColorCodes('&', gMap.getDisplayName()));
+                        ItemStack gameIcon = SkyWarsReloaded.getNMS().getItemStack(SkyWarsReloaded.getIM().getItem("blockwaiting"), loreList, ChatColor.translateAlternateColorCodes('&', displayName));
 
                         ItemStack customIcon = null;
-                        if (gMap.getCustomJoinMenuItemEnabled()) {
+                        if (gMap != null && gMap.getCustomJoinMenuItemEnabled()) {
                             customIcon = gMap.getCustomJoinMenuItem();
                         } else {
-                            if (gMap.getMatchState().equals(MatchState.PLAYING)) {
+                            if (state.equals(MatchState.PLAYING)) {
                                 customIcon = SkyWarsReloaded.getIM().getItem("blockplaying");
-                            } else if (gMap.getMatchState().equals(MatchState.ENDING)) {
+                            } else if (state.equals(MatchState.ENDING)) {
                                 customIcon = SkyWarsReloaded.getIM().getItem("blockending");
-                            } else if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+                            } else if (state.equals(MatchState.WAITINGSTART)) {
                                 customIcon = SkyWarsReloaded.getIM().getItem("almostfull");
                                 if (xy < 0.25) {
                                     customIcon = SkyWarsReloaded.getIM().getItem("almostempty");
@@ -121,50 +152,50 @@ public class JoinSingleMenu {
                             }
                         }
 
-                        if (gMap.getMatchState().equals(MatchState.PLAYING)) {
+                        if (state.equals(MatchState.PLAYING)) {
                             gameIcon = SkyWarsReloaded.getNMS().getItemStack(customIcon, loreList, ChatColor.translateAlternateColorCodes('&',
                                     new Messaging.MessageFormatter()
-                                            .setVariable("playercount", "" + gMap.getAlivePlayers().size())
-                                            .setVariable("maxplayers", "" + gMap.getMaxPlayers())
-                                            .setVariable("arena", gMap.getDisplayName())
-                                            .setVariable("teamsize", gMap.getTeamSize() + "")
-                                            .setVariable("aliveplayers", gMap.getAlivePlayers().size() + "")
-                                            .setVariable("name", gMap.getName())
+                                    .setVariable("playercount", "" + alivePlayers)
+                                            .setVariable("maxplayers", "" + maxPlayers)
+                                            .setVariable("arena", displayName)
+                                            .setVariable("teamsize", teamsize + "")
+                                            .setVariable("aliveplayers", alivePlayers + "")
+                                            .setVariable("name", name)
                                             .format("menu.join_menu.item_title.playing"))
                             );
-                        } else if (gMap.getMatchState().equals(MatchState.ENDING)) {
+                        } else if (state.equals(MatchState.ENDING)) {
                             gameIcon = SkyWarsReloaded.getNMS().getItemStack(customIcon, loreList, ChatColor.translateAlternateColorCodes('&',
                                     new Messaging.MessageFormatter()
-                                            .setVariable("playercount", "" + gMap.getAlivePlayers().size())
-                                            .setVariable("maxplayers", "" + gMap.getMaxPlayers())
-                                            .setVariable("arena", gMap.getDisplayName())
-                                            .setVariable("teamsize", gMap.getTeamSize() + "")
-                                            .setVariable("aliveplayers", gMap.getAlivePlayers().size() + "")
-                                            .setVariable("name", gMap.getName())
+                                            .setVariable("playercount", "" + alivePlayers)
+                                            .setVariable("maxplayers", "" + maxPlayers)
+                                            .setVariable("arena", displayName)
+                                            .setVariable("teamsize", teamsize + "")
+                                            .setVariable("aliveplayers", alivePlayers + "")
+                                            .setVariable("name", name)
                                             .format("menu.join_menu.item_title.ending"))
 
                             );
-                        } else if (gMap.getMatchState() == MatchState.WAITINGSTART) {
+                        } else if (state == MatchState.WAITINGSTART) {
                             gameIcon = SkyWarsReloaded.getNMS().getItemStack(customIcon, loreList, ChatColor.translateAlternateColorCodes('&',
                                     new Messaging.MessageFormatter()
-                                            .setVariable("playercount", "" + gMap.getAlivePlayers().size())
-                                            .setVariable("maxplayers", "" + gMap.getMaxPlayers())
-                                            .setVariable("arena", gMap.getDisplayName())
-                                            .setVariable("teamsize", gMap.getTeamSize() + "")
-                                            .setVariable("aliveplayers", gMap.getAlivePlayers().size() + "")
-                                            .setVariable("name", gMap.getName())
+                                            .setVariable("playercount", "" + alivePlayers)
+                                            .setVariable("maxplayers", "" + maxPlayers)
+                                            .setVariable("arena", displayName)
+                                            .setVariable("teamsize", teamsize + "")
+                                            .setVariable("aliveplayers", alivePlayers + "")
+                                            .setVariable("name", name)
                                             .format("menu.join_menu.item_title.waiting-start"))
 
                             );
                             if (xy < 0.75) {
                                 gameIcon = SkyWarsReloaded.getNMS().getItemStack(customIcon, loreList, ChatColor.translateAlternateColorCodes('&',
                                         new Messaging.MessageFormatter()
-                                                .setVariable("playercount", "" + gMap.getAlivePlayers().size())
-                                                .setVariable("maxplayers", "" + gMap.getMaxPlayers())
-                                                .setVariable("arena", gMap.getDisplayName())
-                                                .setVariable("teamsize", gMap.getTeamSize() + "")
-                                                .setVariable("aliveplayers", gMap.getAlivePlayers().size() + "")
-                                                .setVariable("name", gMap.getName())
+                                                .setVariable("playercount", "" + alivePlayers)
+                                                .setVariable("maxplayers", "" + maxPlayers)
+                                                .setVariable("arena", displayName)
+                                                .setVariable("teamsize", teamsize + "")
+                                                .setVariable("aliveplayers", alivePlayers + "")
+                                                .setVariable("name", name)
                                                 .format("menu.join_menu.item_title.waiting-start"))
 
                                 );
@@ -172,12 +203,12 @@ public class JoinSingleMenu {
                             if (xy < 0.50) {
                                 gameIcon = SkyWarsReloaded.getNMS().getItemStack(customIcon, loreList, ChatColor.translateAlternateColorCodes('&',
                                         new Messaging.MessageFormatter()
-                                                .setVariable("playercount", "" + gMap.getAlivePlayers().size())
-                                                .setVariable("maxplayers", "" + gMap.getMaxPlayers())
-                                                .setVariable("arena", gMap.getDisplayName())
-                                                .setVariable("teamsize", gMap.getTeamSize() + "")
-                                                .setVariable("aliveplayers", gMap.getAlivePlayers().size() + "")
-                                                .setVariable("name", gMap.getName())
+                                                .setVariable("playercount", "" + alivePlayers)
+                                                .setVariable("maxplayers", "" + maxPlayers)
+                                                .setVariable("arena", displayName)
+                                                .setVariable("teamsize", teamsize + "")
+                                                .setVariable("aliveplayers", alivePlayers + "")
+                                                .setVariable("name", name)
                                                 .format("menu.join_menu.item_title.waiting-start"))
 
                                 );
@@ -185,22 +216,22 @@ public class JoinSingleMenu {
                             if (xy < 0.25) {
                                 gameIcon = SkyWarsReloaded.getNMS().getItemStack(customIcon, loreList, ChatColor.translateAlternateColorCodes('&',
                                         new Messaging.MessageFormatter()
-                                                .setVariable("playercount", "" + gMap.getAlivePlayers().size())
-                                                .setVariable("maxplayers", "" + gMap.getMaxPlayers())
-                                                .setVariable("arena", gMap.getDisplayName())
-                                                .setVariable("teamsize", gMap.getTeamSize() + "")
-                                                .setVariable("aliveplayers", gMap.getAlivePlayers().size() + "")
-                                                .setVariable("name", gMap.getName())
+                                                .setVariable("playercount", "" + alivePlayers)
+                                                .setVariable("maxplayers", "" + maxPlayers)
+                                                .setVariable("arena", displayName)
+                                                .setVariable("teamsize", teamsize + "")
+                                                .setVariable("aliveplayers", alivePlayers + "")
+                                                .setVariable("name", name)
                                                 .format("menu.join_menu.item_title.waiting-start"))
 
                                 );
                             }
                         }
                         invs1.get(invent).setItem(iii % menuSize, gameIcon);
-                        arenaSlots.put(iii % menuSize, gMap.getName());
+                        arenaSlots.put(iii % menuSize, name);
                     }
                 }
-                if (SkyWarsReloaded.getCfg().spectateMenuEnabled()) {
+                if (SkyWarsReloaded.getCfg().spectateMenuEnabled() && !SkyWarsReloaded.getCfg().bungeeMode()) {
                     ArrayList<Inventory> specs = SkyWarsReloaded.getIC().getMenu("spectatesinglemenu").getInventories();
                     int i = 0;
                     for (Inventory inv : invs1) {
@@ -231,12 +262,28 @@ public class JoinSingleMenu {
                 return;
             }
 
-            gMap = GameMap.getMap(arenaSlots.get(event.getSlot()));
-            if (gMap == null) {
-                return;
+            gMap = null;
+            SWRServer server = null;
+            MatchState state;
+
+            if (SkyWarsReloaded.getCfg().bungeeMode() && SkyWarsReloaded.getCfg().isLobbyServer()) {
+                server = SWRServer.getServer(arenaSlots.get(event.getSlot()));
+                if (server == null) {
+                    return;
+                }
+                state = server.getMatchState();
+            }
+            else {
+                gMap= GameMap.getMap(arenaSlots.get(event.getSlot()));
+                if (gMap == null) {
+                    return;
+                }
+                state = gMap.getMatchState();
             }
 
-            if (gMap.getMatchState() != MatchState.WAITINGSTART) {
+
+
+            if (state != MatchState.WAITINGSTART) {
                 Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                 return;
             }
@@ -246,11 +293,19 @@ public class JoinSingleMenu {
                 Party party = Party.getParty(player);
                 if (party != null) {
                     if (party.getLeader().equals(player.getUniqueId())) {
-                        if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddParty(party)) {
+                        if (gMap != null && gMap.canAddParty(party)) {
                             player.closeInventory();
                             joined = gMap.addPlayers(null, party);
                             if (!joined) {
                                 player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
+                            }
+                        }
+                        else if (server != null && server.canAddParty(party)) {
+                            player.closeInventory();
+                            server.setPlayerCount(server.getPlayerCount() + party.getSize()-1);
+                            server.updateSigns();
+                            for (int i =0; i<party.getSize();i++) {
+                                SkyWarsReloaded.get().sendBungeeMsg(Bukkit.getPlayer(party.getMembers().get(i)), "Connect", server.getServerName());
                             }
                         }
                     } else {
@@ -258,12 +313,18 @@ public class JoinSingleMenu {
                         player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
                     }
                 } else {
-                    if (gMap.getMatchState() == MatchState.WAITINGSTART && gMap.canAddPlayer()) {
+                    if (gMap != null && gMap.canAddPlayer()) {
                         player.closeInventory();
                         joined = gMap.addPlayers(null, player);
                         if (!joined) {
                             player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join2"));
                         }
+                    }
+                    else if (server != null && server.canAddPlayer()) {
+                        player.closeInventory();
+                        server.setPlayerCount(server.getPlayerCount() + 1);
+                        server.updateSigns();
+                        SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", server.getServerName());
                     }
                 }
             }

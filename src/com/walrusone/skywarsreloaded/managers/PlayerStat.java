@@ -89,13 +89,13 @@ public class PlayerStat {
                                         getScoreboard(player);
                                         player.setScoreboard(getPlayerScoreboard(player));
                                     }
-                                    if (SkyWarsReloaded.getCfg().optionsMenuEnabled()) {
+                                    if (SkyWarsReloaded.getCfg().optionsMenuEnabled() && SkyWarsReloaded.getCfg().isOptionsItemEnabled()) {
                                         player.getInventory().setItem(SkyWarsReloaded.getCfg().getOptionsSlot(), SkyWarsReloaded.getIM().getItem("optionselect"));
                                     }
-                                    if (SkyWarsReloaded.getCfg().joinMenuEnabled() && player.hasPermission("sw.join")) {
+                                    if (SkyWarsReloaded.getCfg().joinMenuEnabled() && SkyWarsReloaded.getCfg().isJoinGameItemEnabled() && player.hasPermission("sw.join")) {
                                         player.getInventory().setItem(SkyWarsReloaded.getCfg().getJoinSlot(), SkyWarsReloaded.getIM().getItem("joinselect"));
                                     }
-                                    if (SkyWarsReloaded.getCfg().spectateMenuEnabled() && player.hasPermission("sw.spectate")) {
+                                    if (!SkyWarsReloaded.getCfg().bungeeMode() && SkyWarsReloaded.getCfg().isSpectateGameItemEnabled() && SkyWarsReloaded.getCfg().spectateMenuEnabled() && player.hasPermission("sw.spectate")) {
                                         player.getInventory().setItem(SkyWarsReloaded.getCfg().getSpectateSlot(), SkyWarsReloaded.getIM().getItem("spectateselect"));
                                     }
                                     player.updateInventory();
@@ -221,6 +221,7 @@ public class PlayerStat {
                     .setVariable("killdeath", killdeath)
                     .setVariable("winloss", winloss)
                     .setVariable("balance", "" + getBalance(player))
+                    .setVariable("level", Integer.toString(Util.get().getPlayerLevel(player)))
                     .format(lineNum);
         }
         return "";
@@ -235,7 +236,7 @@ public class PlayerStat {
 
     private static void resetScoreboard(Player player) {
         Scoreboard scoreboard = scoreboards.get(player);
-        if(!SkyWarsReloaded.getNMS().removeFromScoreboardCollection(scoreboard)) {
+        if (!SkyWarsReloaded.getNMS().removeFromScoreboardCollection(scoreboard)) {
             for (Objective objective : scoreboard.getObjectives()) {
                 if (objective != null) {
                     objective.unregister();
@@ -256,6 +257,7 @@ public class PlayerStat {
     }
 
     private void saveStats(final String uuid) {
+        Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
         new BukkitRunnable() {
             public void run() {
                 PlayerStat ps = PlayerStat.getPlayerStats(uuid);
@@ -266,11 +268,12 @@ public class PlayerStat {
                         @Override
                         public void run() {
                             if (SkyWarsReloaded.getCfg().bungeeMode()) {
-                                Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
                                 if (player != null) {
-                                    boolean joined = MatchManager.get().joinGame(player, GameType.ALL);
-                                    if (!joined) {
-                                        SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
+                                    if (!SkyWarsReloaded.getCfg().isLobbyServer()) {
+                                        boolean joined = MatchManager.get().joinGame(player, GameType.ALL);
+                                        if (!joined) {
+                                            SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
+                                        }
                                     }
                                 }
                             }
@@ -282,7 +285,7 @@ public class PlayerStat {
                     saveStats(uuid);
                 }
             }
-        }.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 10L);
+        }.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 1L);
     }
 
     public String getId() {

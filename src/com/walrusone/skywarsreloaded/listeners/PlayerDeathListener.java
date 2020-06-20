@@ -23,7 +23,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
     public PlayerDeathListener() {
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onDeath2(PlayerDeathEvent v2) {
         GameMap gameMap = MatchManager.get().getPlayerMap(v2.getEntity());
 
@@ -73,7 +73,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onRespawn(final PlayerRespawnEvent a1) {
         final PlayerData pData = PlayerData.getPlayerData(a1.getPlayer().getUniqueId());
         if (pData != null) {

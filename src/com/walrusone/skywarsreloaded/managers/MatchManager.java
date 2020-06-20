@@ -134,6 +134,17 @@ public class MatchManager {
         }
     }
 
+    public void message(final GameMap gameMap, final String message, Player skip) {
+        List<Player> worldPlayers = gameMap.getCurrentWorld().getPlayers();
+        if (worldPlayers != null && !worldPlayers.isEmpty()) {
+            for (Player player : worldPlayers) {
+                if (player != null && player != skip) {
+                    player.sendMessage(message);
+                }
+            }
+        }
+    }
+
     public void teleportToArena(final GameMap gameMap, PlayerCard pCard) {
         if (pCard.getPlayer() != null && pCard.getTeamCard().getSpawn() != null && gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
             Player player = pCard.getPlayer();
@@ -143,13 +154,14 @@ public class MatchManager {
                 Util.get().logToFile(debugName + ChatColor.YELLOW + "Teleporting " + player.getName() + " to Skywars on map" + gameMap.getName());
             }
             World world = gameMap.getCurrentWorld();
-            //Location newSpawn = new Location(world, spawn.getX() + 0.5, spawn.getY()+2, spawn.getZ() + 0.5);
-            Location newSpawn = new Location(world, spawn.getX() + 0.5, spawn.getY() + 0.25, spawn.getZ() + 0.5);
+            Location newSpawn = new Location(world, spawn.getX() + 0.5, spawn.getY()+2, spawn.getZ() + 0.5);
+            //Location newSpawn = new Location(world, spawn.getX() + 0.5, spawn.getY() + 0.25, spawn.getZ() + 0.5);
 
             if (!world.isChunkLoaded(world.getChunkAt(newSpawn))) {
                 world.loadChunk(world.getChunkAt(newSpawn));
             }
             player.teleport(newSpawn, TeleportCause.END_PORTAL);
+
 
             if (SkyWarsReloaded.getCfg().getLookDirectionEnabled()) {
                 if (gameMap.getCurrentWorld() == player.getWorld()) {
@@ -363,10 +375,10 @@ public class MatchManager {
                     gameMap.setDisableDamage(false);
                     for (Player player : gameMap.getAlivePlayers()) {
                         if (!SkyWarsReloaded.getMessaging().getFile().getString("game.pvp-timer-disabled-message").isEmpty()) {
-                            player.sendMessage(new Messaging.MessageFormatter().setVariable("{player}", player.getName()).setVariable("{arena}", gameMap.getName()).format("game.pvp-timer-disabled-message"));
+                            player.sendMessage(new Messaging.MessageFormatter().setVariable("player", player.getName()).setVariable("arena", gameMap.getName()).format("game.pvp-timer-disabled-message"));
                         }
                         if (!SkyWarsReloaded.getMessaging().getFile().getString("game.pvp-timer-disabled-title").isEmpty()) {
-                            String[] lines = new Messaging.MessageFormatter().setVariable("{player}", player.getName()).setVariable("{arena}", gameMap.getName()).format("game.pvp-timer-disabled-title").split("\\\\n");
+                            String[] lines = new Messaging.MessageFormatter().setVariable("player", player.getName()).setVariable("arena", gameMap.getName()).format("game.pvp-timer-disabled-title").split("\\\\n");
                             if (lines.length == 1) {
                                 SkyWarsReloaded.getNMS().sendTitle(player, 20, 50, 20, lines[0], "");
                             } else {
@@ -374,7 +386,6 @@ public class MatchManager {
                             }
                         }
                     }
-                    // todo send title and message
                 }
             }, 20 * SkyWarsReloaded.getCfg().getPVPTimerTime());
         }
@@ -605,7 +616,6 @@ public class MatchManager {
             }.runTaskLater(SkyWarsReloaded.get(), (SkyWarsReloaded.getCfg().getTimeAfterMatch() * 20));
         }
     }
-
     public void removeSpectator(Player player) {
         if (debug) {
             Util.get().logToFile(debugName + ChatColor.YELLOW + player.getName() + " has been removed from spectators");
@@ -646,14 +656,14 @@ public class MatchManager {
                                     .withPrefix()
                                     .setVariable("player", player.getName())
                                     .setVariable("killer", playerData.getTaggedBy().getPlayer().getName())
-                                    .format("game.death.quit-while-tagged"));
+                                    .format("game.death.quit-while-tagged"), null);
                             updatePlayerData(player, pCard, playerData);
                         }
                         Bukkit.getPluginManager().callEvent(new SkyWarsKillEvent(playerData.getTaggedBy().getPlayer(), player, gameMap));
                     } else {
                         if (sendMessages) {
                             if (gameMap.getMatchState() != MatchState.ENDING) {
-                                this.message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getName()).format("game.left-the-game"));
+                                this.message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getName()).format("game.left-the-game"), player);
                                 PlayerStat loserData = PlayerStat.getPlayerStats(player.getUniqueId().toString());
                                 if (gameMap.getTeamSize() == 1 && loserData != null) {
                                     loserData.setElo(pCard.getPostElo());
@@ -676,10 +686,10 @@ public class MatchManager {
                     }
                     if (sendMessages) {
                         if (playerData.getTaggedBy() != null && System.currentTimeMillis() - playerData.getTaggedBy().getTime() < 10000) {
-                            this.message(gameMap, Util.get().getDeathMessage(dCause, true, player, playerData.getTaggedBy().getPlayer()));
+                            this.message(gameMap, Util.get().getDeathMessage(dCause, true, player, playerData.getTaggedBy().getPlayer()), null);
                             updatePlayerData(player, pCard, playerData);
                         } else {
-                            this.message(gameMap, Util.get().getDeathMessage(dCause, false, player, player));
+                            this.message(gameMap, Util.get().getDeathMessage(dCause, false, player, player), null);
                             PlayerStat loserData = PlayerStat.getPlayerStats(player.getUniqueId().toString());
                             if (loserData != null) {
                                 loserData.setDeaths(loserData.getDeaths() + 1);
@@ -700,6 +710,8 @@ public class MatchManager {
                         new BukkitRunnable() {
                             public void run() {
                                 player.sendMessage(new Messaging.MessageFormatter()
+                                        .setVariable("raw_score", eloChange + "")
+                                        .setVariable("arena", gameMap.getDisplayName())
                                         .setVariable("score", Util.get().formatScore(eloChange))
                                         .setVariable("map", gameMap.getName()).format("game.lost"));
                             }
@@ -770,7 +782,7 @@ public class MatchManager {
             }
             message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
                     .setVariable("players", "" + gameMap.getPlayerCount())
-                    .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.left-the-game"));
+                    .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.left-the-game"), player);
 
 
             for (final Player p : gameMap.getAlivePlayers()) {
@@ -960,6 +972,6 @@ public class MatchManager {
             }
             time = v1 + " " + ((v1 > 1) ? new Messaging.MessageFormatter().format("timer.seconds") : new Messaging.MessageFormatter().format("timer.second"));
         }
-        this.message(gameMap, new Messaging.MessageFormatter().setVariable("time", time).format("timer.wait-timer"));
+        this.message(gameMap, new Messaging.MessageFormatter().setVariable("time", time).format("timer.wait-timer"), null);
     }
 }

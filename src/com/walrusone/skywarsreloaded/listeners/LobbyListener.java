@@ -7,6 +7,7 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
+import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -14,18 +15,35 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
 public class LobbyListener implements org.bukkit.event.Listener {
     public LobbyListener() {
     }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onJoin(PlayerJoinEvent e) {
+        if (SkyWarsReloaded.getCfg().bungeeMode() && !SkyWarsReloaded.getCfg().isLobbyServer()) {
+            e.setJoinMessage("");
+        }
+    }
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onQuit(PlayerQuitEvent e) {
+        if (SkyWarsReloaded.getCfg().bungeeMode() && !SkyWarsReloaded.getCfg().isLobbyServer()) {
+            e.setQuitMessage("");
+        }
+    }
+
 
     @EventHandler(priority = org.bukkit.event.EventPriority.HIGH)
     public void onEntityDamage(EntityDamageByEntityEvent e) {
@@ -67,12 +85,22 @@ public class LobbyListener implements org.bukkit.event.Listener {
                 if (b.getState() instanceof Sign) {
                     event.setCancelled(true);
                     String arenaName = lines[1];
-                    GameMap gMap = GameMap.getMap(arenaName);
-                    if (gMap != null) {
-                        gMap.addSign(signLocation);
-                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
+                    if (SkyWarsReloaded.getCfg().bungeeMode()) {
+                        SWRServer server = SWRServer.getServer(arenaName);
+                        if (server != null) {
+                            server.addSign(signLocation);
+                            event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
+                        } else {
+                            event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
+                        }
                     } else {
-                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
+                        GameMap gMap = GameMap.getMap(arenaName);
+                        if (gMap != null) {
+                            gMap.addSign(signLocation);
+                            event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
+                        } else {
+                            event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
+                        }
                     }
                 }
             } else {
@@ -121,17 +149,31 @@ public class LobbyListener implements org.bukkit.event.Listener {
                 Location loc = sign.getLocation();
                 boolean removed = false;
 
-                for (GameMap map : GameMap.getMaps()) {
-                    if (map.hasSign(loc)) {
-                        if (event.getPlayer().isSneaking()) {
-                            if (!removed) {
-                                if (event.getPlayer().hasPermission("sw.signs")) {
-                                    removed = map.removeSign(loc);
-                                } else {
-                                    event.setCancelled(true);
+                if (!SkyWarsReloaded.getCfg().bungeeMode()) {
+                    for (GameMap map : GameMap.getMaps()) {
+                        if (map.hasSign(loc)) {
+                            if (event.getPlayer().isSneaking()) {
+                                if (!removed) {
+                                    if (event.getPlayer().hasPermission("sw.signs")) {
+                                        removed = map.removeSign(loc);
+                                    } else {
+                                        event.setCancelled(true);
+                                    }
                                 }
+                            } else {
+                                event.setCancelled(true);
                             }
-                        } else {
+                        }
+                    }
+                } else {
+                    SWRServer server = SWRServer.getSign(loc);
+                    if (server != null) {
+                        if (event.getPlayer().hasPermission("sw.signs") && event.getPlayer().isSneaking()) {
+                            server.removeSign(loc);
+                            removed = true;
+                            event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.remove"));
+                        }
+                        else {
                             event.setCancelled(true);
                         }
                     }

@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.nms.v1_14_R1;
 
+import com.google.common.collect.Lists;
 import net.minecraft.server.v1_14_R1.*;
 import net.minecraft.server.v1_14_R1.PacketPlayOutTitle.EnumTitleAction;
 import org.bukkit.Material;
@@ -8,10 +9,12 @@ import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.craftbukkit.v1_14_R1.scoreboard.CraftScoreboardManager;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboard;
-import org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboardManager;
+import org.bukkit.craftbukkit.v1_14_R1.scoreboard.CraftScoreboard;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -27,23 +30,22 @@ import java.util.List;
 import java.util.Random;
 
 public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
-    private Collection<CraftScoreboard> scoreboardCollection;
+    private Collection<CraftScoreboard> scoreboardCollection = Lists.newArrayList();
 
     public NMSHandler() {
         CraftScoreboardManager manager = (CraftScoreboardManager) Bukkit.getScoreboardManager();
         try {
             Field field = manager.getClass().getDeclaredField("scoreboards");
-        } catch (Exception e) {
+        } catch (NoSuchFieldException | SecurityException e) {
             e.printStackTrace();
         }
     }
 
     public boolean removeFromScoreboardCollection(Scoreboard scoreboard) {
-        if(scoreboardCollection.contains((CraftScoreboard) scoreboard)) {
+        if (scoreboardCollection.contains((CraftScoreboard) scoreboard)) {
             scoreboardCollection.remove((CraftScoreboard) scoreboard);
             return true;
         }
-
         return false;
     }
 
@@ -59,7 +61,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     }
 
     public org.bukkit.FireworkEffect getFireworkEffect(Color one, Color two, Color three, Color four, Color five, org.bukkit.FireworkEffect.Type type) {
-        return org.bukkit.FireworkEffect.builder().flicker(false).withColor(new Color[]{one, two, three, four}).withFade(five).with(type).trail(true).build();
+        return org.bukkit.FireworkEffect.builder().flicker(false).withColor(one, two, three, four).withFade(five).with(type).trail(true).build();
     }
 
     public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
@@ -69,14 +71,14 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         if (subtitle != null) {
             subtitle = subtitle.replaceAll("%player%", player.getDisplayName());
             subtitle = org.bukkit.ChatColor.translateAlternateColorCodes('&', subtitle);
-            net.minecraft.server.v1_14_R1.IChatBaseComponent iComp = net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + subtitle + "\"}");
+            IChatBaseComponent iComp = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + subtitle + "\"}");
             PacketPlayOutTitle pSubtitle = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, iComp);
             pConn.sendPacket(pSubtitle);
         }
         if (title != null) {
             title = title.replaceAll("%player%", player.getDisplayName());
             title = org.bukkit.ChatColor.translateAlternateColorCodes('&', title);
-            net.minecraft.server.v1_14_R1.IChatBaseComponent iComp = net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + title + "\"}");
+            IChatBaseComponent iComp = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + title + "\"}");
             PacketPlayOutTitle pTitle = new PacketPlayOutTitle(EnumTitleAction.TITLE, iComp);
             pConn.sendPacket(pTitle);
         }
@@ -84,8 +86,8 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
 
     public void sendActionBar(Player p, String msg) {
         String s = org.bukkit.ChatColor.translateAlternateColorCodes('&', msg);
-        net.minecraft.server.v1_14_R1.IChatBaseComponent icbc = net.minecraft.server.v1_14_R1.IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + s + "\"}");
-        net.minecraft.server.v1_14_R1.PacketPlayOutChat bar = new net.minecraft.server.v1_14_R1.PacketPlayOutChat(icbc);
+        IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + s + "\"}");
+        PacketPlayOutChat bar = new PacketPlayOutChat(icbc);
         ((CraftPlayer) p).getHandle().playerConnection.sendPacket(bar);
     }
 
@@ -114,12 +116,12 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_DESTROYS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_POTION_EFFECTS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_PLACED_ON});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_UNBREAKABLE});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ENCHANTS});
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -129,12 +131,12 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_DESTROYS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_POTION_EFFECTS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_PLACED_ON});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_UNBREAKABLE});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ENCHANTS});
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -166,7 +168,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     public void spawnDragon(World world, Location loc) {
         WorldServer w = ((CraftWorld) world).getHandle();
         EntityEnderDragon dragon = new EntityEnderDragon(EntityTypes.ENDER_DRAGON, w.getMinecraftWorld());
-        dragon.getDragonControllerManager().setControllerPhase(net.minecraft.server.v1_14_R1.DragonControllerPhase.CHARGING_PLAYER);
+        dragon.getDragonControllerManager().setControllerPhase(DragonControllerPhase.CHARGING_PLAYER);
         dragon.setLocation(loc.getX(), loc.getY(), loc.getZ(), w.random.nextFloat() * 360.0F, 0.0F);
         w.addEntity(dragon);
     }
@@ -174,7 +176,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     public org.bukkit.entity.Entity spawnFallingBlock(Location loc, Material mat, boolean damage) {
         FallingBlock block = loc.getWorld().spawnFallingBlock(loc, new org.bukkit.material.MaterialData(mat));
         block.setDropItem(false);
-        net.minecraft.server.v1_14_R1.EntityFallingBlock fb = ((org.bukkit.craftbukkit.v1_14_R1.entity.CraftFallingBlock) block).getHandle();
+        EntityFallingBlock fb = ((CraftFallingBlock) block).getHandle();
         fb.a(damage);
         return block;
     }
@@ -182,14 +184,14 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     public void playEnderChestAction(Block block, boolean open) {
         Location location = block.getLocation();
         WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
-        net.minecraft.server.v1_14_R1.BlockPosition position = new net.minecraft.server.v1_14_R1.BlockPosition(location.getX(), location.getY(), location.getZ());
+        BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
         TileEntityEnderChest ec = (TileEntityEnderChest) world.getTileEntity(position);
         assert (ec != null);
         world.playBlockAction(position, ec.getBlock().getBlock(), 1, open ? 1 : 0);
     }
 
     public void setEntityTarget(org.bukkit.entity.Entity ent, Player player) {
-        net.minecraft.server.v1_14_R1.EntityCreature entity = (net.minecraft.server.v1_14_R1.EntityCreature) ((org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity) ent).getHandle();
+        EntityCreature entity = (EntityCreature) ((CraftEntity) ent).getHandle();
         entity.setGoalTarget(((CraftPlayer) player).getHandle());
     }
 

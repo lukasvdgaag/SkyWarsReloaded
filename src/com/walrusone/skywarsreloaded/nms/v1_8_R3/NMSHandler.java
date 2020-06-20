@@ -107,12 +107,12 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_DESTROYS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ENCHANTS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_POTION_EFFECTS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_PLACED_ON});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_UNBREAKABLE});
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -122,12 +122,12 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_DESTROYS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ENCHANTS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_POTION_EFFECTS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_PLACED_ON});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_UNBREAKABLE});
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -203,10 +203,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     }
 
     public boolean checkMaterial(FallingBlock fb, Material mat) {
-        if (fb.getMaterial().equals(mat)) {
-            return true;
-        }
-        return false;
+        return fb.getMaterial().equals(mat);
     }
 
     public org.bukkit.scoreboard.Objective getNewObjective(Scoreboard scoreboard, String criteria, String DisplayName) {
@@ -239,13 +236,13 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
 
     public org.bukkit.inventory.ItemStack getColorItem(String mat, byte color) {
         if (mat.equalsIgnoreCase("wool"))
-            return new org.bukkit.inventory.ItemStack(Material.WOOL, 1, (short) color);
+            return new org.bukkit.inventory.ItemStack(Material.WOOL, 1,  color);
         if (mat.equalsIgnoreCase("glass"))
-            return new org.bukkit.inventory.ItemStack(Material.STAINED_GLASS, 1, (short) color);
+            return new org.bukkit.inventory.ItemStack(Material.STAINED_GLASS, 1,  color);
         if (mat.equalsIgnoreCase("banner")) {
-            return new org.bukkit.inventory.ItemStack(Material.BANNER, 1, (short) color);
+            return new org.bukkit.inventory.ItemStack(Material.BANNER, 1,  color);
         }
-        return new org.bukkit.inventory.ItemStack(Material.STAINED_GLASS, 1, (short) color);
+        return new org.bukkit.inventory.ItemStack(Material.STAINED_GLASS, 1,  color);
     }
 
 

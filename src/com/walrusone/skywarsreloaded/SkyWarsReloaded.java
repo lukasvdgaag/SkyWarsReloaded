@@ -13,6 +13,7 @@ import com.walrusone.skywarsreloaded.config.Config;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.database.Database;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
+import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.listeners.*;
@@ -20,12 +21,18 @@ import com.walrusone.skywarsreloaded.managers.*;
 import com.walrusone.skywarsreloaded.menus.*;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.SWRServer;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.holograms.HoloDisUtil;
 import com.walrusone.skywarsreloaded.utilities.holograms.HologramsUtil;
+import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPing;
+import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPingOptions;
+import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPingReply;
 import com.walrusone.skywarsreloaded.utilities.placeholders.SWRMVdWPlaceholder;
 import com.walrusone.skywarsreloaded.utilities.placeholders.SWRPlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -37,6 +44,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
@@ -134,7 +142,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
         servername = "none";
 
-        File cagesFolder = new File(getDataFolder(),"cages");
+        File cagesFolder = new File(getDataFolder(), "cages");
         if (!cagesFolder.exists()) {
             cagesFolder.mkdir();
         }
@@ -228,7 +236,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
             Bukkit.getPluginManager().registerEvents(new PingListener(), this);
         }
-        if (getCfg().bungeeMode()) {
+        if (getCfg().bungeeMode() && getCfg().isLobbyServer()) {
             new BukkitRunnable() {
                 public void run() {
                     if (servername.equalsIgnoreCase("none")) {
@@ -241,7 +249,77 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     }
                 }
             }.runTaskTimer(this, 0, 20);
+
+            prepareServers();
+
+            for (SWRServer server : SWRServer.getServers()) {
+                server.clearSigns();
+                List<String> signLocs = SkyWarsReloaded.get().getConfig().getStringList("signs." + server.getServerName());
+                if (signLocs != null) {
+                    for (String sign : signLocs) {
+                        Location loc = Util.get().stringToLocation(sign);
+                        server.addSign(loc);
+                    }
+                }
+            }
+
         }
+    }
+
+    public void prepareServers() {
+        SWRServer.getServers().clear();
+        for (String server : getCfg().getGameServers()) {
+            final String[] serverParts = server.split(":");
+            if (serverParts.length >= 5) {
+                SWRServer.getServers().add(new SWRServer(serverParts[0], Integer.parseInt(serverParts[1])));
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        SWRServer swrServer = SWRServer.getServer(serverParts[0]);
+                        if (swrServer != null) {
+                            swrServer.setDisplayName(serverParts[2]);
+                            swrServer.setMaxPlayers(Integer.parseInt(serverParts[3]));
+                            swrServer.setTeamsize(Integer.parseInt(serverParts[4]));
+                            Player player = Iterables.getFirst(SkyWarsReloaded.get().getServer().getOnlinePlayers(), null);
+                            if (player != null) {
+                                sendBungeeMsg(player, "PlayerCount", serverParts[0]);
+                            } else {
+                                try {
+                                    MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname("127.0.0.1").setPort(swrServer.getPort()));
+                                    final String[] serverInfo = data.getDescription().getText().split(":");
+                                    swrServer.setMatchState(serverInfo[0]);
+                                    if (Util.get().isInteger(serverInfo[1])) {
+                                        swrServer.setPlayerCount(Integer.parseInt(serverInfo[1]));
+                                    }
+                                    if (Util.get().isInteger(serverInfo[2])) {
+                                        swrServer.setMaxPlayers(Integer.parseInt(serverInfo[2]));
+                                    }
+                                    swrServer.setDisplayName(serverInfo[3]);
+                                    swrServer.updateSigns();
+
+                                } catch (IOException e) {
+                                    swrServer.setMatchState(MatchState.OFFLINE);
+                                    swrServer.updateSigns();
+                                }
+                            }
+                        }
+                    }
+                }.runTaskTimer(this, 20, 200);
+            }
+        }
+    }
+
+    public void updateServers() {
+        new BukkitRunnable() {
+            public void run() {
+                for (SWRServer server : SWRServer.getServers()) {
+                    Player player = Iterables.getFirst(SkyWarsReloaded.get().getServer().getOnlinePlayers(), null);
+                    if (player != null) {
+                        sendBungeeMsg(player, "PlayerCount", server.getServerName());
+                    }
+                }
+            }
+        }.runTask(this);
     }
 
     public void onDisable() {
@@ -303,7 +381,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                         PlayerStat.getPlayers().add(new PlayerStat(v));
                     }
                 }
-                leaderboard = null;
                 leaderboard = new Leaderboard();
             }
         }.runTaskAsynchronously(this);
@@ -375,6 +452,47 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             servername = in.readUTF();
         }
 
+        if (subchannel.equals("PlayerCount")) {
+            String server = in.readUTF();
+            int playercount = in.readInt();
+
+            final SWRServer swrServer = SWRServer.getServer(server);
+
+            if (swrServer != null) {
+                if (playercount == 0) {
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname("127.0.0.1").setPort(swrServer.getPort()));
+                                final String[] serverInfo = data.getDescription().getText().split(":");
+                                swrServer.setMatchState(serverInfo[0]);
+                                if (Util.get().isInteger(serverInfo[1])) {
+                                    swrServer.setPlayerCount(Integer.parseInt(serverInfo[1]));
+                                }
+                                if (Util.get().isInteger(serverInfo[2])) {
+                                    swrServer.setMaxPlayers(Integer.parseInt(serverInfo[2]));
+                                }
+                                swrServer.setDisplayName(serverInfo[3]);
+                                swrServer.updateSigns();
+
+                            } catch (IOException e) {
+                                swrServer.setMatchState(MatchState.OFFLINE);
+                                swrServer.updateSigns();
+                            }
+                        }
+                    }.runTask(this);
+                } else {
+                    if (player != null) {
+                        ArrayList<String> messages = new ArrayList<String>();
+                        messages.add("RequestUpdate");
+                        messages.add(servername);
+                        sendSWRMessage(player, server, messages);
+                    }
+                }
+            }
+        }
+
         if (subchannel.equals("SWRMessaging")) {
             short len = in.readShort();
             byte[] msgbytes = new byte[len];
@@ -383,6 +501,23 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
             try {
                 String header = msgin.readUTF();
+                if (header.equalsIgnoreCase("ServerUpdate")) {
+                    String server = msgin.readUTF();
+                    String playerCount = msgin.readUTF();
+                    String maxPlayers = msgin.readUTF();
+                    String gameStarted = msgin.readUTF();
+                    SWRServer swrServer = SWRServer.getServer(server);
+                    if (swrServer != null) {
+                        if (Util.get().isInteger(playerCount)) {
+                            swrServer.setPlayerCount(Integer.parseInt(playerCount));
+                        }
+                        if (Util.get().isInteger(maxPlayers)) {
+                            swrServer.setMaxPlayers(Integer.parseInt(maxPlayers));
+                        }
+                        swrServer.setMatchState(gameStarted);
+                        swrServer.updateSigns();
+                    }
+                }
                 if (header.equalsIgnoreCase("RequestUpdate")) {
                     String sendToServer = msgin.readUTF();
                     String playerCount = "" + GameMap.getMaps().get(0).getAlivePlayers().size();

@@ -83,7 +83,7 @@ public class Util {
                 if (player != null) {
                     player.playSound(location, Sound.valueOf(sound), volume, pitch);
                 }
-            } catch (IllegalArgumentException | NullPointerException e) {
+            } catch (IllegalArgumentException e) {
                 SkyWarsReloaded.get().getLogger().info("ERROR: " + sound + " is not a valid bukkit sound. Please check your configs");
             }
         }
@@ -119,7 +119,7 @@ public class Util {
         try {
             Integer.parseInt(s);
             return true;
-        } catch (NumberFormatException | NullPointerException e) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
@@ -128,7 +128,7 @@ public class Util {
         try {
             Float.parseFloat(s);
             return true;
-        } catch (NumberFormatException | NullPointerException e) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
@@ -490,7 +490,7 @@ public class Util {
 
     public void setPlayerExperience(Player player, int amount) {
         if (amount <= 352) {
-            int level = (int) Math.floor(quadraticEquationRoot(1, 6, 0 - amount));
+            int level = (int) Math.floor(quadraticEquationRoot(1, 6, -amount));
             double nextLevel = 2 * level + 7;
             double levelExp = (level * level) + 6 * level;
             double leftOver = amount - levelExp;
@@ -521,7 +521,7 @@ public class Util {
             if (ps != null) {
                 int amount = ps.getXp();
                 if (amount <= 352) {
-                    return (int) Math.floor(quadraticEquationRoot(1, 6, 0 - amount));
+                    return (int) Math.floor(quadraticEquationRoot(1, 6, -amount));
                 } else if (amount <= 1507) {
                     return (int) Math.floor(quadraticEquationRoot(2.5, -40.5, 360 - amount));
                 } else {
@@ -556,7 +556,7 @@ public class Util {
             if (locationParts.length != 3) {
                 return null;
             } else {
-                return new CoordLoc(Integer.valueOf(locationParts[0]), Integer.valueOf(locationParts[1]), Integer.valueOf(locationParts[2]));
+                return new CoordLoc(Integer.parseInt(locationParts[0]), Integer.parseInt(locationParts[1]), Integer.parseInt(locationParts[2]));
             }
         }
         return null;

@@ -114,18 +114,40 @@ public class PlayerData {
 
             final Location respawn = SkyWarsReloaded.getCfg().getSpawn();
             if (SkyWarsReloaded.get().isEnabled()) {
+
+                // TODO REMOVE DEBUG HERE
+                Bukkit.getConsoleSender().sendMessage("Skywars is enabled");
+                Bukkit.getConsoleSender().sendMessage("PlayerQuit: " + playerQuit);
+
                 if (playerQuit) {
-                    player.teleport(respawn, TeleportCause.END_PORTAL);
+                    if (SkyWarsReloaded.getCfg().bungeeMode()) {
+                        Bukkit.getConsoleSender().sendMessage("Now connecting player to lobby (1)");
+                        SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
+                    } else {
+                        player.teleport(respawn, TeleportCause.END_PORTAL);
+                    }
                 } else {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            player.teleport(respawn, TeleportCause.END_PORTAL);
+                            if (SkyWarsReloaded.getCfg().bungeeMode()) {
+                                Bukkit.getConsoleSender().sendMessage("Now connecting player to lobby (2)");
+                                SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
+                            } else {
+                                player.teleport(respawn, TeleportCause.END_PORTAL);
+                            }
                         }
                     }.runTaskLater(SkyWarsReloaded.get(), 2);
                 }
             } else {
-                player.teleport(respawn, TeleportCause.END_PORTAL);
+                Bukkit.getConsoleSender().sendMessage("Skywars is not enabled");
+
+                if (SkyWarsReloaded.getCfg().bungeeMode()) {
+                    Bukkit.getConsoleSender().sendMessage("Now connecting player to lobby (3)");
+                    SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
+                } else {
+                    player.teleport(respawn, TeleportCause.END_PORTAL);
+                }
             }
 
 
@@ -137,7 +159,8 @@ public class PlayerData {
                     @Override
                     public void run() {
                         String uuid = player.getUniqueId().toString();
-                        SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
+                        //SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
+                        // line above has been moved
                         PlayerStat remove = PlayerStat.getPlayerStats(uuid);
                         PlayerStat.getPlayers().remove(remove);
                     }

@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.utilities.placeholders;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 
@@ -55,17 +56,16 @@ public class SWRPlaceholderAPI extends PlaceholderExpansion {
         } else if (identifier.equalsIgnoreCase("games_played") ||
                 identifier.equalsIgnoreCase("games")) {
             return "" + (stat.getWins() + stat.getLosses());
+        } else if (identifier.equalsIgnoreCase("level")) {
+            return "" + Util.get().getPlayerLevel(p);
+        } else if (identifier.equals("kill_death")) {
+            double statt = (double) stat.getKills() / (double) stat.getDeaths();
+            return String.format("%1$,.2f", statt);
+        } else if (identifier.equals("win_loss")) {
+            double statt = (double) stat.getWins() / (double) stat.getLosses();
+            return String.format("%1$,.2f", statt);
         } else {
-            double statt;
-            if (identifier.equals("kill_death")) {
-                statt = (double) stat.getKills() / (double) stat.getDeaths();
-                return String.format("%1$,.2f", statt);
-            } else if (identifier.equals("win_loss")) {
-                statt = (double) stat.getWins() / (double) stat.getLosses();
-                return String.format("%1$,.2f", statt);
-            } else {
-                return null;
-            }
+            return null;
         }
 
     }

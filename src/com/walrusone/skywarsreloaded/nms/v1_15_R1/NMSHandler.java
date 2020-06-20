@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.nms.v1_15_R1;
 
+import com.google.common.collect.Lists;
 import net.minecraft.server.v1_15_R1.*;
 import net.minecraft.server.v1_15_R1.PacketPlayOutTitle.EnumTitleAction;
 import org.bukkit.Material;
@@ -8,10 +9,12 @@ import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboardManager;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboard;
-import org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboardManager;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -27,19 +30,19 @@ import java.util.List;
 import java.util.Random;
 
 public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
-    private Collection<CraftScoreboard> scoreboardCollection;
+    private Collection<CraftScoreboard> scoreboardCollection = Lists.newArrayList();
 
     public NMSHandler() {
         CraftScoreboardManager manager = (CraftScoreboardManager) Bukkit.getScoreboardManager();
         try {
             Field field = manager.getClass().getDeclaredField("scoreboards");
-        } catch (Exception e) {
+        } catch (NoSuchFieldException | SecurityException e) {
             e.printStackTrace();
         }
     }
 
     public boolean removeFromScoreboardCollection(Scoreboard scoreboard) {
-        if(scoreboardCollection.contains((CraftScoreboard) scoreboard)) {
+        if (scoreboardCollection.contains((CraftScoreboard) scoreboard)) {
             scoreboardCollection.remove((CraftScoreboard) scoreboard);
             return true;
         }
@@ -60,7 +63,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     }
 
     public FireworkEffect getFireworkEffect(Color one, Color two, Color three, Color four, Color five, FireworkEffect.Type type) {
-        return FireworkEffect.builder().flicker(false).withColor(new Color[]{one, two, three, four}).withFade(five).with(type).trail(true).build();
+        return FireworkEffect.builder().flicker(false).withColor(one, two, three, four).withFade(five).with(type).trail(true).build();
     }
 
     public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
@@ -115,12 +118,12 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_DESTROYS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_POTION_EFFECTS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_PLACED_ON});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_UNBREAKABLE});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ENCHANTS});
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -130,12 +133,12 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_DESTROYS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_POTION_EFFECTS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_PLACED_ON});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_UNBREAKABLE});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ENCHANTS});
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -175,7 +178,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     public org.bukkit.entity.Entity spawnFallingBlock(Location loc, Material mat, boolean damage) {
         FallingBlock block = loc.getWorld().spawnFallingBlock(loc, new org.bukkit.material.MaterialData(mat));
         block.setDropItem(false);
-        EntityFallingBlock fb = ((org.bukkit.craftbukkit.v1_15_R1.entity.CraftFallingBlock) block).getHandle();
+        EntityFallingBlock fb = ((CraftFallingBlock) block).getHandle();
         fb.a(damage);
         return block;
     }
@@ -190,7 +193,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     }
 
     public void setEntityTarget(org.bukkit.entity.Entity ent, Player player) {
-        EntityCreature entity = (EntityCreature) ((org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity) ent).getHandle();
+        EntityCreature entity = (EntityCreature) ((CraftEntity) ent).getHandle();
         entity.setGoalTarget(((CraftPlayer) player).getHandle());
     }
 

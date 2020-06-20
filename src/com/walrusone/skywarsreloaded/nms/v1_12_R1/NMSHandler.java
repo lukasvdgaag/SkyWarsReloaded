@@ -11,7 +11,6 @@ import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
@@ -104,12 +103,12 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_DESTROYS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_POTION_EFFECTS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_PLACED_ON});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_UNBREAKABLE});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ENCHANTS});
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -119,12 +118,12 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ATTRIBUTES});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_DESTROYS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_POTION_EFFECTS});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_PLACED_ON});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_UNBREAKABLE});
-        addItemMeta.addItemFlags(new ItemFlag[]{ItemFlag.HIDE_ENCHANTS});
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -229,13 +228,13 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
 
     public org.bukkit.inventory.ItemStack getColorItem(String mat, byte color) {
         if (mat.equalsIgnoreCase("wool"))
-            return new org.bukkit.inventory.ItemStack(Material.matchMaterial("WOOL"), 1, (short) color);
+            return new org.bukkit.inventory.ItemStack(Material.matchMaterial("WOOL"), 1,  color);
         if (mat.equalsIgnoreCase("glass"))
-            return new org.bukkit.inventory.ItemStack(Material.matchMaterial("STAINED_GLASS"), 1, (short) color);
+            return new org.bukkit.inventory.ItemStack(Material.matchMaterial("STAINED_GLASS"), 1,  color);
         if (mat.equalsIgnoreCase("banner")) {
-            return new org.bukkit.inventory.ItemStack(Material.matchMaterial("BANNER"), 1, (short) color);
+            return new org.bukkit.inventory.ItemStack(Material.matchMaterial("BANNER"), 1,  color);
         }
-        return new org.bukkit.inventory.ItemStack(Material.matchMaterial("STAINED_GLASS"), 1, (short) color);
+        return new org.bukkit.inventory.ItemStack(Material.matchMaterial("STAINED_GLASS"), 1,  color);
     }
 
 

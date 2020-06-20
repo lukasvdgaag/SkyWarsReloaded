@@ -26,7 +26,7 @@ import java.util.UUID;
 public class Schematic12 {
 
     public void pasteSchematic(File schematicFile, GameMap map, CoordLoc spawn, Player player) {
-       /* try {
+        /*try {
             World weWorld = new BukkitWorld(map.getCurrentWorld());
             WorldData worldData = weWorld.getWorldData();
             Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(schematicFile)).read(worldData);
