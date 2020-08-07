@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.game;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.events.SkyWarsJoinEvent;
 import com.walrusone.skywarsreloaded.game.cages.schematics.SchematicCage;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
@@ -11,12 +12,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class TeamCard {
     private ArrayList<PlayerCard> playerCards = new ArrayList();
     private ArrayList<UUID> dead = new ArrayList();
-    private CoordLoc spawn;
+    private List<CoordLoc> spawns;
     private GameMap gMap;
     private int place;
     private String prefix;
@@ -25,8 +27,8 @@ public class TeamCard {
     private String name;
     private int position;
 
-    TeamCard(int size, CoordLoc spawn, GameMap gameMap, String prefix, String color, int pos) {
-        this.spawn = spawn;
+    TeamCard(int size, GameMap gameMap, String prefix, String color, int pos, List<CoordLoc> teamSpawns) {
+        this.spawns = teamSpawns;
         gMap = gameMap;
         place = 1;
         this.prefix = prefix;
@@ -35,14 +37,21 @@ public class TeamCard {
         bColor = Util.get().getByteFromColor(col);
         position = (pos - 1);
         for (int i = 0; i < size; i++) {
-            playerCards.add(new PlayerCard(this, null, -1));
+            CoordLoc loc;
+            if (SkyWarsReloaded.getCfg().isUseSeparateCages()) {
+                loc = teamSpawns.size() >= i+1 ? teamSpawns.get(i) : null;
+            }
+            else {
+                loc = teamSpawns.size()>=1 ? teamSpawns.get(0) : null;
+            }
+            playerCards.add(new PlayerCard(this, null, -1, loc));
         }
     }
 
     void updateCard(int size) {
         if (size > playerCards.size()) {
             for (int i = playerCards.size(); i < size; i++) {
-                playerCards.add(new PlayerCard(this, null, -1));
+                playerCards.add(new PlayerCard(this, null, -1, spawns.get(i)));
             }
         } else {
             while (size < playerCards.size()) {
@@ -55,7 +64,7 @@ public class TeamCard {
         return playerCards.size();
     }
 
-    int getFullCount() {
+    public int getFullCount() {
         int x = 0;
         for (PlayerCard pCard : playerCards) {
             if (pCard.getUUID() == null) {
@@ -73,8 +82,8 @@ public class TeamCard {
         place = x;
     }
 
-    public CoordLoc getSpawn() {
-        return spawn;
+    public List<CoordLoc> getSpawn() {
+        return spawns;
     }
 
     public GameMap getGameMap() {
@@ -85,36 +94,42 @@ public class TeamCard {
         return playerCards;
     }
 
-    TeamCard sendReservation(Player player, PlayerStat ps) {
+    public TeamCard sendReservation(Player player, PlayerStat ps) {
         if ((player != null) && (ps != null) && (ps.isInitialized())) {
             for (PlayerCard pCard : playerCards) {
-                if ((pCard.getUUID() == null) && (spawn != null)) {
+                if ((pCard.getUUID() == null) && (pCard.getSpawn() != null)) {
+                    if (!team.hasEntry(player.getName())) {
+                        team.addEntry(player.getName());
+                    }
                     pCard.setPlayer(player);
                     pCard.setPreElo(ps.getElo());
 
-                    String cageName = ps.getGlassColor();
-                    // todo check this is beta
-                    if (cageName.startsWith("custom-")) {
-                        if (Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
-                            //cage.removeSpawnHousing(this, reserved,false);
-                            Bukkit.getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {
-                                boolean b = new SchematicCage().createSpawnPlatform(gMap, player);
-                                if (!b) {
-                                    gMap.getCage().setGlassColor(gMap, this);
-                                }
-                            }, 10L);
-                            return this;
-                        }
-                    } else {
-                        boolean glassReader = gMap.getCage().setGlassColor(gMap, this);
-                        if (glassReader) {
-                            return this;
-                        }
+                    if (pCard.getTeamCard().getGameMap().getMatchState() == MatchState.WAITINGSTART) {
+                        spawnCage(pCard, ps);
                     }
+                    return this;
                 }
             }
         }
         return null;
+    }
+
+    public void spawnCage(PlayerCard pCard, PlayerStat ps) {
+        String cageName = ps.getGlassColor();
+        // todo check this is beta
+        if (cageName != null && cageName.startsWith("custom-")) {
+            if (Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
+                //cage.removeSpawnHousing(this, reserved,false);
+                Bukkit.getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {
+                    boolean b = new SchematicCage().createSpawnPlatform(gMap, pCard.getPlayer());
+                    if (!b) {
+                        gMap.getCage().setGlassColor(gMap, this);
+                    }
+                }, 10L);
+            }
+        } else {
+            boolean glassReader = gMap.getCage().setGlassColor(gMap, this);
+        }
     }
 
     boolean joinGame(Player player) {
@@ -159,14 +174,11 @@ public class TeamCard {
 
     PlayerCard containsPlayer(UUID uuid) {
         for (PlayerCard pCard : playerCards) {
-            if ((uuid != null) &&
-                    (pCard.getUUID() != null) &&
+            if ((pCard.getUUID() != null) &&
                     (pCard.getUUID().equals(uuid))) {
                 return pCard;
             }
         }
-
-
         return null;
     }
 

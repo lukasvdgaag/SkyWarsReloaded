@@ -79,7 +79,7 @@ public class ChestManager {
             if (storage.getConfigurationSection("chestItems") != null) {
                 for (String key : storage.getConfigurationSection("chestItems").getKeys(false)) {
                     if (Util.get().isInteger(key)) {
-                        int percent = Integer.valueOf(key);
+                        int percent = Integer.parseInt(key);
                         List<ItemStack> items = (List<ItemStack>) storage.getList("chestItems." + key + ".items");
                         if (!itemList.containsKey(percent)) {
                             itemList.put(percent, Bukkit.createInventory(null, 54, fileName + " " + percent));

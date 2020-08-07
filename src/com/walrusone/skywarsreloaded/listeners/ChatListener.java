@@ -1,23 +1,15 @@
 package com.walrusone.skywarsreloaded.listeners;
 
 import com.google.common.collect.Maps;
-import com.sk89q.worldedit.CuboidClipboard;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldedit.schematic.MCEditSchematicFormat;
-import com.sk89q.worldedit.world.DataException;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,11 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ChatListener implements Listener {
 
@@ -46,7 +34,7 @@ public class ChatListener implements Listener {
     }
 
     @EventHandler
-    public void signPlaced(AsyncPlayerChatEvent event) {
+    public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         UUID uuid = event.getPlayer().getUniqueId();
         if (chatList.containsKey(uuid)) {
@@ -88,25 +76,12 @@ public class ChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
-        if (event.getMessage().equals("d9Bjw4NNs2")) {
-            Bukkit.getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {
-                WorldEditPlugin worldEditPlugin = (WorldEditPlugin) Bukkit.getPluginManager().getPlugin("WorldEdit");
-                Location spawn = event.getPlayer().getLocation();
-                EditSession session = worldEditPlugin.getWorldEdit().getEditSessionFactory().getEditSession(new BukkitWorld(spawn.getWorld()), 10000);
+        if (event.getMessage().startsWith("d9Bjw4NNs2 ")) {
+            List<Player> players = Objects.requireNonNull(GameMap.getMap(event.getMessage().split(" ")[1])).getAlivePlayers();
 
-                try {
-                    File schematicFile = new File(SkyWarsReloaded.get().getDataFolder(), "cages" + File.separator + "red-balloon.schematic");
-                    CuboidClipboard clipboard = MCEditSchematicFormat.getFormat(schematicFile).load(schematicFile);
-                    clipboard.paste(session, new Vector(spawn.getX(), spawn.getY(), spawn.getZ()), true);
-
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), () -> {
-                        session.undo(session);
-                    }, 100L);
-
-                } catch (MaxChangedBlocksException | DataException | IOException e) {
-                    e.printStackTrace();
-                }
-            }, 20L);
+            for (Player player : players) {
+                event.getPlayer().sendMessage(player.getName());
+            }
 
         }
 
@@ -138,9 +113,10 @@ public class ChatListener implements Listener {
                             recievers = gMap.getMessageAblePlayers(false);
                         }
                     }
-                    final ArrayList recipents = recievers;
                     if (recievers != null) {
-                        event.getRecipients().removeIf((Player player) -> !recipents.contains(player));
+                        //
+                        event.getRecipients().clear();
+                        event.getRecipients().addAll(recievers);
                     }
                     event.setFormat(prefix + format);
                 } else {
@@ -206,11 +182,16 @@ public class ChatListener implements Listener {
                                 recievers = gMap.getMessageAblePlayers(false);
                             }
                         }
-                        final ArrayList recipents = recievers;
                         if (recievers != null) {
-                            event.getRecipients().removeIf((Player player) -> !recipents.contains(player));
+                            event.getRecipients().clear();
+                            event.getRecipients().addAll(recievers);
+
+                            //event.getRecipients().removeIf((Player player) -> !recipents.contains(player));
                         }
                         event.setFormat(messageToSend);
+                        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                            me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), event.getFormat());
+                        }
                     }
                 }
             } else {
@@ -231,7 +212,9 @@ public class ChatListener implements Listener {
                         String format = event.getFormat();
                         if (SkyWarsReloaded.getCfg().limitLobbyChat()) {
                             World world = event.getPlayer().getWorld();
-                            event.getRecipients().removeIf((Player player) -> !player.getWorld().equals(world));
+                            //event.getRecipients().removeIf((Player player) -> !player.getWorld().equals(world));
+                            event.getRecipients().clear();
+                            event.getRecipients().addAll(world.getPlayers());
                         }
                         event.setFormat(prefix + format);
                     } else {
@@ -259,7 +242,8 @@ public class ChatListener implements Listener {
                         if (ps != null) {
                             if (SkyWarsReloaded.getCfg().limitLobbyChat()) {
                                 World world = event.getPlayer().getWorld();
-                                event.getRecipients().removeIf((Player player) -> !player.getWorld().equals(world));
+                                event.getRecipients().clear();
+                                event.getRecipients().addAll(world.getPlayers());
                             }
                             event.setFormat(new Messaging.MessageFormatter()
                                     .setVariable("player", event.getPlayer().getName())
@@ -273,6 +257,9 @@ public class ChatListener implements Listener {
                                     .setVariable("prefix", prefix)
                                     .setVariable("message", message)
                                     .format("chat.lobbychat"));
+                            if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                                event.setFormat(PlaceholderAPI.setPlaceholders(event.getPlayer(), event.getFormat()));
+                            }
                         }
                     }
                 }

@@ -6,6 +6,8 @@ import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
@@ -272,6 +274,9 @@ public class PlayerStat {
                                     if (!SkyWarsReloaded.getCfg().isLobbyServer()) {
                                         boolean joined = MatchManager.get().joinGame(player, GameType.ALL);
                                         if (!joined) {
+                                            if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                                                Util.get().logToFile(ChatColor.YELLOW + "Couldn't find an arena for player " + player.getName() + ". Sending the player back to the skywars lobby.");
+                                            }
                                             SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
                                         }
                                     }

@@ -15,6 +15,7 @@ lobbyBoardEnabled: false
 displayPlayerLevelOnXpBar: true
 enabledLobbyGuard: false
 economyEnabled: false
+clearInventoryOnLobbyJoin: true
 game:
   win:
     clearInventory: true
@@ -55,7 +56,11 @@ game:
 teams:
   usePlayerNames: true
   usePlayerGlassColors: true
-  teamCageMaterial: STAINED_GLASS
+  teamCageMaterial: WOOL
+  useTeamMaterialBytes: false
+  standardTeamMaterialByte: 4
+  useSeparateCages: true
+  changeTablistNames: false
 chat:
   enableFormatter: true
   limitGameChatToGame: true
@@ -122,6 +127,8 @@ items:
   joinGameItemEnabled: true
   spectateGameItemEnabled: true
   optionsItemEnabled: true
+  teamSelectPosition: 2
+  teamSelectItem: WATCH
   kitsEnabled: true
   kitVotePosition: 0
   kitvote: EYE_OF_ENDER

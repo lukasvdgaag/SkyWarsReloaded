@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.game;
 
 import com.walrusone.skywarsreloaded.enums.Vote;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,6 +16,8 @@ public class PlayerCard {
     private int postElo;
     private int eloChange;
 
+    private CoordLoc spawn;
+
     private int kills;
 
     private GameKit kitVote;
@@ -24,7 +27,7 @@ public class PlayerCard {
     private Vote modifier;
     private Vote health;
 
-    public PlayerCard(TeamCard tCard, UUID uuid, int BeginningElo) {
+    public PlayerCard(TeamCard tCard, UUID uuid, int BeginningElo, CoordLoc spawn) {
         this.uuid = uuid;
         this.preElo = BeginningElo;
         this.tCard = tCard;
@@ -35,6 +38,7 @@ public class PlayerCard {
         this.modifier = null;
         this.health = null;
         this.kills = 0;
+        this.spawn = spawn;
     }
 
     public void reset() {
@@ -58,7 +62,19 @@ public class PlayerCard {
     }
 
     public void setPlayer(Player player) {
-        this.uuid = player.getUniqueId();
+        if (player != null) {
+            this.uuid = player.getUniqueId();
+            return;
+        }
+        this.uuid = null;
+    }
+
+    public CoordLoc getSpawn() {
+        return this.spawn;
+    }
+
+    public void setSpawn(CoordLoc loc) {
+        this.spawn = loc;
     }
 
     int getPreElo() {
@@ -161,6 +177,7 @@ public class PlayerCard {
     public int getKills() {
         return kills;
     }
+
     public void addKill() {
         kills++;
     }

@@ -9,7 +9,7 @@ import java.util.Queue;
 
 
 public class GameQueue {
-    private Queue<PlayerCard> queue = new LinkedList();
+    private Queue<PlayerCard> queue = new LinkedList<>();
     private GameMap map;
     private boolean running = false;
 

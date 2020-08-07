@@ -93,7 +93,7 @@ public class JoinSingleMenu {
 
                     List<String> loreList = Lists.newLinkedList();
                     if (state != MatchState.OFFLINE) {
-                        if (state == MatchState.WAITINGSTART) {
+                        if (state == MatchState.WAITINGSTART || state == MatchState.WAITINGLOBBY) {
                             for (String a : SkyWarsReloaded.getMessaging().getFile().getStringList("menu.join_menu.lore.waiting-start")) {
                                 loreList.add(ChatColor.translateAlternateColorCodes('&',
                                         a.replace("{playercount}", "" + alivePlayers)
@@ -140,7 +140,7 @@ public class JoinSingleMenu {
                                 customIcon = SkyWarsReloaded.getIM().getItem("blockplaying");
                             } else if (state.equals(MatchState.ENDING)) {
                                 customIcon = SkyWarsReloaded.getIM().getItem("blockending");
-                            } else if (state.equals(MatchState.WAITINGSTART)) {
+                            } else if (state.equals(MatchState.WAITINGSTART) || state.equals(MatchState.WAITINGLOBBY)) {
                                 customIcon = SkyWarsReloaded.getIM().getItem("almostfull");
                                 if (xy < 0.25) {
                                     customIcon = SkyWarsReloaded.getIM().getItem("almostempty");
@@ -175,7 +175,7 @@ public class JoinSingleMenu {
                                             .format("menu.join_menu.item_title.ending"))
 
                             );
-                        } else if (state == MatchState.WAITINGSTART) {
+                        } else if (state == MatchState.WAITINGSTART || state == MatchState.WAITINGLOBBY) {
                             gameIcon = SkyWarsReloaded.getNMS().getItemStack(customIcon, loreList, ChatColor.translateAlternateColorCodes('&',
                                     new Messaging.MessageFormatter()
                                             .setVariable("playercount", "" + alivePlayers)
@@ -283,7 +283,7 @@ public class JoinSingleMenu {
 
 
 
-            if (state != MatchState.WAITINGSTART) {
+            if (state != MatchState.WAITINGSTART && state != MatchState.WAITINGLOBBY) {
                 Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getErrorSound(), 1, 1);
                 return;
             }

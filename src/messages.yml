@@ -49,6 +49,7 @@ event:
   announce: '&c{event} &bEvent starting in {time}'
   crateInv: '&bSkyWars Crate'
 maps:
+  waitingLobbySpawn: '&bWaiting lobby spawn of map {mapname} has been set to your location'
   setLookDirection: '&bLook direction spawn set to your location for map {mapname}'
   created: '&bMap {mapname} has been Created!'
   creator: '&bThe creator for map {mapname} has been set to {creator}!'   
@@ -67,7 +68,7 @@ maps:
   changecreator: '&bEnter the new creator in chat, including color codes'
   addSpawn: '&bSpawn #{num} added to map {mapname}'
   addDeathSpawn: '&bDeathMatch Spawn #{num} added to map {mapname}'
-  spawnRemoved: '&bSpawn #{num} removed from  {mapname}'
+  spawnRemoved: '&bSpawn #{num} from team {team} has been removed from the map {mapname}'
   deathSpawnRemoved: '&bDeathMatch Spawn #{num} removed from  {mapname}'
   specSpawn: '&bSpecator Spawn set to your location for {mapname}'
   chestPlacementType: '&bYou are now placing {type} chests on {mapname}'
@@ -133,6 +134,14 @@ error:
   nopermission: '&4You do not have permission to use the voting menu!'
   elochange: '&cPlayer ELO cannot be changed while player is in game!'
 game:
+  select-team-before-voting: '&c&lYou must select a team before voting!'
+  select-team-before-kit: '&c&lYou must select a team before selecting a kit!'
+  vote-announcements:
+    chests: '&eSelected &a&l{type} &echest items'
+    time: '&eSelected &a&l{type} &etime'
+    weather: '&eSelected &a&l{type} &eweather'
+    modifier: '&eSelected &a&l{type} &emodifier'
+    health: '&eSelected &a&l{type} hp &ehealth'
   pvp-timer-disabled-message: '&aPVP is now enabled!'
   pvp-timer-disabled-title: '&a&&lFIGHT!\n&7Good luck &b{player}'
   command-disabled-spec: '&4That command is disabled while Spectating!'
@@ -198,6 +207,11 @@ spectate:
   playeritemlore: '&bClick to teleport to {player}'
   stayinarena: '&cPlease stay within the bouncewars Arena!'
 menu:
+  team_select_menu:
+    item_title: '&eTeam {team} &7- {playercount}/{teamsize}' # supports {teamcolor} as well
+    lore:
+      general-lore: []
+      player-list-lore-line: '&7- &a{playername}' # supports {playerdisplayname} as well
   join_menu:
     item_title:
       waiting-start: '&b{arena} &7[&f{teamsize}&7]'
@@ -286,6 +300,7 @@ items:
   kit-vote-item: '&bKIT VOTING MENU'
   kit-select-item: '&bKIT SELECTION MENU'
   voting-item: '&bVoting Menu'
+  team-select-item: '&bSelect Team'
   exit-menu-item: '&bEXIT'
   next-page-item: '&bNEXT'
   prev-page-item: '&bPREVIOUS'

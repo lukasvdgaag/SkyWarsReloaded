@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.menus.gameoptions;
 
+import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
@@ -22,8 +23,8 @@ import java.util.Arrays;
 
 public class WeatherOption extends GameOption {
     public WeatherOption(GameMap gameMap, String key) {
-        itemList = new ArrayList(Arrays.asList(new String[]{"weatherrandom", "weathersunny", "weatherrain", "weatherstorm", "weathersnow"}));
-        voteList = new ArrayList(Arrays.asList(new Vote[]{Vote.WEATHERRANDOM, Vote.WEATHERSUN, Vote.WEATHERRAIN, Vote.WEATHERTHUNDER, Vote.WEATHERSNOW}));
+        itemList = Lists.newArrayList("weatherrandom", "weathersunny", "weatherrain", "weatherstorm", "weathersnow");
+        voteList = Lists.newArrayList(Vote.WEATHERRANDOM, Vote.WEATHERSUN, Vote.WEATHERRAIN, Vote.WEATHERTHUNDER, Vote.WEATHERSNOW);
         createMenu(key, new Messaging.MessageFormatter().format("menu.weather-voting-menu"));
         this.gameMap = gameMap;
     }
@@ -64,7 +65,7 @@ public class WeatherOption extends GameOption {
             Bukkit.getPluginManager().callEvent(new SkyWarsVoteEvent(player, gameMap, vote));
             updateVotes();
             Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1.0F, 1.0F);
-            if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+            if (gameMap.getMatchState().equals(MatchState.WAITINGSTART) || gameMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
                 new VotingMenu(player);
             }
             MatchManager.get().message(gameMap, new Messaging.MessageFormatter()
@@ -98,8 +99,9 @@ public class WeatherOption extends GameOption {
     public void completeOption() {
         Vote weather = gameMap.getWeatherOption().getVoted();
         WeatherType w = WeatherType.CLEAR;
-        if (weather != Vote.WEATHERSUN)
+        if (weather != Vote.WEATHERSUN) {
             w = WeatherType.DOWNFALL;
+        }
         World world;
         int z;
         if (weather == Vote.WEATHERTHUNDER) {
@@ -122,8 +124,13 @@ public class WeatherOption extends GameOption {
                 world.refreshChunk(chunk.getX(), chunk.getZ());
             }
         }
+
         for (Player player : gameMap.getAllPlayers()) {
             player.setPlayerWeather(w);
+        }
+
+        if (SkyWarsReloaded.getCfg().isWeatherVoteEnabled()) {
+            MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", weather.name().toLowerCase().replace("weather", "")).format("game.vote-announcements.weather"));
         }
     }
 }

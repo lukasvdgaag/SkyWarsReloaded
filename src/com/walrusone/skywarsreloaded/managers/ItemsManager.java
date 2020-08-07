@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.managers;
 
+import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.Material;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ItemsManager {
-    private final Map<String, ItemStack> gameItems = new HashMap();
+    private final Map<String, ItemStack> gameItems = new HashMap<>();
 
     public ItemsManager() {
         getMatchStartItems();
@@ -52,7 +53,7 @@ public class ItemsManager {
         String[] matParts = mat.split(":");
         if (matParts.length == 2) {
             matWithData = matParts[0];
-            data = Integer.valueOf(matParts[1]).intValue();
+            data = Integer.parseInt(matParts[1]);
         }
         ItemStack item;
         if (data != -1) {
@@ -66,7 +67,7 @@ public class ItemsManager {
     }
 
     private void getSignItems() {
-        List<String> lore = new ArrayList();
+        List<String> lore = Lists.newArrayList();
         addItem("blockoffline", lore, "items.skywars-options");
         addItem("blockwaiting", lore, "items.skywars-options");
         addItem("blockplaying", lore, "items.skywars-options");
@@ -78,7 +79,7 @@ public class ItemsManager {
     }
 
     private void getLobbyItem() {
-        List<String> lore = new ArrayList();
+        List<String> lore = new ArrayList<>();
         lore.add(new Messaging.MessageFormatter().format("items.click-to-open"));
 
         addItem("optionselect", lore, "items.skywars-options");
@@ -89,7 +90,7 @@ public class ItemsManager {
     }
 
     private void getMatchStartItems() {
-        List<String> lore = new ArrayList();
+        List<String> lore = Lists.newArrayList();
         lore.add(new Messaging.MessageFormatter().format("items.click-to-open"));
 
         if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
@@ -98,6 +99,7 @@ public class ItemsManager {
             addItem("kitvote", lore, "items.kit-select-item");
         }
         addItem("votingItem", lore, "items.voting-item");
+        addItem("teamSelectItem", lore, "items.team-select-item");
 
         lore.clear();
         lore.add(new Messaging.MessageFormatter().format("items.lclick-to-open"));
@@ -120,7 +122,7 @@ public class ItemsManager {
     }
 
     private void getChestVoteItems() {
-        List<String> lore = new ArrayList();
+        List<String> lore = Lists.newArrayList();
         lore.add(new Messaging.MessageFormatter().format("items.click-to-vote"));
 
         addItem("chestrandom", lore, "items.chest-random");

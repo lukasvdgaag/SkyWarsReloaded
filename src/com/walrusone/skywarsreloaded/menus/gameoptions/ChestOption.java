@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.menus.gameoptions;
 
+import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
@@ -23,8 +24,8 @@ import java.util.Arrays;
 public class ChestOption extends GameOption {
     public ChestOption(GameMap gameMap, String key) {
         this.gameMap = gameMap;
-        itemList = new ArrayList(Arrays.asList(new String[]{"chestrandom", "chestbasic", "chestnormal", "chestop", "chestscavenger"}));
-        voteList = new ArrayList(Arrays.asList(new Vote[]{Vote.CHESTRANDOM, Vote.CHESTBASIC, Vote.CHESTNORMAL, Vote.CHESTOP, Vote.CHESTSCAVENGER}));
+        itemList = Lists.newArrayList("chestrandom", "chestbasic", "chestnormal", "chestop", "chestscavenger");
+        voteList = Lists.newArrayList(Vote.CHESTRANDOM, Vote.CHESTBASIC, Vote.CHESTNORMAL, Vote.CHESTOP, Vote.CHESTSCAVENGER);
         createMenu(key, new Messaging.MessageFormatter().format("menu.chest-voting-menu"));
     }
 
@@ -64,7 +65,7 @@ public class ChestOption extends GameOption {
             Bukkit.getPluginManager().callEvent(new SkyWarsVoteEvent(player, gameMap, vote));
             updateVotes();
             Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1.0F, 1.0F);
-            if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+            if (gameMap.getMatchState().equals(MatchState.WAITINGSTART) || gameMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
                 new VotingMenu(player);
             }
             MatchManager.get().message(gameMap, new Messaging.MessageFormatter()
@@ -99,6 +100,10 @@ public class ChestOption extends GameOption {
         Vote cVote = gameMap.getChestOption().getVoted();
         populateChests(gameMap.getChests(), cVote, false);
         populateChests(gameMap.getCenterChests(), cVote, true);
+        // todo send voting summary
+        if (SkyWarsReloaded.getCfg().isChestVoteEnabled()) {
+            MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", cVote.name().toLowerCase().replace("chest", "")).format("game.vote-announcements.chests"));
+        }
     }
 
     private void populateChests(ArrayList<CoordLoc> chests, Vote cVote, boolean center) {

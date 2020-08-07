@@ -1,20 +1,21 @@
-package com.walrusone.skywarsreloaded.nms.v1_14_R1;
+package com.walrusone.skywarsreloaded.nms.v1_16_R1;
 
 import com.google.common.collect.Lists;
-import net.minecraft.server.v1_14_R1.*;
-import net.minecraft.server.v1_14_R1.PacketPlayOutTitle.EnumTitleAction;
+import net.minecraft.server.v1_16_R1.*;
+import net.minecraft.server.v1_16_R1.PacketPlayOutTitle.EnumTitleAction;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
-import org.bukkit.craftbukkit.v1_14_R1.scoreboard.CraftScoreboardManager;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftFallingBlock;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_14_R1.scoreboard.CraftScoreboard;
+import org.bukkit.craftbukkit.v1_16_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftFallingBlock;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R1.scoreboard.CraftScoreboard;
+import org.bukkit.craftbukkit.v1_16_R1.scoreboard.CraftScoreboardManager;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -46,11 +47,13 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
             scoreboardCollection.remove((CraftScoreboard) scoreboard);
             return true;
         }
+
         return false;
+
     }
 
     public void respawnPlayer(Player player) {
-        ((org.bukkit.craftbukkit.v1_14_R1.CraftServer) Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer) player).getHandle(), ((CraftPlayer) player).getHandle().dimension, false);
+        ((CraftServer)Bukkit.getServer()).getHandle().moveToWorld(((EntityPlayer)player),false);
     }
 
     public void sendParticles(World world, String type, float x, float y, float z, float offsetX, float offsetY, float offsetZ, float data, int amount) {
@@ -60,8 +63,8 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         }
     }
 
-    public org.bukkit.FireworkEffect getFireworkEffect(Color one, Color two, Color three, Color four, Color five, org.bukkit.FireworkEffect.Type type) {
-        return org.bukkit.FireworkEffect.builder().flicker(false).withColor(one, two, three, four).withFade(five).with(type).trail(true).build();
+    public FireworkEffect getFireworkEffect(Color one, Color two, Color three, Color four, Color five, FireworkEffect.Type type) {
+        return FireworkEffect.builder().flicker(false).withColor(one, two, three, four).withFade(five).with(type).trail(true).build();
     }
 
     public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
@@ -70,14 +73,14 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         pConn.sendPacket(pTitleInfo);
         if (subtitle != null) {
             subtitle = subtitle.replaceAll("%player%", player.getDisplayName());
-            subtitle = org.bukkit.ChatColor.translateAlternateColorCodes('&', subtitle);
+            subtitle = ChatColor.translateAlternateColorCodes('&', subtitle);
             IChatBaseComponent iComp = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + subtitle + "\"}");
             PacketPlayOutTitle pSubtitle = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, iComp);
             pConn.sendPacket(pSubtitle);
         }
         if (title != null) {
             title = title.replaceAll("%player%", player.getDisplayName());
-            title = org.bukkit.ChatColor.translateAlternateColorCodes('&', title);
+            title = ChatColor.translateAlternateColorCodes('&', title);
             IChatBaseComponent iComp = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + title + "\"}");
             PacketPlayOutTitle pTitle = new PacketPlayOutTitle(EnumTitleAction.TITLE, iComp);
             pConn.sendPacket(pTitle);
@@ -85,9 +88,9 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     }
 
     public void sendActionBar(Player p, String msg) {
-        String s = org.bukkit.ChatColor.translateAlternateColorCodes('&', msg);
+        String s = ChatColor.translateAlternateColorCodes('&', msg);
         IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + s + "\"}");
-        PacketPlayOutChat bar = new PacketPlayOutChat(icbc, ChatMessageType.GAME_INFO);
+        PacketPlayOutTitle bar = new PacketPlayOutTitle(EnumTitleAction.ACTIONBAR,icbc);
         ((CraftPlayer) p).getHandle().playerConnection.sendPacket(bar);
     }
 
@@ -99,7 +102,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         if (customSound) {
             loc.getWorld().playSound(loc, sound, volume, pitch);
         } else {
-            loc.getWorld().playSound(loc, org.bukkit.Sound.valueOf(sound), volume, pitch);
+            loc.getWorld().playSound(loc, Sound.valueOf(sound), volume, pitch);
         }
     }
 
@@ -326,7 +329,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
                 return "GREEN";
             case 14:
                 return "RED";
-            case 15:
+            case 16:
                 return "BLACK";
         }
         return "WHITE";

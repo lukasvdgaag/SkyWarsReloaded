@@ -15,6 +15,7 @@ public abstract class BaseCmd {
     public boolean forcePlayer = true;
     public Player player;
     public String type;
+    public int maxArgs = -1;
 
     public BaseCmd() {
     }
@@ -34,10 +35,14 @@ public abstract class BaseCmd {
 
         if (!Util.get().hp(type, sender, cmdName)) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
-        } else if (argLength > arg.length) {
-            s.sendMessage(ChatColor.DARK_RED + "Wrong usage: " + new Messaging.MessageFormatter().format(new StringBuilder().append("helpList.").append(Util.get().getMessageKey(type)).append(".").append(cmdName).toString()));
-        } else
-            run();
+        } else if ((maxArgs == -1 && argLength > arg.length) || (maxArgs!=-1 && arg.length > maxArgs)) {
+            s.sendMessage(ChatColor.DARK_RED + "Wrong usage: " + new Messaging.MessageFormatter().format("helpList." + Util.get().getMessageKey(type) + "." + cmdName));
+        } else {
+            boolean returnVal = run();
+            if (!returnVal) {
+                s.sendMessage(ChatColor.DARK_RED + "Wrong usage: " + new Messaging.MessageFormatter().format("helpList." + Util.get().getMessageKey(type) + "." + cmdName));
+            }
+        }
     }
 
     public String getType() {

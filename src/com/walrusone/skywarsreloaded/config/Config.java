@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class Config {
 
-    private final List<String> itemNames = Arrays.asList("kitvote", "votingItem",
+    private final List<String> itemNames = Arrays.asList("kitvote", "votingItem", "teamSelectItem",
             "exitMenuItem", "nextPageItem", "prevPageItem",
             "exitGameItem",
             "chestvote", "chestrandom", "chestbasic", "chestnormal", "chestop", "chestscavenger",
@@ -33,7 +33,7 @@ public class Config {
             "killsoundselect", "killsounditem",
             "winsoundselect",
             "glassselect", "tauntselect");
-    private final List<String> defItems13 = Arrays.asList("ENDER_EYE", "COMPASS",
+    private final List<String> defItems13 = Arrays.asList("ENDER_EYE", "COMPASS", "END_CRYSTAL",
             "BARRIER", "FEATHER", "FEATHER",
             "IRON_DOOR",
             "SHIELD", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOODEN_HOE",
@@ -52,7 +52,7 @@ public class Config {
             "DIAMOND_SWORD", "NOTE_BLOCK",
             "DRAGON_EGG",
             "GLASS", "SHIELD");
-    private final List<String> defItems12 = Arrays.asList("EYE_OF_ENDER", "COMPASS",
+    private final List<String> defItems12 = Arrays.asList("EYE_OF_ENDER", "COMPASS", "END_CRYSTAL",
             "BARRIER", "FEATHER", "FEATHER",
             "IRON_DOOR",
             "SHIELD", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOOD_HOE",
@@ -71,7 +71,7 @@ public class Config {
             "DIAMOND_SWORD", "NOTE_BLOCK",
             "DRAGON_EGG",
             "STAINED_GLASS", "SHIELD");
-    private final List<String> defItems8 = Arrays.asList("EYE_OF_ENDER", "COMPASS",
+    private final List<String> defItems8 = Arrays.asList("EYE_OF_ENDER", "COMPASS", "WATCH",
             "BARRIER", "FEATHER", "FEATHER",
             "IRON_DOOR",
             "DIAMOND", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOOD_HOE",
@@ -106,6 +106,9 @@ public class Config {
     private int votepos;
     private boolean voteEnabled;
     private int exitpos;
+    private int teamSelectPos;
+
+    private boolean clearInventoryOnLobbyJoin;
 
     private boolean randomOptionVoteEnabled;
     private boolean scavengerChestEnabled;
@@ -165,9 +168,15 @@ public class Config {
     private int strength;
     private int speed;
     private int jump;
+
     private boolean usePlayerNames;
     private boolean usePlayerGlassColors;
     private String teamMaterial;
+    private boolean useTeamMaterialBytes;
+    private int standardTeamMaterialByte;
+    private boolean useSeparateCages;
+    private boolean changeTablistNames;
+
     private int timeAfterMatch;
     private boolean fireworksEnabled;
     private int fireworksPer5Tick;
@@ -253,6 +262,7 @@ public class Config {
     private List<String> gameServers = Lists.newArrayList();
     private boolean isLobbyServer = false;
 
+
     public Config() {
         load();
     }
@@ -271,6 +281,7 @@ public class Config {
             gameEndCommands = SkyWarsReloaded.get().getConfig().getStringList("gameEndCommands");
             resourcePack = SkyWarsReloaded.get().getConfig().getString("resourcepack");
             promptResource = SkyWarsReloaded.get().getConfig().getBoolean("promptForResourcePackOnJoin");
+            clearInventoryOnLobbyJoin = SkyWarsReloaded.get().getConfig().getBoolean("clearInventoryOnLobbyJoin");
 
             lobbyBoardEnabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyBoardEnabled");
             protectlobby = SkyWarsReloaded.get().getConfig().getBoolean("enabledLobbyGuard");
@@ -332,9 +343,15 @@ public class Config {
             usePlayerNames = SkyWarsReloaded.get().getConfig().getBoolean("teams.usePlayerNames");
             usePlayerGlassColors = SkyWarsReloaded.get().getConfig().getBoolean("teams.usePlayerGlassColors");
             teamMaterial = SkyWarsReloaded.get().getConfig().getString("teams.teamCageMaterial");
-            if (teamMaterial == null || (!teamMaterial.equalsIgnoreCase("wool") && !teamMaterial.equalsIgnoreCase("stained_glass") && !teamMaterial.equalsIgnoreCase("banner"))) {
-                teamMaterial = "STAINED_GLASS";
+            standardTeamMaterialByte = SkyWarsReloaded.get().getConfig().getInt("teams.standardTeamMaterialByte");
+            useTeamMaterialBytes = SkyWarsReloaded.get().getConfig().getBoolean("teams.useTeamMaterialBytes");
+            if (useTeamMaterialBytes) {
+                if (teamMaterial == null || (!teamMaterial.equalsIgnoreCase("wool") && !teamMaterial.equalsIgnoreCase("stained_glass") && !teamMaterial.equalsIgnoreCase("banner"))) {
+                    teamMaterial = "STAINED_GLASS";
+                }
             }
+            useSeparateCages = SkyWarsReloaded.get().getConfig().getBoolean("teams.useSeparateCages");
+            changeTablistNames = SkyWarsReloaded.get().getConfig().getBoolean("team.changeTablistNames");
 
             maxPartySize = SkyWarsReloaded.get().getConfig().getInt("parties.maxPartySize");
             partyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("parties.enabled");
@@ -366,6 +383,7 @@ public class Config {
             spectateGameItemEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.spectateGameItemEnabled");
             optionsGameItemEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.optionsItemEnabled");
 
+            teamSelectPos = SkyWarsReloaded.get().getConfig().getInt("items.teamSelectPosition");
             kitvotepos = SkyWarsReloaded.get().getConfig().getInt("items.kitVotePosition");
             kitsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("items.kitsEnabled");
             votepos = SkyWarsReloaded.get().getConfig().getInt("items.votingPosition");
@@ -487,7 +505,7 @@ public class Config {
         String[] matParts = mat.split(":");
         if (matParts.length == 2) {
             matWithData = matParts[0];
-            data = Integer.valueOf(matParts[1]);
+            data = Integer.parseInt(matParts[1]);
         }
         Material material;
         if (data != -1) {
@@ -518,6 +536,7 @@ public class Config {
 
         SkyWarsReloaded.get().getConfig().set("resourcepack", resourcePack);
         SkyWarsReloaded.get().getConfig().set("promptForResourcePackOnJoin", promptResource);
+        SkyWarsReloaded.get().getConfig().set("clearInventoryOnLobbyJoin", clearInventoryOnLobbyJoin);
 
         SkyWarsReloaded.get().getConfig().set("lobbyBoardEnabled", lobbyBoardEnabled);
         SkyWarsReloaded.get().getConfig().set("lobbyBoardEnabled", lobbyBoardEnabled);
@@ -578,6 +597,10 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("teams.usePlayerNames", usePlayerNames);
         SkyWarsReloaded.get().getConfig().set("teams.usePlayerGlassColors", usePlayerGlassColors);
         SkyWarsReloaded.get().getConfig().set("teams.teamCageMaterial", teamMaterial.toUpperCase());
+        SkyWarsReloaded.get().getConfig().set("teams.standardTeamMaterialByte", standardTeamMaterialByte);
+        SkyWarsReloaded.get().getConfig().set("teams.useTeamMaterialBytes", useTeamMaterialBytes);
+        SkyWarsReloaded.get().getConfig().set("teams.useSeparateCages", useSeparateCages);
+        SkyWarsReloaded.get().getConfig().set("teams.changeTablistNames", changeTablistNames);
 
         SkyWarsReloaded.get().getConfig().set("parties.maxPartySize", maxPartySize);
         SkyWarsReloaded.get().getConfig().set("parties.enabled", partyEnabled);
@@ -595,6 +618,7 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("items.spectateGameItemEnabled", spectateGameItemEnabled);
         SkyWarsReloaded.get().getConfig().set("items.optionsItemEnabled", optionsGameItemEnabled);
 
+        SkyWarsReloaded.get().getConfig().set("items.teamSelectPosition", teamSelectPos);
         SkyWarsReloaded.get().getConfig().set("items.kitVotePosition", kitvotepos);
         SkyWarsReloaded.get().getConfig().set("items.kitsEnabled", kitsEnabled);
         SkyWarsReloaded.get().getConfig().set("items.votingPosition", votepos);
@@ -1281,6 +1305,18 @@ public class Config {
     public boolean isJoinGameItemEnabled() { return joinGameItemEnabled; }
     public boolean isSpectateGameItemEnabled() { return spectateGameItemEnabled; }
     public boolean isOptionsItemEnabled() { return optionsGameItemEnabled; }
+
+    public int getTeamSelectPos() { return teamSelectPos; }
+
+    public boolean isUseTeamMaterialBytes() { return useTeamMaterialBytes; }
+    public int getStandardTeamMaterialByte() { return standardTeamMaterialByte; }
+    public boolean isUseSeparateCages() { return useSeparateCages; }
+
+    public boolean isClearInventoryOnLobbyJoin() { return clearInventoryOnLobbyJoin; }
+
+    public boolean isChangeTablistNames() {
+        return changeTablistNames;
+    }
 
 }
 

@@ -1,3 +1,25 @@
+# version 5.0.0
+Recoded a LOT of the plugin's code!
+Added waiting lobbies to team games.
+Added separate cages for team games.
+Added a new subcommand to set team spawns / the waiting lobby spawn (/swm spawn player <team> AND /swm spawn lobby).
+Added 1.16 support.
+Added a new option to disable colored names in the tablist based on the team.
+Added a team selector menu for team games in waiting mode.
+Added a new option to clear the inventory on lobby join.
+Added a interaction block for worldedit wands when in a game.
+Added the countdown timer for the game to be displayed as the player's exp level instantly.
+Added more detailed messages in case registering an arena failed to complete.
+Added a new API event 'SkyWarsSelectTeamEvent'.
+Changed how kit and game options vote work. You are now required to be in a team in order to choose one.
+Fixed a bug regarding the Bungeecord join game signs.
+Fixed a bug regarding the ghast event.
+Fixed a bug regarding the crate drop event.
+Fixed an error that would come up on 1.13+ servers regarding the scoreboard.
+Fixed a bug where teammates were able to hit each other.
+Fixed a bug regarding the /swm register command where it would send the help message even after completing.
+Fixed a bug for 1.11+ where actionbar messages would be sent as a regular message.
+
 # version: 4.4.2
 Added a new feature that removes the player's join and quit messages.
 Fixed bug where players were instantly being returned to the lobby when joining a game on Bungeecord servers.

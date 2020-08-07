@@ -62,7 +62,7 @@ public class SWRServer {
         int highestPlayers = 0;
         SWRServer swrServer = null;
         for (SWRServer server : getServers()) {
-            if (server.getMatchState().equals(MatchState.WAITINGSTART) && server.getPlayerCount() < server.getMaxPlayers()) {
+            if ((server.getMatchState().equals(MatchState.WAITINGSTART) || server.getMatchState().equals(MatchState.WAITINGLOBBY)) && server.getPlayerCount() < server.getMaxPlayers()) {
                 if (server.getPlayerCount() >= highestPlayers) {
                     highestPlayers = server.getPlayerCount();
                     swrServer = server;
@@ -135,7 +135,11 @@ public class SWRServer {
     }
 
     public void setMatchState(String gameStarted) {
-        this.state = MatchState.valueOf(gameStarted);
+        try {
+            this.state = MatchState.valueOf(gameStarted);
+        } catch (IllegalArgumentException e) {
+            this.state = MatchState.OFFLINE;
+        }
     }
 
     public void setMatchState(MatchState serverState) {
@@ -189,6 +193,7 @@ public class SWRServer {
 
     public void updateSigns() {
         for (Location loc : signs) {
+            if (loc.getBlock() == null) { return; }
             BlockState bs = loc.getBlock().getState();
             Sign sign = null;
             if (bs instanceof Sign) {
@@ -202,7 +207,7 @@ public class SWRServer {
             String signState = "";
             if (state.equals(MatchState.OFFLINE)) {
                 signState = new Messaging.MessageFormatter().format("signs.offline");
-            } else if (state.equals(MatchState.WAITINGSTART)) {
+            } else if (state.equals(MatchState.WAITINGSTART) || state.equals(MatchState.WAITINGLOBBY)) {
                 signState = new Messaging.MessageFormatter().format("signs.joinable");
             } else if (state.equals(MatchState.PLAYING)) {
                 signState = new Messaging.MessageFormatter().format("signs.playing");
@@ -237,7 +242,7 @@ public class SWRServer {
     private void setMaterial(Block attachedBlock) {
         if (state.equals(MatchState.OFFLINE)) {
             updateBlock(attachedBlock, "blockoffline");
-        } else if (state.equals(MatchState.WAITINGSTART)) {
+        } else if (state.equals(MatchState.WAITINGSTART) || state.equals(MatchState.WAITINGLOBBY)) {
             updateBlock(attachedBlock, "blockwaiting");
         } else if (state.equals(MatchState.PLAYING)) {
             updateBlock(attachedBlock, "blockplaying");
@@ -248,7 +253,7 @@ public class SWRServer {
 
     public boolean canAddParty(Party party) {
         // todo add specific test for parties
-        if (this.state != MatchState.WAITINGSTART) {
+        if (this.state != MatchState.WAITINGSTART && !state.equals(MatchState.WAITINGLOBBY)) {
             return false;
         }
 
@@ -257,7 +262,7 @@ public class SWRServer {
     }
 
     public boolean canAddPlayer() {
-        if (this.state != MatchState.WAITINGSTART) {
+        if (this.state != MatchState.WAITINGSTART && !state.equals(MatchState.WAITINGLOBBY)) {
             return false;
         }
 

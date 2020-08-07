@@ -219,11 +219,11 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     }
 
     public boolean headCheck(Block h1) {
-        return h1.getType() == Material.SKULL;
+        return h1.getType() == Material.valueOf("SKULL");
     }
 
     public org.bukkit.inventory.ItemStack getBlankPlayerHead() {
-        return new org.bukkit.inventory.ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+        return new org.bukkit.inventory.ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
     }
 
     public int getVersion() {
@@ -232,7 +232,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
 
     public org.bukkit.inventory.ItemStack getMaterial(String item) {
         if (item.equalsIgnoreCase("SKULL_ITEM")) {
-            return new org.bukkit.inventory.ItemStack(Material.SKULL_ITEM, 1, (short) 1);
+            return new org.bukkit.inventory.ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 1);
         }
         return new org.bukkit.inventory.ItemStack(Material.valueOf(item), 1);
     }
@@ -240,13 +240,13 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
 
     public org.bukkit.inventory.ItemStack getColorItem(String mat, byte color) {
         if (mat.equalsIgnoreCase("wool"))
-            return new org.bukkit.inventory.ItemStack(Material.WOOL, 1,  color);
+            return new org.bukkit.inventory.ItemStack(Material.valueOf("WOOL"), 1,  color);
         if (mat.equalsIgnoreCase("glass"))
-            return new org.bukkit.inventory.ItemStack(Material.STAINED_GLASS, 1,  color);
+            return new org.bukkit.inventory.ItemStack(Material.valueOf("STAINED_GLASS"), 1,  color);
         if (mat.equalsIgnoreCase("banner")) {
-            return new org.bukkit.inventory.ItemStack(Material.BANNER, 1,  color);
+            return new org.bukkit.inventory.ItemStack(Material.valueOf("BANNER"), 1,  color);
         }
-        return new org.bukkit.inventory.ItemStack(Material.STAINED_GLASS, 1,  color);
+        return new org.bukkit.inventory.ItemStack(Material.valueOf("STAINED_GLASS"), 1,  color);
     }
 
 

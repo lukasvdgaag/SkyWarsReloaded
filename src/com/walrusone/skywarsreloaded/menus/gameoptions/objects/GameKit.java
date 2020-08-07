@@ -118,8 +118,11 @@ public class GameKit {
         player.getInventory().clear();
         if (kit != null) {
             for (int i = 0; i < 36; i++) {
-                if (kit.getInventory()[i] != null) {
+                if (i <= kit.getInventory().length-1) {
                     player.getInventory().setItem(i, kit.getInventory()[i]);
+                }
+                else {
+                    player.getInventory().setItem(i, null);
                 }
             }
 

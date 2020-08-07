@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.menus.gameoptions;
 
+import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
@@ -18,8 +19,8 @@ import java.util.Arrays;
 
 public class HealthOption extends GameOption {
     public HealthOption(GameMap gameMap, String key) {
-        itemList = new ArrayList(Arrays.asList(new String[]{"healthrandom", "healthfive", "healthten", "healthfifteen", "healthtwenty"}));
-        voteList = new ArrayList(Arrays.asList(new Vote[]{Vote.HEALTHRANDOM, Vote.HEALTHFIVE, Vote.HEALTHTEN, Vote.HEALTHFIFTEEN, Vote.HEALTHTWENTY}));
+        itemList = Lists.newArrayList("healthrandom", "healthfive", "healthten", "healthfifteen", "healthtwenty");
+        voteList = Lists.newArrayList(Vote.HEALTHRANDOM, Vote.HEALTHFIVE, Vote.HEALTHTEN, Vote.HEALTHFIFTEEN, Vote.HEALTHTWENTY);
         createMenu(key, new Messaging.MessageFormatter().format("menu.health-voting-menu"));
         this.gameMap = gameMap;
     }
@@ -60,7 +61,7 @@ public class HealthOption extends GameOption {
             Bukkit.getPluginManager().callEvent(new SkyWarsVoteEvent(player, gameMap, vote));
             updateVotes();
             Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1.0F, 1.0F);
-            if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+            if (gameMap.getMatchState().equals(MatchState.WAITINGSTART) || gameMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
                 new VotingMenu(player);
             }
             MatchManager.get().message(gameMap, new Messaging.MessageFormatter()
@@ -103,6 +104,10 @@ public class HealthOption extends GameOption {
         for (Player player : gameMap.getAlivePlayers()) {
             SkyWarsReloaded.getNMS().setMaxHealth(player, t * 2);
             player.setHealth(t * 2);
+        }
+
+        if (SkyWarsReloaded.getCfg().isHealthVoteEnabled()) {
+            MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", time.name().toLowerCase().replace("health", "")).format("game.vote-announcements.health"));
         }
     }
 }

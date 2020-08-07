@@ -27,6 +27,13 @@ public abstract class GameOption {
     ArrayList<Vote> voteList;
     private IconMenu iconMenu;
 
+    public HashMap<Player, Vote> chestVotes = new HashMap<>();
+    public HashMap<Player, Vote> weatherVotes = new HashMap<>();
+    public HashMap<Player, Vote> timeVotes = new HashMap<>();
+    public HashMap<Player, Vote> modifierVotes = new HashMap<>();
+    public HashMap<Player, Vote> healthVotes = new HashMap<>();
+
+
     protected abstract void doSlotNine(Player player);
 
     protected abstract void doSlotEleven(Player player);
@@ -75,7 +82,7 @@ public abstract class GameOption {
             if (!gMap.equals(gameMap)) {
                 return;
             }
-            if (gameMap.getMatchState() == MatchState.WAITINGSTART) {
+            if (gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
                 int slot = event.getSlot();
                 if (slot == 9) {
                     if (SkyWarsReloaded.getCfg().isRandomVoteEnabled()) {
@@ -190,7 +197,7 @@ public abstract class GameOption {
         return voted;
     }
 
-    String getVoteString(Vote vote) {
+    public String getVoteString(Vote vote) {
         switch (vote) {
             case CHESTRANDOM:
                 return new Messaging.MessageFormatter().format("items.chest-random");

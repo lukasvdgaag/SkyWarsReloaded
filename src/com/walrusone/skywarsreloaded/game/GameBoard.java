@@ -5,6 +5,7 @@ import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -80,7 +81,9 @@ public class GameBoard {
         for (int i = 0; i < gMap.getTeamCards().size(); i++) {
             TeamCard tCard = gMap.getTeamCards().get(i);
             tCard.setTeam(scoreboard.registerNewTeam("team" + i));
-            tCard.getTeam().setPrefix(tCard.getPrefix());
+            if (SkyWarsReloaded.getCfg().isChangeTablistNames()) {
+                tCard.getTeam().setPrefix(tCard.getPrefix());
+            }
             tCard.getTeam().setAllowFriendlyFire(gMap.allowFriendlyFire());
         }
         updateScoreboard();
@@ -94,7 +97,7 @@ public class GameBoard {
             objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard, "dummy", "info");
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
             String sb = "";
-            if (gMap.getMatchState() == MatchState.WAITINGSTART) {
+            if (gMap.getMatchState() == MatchState.WAITINGSTART || gMap.getMatchState() == MatchState.WAITINGLOBBY) {
                 sb = "scoreboards.waitboard.line";
             } else if (gMap.getMatchState() == MatchState.PLAYING) {
                 sb = "scoreboards.playboard.line";
@@ -141,7 +144,7 @@ public class GameBoard {
     public void updateScoreboardVar(ScoreVar var) {
         int position = 0;
         String sb = "";
-        if (gMap.getMatchState() == MatchState.WAITINGSTART) {
+        if (gMap.getMatchState() == MatchState.WAITINGSTART || gMap.getMatchState() == MatchState.WAITINGLOBBY) {
             if (waitboard.containsKey(var)) {
                 position = waitboard.get(var);
                 sb = "scoreboards.waitboard.line";
@@ -192,16 +195,20 @@ public class GameBoard {
                         this.cancel();
                     }
                     updateScoreboardVar(ScoreVar.RESTARTTIME);
+                    updateScoreboardVar(ScoreVar.PLAYERS);
                 }
             }.runTaskTimer(SkyWarsReloaded.get(), 0, 20);
         }
     }
 
     private String getScoreboardLine(String lineNum) {
+        int currentPlayers = gMap.getMatchState()==MatchState.WAITINGLOBBY ? gMap.getWaitingPlayers().size() : gMap.getAlivePlayers().size();
+
         return new Messaging.MessageFormatter()
                 .setVariable("mapname", gMap.getDisplayName())
                 .setVariable("time", "" + Util.get().getFormattedTime(gMap.getTimer()))
-                .setVariable("players", "" + gMap.getAlivePlayers().size())
+                .setVariable("aliveplayers", "" + currentPlayers)
+                .setVariable("players", "" + currentPlayers)
                 .setVariable("maxplayers", "" + gMap.getTeamCards().size() * gMap.getTeamSize())
                 .setVariable("winner", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(0) : getWinningTeamName())
                 .setVariable("winner1", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(0) : getWinningTeamName())

@@ -21,7 +21,7 @@ public class SwapHandListener implements org.bukkit.event.Listener {
                     (item.equals(SkyWarsReloaded.getIM().getItem("spectateselect")))) {
                 event.setCancelled(true);
             }
-        } else if ((gMap.getMatchState().equals(MatchState.WAITINGSTART)) || (gMap.getMatchState().equals(MatchState.ENDING))) {
+        } else if ((gMap.getMatchState().equals(MatchState.WAITINGSTART)) || (gMap.getMatchState().equals(MatchState.WAITINGLOBBY)) || (gMap.getMatchState().equals(MatchState.ENDING))) {
             event.setCancelled(true);
         }
     }

@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.listeners;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
@@ -43,6 +44,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         v2.setDeathMessage("");
 
         MatchManager.get().playerLeave(player, dCause, false, true, true);
+        gameMap.getGameBoard().updateScoreboard();
     }
 
     @EventHandler

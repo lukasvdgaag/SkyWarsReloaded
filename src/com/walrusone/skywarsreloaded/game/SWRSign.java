@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.game;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -12,7 +13,9 @@ import org.bukkit.block.data.type.WallSign;
 import org.bukkit.material.Directional;
 import org.bukkit.material.MaterialData;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
 
 public class SWRSign {
     private String gameName;
@@ -27,7 +30,7 @@ public class SWRSign {
         attachedBlock.getWorld().loadChunk(attachedBlock.getChunk());
         if (gMap == null) {
             updateBlock(attachedBlock, "blockoffline");
-        } else if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+        } else if (gMap.getMatchState().equals(MatchState.WAITINGSTART) || gMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
             updateBlock(attachedBlock, "blockwaiting");
         } else if (gMap.getMatchState().equals(MatchState.PLAYING)) {
             updateBlock(attachedBlock, "blockplaying");
@@ -59,24 +62,30 @@ public class SWRSign {
         GameMap gMap = GameMap.getMap(gameName);
         org.bukkit.Location loc = location;
 
-        if (loc.getBlock().getType().name().contains("SIGN")) {
+        if (loc.getBlock().getType().name().contains("SIGN") || loc.add(0,1,0).getBlock().getType().name().contains("SIGN")) {
             Block attachedBlock;
             Sign sign = (Sign) loc.getBlock().getState();
+            /*if (!loc.getBlock().getType().name().contains("WALL")) {
+                sign =  (Sign) loc.add(0,1,0).getBlock().getState();
+            }*/
             //attachedBlock = getAttachedBlock(loc.getBlock());
 
-            if (Material.getMaterial("RED_WOOL") != null && loc.getBlock().getType().name().contains("WALL")) {
-                try {
-                    Class cls = Class.forName("org.bukkit.block.Block");
-                    Method method = cls.getMethod("getBlockData");
-                    BlockData blockdata = (BlockData) method.invoke(loc.getBlock());
-                    attachedBlock = loc.getBlock().getRelative(((WallSign) blockdata).getFacing().getOppositeFace());
-                } catch (Exception e1) {
-                    attachedBlock = loc.add(0, -1, 0).getBlock();
+            if (loc.getBlock().getType().name().contains("WALL")) {
+                if (Material.getMaterial("RED_WOOL") != null) {
+                    try {
+                        Class cls = Class.forName("org.bukkit.block.Block");
+                        Method method = cls.getMethod("getBlockData");
+                        BlockData blockdata = (BlockData) method.invoke(loc.getBlock());
+                        attachedBlock = loc.getBlock().getRelative(((WallSign) blockdata).getFacing().getOppositeFace());
+                    } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                        attachedBlock = loc.add(0, -1, 0).getBlock();
+                    }
+                } else {
+                    attachedBlock = getAttachedBlock(loc.getBlock());
                 }
-            } else if (Material.getMaterial("RED_WOOL") == null && loc.getBlock().getType().name().contains("WALL")) {
-                attachedBlock = getAttachedBlock(loc.getBlock());
             } else {
                 attachedBlock = loc.add(0, -1, 0).getBlock();
+                //attachedBlock = loc.getBlock();
             }
 
             /*if (sign.getType().name().contains("WALL")) {
@@ -95,7 +104,7 @@ public class SWRSign {
             String state = "";
             if ((gMap == null) || (gMap.getMatchState().equals(MatchState.OFFLINE))) {
                 state = new Messaging.MessageFormatter().format("signs.offline");
-            } else if (gMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+            } else if (gMap.getMatchState().equals(MatchState.WAITINGSTART) || gMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
                 state = new Messaging.MessageFormatter().format("signs.joinable");
             } else if (gMap.getMatchState().equals(MatchState.PLAYING)) {
                 state = new Messaging.MessageFormatter().format("signs.playing");
@@ -108,24 +117,34 @@ public class SWRSign {
                 if (gMap.getTeamSize() > 1) {
                     team = "team";
                 }
+                
+                int playercount = 0;
+                if (gMap.getMatchState() == MatchState.WAITINGLOBBY) {
+                    playercount = gMap.getWaitingPlayers().size();
+                }
+                else {
+                    playercount = gMap.getPlayerCount();
+                }
+                
+                
                 sign.setLine(0, new Messaging.MessageFormatter().setVariable("matchstate", state)
                         .setVariable("mapname", gMap.getDisplayName().toUpperCase())
-                        .setVariable("playercount", "" + gMap.getPlayerCount())
+                        .setVariable("playercount", "" + playercount)
                         .setVariable("maxplayers", "" + gMap.getMaxPlayers())
                         .setVariable("teamsize", "" + gMap.getTeamSize()).format("signs.line1" + team));
                 sign.setLine(1, new Messaging.MessageFormatter().setVariable("matchstate", state)
                         .setVariable("mapname", gMap.getDisplayName().toUpperCase())
-                        .setVariable("playercount", "" + gMap.getPlayerCount())
+                        .setVariable("playercount", "" + playercount)
                         .setVariable("maxplayers", "" + gMap.getMaxPlayers())
                         .setVariable("teamsize", "" + gMap.getTeamSize()).format("signs.line2" + team));
                 sign.setLine(2, new Messaging.MessageFormatter().setVariable("matchstate", state)
                         .setVariable("mapname", gMap.getDisplayName().toUpperCase())
-                        .setVariable("playercount", "" + gMap.getPlayerCount())
+                        .setVariable("playercount", "" + playercount)
                         .setVariable("maxplayers", "" + gMap.getMaxPlayers())
                         .setVariable("teamsize", "" + gMap.getTeamSize()).format("signs.line3" + team));
                 sign.setLine(3, new Messaging.MessageFormatter().setVariable("matchstate", state)
                         .setVariable("mapname", gMap.getDisplayName().toUpperCase())
-                        .setVariable("playercount", "" + gMap.getPlayerCount())
+                        .setVariable("playercount", "" + playercount)
                         .setVariable("maxplayers", "" + gMap.getMaxPlayers())
                         .setVariable("teamsize", "" + gMap.getTeamSize()).format("signs.line4" + team));
             }

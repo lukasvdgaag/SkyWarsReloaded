@@ -7,6 +7,7 @@ import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
+import com.walrusone.skywarsreloaded.events.SkyWarsJoinEvent;
 import com.walrusone.skywarsreloaded.game.cages.*;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
@@ -53,11 +54,10 @@ public class GameMap {
         GameMap.arenas = new ArrayList<>();
     }
 
+    public HashMap<Integer, List<CoordLoc>> spawnLocations = new HashMap<>(); // first int is team number, list is spawn locations
     private ArrayList<Crate> crates = new ArrayList<>();
     private boolean forceStart;
-
     private boolean disableDamage = false;
-
     private boolean allowFallDamage;
     private boolean allowRegen;
     private boolean projectilesOnly;
@@ -110,6 +110,8 @@ public class GameMap {
     private ArrayList<String> anvils = new ArrayList<>();
     private boolean customJoinMenuIcon = false;
     private ItemStack customJoinMenuItem = null;
+    private CoordLoc waitingLobbySpawn;
+    private ArrayList<UUID> waitingPlayers = Lists.newArrayList();
 
     public GameMap(final String name) {
         this.name = name;
@@ -149,6 +151,7 @@ public class GameMap {
         if (registered) {
             registerMap();
         }
+
         new ArenaMenu(arenakey, this);
         if (SkyWarsReloaded.getCfg().joinMenuEnabled()) {
             new TeamSelectionMenu(this);
@@ -385,7 +388,9 @@ public class GameMap {
         editWorld.setAutoSave(true);
         for (TeamCard tCard : gMap.getTeamCards()) {
             if (tCard.getSpawn() != null) {
-                editWorld.getBlockAt(tCard.getSpawn().getX(), tCard.getSpawn().getY(), tCard.getSpawn().getZ()).setType(Material.DIAMOND_BLOCK);
+                for (CoordLoc loc : tCard.getSpawn()) {
+                    editWorld.getBlockAt(loc.getX(), loc.getY(), loc.getZ()).setType(Material.DIAMOND_BLOCK);
+                }
             }
         }
         for (CoordLoc cl : gMap.getDeathMatchSpawns()) {
@@ -511,7 +516,7 @@ public class GameMap {
         }
         if (SkyWarsReloaded.getIC().has("jointeammenu") && teamSize > 1) {
             SkyWarsReloaded.getIC().getMenu("jointeammenu").update();
-            if (matchState == MatchState.WAITINGSTART && SkyWarsReloaded.getIC().has(name + "teamselect")) {
+            if ((matchState == MatchState.WAITINGSTART || matchState == MatchState.WAITINGLOBBY) && SkyWarsReloaded.getIC().has(name + "teamselect")) {
                 SkyWarsReloaded.getIC().getMenu(name + "teamselect").update();
             }
         }
@@ -522,7 +527,6 @@ public class GameMap {
             return false;
         }
         boolean result = false;
-        List<String> a = Lists.newArrayList();
         PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
         if (teamSize > 1) {
             teamCards.sort(new TeamCardComparator());
@@ -530,21 +534,34 @@ public class GameMap {
             Collections.shuffle(teamCards);
         }
         if (ps != null && ps.isInitialized()) {
-            TeamCard reserved = null;
-            if (teamToTry == null) {
-                for (TeamCard tCard : teamCards) {
-                    if (tCard.getFullCount() > 0) {
-                        reserved = tCard.sendReservation(player, ps);
-                        break;
+            if (teamSize == 1 || (getMatchState() == MatchState.WAITINGSTART)) {
+                TeamCard reserved = null;
+                if (teamToTry == null) {
+                    for (TeamCard tCard : teamCards) {
+                        if (tCard.getFullCount() > 0) {
+                            reserved = tCard.sendReservation(player, ps);
+                            break;
+                        }
+                    }
+                } else {
+                    if (teamToTry.getFullCount() > 0) {
+                        reserved = teamToTry.sendReservation(player, ps);
                     }
                 }
-            } else {
-                if (teamToTry.getFullCount() > 0) {
-                    reserved = teamToTry.sendReservation(player, ps);
+                if (reserved != null) {
+                    result = reserved.joinGame(player);
                 }
-            }
-            if (reserved != null) {
-                result = reserved.joinGame(player);
+            } else {
+                addWaitingPlayer(player);
+                getJoinQueue().add(new PlayerCard(null, player.getUniqueId(), -1, null));
+                Bukkit.getPluginManager().callEvent(new SkyWarsJoinEvent(player, this));
+                if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+                    getKitVoteOption().updateKitVotes();
+                }
+                if (SkyWarsReloaded.getCfg().resetTimerOnJoin()) {
+                    setTimer(SkyWarsReloaded.getCfg().getWaitTimer());
+                }
+                result = true;
             }
             this.update();
             gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
@@ -668,7 +685,7 @@ public class GameMap {
         for (TeamCard tCard : teamCards) {
             for (PlayerCard pCard : tCard.getPlayerCards()) {
                 if (pCard.getPlayer() != null) {
-                    if (!mapContainsDead(pCard.getPlayer().getUniqueId())) {
+                    if (!mapContainsDead(pCard.getPlayer().getUniqueId()) && pCard.getPlayer().getGameMode() != GameMode.SPECTATOR) {
                         alivePlayers.add(pCard.getPlayer());
                     }
                 }
@@ -695,6 +712,12 @@ public class GameMap {
                 }
             }
         }
+        for (UUID player : waitingPlayers) {
+            Player pl = Bukkit.getPlayer(player);
+            if (!allPlayers.contains(pl)) {
+                allPlayers.add(pl);
+            }
+        }
         return allPlayers;
     }
 
@@ -710,6 +733,14 @@ public class GameMap {
                     }
                 }
             }
+            for (UUID pUid : waitingPlayers) {
+                if (!mapContainsDead(pUid)) {
+                    Player p = Bukkit.getPlayer(pUid);
+                    if (p != null && !recievers.contains(p)) {
+                        recievers.add(p);
+                    }
+                }
+            }
         }
         for (UUID uuid : spectators) {
             Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
@@ -721,7 +752,7 @@ public class GameMap {
     }
 
     public boolean canAddPlayer() {
-        if (!(this.matchState == MatchState.WAITINGSTART && this.registered)) {
+        if (!((this.matchState == MatchState.WAITINGSTART || this.matchState == MatchState.WAITINGLOBBY) && this.registered)) {
             return false;
         }
         for (TeamCard tCard : teamCards) {
@@ -733,7 +764,7 @@ public class GameMap {
     }
 
     public boolean canAddParty(Party party) {
-        if (!(this.matchState == MatchState.WAITINGSTART && this.registered)) {
+        if (!((this.matchState == MatchState.WAITINGSTART || this.matchState == MatchState.WAITINGLOBBY) && this.registered)) {
             return false;
         }
         if (teamSize == 1) {
@@ -791,15 +822,34 @@ public class GameMap {
         fc.set("teamSize", teamSize);
         fc.set("environment", environment);
         fc.set("allowFriendlyFire", allowFriendlyFire);
-        fc.set("allowScanvenger", allowScanvenger);
+        fc.set("allowScavenger", allowScanvenger);
 
         fc.set("enableCustomJoinMenuItem", customJoinMenuIcon);
 
-        List<String> spawns = new ArrayList<>();
-        for (TeamCard tCard : teamCards) {
-            spawns.add(tCard.getSpawn().getLocation());
+        if (waitingLobbySpawn != null) {
+            fc.set("waitingLobbySpawn", waitingLobbySpawn.getLocation());
         }
-        fc.set("spawns", spawns);
+
+        if (teamSize == 1) {
+            List<String> spawns = new ArrayList<>();
+            for (int team : spawnLocations.keySet()) {
+                if (spawnLocations.get(team) != null && spawnLocations.get(team).size() >= 1) {
+                    spawns.add(spawnLocations.get(team).get(0).getLocation());
+                }
+            }
+            fc.set("spawns", spawns);
+        } else {
+            for (int teamNumber : spawnLocations.keySet()) {
+
+                List<String> spawns = new ArrayList<>();
+                List<CoordLoc> locs = spawnLocations.get(teamNumber);
+                for (CoordLoc loc : locs) {
+                    spawns.add(loc.getLocation());
+                }
+
+                fc.set("spawns.team-" + teamNumber, spawns);
+            }
+        }
 
         List<String> dSpawns = new ArrayList<>();
         for (CoordLoc loc : deathMatchSpawns) {
@@ -862,7 +912,7 @@ public class GameMap {
         teamSize = fc.getInt("teamSize", 1);
         environment = fc.getString("environment", "NORMAL");
         allowFriendlyFire = fc.getBoolean("allowFriendlyFire", false);
-        allowScanvenger = fc.getBoolean("allowScanvenger", false);
+        allowScanvenger = fc.getBoolean("allowScavenger", false);
 
         customJoinMenuIcon = fc.getBoolean("enableCustomJoinMenuItem", false);
         SkyWarsReloaded.getIM().addExtraItem("joinitem-" + name, new ArrayList<>(), fc.getString("customJoinMenuItem", "LEATHER_HELMET"));
@@ -872,15 +922,38 @@ public class GameMap {
         CageType ct = CageType.matchType(cage.toUpperCase());
         setCage(ct);
 
-        List<String> spawns = fc.getStringList("spawns");
         List<String> dSpawns = fc.getStringList("deathMatchSpawns");
         List<String> stringSigns = fc.getStringList("signs");
         List<String> stringChests = fc.getStringList("chests");
         List<String> stringCenterChests = fc.getStringList("centerChests");
 
         teamCards.clear();
-        for (String spawn : spawns) {
-            addTeamCard(Util.get().getCoordLocFromString(spawn));
+        spawnLocations.clear();
+
+        if (teamSize == 1) {
+            List<String> spawns = fc.getStringList("spawns");
+            for (int i = 0; i < spawns.size(); i++) {
+                spawnLocations.put(i + 1, Lists.newArrayList(Util.get().getCoordLocFromString(spawns.get(i))));
+                addTeamCard(i+1);
+            }
+        } else {
+            if (!(fc.get("spawns") instanceof List)) {
+                for (String team : fc.getConfigurationSection("spawns").getKeys(false)) {
+                    if (team.startsWith("team-")) {
+                        List<String> spawns = fc.getStringList("spawns." + team);
+                        List<CoordLoc> locs = Lists.newArrayList();
+                        for (String spawn : spawns) {
+                            locs.add(Util.get().getCoordLocFromString(spawn));
+                        }
+                        spawnLocations.put(Integer.parseInt(team.replace("team-", "")), locs);
+                        addTeamCard(Integer.parseInt(team.replace("team-", "")));
+                    }
+                }
+            }
+        }
+
+        if (fc.contains("waitingLobbySpawn")) {
+            waitingLobbySpawn = Util.get().getCoordLocFromString(fc.getString("waitingLobbySpawn"));
         }
 
         int def = 2;
@@ -917,20 +990,49 @@ public class GameMap {
         }
     }
 
-    public boolean registerMap() {
+    /**
+     * Code 0 = successfully registered
+     * Code 1 = Unbalanced teams
+     * Code 2 = Not enough spawns (at least 2)
+     * Code 3 = No spectating spawn set
+     * Code 4 = No lobby spawn set in team mode
+     * Code 5 = Unknown issue
+     * @return int status of registering
+     */
+    public int registerMap() {
         if (inEditing) {
             saveMap(null);
         }
-        if (teamCards.size() > 1) {
-            registered = true;
-            gameboard = new GameBoard(this);
-            refreshMap();
-            SkyWarsReloaded.get().getLogger().info("Registered Map " + name + "!");
+        if (spawnLocations.size() > 1) {
+            int maxPlayers = getMaxPlayers();
+            int actualMaxPlayers = teamCards.size() * teamSize;
+            if ((teamSize>1&& maxPlayers == actualMaxPlayers) || (teamSize==1&&maxPlayers>1)) {
+                if (spectateSpawn == null && SkyWarsReloaded.getCfg().spectateEnable()) {
+                    SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - No spectator spawn has been set. Set it using '/swm spawn spec'");
+                    registered = false;
+                    return 3;
+                }
+                if (waitingLobbySpawn == null && teamSize > 1) {
+                    SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - No waiting lobby spawn has been set. This is required for team games. Set it using '/swm spawn lobby'");
+                    registered = false;
+                    return 4;
+                }
+
+                registered = true;
+                gameboard = new GameBoard(this);
+                refreshMap();
+                SkyWarsReloaded.get().getLogger().info("Registered Map " + name + "!");
+                return 0;
+            } else {
+                registered = false;
+                SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - Not all teams have enough spawns. There are only " + maxPlayers + "/" + actualMaxPlayers + " spawns set.");
+                return 1;
+            }
         } else {
             registered = false;
             SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - Map must have at least 2 Spawn Points");
+            return 2;
         }
-        return registered;
     }
 
     /*Inventories*/
@@ -991,16 +1093,19 @@ public class GameMap {
             world.setSpawnLocation(2000, 0, 2000);
             if (SkyWarsReloaded.getCfg().borderEnabled()) {
                 WorldBorder wb = world.getWorldBorder();
-                wb.setCenter(teamCards.get(0).getSpawn().getX(), teamCards.get(0).getSpawn().getZ());
+                wb.setCenter(teamCards.get(0).getSpawn().get(0).getX(), teamCards.get(0).getSpawn().get(0).getZ());
                 wb.setSize(SkyWarsReloaded.getCfg().getBorderSize());
+            }
+
+
+            for (int teamNumber : spawnLocations.keySet()) {
+                for (CoordLoc loc : spawnLocations.get(teamNumber)) {
+                    getCurrentWorld().getBlockAt(loc.getX(), loc.getY(), loc.getZ()).setType(Material.AIR);
+                }
             }
             if (teamSize > 1) {
                 // todo test this
                 cage.createSpawnPlatforms(this);
-            } else {
-                for (TeamCard tc : getTeamCards()) {
-                    getCurrentWorld().getBlockAt(tc.getSpawn().getX(), tc.getSpawn().getY(), tc.getSpawn().getZ()).setType(Material.AIR);
-                }
             }
         }
     }
@@ -1030,7 +1135,8 @@ public class GameMap {
                         if (!block.getType().equals(Material.GOLD_BLOCK) && !block.getType().equals(Material.IRON_BLOCK)
                                 && !block.getType().equals(Material.DIAMOND_BLOCK) && !block.getType().equals(Material.EMERALD_BLOCK)) {
                             Location loc = beacon.getLocation();
-                            addTeamCard(loc);
+                            spawnLocations.put(spawnLocations.size(), Lists.newArrayList(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())));
+                            addTeamCard(spawnLocations.size());
                             if (message) {
                                 sender.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + getMaxPlayers()).setVariable("mapname", getDisplayName()).format("maps.addSpawn"));
                             }
@@ -1086,7 +1192,11 @@ public class GameMap {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    matchState = MatchState.WAITINGSTART;
+                    if (teamSize > 1) {
+                        matchState = MatchState.WAITINGLOBBY;
+                    } else {
+                        matchState = MatchState.WAITINGSTART;
+                    }
                     gameboard.updateScoreboard();
                     MatchManager.get().start(gMap);
                     update();
@@ -1251,6 +1361,11 @@ public class GameMap {
 
     public void setTimer(final int lenght) {
         this.timer = lenght;
+        if (matchState != MatchState.PLAYING) {
+            for (Player player : getAllPlayers()) {
+                player.setLevel(lenght);
+            }
+        }
     }
 
     public GameKit getKit() {
@@ -1301,7 +1416,12 @@ public class GameMap {
      * Returns the maximum number of players that can join a match
      */
     public int getMaxPlayers() {
-        return teamCards.size() * teamSize;
+        int i = 0;
+        for (int a : spawnLocations.keySet()) {
+            i += spawnLocations.get(a).size();
+        }
+        return i;
+        //return teamCards.size() * teamSize;
     }
 
     public void setThunderStorm(boolean b) {
@@ -1418,18 +1538,37 @@ public class GameMap {
         saveArenaData();
     }
 
-    public void addTeamCard(Location loc) {
-        addTeamCard(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
-        saveArenaData();
-    }
-
-    private void addTeamCard(CoordLoc loc) {
+    public void addTeamCard(int teamNumber, boolean saveFile) {
         String prefix = "";
         if (teamSize > 1) {
             prefix = getChatColor(teamCards.size());
         }
-        teamCards.add(new TeamCard(teamSize, loc, this, prefix, getStringColor(teamCards.size()), teamCards.size() + 1));
-        saveArenaData();
+
+        teamCards.removeIf(card -> card.getPosition() + 1 == teamNumber);
+        teamCards.add(new TeamCard(teamSize, this, prefix, getStringColor(teamCards.size()), teamCards.size() + 1, spawnLocations.get(teamNumber)));
+        if (saveFile) {
+            saveArenaData();
+        }
+    }
+
+    public void addTeamCard(int teamNumber) {
+        addTeamCard(teamNumber, false);
+    }
+
+    public void addTeamCard(Location loc, int team) {
+        if (teamSize == 1) {
+            spawnLocations.put(spawnLocations.size() + 1, Lists.newArrayList(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())));
+        } else {
+            List<CoordLoc> locs;
+            if (spawnLocations.containsKey(team)) {
+                locs = spawnLocations.get(team);
+                locs.add(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+            } else {
+                locs = Lists.newArrayList(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+            }
+            spawnLocations.put(team, locs);
+        }
+        addTeamCard(team);
     }
 
     private String getChatColor(int size) {
@@ -1472,11 +1611,11 @@ public class GameMap {
     }
 
     private String getStringColor(int size) {
-        double d = ((double) size + 1) / 14;
+        /*double d = ((double) size + 1) / 14;
         long i = (long) d;
         double f = d - i;
-        int s = (int) (f * 14);
-        switch (s) {
+        int s = (int) (f * 14);*/
+        switch (size) {
             case 1:
                 return "Lime";
             case 2:
@@ -1510,20 +1649,48 @@ public class GameMap {
         }
     }
 
-    public boolean removeTeamCard(Location loc) {
+    public int[] removeTeamCard(Location loc) {
         CoordLoc remove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        TeamCard toRemove = null;
-        for (TeamCard tCard : teamCards) {
-            if (tCard.getSpawn().equals(remove)) {
-                toRemove = tCard;
+        if (teamSize == 1 || SkyWarsReloaded.getCfg().isUseSeparateCages()) {
+            TeamCard toRemove = null;
+            boolean removeWholeTeam = false;
+            for (TeamCard tCard : teamCards) {
+                if (tCard.getSpawn() != null && tCard.getSpawn().size() >=1) {
+                    for (int i=0; i<tCard.getSpawn().size(); i++) {
+                        if (tCard.getSpawn().get(i).equals(remove)) {
+                            toRemove = tCard;
+                            tCard.getSpawn().remove(remove);
+                            if (tCard.getSpawn().size() == 0) {
+                                removeWholeTeam = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if (toRemove != null) {
+                if (removeWholeTeam) {
+                    teamCards.remove(toRemove);
+                }
+                for (int i : spawnLocations.keySet()) {
+                    spawnLocations.get(i).remove(remove);
+                }
+                saveArenaData();
+                return new int[]{1, toRemove.getPosition()+1};
+            }
+        } else {
+            for (TeamCard tCard : teamCards) {
+                if (tCard.getSpawn().contains(remove)) {
+                    spawnLocations.get(tCard.getPosition() + 1).remove(remove);
+                    if (spawnLocations.get(tCard.getPosition()+1).size() == 0) {
+                        teamCards.remove(tCard);
+                    }
+                    //addTeamCard(tCard.getPosition() + 1, true);
+                    saveArenaData();
+                    return new int[]{spawnLocations.get(tCard.getPosition()+1).size()+1, tCard.getPosition()};
+                }
             }
         }
-        if (toRemove != null) {
-            teamCards.remove(toRemove);
-            saveArenaData();
-            return true;
-        }
-        return false;
+        return null;
     }
 
     public void addDeathMatchSpawn(Location loc) {
@@ -1884,6 +2051,31 @@ public class GameMap {
 
     public void setDisableDamage(boolean b) {
         disableDamage = b;
+    }
+
+    public CoordLoc getWaitingLobbySpawn() {
+        return waitingLobbySpawn;
+    }
+
+    public void setWaitingLobbySpawn(Location location) {
+        waitingLobbySpawn = new CoordLoc(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        saveArenaData();
+    }
+
+    public void addWaitingPlayer(Player player) {
+        waitingPlayers.add(player.getUniqueId());
+    }
+
+    public void removeWaitingPlayer(UUID uid) {
+        waitingPlayers.remove(uid);
+    }
+
+    public void clearWaitingPlayers() {
+        waitingPlayers = Lists.newArrayList();
+    }
+
+    public ArrayList<UUID> getWaitingPlayers() {
+        return waitingPlayers;
     }
 
     public class TeamCardComparator implements Comparator<TeamCard> {

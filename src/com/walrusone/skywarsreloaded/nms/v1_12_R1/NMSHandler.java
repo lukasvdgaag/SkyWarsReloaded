@@ -74,7 +74,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     public void sendActionBar(Player p, String msg) {
         String s = ChatColor.translateAlternateColorCodes('&', msg);
         IChatBaseComponent icbc = ChatSerializer.a("{\"text\": \"" + s + "\"}");
-        PacketPlayOutChat bar = new PacketPlayOutChat(icbc);
+        PacketPlayOutChat bar = new PacketPlayOutChat(icbc, ChatMessageType.GAME_INFO);
         ((CraftPlayer) p).getHandle().playerConnection.sendPacket(bar);
     }
 

@@ -14,8 +14,8 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import java.util.HashMap;
 
 public class TauntListener implements org.bukkit.event.Listener {
-    private final HashMap<String, Long> lastHandSwap = new HashMap();
-    private final HashMap<String, Long> lastTaunt = new HashMap();
+    private final HashMap<String, Long> lastHandSwap = new HashMap<>();
+    private final HashMap<String, Long> lastTaunt = new HashMap<>();
 
     public TauntListener() {
     }
@@ -30,10 +30,10 @@ public class TauntListener implements org.bukkit.event.Listener {
         String uuid = e.getPlayer().getUniqueId().toString();
         if (!player.isSneaking()) {
             if (lastHandSwap.containsKey(uuid)) {
-                if (System.currentTimeMillis() - ((Long) lastHandSwap.get(uuid)).longValue() < 500L) {
+                if (System.currentTimeMillis() - ((Long)lastHandSwap.get(uuid)) < 500L) {
                     if (lastTaunt.containsKey(uuid)) {
-                        if (System.currentTimeMillis() - ((Long) lastTaunt.get(uuid)).longValue() < SkyWarsReloaded.getCfg().getCooldown() * 1000) {
-                            int cooldown = (int) ((SkyWarsReloaded.getCfg().getCooldown() * 1000 - (System.currentTimeMillis() - ((Long) lastTaunt.get(uuid)).longValue())) / 1000L);
+                        if (System.currentTimeMillis() - ((Long) lastTaunt.get(uuid)) < SkyWarsReloaded.getCfg().getCooldown() * 1000) {
+                            int cooldown = (int) ((SkyWarsReloaded.getCfg().getCooldown() * 1000 - (System.currentTimeMillis() - ((Long) lastTaunt.get(uuid)))) / 1000L);
                             int seconds = cooldown % 60 + 1;
                             int minutes = (cooldown - (seconds - 1)) / 60;
                             String cooldownText = "";
@@ -60,13 +60,13 @@ public class TauntListener implements org.bukkit.event.Listener {
                         }
 
                         lastHandSwap.remove(uuid);
-                        lastTaunt.put(uuid, Long.valueOf(System.currentTimeMillis()));
+                        lastTaunt.put(uuid, System.currentTimeMillis());
                     }
                 } else {
-                    lastHandSwap.put(uuid, Long.valueOf(System.currentTimeMillis()));
+                    lastHandSwap.put(uuid, System.currentTimeMillis());
                 }
             } else {
-                lastHandSwap.put(uuid, Long.valueOf(System.currentTimeMillis()));
+                lastHandSwap.put(uuid, System.currentTimeMillis());
             }
         }
     }

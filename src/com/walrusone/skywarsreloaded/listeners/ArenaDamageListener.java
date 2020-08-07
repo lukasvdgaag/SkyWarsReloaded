@@ -4,11 +4,13 @@ import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.FallingBlock;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ArenaDamageListener implements org.bukkit.event.Listener {
     public ArenaDamageListener() {
@@ -20,9 +22,8 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
         if ((event.getEntity() instanceof Player)) {
             Player target = (Player) event.getEntity();
             GameMap gameMap = MatchManager.get().getPlayerMap(target);
-            if ((gameMap != null) &&
-                    (!gameMap.getSpectators().contains(target.getUniqueId()))) {
-                if ((gameMap.getMatchState() == MatchState.ENDING) || (gameMap.getMatchState() == MatchState.WAITINGSTART)) {
+            if ((gameMap != null) && (!gameMap.getSpectators().contains(target.getUniqueId()))) {
+                if ((gameMap.getMatchState() == MatchState.ENDING) || (gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY)) {
                     event.setCancelled(true);
                 } else {
                     event.setCancelled(false);
@@ -82,16 +83,13 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
             Player player = (Player) event.getEntity();
             GameMap gameMap = MatchManager.get().getPlayerMap(player);
             if (gameMap != null) {
-                if (gameMap.getMatchState() == MatchState.ENDING || gameMap.getMatchState() == MatchState.WAITINGSTART) {
+                if (gameMap.getMatchState() == MatchState.ENDING || gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY) {
                     event.setCancelled(true);
-                }
-                else if (!gameMap.allowFallDamage() && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+                } else if (!gameMap.allowFallDamage() && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
                     event.setCancelled(true);
-                }
-                else if (gameMap.isDisableDamage() && event.getCause() != EntityDamageEvent.DamageCause.VOID) {
+                } else if (gameMap.isDisableDamage() && event.getCause() != EntityDamageEvent.DamageCause.VOID) {
                     event.setCancelled(true);
-                }
-                else {
+                } else {
                     event.setCancelled(false);
                 }
             }
@@ -104,7 +102,7 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
         if ((event.getEntity() instanceof Player)) {
             Player player = (Player) event.getEntity();
             GameMap gameMap = MatchManager.get().getPlayerMap(player);
-            if (gameMap != null && gameMap.getMatchState() == MatchState.WAITINGSTART) {
+            if (gameMap != null && (gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY)) {
                 event.setCancelled(true);
             }
         }
@@ -130,7 +128,7 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
         Player player = (Player) event.getEntity();
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
         if ((gameMap != null) && (
-                (gameMap.getMatchState() == MatchState.WAITINGSTART) || (gameMap.getMatchState() == MatchState.ENDING))) {
+                (gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY) || (gameMap.getMatchState() == MatchState.ENDING))) {
             event.setCancelled(true);
         }
     }

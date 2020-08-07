@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.menus.gameoptions;
 
+import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
@@ -20,8 +21,8 @@ import java.util.Arrays;
 
 public class ModifierOption extends GameOption {
     public ModifierOption(GameMap gameMap, String key) {
-        itemList = new ArrayList(Arrays.asList(new String[]{"modifierrandom", "modifierspeed", "modifierjump", "modifierstrength", "modifiernone"}));
-        voteList = new ArrayList(Arrays.asList(new Vote[]{Vote.MODIFIERRANDOM, Vote.MODIFIERSPEED, Vote.MODIFIERJUMP, Vote.MODIFIERSTRENGTH, Vote.MODIFIERNONE}));
+        itemList = Lists.newArrayList("modifierrandom", "modifierspeed", "modifierjump", "modifierstrength", "modifiernone");
+        voteList = Lists.newArrayList(Vote.MODIFIERRANDOM, Vote.MODIFIERSPEED, Vote.MODIFIERJUMP, Vote.MODIFIERSTRENGTH, Vote.MODIFIERNONE);
         createMenu(key, new Messaging.MessageFormatter().format("menu.modifier-voting-menu"));
         this.gameMap = gameMap;
     }
@@ -62,7 +63,7 @@ public class ModifierOption extends GameOption {
             Bukkit.getPluginManager().callEvent(new SkyWarsVoteEvent(player, gameMap, vote));
             updateVotes();
             Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1.0F, 1.0F);
-            if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+            if (gameMap.getMatchState().equals(MatchState.WAITINGSTART) || gameMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
                 new VotingMenu(player);
             }
             MatchManager.get().message(gameMap, new Messaging.MessageFormatter()
@@ -106,6 +107,10 @@ public class ModifierOption extends GameOption {
             for (Player player : gameMap.getAlivePlayers()) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, SkyWarsReloaded.getCfg().getStrength(), true, false));
             }
+        }
+
+        if (SkyWarsReloaded.getCfg().isModifierVoteEnabled()) {
+            MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", modifier.name().toLowerCase().replace("modifier", "")).format("game.vote-announcements.modifier"));
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.walrusone.skywarsreloaded.menus.gameoptions;
 
+import com.google.common.collect.Lists;
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.enums.Vote;
@@ -17,8 +19,8 @@ import java.util.Arrays;
 
 public class TimeOption extends GameOption {
     public TimeOption(GameMap gameMap, String key) {
-        itemList = new ArrayList(Arrays.asList(new String[]{"timerandom", "timedawn", "timenoon", "timedusk", "timemidnight"}));
-        voteList = new ArrayList(Arrays.asList(new Vote[]{Vote.TIMERANDOM, Vote.TIMEDAWN, Vote.TIMENOON, Vote.TIMEDUSK, Vote.TIMEMIDNIGHT}));
+        itemList = Lists.newArrayList("timerandom", "timedawn", "timenoon", "timedusk", "timemidnight");
+        voteList = Lists.newArrayList(Vote.TIMERANDOM, Vote.TIMEDAWN, Vote.TIMENOON, Vote.TIMEDUSK, Vote.TIMEMIDNIGHT);
         createMenu(key, new Messaging.MessageFormatter().format("menu.time-voting-menu"));
         this.gameMap = gameMap;
     }
@@ -59,7 +61,7 @@ public class TimeOption extends GameOption {
             Bukkit.getPluginManager().callEvent(new SkyWarsVoteEvent(player, gameMap, vote));
             updateVotes();
             Util.get().playSound(player, player.getLocation(), com.walrusone.skywarsreloaded.SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1.0F, 1.0F);
-            if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+            if (gameMap.getMatchState().equals(MatchState.WAITINGSTART) || gameMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
                 new VotingMenu(player);
             }
             MatchManager.get().message(gameMap, new Messaging.MessageFormatter()
@@ -100,5 +102,9 @@ public class TimeOption extends GameOption {
             t = 18000;
         }
         gameMap.getCurrentWorld().setTime(t);
+
+        if (SkyWarsReloaded.getCfg().isTimeVoteEnabled()) {
+            MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", time.name().toLowerCase().replace("time", "")).format("game.vote-announcements.time"));
+        }
     }
 }

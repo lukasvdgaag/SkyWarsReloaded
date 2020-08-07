@@ -428,7 +428,7 @@ public class Util {
     }
 
     public byte getByteFromColor(String color) {
-        switch (color) {
+        switch (color.toLowerCase()) {
             case "white":
                 return (byte) 0;
             case "orange":

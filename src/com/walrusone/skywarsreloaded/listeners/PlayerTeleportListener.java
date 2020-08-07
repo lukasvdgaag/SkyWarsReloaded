@@ -56,7 +56,7 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
             }
         } else if ((a1.getCause().equals(TeleportCause.END_PORTAL)) || (player.hasPermission("sw.opteleport")) || (a1.getTo().getWorld().equals(a1.getFrom().getWorld()))) {
             a1.setCancelled(false);
-        } else if ((a1.getCause().equals(TeleportCause.ENDER_PEARL)) && (gameMap.getMatchState() != MatchState.ENDING) && (gameMap.getMatchState() != MatchState.WAITINGSTART)) {
+        } else if ((a1.getCause().equals(TeleportCause.ENDER_PEARL)) && (gameMap.getMatchState() != MatchState.ENDING) && (gameMap.getMatchState() != MatchState.WAITINGSTART && gameMap.getMatchState() != MatchState.WAITINGLOBBY)) {
             a1.setCancelled(false);
         } else {
             a1.setCancelled(true);
@@ -65,6 +65,12 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
 
     @org.bukkit.event.EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
     public void onTP(PlayerTeleportEvent e) {
+        if (e.getTo().getWorld().getName().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld().getName())) {
+            if (SkyWarsReloaded.getCfg().isClearInventoryOnLobbyJoin()) {
+                e.getPlayer().getInventory().clear();
+            }
+        }
+
         GameMap g = MatchManager.get().getPlayerMap(e.getPlayer());
         if (g != null) {
             if (!e.getTo().getWorld().getName().equals(g.getCurrentWorld().getName())) {

@@ -39,6 +39,6 @@ public class CoordLoc {
     }
 
     public int hashCode() {
-        return Objects.hash(new Object[]{Integer.valueOf(x), Integer.valueOf(y), Integer.valueOf(z)});
+        return Objects.hash(x, y, z);
     }
 }
