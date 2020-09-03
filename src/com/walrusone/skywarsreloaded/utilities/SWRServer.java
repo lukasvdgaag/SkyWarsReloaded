@@ -29,6 +29,7 @@ public class SWRServer {
     private MatchState state;
     private ArrayList<Location> signs;
     private int teamsize;
+    private String hostname;
 
     public SWRServer(final String name, final int port) {
         this.serverName = name;
@@ -39,6 +40,14 @@ public class SWRServer {
         this.port = port;
         this.state = MatchState.OFFLINE;
         this.teamsize = 1;
+    }
+
+    public String getHostname() {
+        return this.hostname;
+    }
+
+    public void setHostname(String host) {
+        this.hostname = host;
     }
 
     public static ArrayList<SWRServer> getServers() {

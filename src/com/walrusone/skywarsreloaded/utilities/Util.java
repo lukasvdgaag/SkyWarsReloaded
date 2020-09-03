@@ -165,28 +165,12 @@ public class Util {
     public boolean isBusy(UUID uuid) {
         Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
 
-        if (player == null) {
-            return true;
-        }
+        if (player == null) return true;
 
-        if (player.isDead()) {
-            return true;
-        }
 
-        if (MatchManager.get().isSpectating(player)) {
-            return true;
-        }
+        if (player.isDead()) return true;
 
-        boolean allowed = false;
-        for (String world : SkyWarsReloaded.getCfg().getLobbyWorlds()) {
-            if (world.equalsIgnoreCase(player.getWorld().getName())) {
-                allowed = true;
-            }
-        }
-
-        if (!allowed) {
-            return true;
-        }
+        if (MatchManager.get().isSpectating(player)) return true;
 
         PlayerStat ps = PlayerStat.getPlayerStats(player);
         if (ps == null) {
@@ -560,6 +544,18 @@ public class Util {
             }
         }
         return null;
+    }
+
+    public String secondsToTimeString(int seconds) {
+        String time = "";
+        if (seconds < 60) {
+            time = seconds + "";
+        } else {
+            int mins = (int) seconds / 60;
+            int secs = (int) seconds % 60;
+            time = mins + ":" + (secs < 10 ? "0" + secs : secs);
+        }
+        return time;
     }
 
 

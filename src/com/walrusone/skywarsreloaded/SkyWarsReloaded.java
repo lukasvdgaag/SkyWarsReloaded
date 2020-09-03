@@ -18,6 +18,9 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.listeners.*;
 import com.walrusone.skywarsreloaded.managers.*;
+import com.walrusone.skywarsreloaded.managers.worlds.FileWorldManager;
+import com.walrusone.skywarsreloaded.managers.worlds.SWMWorldManager;
+import com.walrusone.skywarsreloaded.managers.worlds.WorldManager;
 import com.walrusone.skywarsreloaded.menus.*;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -42,6 +45,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,10 +135,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             if (NMS.class.isAssignableFrom(clazz)) { // Make sure it actually implements NMS
                 this.nmsHandler = (NMS) clazz.getConstructor().newInstance(); // Set our handler
             }
-        } catch (final Exception e) {
-            e.printStackTrace();
-            this.getLogger().severe("Could not find support for this CraftBukkit version: " + version + ".");
-            this.getLogger().info("Check for updates at https://www.spigotmc.org/resources/skywarsreloaded.3796/");
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException
+                 | IllegalArgumentException e) {
+            this.getLogger().severe("Could not find support for this CraftBukkit version: " + version + ". Now disabling the plugin!");
+            this.getLogger().info("Check for updates at https://gaagjescraft.net/download/skywars");
             this.setEnabled(false);
             return;
         }
@@ -191,8 +195,18 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             this.getServer().getPluginManager().registerEvents(new PerWorldInventoryListener(), this);
         }
 
+        if (getCfg().bungeeMode() && getCfg().isUsePartyAndFriends()) {
+            this.getServer().getPluginManager().registerEvents(new PerWorldInventoryListener(), this);
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldManager") && getCfg().isUseSlimeWorldManager()) {
+            wm = new SWMWorldManager();
+        }
+        else {
+            wm = new FileWorldManager();
+        }
+
         ic = new IconMenuController();
-        wm = new WorldManager();
 
         if (nmsHandler.getVersion() > 8) {
             this.getServer().getPluginManager().registerEvents(new SwapHandListener(), this);
@@ -280,21 +294,27 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                             swrServer.setDisplayName(serverParts[2]);
                             swrServer.setMaxPlayers(Integer.parseInt(serverParts[3]));
                             swrServer.setTeamsize(Integer.parseInt(serverParts[4]));
+                            if (serverParts.length == 6) {
+                                swrServer.setHostname(serverParts[5]);
+                            }
+
                             Player player = Iterables.getFirst(SkyWarsReloaded.get().getServer().getOnlinePlayers(), null);
                             if (player != null) {
                                 sendBungeeMsg(player, "PlayerCount", serverParts[0]);
                             } else {
                                 try {
-                                    MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname("127.0.0.1").setPort(swrServer.getPort()));
+                                    String hostname = swrServer.getHostname() == null ? "127.0.0.1" : swrServer.getHostname();
+
+                                    MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname(hostname).setPort(swrServer.getPort()));
                                     final String[] serverInfo = data.getDescription().getText().split(":");
                                     swrServer.setMatchState(serverInfo[0]);
-                                    if (Util.get().isInteger(serverInfo[1])) {
+                                    /*if (Util.get().isInteger(serverInfo[1])) {
                                         swrServer.setPlayerCount(Integer.parseInt(serverInfo[1]));
                                     }
                                     if (Util.get().isInteger(serverInfo[2])) {
                                         swrServer.setMaxPlayers(Integer.parseInt(serverInfo[2]));
                                     }
-                                    swrServer.setDisplayName(serverInfo[3]);
+                                    swrServer.setDisplayName(serverInfo[3]);*/
                                     swrServer.updateSigns();
 
                                 } catch (IOException e) {
@@ -340,7 +360,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, false, true);
                 }
             }
-            getWM().deleteWorld(gameMap.getName());
+            getWM().deleteWorld(gameMap.getName(), false);
         }
         for (final PlayerData playerData : PlayerData.getPlayerData()) {
             playerData.restore(false);
@@ -464,16 +484,18 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                         @Override
                         public void run() {
                             try {
-                                MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname("127.0.0.1").setPort(swrServer.getPort()));
+                                String hostname = swrServer.getHostname() == null ? "127.0.0.1" : swrServer.getHostname();
+
+                                MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname(hostname).setPort(swrServer.getPort()));
                                 final String[] serverInfo = data.getDescription().getText().split(":");
                                 swrServer.setMatchState(serverInfo[0]);
-                                if (Util.get().isInteger(serverInfo[1])) {
+                                /*if (Util.get().isInteger(serverInfo[1])) {
                                     swrServer.setPlayerCount(Integer.parseInt(serverInfo[1]));
                                 }
                                 if (Util.get().isInteger(serverInfo[2])) {
                                     swrServer.setMaxPlayers(Integer.parseInt(serverInfo[2]));
                                 }
-                                swrServer.setDisplayName(serverInfo[3]);
+                                swrServer.setDisplayName(serverInfo[3]);*/
                                 swrServer.updateSigns();
 
                             } catch (IOException e) {

@@ -101,7 +101,7 @@ public class ChestOption extends GameOption {
         populateChests(gameMap.getChests(), cVote, false);
         populateChests(gameMap.getCenterChests(), cVote, true);
         // todo send voting summary
-        if (SkyWarsReloaded.getCfg().isChestVoteEnabled()) {
+        if (SkyWarsReloaded.getCfg().isChestVoteEnabled() && gameMap.getTimer() < 5) {
             MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", cVote.name().toLowerCase().replace("chest", "")).format("game.vote-announcements.chests"));
         }
     }

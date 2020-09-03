@@ -23,7 +23,8 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
             Player target = (Player) event.getEntity();
             GameMap gameMap = MatchManager.get().getPlayerMap(target);
             if ((gameMap != null) && (!gameMap.getSpectators().contains(target.getUniqueId()))) {
-                if ((gameMap.getMatchState() == MatchState.ENDING) || (gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY)) {
+                if ((gameMap.getMatchState() == MatchState.ENDING || gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY) ||
+                        gameMap.isDisableDamage()) {
                     event.setCancelled(true);
                 } else {
                     event.setCancelled(false);
@@ -102,7 +103,7 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
         if ((event.getEntity() instanceof Player)) {
             Player player = (Player) event.getEntity();
             GameMap gameMap = MatchManager.get().getPlayerMap(player);
-            if (gameMap != null && (gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY)) {
+            if (gameMap != null && (gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY || gameMap.getMatchState() == MatchState.ENDING)) {
                 event.setCancelled(true);
             }
         }
@@ -132,19 +133,6 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
             event.setCancelled(true);
         }
     }
-
-    /*@EventHandler
-    public void arrowEvent(ProjectileHitEvent event) {
-        if ((event.getEntity() instanceof Arrow)) {
-            Arrow arrow = (Arrow) event.getEntity();
-            if ((arrow.getShooter() instanceof Player)) {
-                Player player = (Player) arrow.getShooter();
-                GameMap gameMap = MatchManager.get().getPlayerMap(player);
-                if (gameMap == null) // changed this from gameMap != null to ==.
-                    arrow.remove();
-            }
-        }
-    }*/
 
     @EventHandler
     public void onAnvilLand(EntityChangeBlockEvent event) {

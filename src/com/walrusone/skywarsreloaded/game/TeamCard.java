@@ -22,7 +22,7 @@ public class TeamCard {
     private GameMap gMap;
     private int place;
     private String prefix;
-    private Team team;
+    //private Team team;
     private byte bColor;
     private String name;
     private int position;
@@ -98,9 +98,9 @@ public class TeamCard {
         if ((player != null) && (ps != null) && (ps.isInitialized())) {
             for (PlayerCard pCard : playerCards) {
                 if ((pCard.getUUID() == null) && (pCard.getSpawn() != null)) {
-                    if (!team.hasEntry(player.getName())) {
+                    /*if (!team.hasEntry(player.getName())) {
                         team.addEntry(player.getName());
-                    }
+                    }*/
                     pCard.setPlayer(player);
                     pCard.setPreElo(ps.getElo());
 
@@ -135,7 +135,7 @@ public class TeamCard {
     boolean joinGame(Player player) {
         for (PlayerCard pCard : playerCards) {
             if (pCard.getUUID().equals(player.getUniqueId())) {
-                team.addEntry(player.getName());
+                //team.addEntry(player.getName());
                 gMap.getJoinQueue().add(pCard);
                 Bukkit.getPluginManager().callEvent(new SkyWarsJoinEvent(player, gMap));
                 if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
@@ -152,8 +152,8 @@ public class TeamCard {
 
     boolean removePlayer(UUID uuid) {
         PlayerCard pCard = containsPlayer(uuid);
-        if ((pCard != null) && (team != null)) {
-            team.removeEntry(SkyWarsReloaded.get().getServer().getOfflinePlayer(uuid).getName());
+        if ((pCard != null) /*&& (team != null)*/) {
+            //team.removeEntry(SkyWarsReloaded.get().getServer().getOfflinePlayer(uuid).getName());
             pCard.reset();
             return true;
         }
@@ -223,13 +223,13 @@ public class TeamCard {
         return prefix;
     }
 
-    public Team getTeam() {
+    /*public Team getTeam() {
         return team;
     }
 
     public void setTeam(Team team) {
         this.team = team;
-    }
+    }*/
 
     public byte getByte() {
         return bColor;

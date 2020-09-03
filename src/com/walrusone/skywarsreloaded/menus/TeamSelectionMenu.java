@@ -195,7 +195,8 @@ public class TeamSelectionMenu {
 
                     Bukkit.getPluginManager().callEvent(new SkyWarsSelectTeamEvent(player, gMap, tCard));
                     player.sendMessage(ChatColor.YELLOW + "You joined team " + (tCard.getPosition()+1));
-                    SkyWarsReloaded.getIC().show(player, gMap.getName() + "teamselect");
+                    //SkyWarsReloaded.getIC().show(player, gMap.getName() + "teamselect");
+                    player.closeInventory();
                     SkyWarsReloaded.getIC().getMenu(gMap.getName() + "teamselect").update();
 
                         /*if (!joined) {

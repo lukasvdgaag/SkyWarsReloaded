@@ -262,6 +262,10 @@ public class Config {
     private List<String> gameServers = Lists.newArrayList();
     private boolean isLobbyServer = false;
 
+    private boolean useSlimeWorldManager = false;
+    private String slimeWorldManagerSource = "file";
+    private boolean usePartyAndFriends = false;
+
 
     public Config() {
         load();
@@ -340,6 +344,9 @@ public class Config {
             speed = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.speed");
             jump = SkyWarsReloaded.get().getConfig().getInt("game.modifierLevel.jump");
 
+            useSlimeWorldManager = SkyWarsReloaded.get().getConfig().getBoolean("slimeworldmanager.enable");
+            slimeWorldManagerSource = SkyWarsReloaded.get().getConfig().getString("slimeworldmanager.source");
+
             usePlayerNames = SkyWarsReloaded.get().getConfig().getBoolean("teams.usePlayerNames");
             usePlayerGlassColors = SkyWarsReloaded.get().getConfig().getBoolean("teams.usePlayerGlassColors");
             teamMaterial = SkyWarsReloaded.get().getConfig().getString("teams.teamCageMaterial");
@@ -355,6 +362,7 @@ public class Config {
 
             maxPartySize = SkyWarsReloaded.get().getConfig().getInt("parties.maxPartySize");
             partyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("parties.enabled");
+            usePartyAndFriends = SkyWarsReloaded.get().getConfig().getBoolean("parties.enablePartyAndFriendsSupport");
             lobbyWorlds = SkyWarsReloaded.get().getConfig().getStringList("parties.lobbyWorlds");
 
             maxChest = SkyWarsReloaded.get().getConfig().getInt("chests.maxItemsChest");
@@ -594,6 +602,9 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("game.modifierLevel.speed", speed);
         SkyWarsReloaded.get().getConfig().set("game.modifierLevel.jump", jump);
 
+        SkyWarsReloaded.get().getConfig().set("slimeworldmanager.enable", useSlimeWorldManager);
+        SkyWarsReloaded.get().getConfig().set("slimeworldmanager.source", slimeWorldManagerSource);
+
         SkyWarsReloaded.get().getConfig().set("teams.usePlayerNames", usePlayerNames);
         SkyWarsReloaded.get().getConfig().set("teams.usePlayerGlassColors", usePlayerGlassColors);
         SkyWarsReloaded.get().getConfig().set("teams.teamCageMaterial", teamMaterial.toUpperCase());
@@ -604,6 +615,7 @@ public class Config {
 
         SkyWarsReloaded.get().getConfig().set("parties.maxPartySize", maxPartySize);
         SkyWarsReloaded.get().getConfig().set("parties.enabled", partyEnabled);
+        SkyWarsReloaded.get().getConfig().set("parties.enablePartyAndFriendsSupport", usePartyAndFriends);
         SkyWarsReloaded.get().getConfig().set("parties.lobbyWorlds", lobbyWorlds);
 
         SkyWarsReloaded.get().getConfig().set("chests.maxItemsChest", maxChest);
@@ -1317,6 +1329,11 @@ public class Config {
     public boolean isChangeTablistNames() {
         return changeTablistNames;
     }
+
+
+    public boolean isUseSlimeWorldManager() { return useSlimeWorldManager; }
+    public String getSlimeWorldManagerSource() { return slimeWorldManagerSource; }
+    public boolean isUsePartyAndFriends() { return usePartyAndFriends; }
 
 }
 

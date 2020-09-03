@@ -109,7 +109,7 @@ public class PlayerData {
             player.setFireTicks(0);
             player.setScoreboard(sb);
             if (SkyWarsReloaded.getCfg().lobbyBoardEnabled() && !SkyWarsReloaded.getCfg().bungeeMode()) {
-                PlayerStat.updateScoreboard(player);
+                PlayerStat.updateScoreboard(player, "lobbyboard");
             }
 
             final Location respawn = SkyWarsReloaded.getCfg().getSpawn();

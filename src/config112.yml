@@ -17,6 +17,9 @@ displayPlayerLevelOnXpBar: true
 enabledLobbyGuard: false
 economyEnabled: false
 clearInventoryOnLobbyJoin: true
+slimeworldmanager:
+  source: file
+  enable: false
 game:
   win:
     clearInventory: true
@@ -74,6 +77,7 @@ chat:
     addPrefix: false  
 parties:
   enabled: true
+  enablePartyAndFriendsSupport: false
   maxPartySize: 4
   lobbyWorlds: []
 holograms: 

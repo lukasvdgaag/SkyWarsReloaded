@@ -9,6 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Objects;
+
 public class PlayerJoinListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -49,6 +51,7 @@ public class PlayerJoinListener implements Listener {
         //    }
        // }.runTaskLater(SkyWarsReloaded.get(), 1);
 
-        PlayerStat.getPlayers().add(new PlayerStat(a1.getPlayer()));
+        PlayerStat player = new PlayerStat(a1.getPlayer());
+        PlayerStat.getPlayers().add(player);
     }
 }

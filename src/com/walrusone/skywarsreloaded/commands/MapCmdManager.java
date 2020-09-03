@@ -28,6 +28,7 @@ public class MapCmdManager implements CommandExecutor {
         mapcmds.add(new DeleteCmd("map"));
         mapcmds.add(new MinimumCmd("map"));
         mapcmds.add(new CreatorCmd("map"));
+        mapcmds.add(new DebugCmd("map"));
         mapcmds.add(new ArenaCmd("map"));
         mapcmds.add(new AddSpawnCmd("map"));
         mapcmds.add(new ChestTypeCmd("map"));

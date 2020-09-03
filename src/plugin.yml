@@ -1,11 +1,21 @@
 name: Skywars
 main: com.walrusone.skywarsreloaded.SkyWarsReloaded
-version: 5.0.0
+version: 5.1.0
 api-version: 1.13
-author: Walrusone
-authors:
-  - GaagjesCraft Network Team (GCNT)
-softdepend: [Vault, PlaceholderAPI, MVdWPlaceholderAPI, HolographicDisplays, Multiverse-Core, PerWorldInventory, Skywars-Extension, WorldEdit]
+website: https://gaagjescraft.net/
+snapshot: 1
+author: GaagjesCraft Network Team (GCNT)
+softdepend:
+  - Vault
+  - PlaceholderAPI
+  - MVdWPlaceholderAPI
+  - HolographicDisplays
+  - Multiverse-Core
+  - PerWorldInventory
+  - Skywars-Extension
+  - WorldEdit
+  - PartyAndFriends
+  - SlimeWorldManager
 
 commands:
   skywars:

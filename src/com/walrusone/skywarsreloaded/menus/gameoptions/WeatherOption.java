@@ -129,7 +129,7 @@ public class WeatherOption extends GameOption {
             player.setPlayerWeather(w);
         }
 
-        if (SkyWarsReloaded.getCfg().isWeatherVoteEnabled()) {
+        if (SkyWarsReloaded.getCfg().isWeatherVoteEnabled()  && gameMap.getTimer() < 5) {
             MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", weather.name().toLowerCase().replace("weather", "")).format("game.vote-announcements.weather"));
         }
     }

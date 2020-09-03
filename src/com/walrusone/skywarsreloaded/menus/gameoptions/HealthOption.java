@@ -106,7 +106,7 @@ public class HealthOption extends GameOption {
             player.setHealth(t * 2);
         }
 
-        if (SkyWarsReloaded.getCfg().isHealthVoteEnabled()) {
+        if (SkyWarsReloaded.getCfg().isHealthVoteEnabled()  && gameMap.getTimer() < 5) {
             MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", time.name().toLowerCase().replace("health", "")).format("game.vote-announcements.health"));
         }
     }

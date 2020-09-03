@@ -103,7 +103,7 @@ public class TimeOption extends GameOption {
         }
         gameMap.getCurrentWorld().setTime(t);
 
-        if (SkyWarsReloaded.getCfg().isTimeVoteEnabled()) {
+        if (SkyWarsReloaded.getCfg().isTimeVoteEnabled()  && gameMap.getTimer() < 5) {
             MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", time.name().toLowerCase().replace("time", "")).format("game.vote-announcements.time"));
         }
     }

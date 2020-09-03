@@ -1,5 +1,6 @@
-package com.walrusone.skywarsreloaded.managers;
+package com.walrusone.skywarsreloaded.managers.worlds;
 
+import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
@@ -7,12 +8,13 @@ import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
-public class WorldManager {
-    public WorldManager() {
-    }
+public class FileWorldManager implements WorldManager {
 
     public World createEmptyWorld(String name, Environment environment) {
         if (org.bukkit.Bukkit.getWorld(name) == null) {
@@ -55,20 +57,20 @@ public class WorldManager {
         return loaded;
     }
 
-    public void unloadWorld(String w) {
+    public void unloadWorld(String w, boolean save) {
         World world = SkyWarsReloaded.get().getServer().getWorld(w);
 
         if (world != null) {
             for (Player p : world.getPlayers()) {
                 p.teleport(SkyWarsReloaded.getCfg().getSpawn());
             }
-            SkyWarsReloaded.get().getServer().unloadWorld(world, false);
+            SkyWarsReloaded.get().getServer().unloadWorld(world, save);
         }
     }
 
     public void copyWorld(File source, File target) {
         try {
-            ArrayList<String> ignore = new ArrayList(java.util.Arrays.asList(new String[]{"uid.dat", "session.dat", "session.lock"}));
+            List<String> ignore = Lists.newArrayList("uid.dat", "session.dat", "session.lock");
             if (!ignore.contains(source.getName())) {
                 if (source.isDirectory()) {
                     if ((!target.exists()) &&
@@ -84,22 +86,26 @@ public class WorldManager {
                     }
                 } else {
                     java.io.InputStream in = new java.io.FileInputStream(source);
-                    Object out = new java.io.FileOutputStream(target);
+                    OutputStream out = new java.io.FileOutputStream(target);
                     byte[] buffer = new byte['Ѐ'];
                     int length;
                     while ((length = in.read(buffer)) > 0)
-                        ((OutputStream) out).write(buffer, 0, length);
+                        out.write(buffer, 0, length);
                     in.close();
-                    ((OutputStream) out).close();
+                    out.close();
                 }
             }
-        } catch (java.io.IOException e) {
+        } catch (FileNotFoundException e) {
+            SkyWarsReloaded.get().getLogger().log(Level.SEVERE, "Failed to copy world as required! - file not found");
+            e.printStackTrace();
+        } catch (IOException e) {
             SkyWarsReloaded.get().getLogger().info("Failed to copy world as required!");
+            e.printStackTrace();
         }
     }
 
-    public void deleteWorld(String name) {
-        unloadWorld(name);
+    public void deleteWorld(String name, boolean removeFile) {
+        unloadWorld(name, false);
         File target = new File(SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), name);
         deleteWorld(target);
     }

@@ -1,3 +1,14 @@
+# version 5.1.0
+Recoded the scoreboard system!
+Added 1.16.2 support.
+Added new placeholders to the scoreboards: {players_needed}, {waitingtimer}, {nextevent_time}, {nextevent_name}, {kills}.
+Added support for (MVdW)PlaceholderAPI on Scoreboards!
+Added support for SlimeWorldManager world storage, enable it in the config.
+Fixed scoreboard gap lines for {winnerX} placeholders when there were less winners than placeholders; those empty lines will now be removed.
+Fixed the {aliveplayers} placeholder on scoreboard which wasn't updating. It now works!
+Fixed the 'clearInventoryOnLobbyJoin' option which was clearing the inventory after giving the lobby items, it now clears it before.
+Removed some junk code.
+
 # version 5.0.0
 Recoded a LOT of the plugin's code!
 Added waiting lobbies to team games.

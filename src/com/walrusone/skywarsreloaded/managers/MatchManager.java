@@ -33,6 +33,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public class MatchManager {
     private static MatchManager instance;
@@ -51,24 +52,28 @@ public class MatchManager {
     public boolean joinGame(Player player, GameType type) {
         GameMap.shuffle();
         GameMap map = null;
-        int highest = 0;
-        ArrayList<GameMap> games;
-        if (type == GameType.ALL) {
-            games = GameMap.getPlayableArenas(GameType.ALL);
-        } else if (type == GameType.SINGLE) {
-            games = GameMap.getPlayableArenas(GameType.SINGLE);
-        } else {
-            games = GameMap.getPlayableArenas(GameType.TEAM);
-        }
+        int highest = 999;
+        ArrayList<GameMap> games = GameMap.getPlayableArenas(type);
 
         Collections.shuffle((games));
 
         for (final GameMap gameMap : games) {
-            if (gameMap.canAddPlayer() && highest <= gameMap.getPlayerCount()) {
+            Bukkit.getLogger().log(Level.WARNING, "#joinGame: --game: " + gameMap.getName());
+            if (gameMap.canAddPlayer() && gameMap.getPlayerCount() <= highest ) {
+                Bukkit.getLogger().log(Level.WARNING, "#joinGame: canAddPlayer: " + gameMap.canAddPlayer());
+                Bukkit.getLogger().log(Level.WARNING, "#joinGame: playerCount: " + gameMap.getPlayerCount());
+                Bukkit.getLogger().log(Level.WARNING, "#joinGame: highest: " + highest);
                 map = gameMap;
                 highest = gameMap.getPlayerCount();
             }
         }
+
+        if (games.size() == 1 && map == null) {
+            map = games.get(0);
+            Bukkit.getLogger().log(Level.WARNING, "#joinGame: --map = null:");
+            Bukkit.getLogger().log(Level.WARNING, "#joinGame: joining: " + map.getName());
+        }
+
         boolean joined = false;
         if (map != null) {
             joined = map.addPlayers(null, player);
@@ -278,10 +283,10 @@ public class MatchManager {
         player.setExp(0.0f);
         player.setLevel(0);
 
-        if (!SkyWarsReloaded.getNMS().removeFromScoreboardCollection(player.getScoreboard())) { //1.13+
+        /*if (!SkyWarsReloaded.getNMS().removeFromScoreboardCollection(player.getScoreboard())) { //1.13+
             player.setScoreboard(SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard());
-        }
-        player.setScoreboard(gameMap.getGameBoard().getScoreboard());
+        }*/
+        gameMap.getGameBoard().updateScoreboard();
 
         Util.get().clear(player);
         player.getInventory().setBoots(new ItemStack(Material.AIR, 1));
@@ -321,7 +326,7 @@ public class MatchManager {
                 }
 
                 if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
-                    if (gameMap.getFullTeams() >= gameMap.getMinTeams() || gameMap.getForceStart()) {
+                    if (gameMap.getAllPlayers().size() >= gameMap.getMinTeams() || gameMap.getForceStart()) {
                         if (gameMap.getTimer() <= 0) {
                             this.cancel();
                             for (final Player player : gameMap.getAlivePlayers()) {
@@ -359,18 +364,21 @@ public class MatchManager {
                         gameMap.setTimer(waitTime);
                     }
                 } else {
-                    if (gameMap.getFullTeams() >= gameMap.getMinTeams() || gameMap.getForceStart()) {
+                    if (gameMap.getAllPlayers().size() >= gameMap.getMinTeams() || gameMap.getForceStart()) {
                         if (gameMap.getTimer() <= 0) {
                             // TODO ADD TEAM ASSIGNING HERE
 
-                            List<TeamCard> teamCards = gameMap.getTeamCards();
                             for (Player player : gameMap.getAllPlayers()) {
                                 if (gameMap.getTeamCard(player) == null) {
-                                    for (TeamCard card : teamCards) {
-                                        if (card.getFullCount() > 0) {
+                                    List<TeamCard> cards = gameMap.getTeamCards();
+                                    Collections.shuffle(cards);
+                                    int lowest = 0;
+                                    for (TeamCard card : cards) {
+                                        if (card.getFullCount() > 0 && card.getPlayersSize() <= lowest) {
                                             card.sendReservation(player, PlayerStat.getPlayerStats(player));
                                             break;
                                         }
+                                        lowest = card.getPlayersSize();
                                     }
                                 }
                             }
@@ -729,6 +737,7 @@ public class MatchManager {
                             updatePlayerData(player, pCard, playerData);
                         }
                         Bukkit.getPluginManager().callEvent(new SkyWarsKillEvent(playerData.getTaggedBy().getPlayer(), player, gameMap));
+                        gameMap.addPlayerKill(playerData.getTaggedBy().getPlayer());
                     } else {
                         if (sendMessages) {
                             if (gameMap.getMatchState() != MatchState.ENDING) {
@@ -744,6 +753,7 @@ public class MatchManager {
 
                     playerData.restore(playerQuit);
                     PlayerData.getPlayerData().remove(playerData);
+                    PlayerStat.resetScoreboard(player);
 
                     if (gameMap.getSpectators().contains(player.getUniqueId())) {
                         gameMap.removePlayer(player.getUniqueId());
@@ -756,6 +766,8 @@ public class MatchManager {
                     if (sendMessages) {
                         if (playerData.getTaggedBy() != null && System.currentTimeMillis() - playerData.getTaggedBy().getTime() < 10000) {
                             this.message(gameMap, Util.get().getDeathMessage(dCause, true, player, playerData.getTaggedBy().getPlayer()), null);
+                            Bukkit.getPluginManager().callEvent(new SkyWarsKillEvent(playerData.getTaggedBy().getPlayer(), player, gameMap));
+                            gameMap.addPlayerKill(playerData.getTaggedBy().getPlayer());
                             updatePlayerData(player, pCard, playerData);
                         } else {
                             this.message(gameMap, Util.get().getDeathMessage(dCause, false, player, player), null);
@@ -836,6 +848,7 @@ public class MatchManager {
                 }
             }
 
+            PlayerStat.resetScoreboard(player);
             gameMap.removePlayer(playerUuid);
             gameMap.removeWaitingPlayer(playerUuid);
             Bukkit.getPluginManager().callEvent(new SkyWarsLeaveEvent(player, gameMap));
@@ -897,6 +910,13 @@ public class MatchManager {
         }
         Util.get().sendActionBar(killer, new Messaging.MessageFormatter().setVariable("xp", "" + multiplier * SkyWarsReloaded.getCfg().getKillerXP()).format("game.kill-actionbar"));
         Util.get().doCommands(SkyWarsReloaded.getCfg().getKillCommands(), killer);
+    }
+
+    public GameMap getGame(Player player) {
+        for (GameMap map : GameMap.getMaps()) {
+            if (map.getAllPlayers().contains(player)) return map;
+        }
+        return null;
     }
 
     public GameMap getPlayerMap(final Player v0) {
@@ -986,7 +1006,7 @@ public class MatchManager {
                     player.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
                     player.getInventory().setLeggings(new ItemStack(Material.AIR, 1));
                     player.setGameMode(GameMode.SPECTATOR);
-                    player.setScoreboard(gameMap.getGameBoard().getScoreboard());
+                    gameMap.getGameBoard().updateScoreboard(player);
 
                     prepareSpectateInv(player, gameMap);
 

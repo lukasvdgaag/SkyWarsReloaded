@@ -12,7 +12,6 @@ public class SaveCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         argLength = 2;
     }
 
-
     public boolean run() {
         String worldName = args[1];
         GameMap gMap = GameMap.getMap(worldName);

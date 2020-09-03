@@ -64,7 +64,6 @@ public class ChestManager {
         save(toAddTo, ct);
     }
 
-    @SuppressWarnings("unchecked")
     public void load(Map<Integer, Inventory> itemList, String fileName) {
         itemList.clear();
         File chestFile = new File(SkyWarsReloaded.get().getDataFolder(), fileName);

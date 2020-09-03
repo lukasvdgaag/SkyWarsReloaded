@@ -65,12 +65,6 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
 
     @org.bukkit.event.EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
     public void onTP(PlayerTeleportEvent e) {
-        if (e.getTo().getWorld().getName().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld().getName())) {
-            if (SkyWarsReloaded.getCfg().isClearInventoryOnLobbyJoin()) {
-                e.getPlayer().getInventory().clear();
-            }
-        }
-
         GameMap g = MatchManager.get().getPlayerMap(e.getPlayer());
         if (g != null) {
             if (!e.getTo().getWorld().getName().equals(g.getCurrentWorld().getName())) {

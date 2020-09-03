@@ -3,6 +3,9 @@ package com.walrusone.skywarsreloaded.managers;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.enums.GameType;
+import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.matchevents.MatchEvent;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
@@ -16,12 +19,15 @@ import org.bukkit.scoreboard.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class PlayerStat {
 
     private static ArrayList<PlayerStat> players;
-    private static HashMap<Player, Scoreboard> scoreboards = new HashMap<>();
+    //private static HashMap<Player, Scoreboard> scoreboards = new HashMap<>();
+    private static HashMap<Player, AdditionsBoard> scoreboards = new HashMap<>();
 
     static {
         PlayerStat.players = new ArrayList<>();
@@ -58,7 +64,8 @@ public class PlayerStat {
                 updatePlayer(uuid);
             }
         }
-        saveStats(uuid);
+
+        saveStats();
     }
 
     public static void updatePlayer(final String uuid) {
@@ -74,6 +81,9 @@ public class PlayerStat {
                             @Override
                             public void run() {
                                 if (Util.get().isSpawnWorld(player.getWorld())) {
+                                    if (SkyWarsReloaded.getCfg().isClearInventoryOnLobbyJoin()) {
+                                        player.getInventory().clear();
+                                    }
                                     if (SkyWarsReloaded.getCfg().protectLobby()) {
                                         player.setGameMode(GameMode.ADVENTURE);
                                         player.setHealth(20);
@@ -88,8 +98,7 @@ public class PlayerStat {
                                         Util.get().setPlayerExperience(player, pStats.getXp());
                                     }
                                     if (SkyWarsReloaded.get().isEnabled() && SkyWarsReloaded.getCfg().lobbyBoardEnabled()) {
-                                        getScoreboard(player);
-                                        player.setScoreboard(getPlayerScoreboard(player));
+                                        updateScoreboard(player, "lobbyboard");
                                     }
                                     if (SkyWarsReloaded.getCfg().optionsMenuEnabled() && SkyWarsReloaded.getCfg().isOptionsItemEnabled()) {
                                         player.getInventory().setItem(SkyWarsReloaded.getCfg().getOptionsSlot(), SkyWarsReloaded.getIM().getItem("optionselect"));
@@ -150,54 +159,41 @@ public class PlayerStat {
         return null;
     }
 
-    private static void getScoreboard(Player player) {
-        Scoreboard scoreboard = scoreboards.get(player);
-        if (scoreboard != null) {
-            resetScoreboard(player);
-        }
-        ScoreboardManager manager = SkyWarsReloaded.get().getServer().getScoreboardManager();
-        scoreboard = manager.getNewScoreboard();
-        Objective objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard, "dummy", "info");
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-        scoreboards.put(player, scoreboard);
-        updateScoreboard(player);
-    }
+    public static void updateScoreboard(Player player, String identifier) {
+        if (identifier == null || identifier.isEmpty()) identifier = "lobbyboard";
+        AdditionsBoard scoreboard = scoreboards.get(player);
 
-    public static void updateScoreboard(Player player) {
-        Scoreboard scoreboard = scoreboards.get(player);
-        if (scoreboard == null) {
-            getScoreboard(player);
-            scoreboard = scoreboards.get(player);
-        }
-        for (Objective objective : scoreboard.getObjectives()) {
-            if (objective != null) {
-                objective.unregister();
-            }
-        }
+        List<String> lines = SkyWarsReloaded.getMessaging().getFile().getStringList("scoreboards."+identifier+".lines");
 
-        Objective objective = SkyWarsReloaded.getNMS().getNewObjective(scoreboard, "dummy", "info");
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-        String sb = "scoreboards.lobbyboard.line";
         ArrayList<String> scores = new ArrayList<>();
-        for (int i = 1; i < 17; i++) {
-            if (i == 1) {
-                String leaderboard = getScoreboardLine(sb + i, player);
-                objective.setDisplayName(leaderboard);
-            } else {
-                String s = getScoreboardLine(sb + i, player);
-                while (scores.contains(s) && !s.equalsIgnoreCase("remove")) {
-                    s = s + " ";
-                }
+        for (int i = 1; i < lines.size(); i++) {
+            String s = ChatColor.translateAlternateColorCodes('&', getScoreboardLine(lines.get(i), player, identifier));
+            if (!ChatColor.stripColor(s).equalsIgnoreCase("remove")) {
                 scores.add(s);
-                if (!s.equalsIgnoreCase("remove")) {
-                    Score score = objective.getScore(s);
-                    score.setScore(17 - i);
-                }
             }
         }
+
+        if (scoreboard == null || scoreboard.getLinecount() != scores.size()) {
+            resetScoreboard(player);
+            scoreboard=null;
+        }
+
+        if (scoreboard == null) {
+            Bukkit.getLogger().log(Level.WARNING, "SW Debug: scoreboard for player " + player.getName() + " is null");
+            scoreboard =  new AdditionsBoard(player, scores.size());
+            scoreboards.put(player, scoreboard);
+        }
+        scoreboard.setTitle(ChatColor.translateAlternateColorCodes('&', lines.get(0)));
+        for (int i=0; i< scores.size();i++) {
+            String line =scores.get(i);
+            if (!scoreboard.getLine(i).equals(line)) {
+                scoreboard.setLine(i, line);
+            }
+        }
+
     }
 
-    private static String getScoreboardLine(String lineNum, Player player) {
+    private static String getScoreboardLine(String line, Player player, String identifier) {
         PlayerStat ps = PlayerStat.getPlayerStats(player);
         String killdeath;
         String winloss;
@@ -213,20 +209,76 @@ public class PlayerStat {
                 killdeath = String.format("%1$,.2f", ((double) ((double) ps.getKills() / (double) ps.getDeaths())));
             }
 
-            return new Messaging.MessageFormatter()
-                    .setVariable("elo", Integer.toString(ps.getElo()))
-                    .setVariable("wins", Integer.toString(ps.getWins()))
-                    .setVariable("losses", Integer.toString(ps.getLosses()))
-                    .setVariable("kills", Integer.toString(ps.getKills()))
-                    .setVariable("deaths", Integer.toString(ps.getDeaths()))
-                    .setVariable("xp", Integer.toString(ps.getXp()))
-                    .setVariable("killdeath", killdeath)
-                    .setVariable("winloss", winloss)
-                    .setVariable("balance", "" + getBalance(player))
-                    .setVariable("level", Integer.toString(Util.get().getPlayerLevel(player)))
-                    .format(lineNum);
+            if (identifier.equals("lobbyboard")) {
+                return line
+                        .replace("{elo}", Integer.toString(ps.getElo()))
+                        .replace("{wins}", Integer.toString(ps.getWins()))
+                        .replace("{losses}", Integer.toString(ps.getLosses()))
+                        .replace("{kills}", Integer.toString(ps.getKills()))
+                        .replace("{deaths}", Integer.toString(ps.getDeaths()))
+                        .replace("{xp}", Integer.toString(ps.getXp()))
+                        .replace("{killdeath}", killdeath)
+                        .replace("{winloss}", winloss)
+                        .replace("{balance}", "" + getBalance(player))
+                        .replace("{level}", Integer.toString(Util.get().getPlayerLevel(player)));
+            }
+            else {
+                GameMap gMap = MatchManager.get().getGame(player);
+                int currentPlayers;
+                if (gMap.getMatchState()== MatchState.WAITINGLOBBY) currentPlayers = gMap.getWaitingPlayers().size();
+                else if (gMap.getMatchState() == MatchState.ENDING) currentPlayers = gMap.getAllPlayers().size();
+                else currentPlayers = gMap.getAlivePlayers().size();
+
+                MatchEvent nextEvent = gMap.getNextEvent();
+                String eventTime = "";
+                String eventName = "";
+                if (nextEvent != null) {
+                    eventName = nextEvent.getTitle();
+                    eventTime = Util.get().secondsToTimeString(nextEvent.getStartTime() - gMap.getTimer());
+                }
+
+                return line
+                        .replace("{players_needed}", (gMap.getAllPlayers().size() >= gMap.getMinTeams() ? "0" : gMap.getMinTeams()-gMap.getAllPlayers().size()) + "")
+                        .replace("{waitingtimer}", Util.get().getFormattedTime(gMap.getTimer()))
+                        .replace("{nextevent_time}", eventTime)
+                        .replace("{nextevent_name}", eventName)
+                        .replace("{kills}", gMap.getPlayerKills(player) + "")
+                        .replace("{mapname}", gMap.getDisplayName())
+                        .replace("{time}", "" + Util.get().getFormattedTime(gMap.getTimer()))
+                        .replace("{aliveplayers}", "" + gMap.getAlivePlayers().size())
+                        .replace("{players}", "" + currentPlayers)
+                        .replace("{maxplayers}", "" + gMap.getTeamCards().size() * gMap.getTeamSize())
+                        .replace("{winner}", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(gMap,0) : getWinningTeamName(gMap))
+                        .replace("{winner1}", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(gMap,0) : getWinningTeamName(gMap))
+                        .replace("{winner2}", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(gMap,1) : "remove")
+                        .replace("{winner3}", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(gMap,2) : "remove")
+                        .replace("{winner4}", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(gMap,3) : "remove")
+                        .replace("{winner5}", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(gMap,4) : "remove")
+                        .replace("{winner6}", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(gMap,5) : "remove")
+                        .replace("{winner7}", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(gMap,6) : "remove")
+                        .replace("{winner8}", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(gMap,7) : "remove")
+                        .replace("{restarttime}", "" + gMap.getGameBoard().getRestartTimer())
+                        .replace("{chestvote}", ChatColor.stripColor(gMap.getCurrentChest()))
+                        .replace("{timevote}", ChatColor.stripColor(gMap.getCurrentTime()))
+                        .replace("{healthvote}", ChatColor.stripColor(gMap.getCurrentHealth()))
+                        .replace("{weathervote}", ChatColor.stripColor(gMap.getCurrentWeather()))
+                        .replace("{modifiervote}", ChatColor.stripColor(gMap.getCurrentModifier()));
+            }
         }
         return "";
+    }
+
+    private static String getWinnerName(GameMap gMap, int i) {
+        if (gMap.getWinners().size() > i) {
+            return gMap.getWinners().get(i);
+        }
+        return "remove";
+    }
+    private static String getWinningTeamName(GameMap gMap) {
+        if (gMap.getWinningTeam() != null) {
+            return gMap.getWinningTeam().getTeamName();
+        }
+        return "invalid";
     }
 
     private static double getBalance(Player player) {
@@ -236,18 +288,23 @@ public class PlayerStat {
         return 0;
     }
 
-    private static void resetScoreboard(Player player) {
-        Scoreboard scoreboard = scoreboards.get(player);
-        if (!SkyWarsReloaded.getNMS().removeFromScoreboardCollection(scoreboard)) {
-            for (Objective objective : scoreboard.getObjectives()) {
+    public static void resetScoreboard(Player player) {
+        AdditionsBoard scoreboard = scoreboards.get(player);
+        if (scoreboard != null && !SkyWarsReloaded.getNMS().removeFromScoreboardCollection(scoreboard.board)) {
+            scoreboards.remove(player);
+            for (Objective objective : scoreboard.board.getObjectives()) {
                 if (objective != null) {
                     objective.unregister();
                 }
             }
+            for (Team team : scoreboard.board.getTeams()) {
+                if (team != null) team.unregister();
+            }
         }
+        scoreboards.remove(player);
     }
 
-    private static Scoreboard getPlayerScoreboard(Player player) {
+    private static AdditionsBoard getPlayerScoreboard(Player player) {
         return scoreboards.get(player);
     }
 
@@ -258,8 +315,10 @@ public class PlayerStat {
         }
     }
 
-    private void saveStats(final String uuid) {
+    public void saveStats() {
         Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
+        Bukkit.getLogger().log(Level.WARNING, "Now saving stats of player " + player.getName());
+
         new BukkitRunnable() {
             public void run() {
                 PlayerStat ps = PlayerStat.getPlayerStats(uuid);
@@ -272,8 +331,11 @@ public class PlayerStat {
                             if (SkyWarsReloaded.getCfg().bungeeMode()) {
                                 if (player != null) {
                                     if (!SkyWarsReloaded.getCfg().isLobbyServer()) {
+                                        Bukkit.getLogger().log(Level.WARNING, "Trying to let " + player.getName() + " join a game");
+
                                         boolean joined = MatchManager.get().joinGame(player, GameType.ALL);
                                         if (!joined) {
+                                            Bukkit.getLogger().log(Level.WARNING, "Failed to put " + player.getName() + " in a game");
                                             if (SkyWarsReloaded.getCfg().debugEnabled()) {
                                                 Util.get().logToFile(ChatColor.YELLOW + "Couldn't find an arena for player " + player.getName() + ". Sending the player back to the skywars lobby.");
                                             }
@@ -287,10 +349,10 @@ public class PlayerStat {
 
                     DataStorage.get().saveStats(PlayerStat.getPlayerStats(uuid));
                 } else {
-                    saveStats(uuid);
+                    saveStats();
                 }
             }
-        }.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 1L);
+        }.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 0L);
     }
 
     public String getId() {
