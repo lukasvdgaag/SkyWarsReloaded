@@ -12,9 +12,11 @@ import java.util.List;
 
 public class KitCmdManager implements CommandExecutor {
     private List<BaseCmd> kitcmds = new ArrayList<>();
+    private static KitCmdManager kcm;
 
     //Add New Commands Here
     public KitCmdManager() {
+        kcm = this;
         kitcmds.add(new CreateCmd("kit"));
         kitcmds.add(new EnableCmd("kit"));
         kitcmds.add(new IconCmd("kit"));
@@ -27,6 +29,8 @@ public class KitCmdManager implements CommandExecutor {
         kitcmds.add(new UpdateCmd("kit"));
         kitcmds.add(new ListCmd("kit"));
     }
+
+    public static List<BaseCmd> getCommands() { return kcm.kitcmds; }
 
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
         if (args.length == 0 || getCommands(args[0]) == null) {

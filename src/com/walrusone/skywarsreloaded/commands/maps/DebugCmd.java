@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands.maps;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.game.GameMap;
@@ -12,6 +13,7 @@ public class DebugCmd extends BaseCmd {
         type = t;
         forcePlayer = false;
         cmdName = "debug";
+        alias = new String[0];
         argLength = 2;
     }
 
@@ -19,6 +21,11 @@ public class DebugCmd extends BaseCmd {
     public boolean run() {
         String worldName = args[1];
         GameMap gMap = GameMap.getMap(worldName);
+        if (worldName.equalsIgnoreCase("null")) {
+            sender.sendMessage("Is random vote enabled? " + SkyWarsReloaded.getCfg().isRandomVoteEnabled());
+            return true;
+        }
+
         if (gMap == null) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.map-does-not-exist"));
             return true;

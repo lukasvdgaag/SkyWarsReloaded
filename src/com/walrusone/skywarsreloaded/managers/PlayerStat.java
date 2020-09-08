@@ -179,7 +179,6 @@ public class PlayerStat {
         }
 
         if (scoreboard == null) {
-            Bukkit.getLogger().log(Level.WARNING, "SW Debug: scoreboard for player " + player.getName() + " is null");
             scoreboard =  new AdditionsBoard(player, scores.size());
             scoreboards.put(player, scoreboard);
         }
@@ -231,7 +230,7 @@ public class PlayerStat {
 
                 MatchEvent nextEvent = gMap.getNextEvent();
                 String eventTime = "";
-                String eventName = "";
+                String eventName = ChatColor.RED + "No events";
                 if (nextEvent != null) {
                     eventName = nextEvent.getTitle();
                     eventTime = Util.get().secondsToTimeString(nextEvent.getStartTime() - gMap.getTimer());

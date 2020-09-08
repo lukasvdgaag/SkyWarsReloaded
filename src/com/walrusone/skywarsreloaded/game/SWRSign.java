@@ -27,6 +27,7 @@ public class SWRSign {
     }
 
     private static void setMaterial(GameMap gMap, Block attachedBlock) {
+        if (attachedBlock == null) return;
         attachedBlock.getWorld().loadChunk(attachedBlock.getChunk());
         if (gMap == null) {
             updateBlock(attachedBlock, "blockoffline");
@@ -42,6 +43,7 @@ public class SWRSign {
     }
 
     private static void updateBlock(Block block, String item) {
+        if (block == null) return;
         block.setType(SkyWarsReloaded.getIM().getItem(item).getType());
         if ((SkyWarsReloaded.getNMS().getVersion() < 13) && (
                 (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("WOOL"))) || (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("STAINED_GLASS"))) || (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("STAINED_CLAY"))))) {
@@ -62,16 +64,19 @@ public class SWRSign {
         GameMap gMap = GameMap.getMap(gameName);
         org.bukkit.Location loc = location;
 
+        if (loc.getBlock() == null) return;
+
         if (loc.getBlock().getType().name().contains("SIGN") || loc.add(0,1,0).getBlock().getType().name().contains("SIGN")) {
             Block attachedBlock;
             Sign sign = (Sign) loc.getBlock().getState();
+            if (sign == null) return;
             /*if (!loc.getBlock().getType().name().contains("WALL")) {
                 sign =  (Sign) loc.add(0,1,0).getBlock().getState();
             }*/
             //attachedBlock = getAttachedBlock(loc.getBlock());
 
             if (loc.getBlock().getType().name().contains("WALL")) {
-                if (Material.getMaterial("RED_WOOL") != null) {
+                if (SkyWarsReloaded.getNMS().getVersion() >= 13) {
                     try {
                         Class cls = Class.forName("org.bukkit.block.Block");
                         Method method = cls.getMethod("getBlockData");

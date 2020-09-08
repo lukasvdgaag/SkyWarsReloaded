@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 
 public class ChestManager {
 
@@ -84,7 +85,7 @@ public class ChestManager {
                             itemList.put(percent, Bukkit.createInventory(null, 54, fileName + " " + percent));
                         }
                         for (ItemStack iStack : items) {
-                            itemList.get(percent).addItem(iStack);
+                            if (iStack != null) itemList.get(percent).addItem(iStack);
                         }
                     }
                 }

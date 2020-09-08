@@ -15,8 +15,10 @@ import java.util.List;
 public class CmdManager implements CommandExecutor {
     private List<BaseCmd> admincmds = new ArrayList<>();
     private List<BaseCmd> pcmds = new ArrayList<>();
+    private static CmdManager cm;
 
     public CmdManager() {
+        cm = this;
         admincmds.add(new ReloadCmd("sw"));
         admincmds.add(new ChestAddCmd("sw"));
         admincmds.add(new ChestEditCmd("sw"));
@@ -53,7 +55,12 @@ public class CmdManager implements CommandExecutor {
         if (SkyWarsReloaded.getCfg().glassMenuEnabled()) {
             pcmds.add(new SWGlassCmd("sw"));
         }
+    }
 
+    public static List<BaseCmd> getCommands() {
+        List<BaseCmd> a = cm.admincmds;
+        a.addAll(cm.pcmds);
+        return a;
     }
 
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {

@@ -9,6 +9,7 @@ import com.walrusone.skywarsreloaded.commands.CmdManager;
 import com.walrusone.skywarsreloaded.commands.KitCmdManager;
 import com.walrusone.skywarsreloaded.commands.MapCmdManager;
 import com.walrusone.skywarsreloaded.commands.PartyCmdManager;
+import com.walrusone.skywarsreloaded.commands.SWTabCompleter;
 import com.walrusone.skywarsreloaded.config.Config;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.database.Database;
@@ -427,8 +428,13 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
 
         getCommand("skywars").setExecutor(new CmdManager());
+        getCommand("skywars").setTabCompleter(new SWTabCompleter());
+
         getCommand("swkit").setExecutor(new KitCmdManager());
+        getCommand("swkit").setTabCompleter(new SWTabCompleter());
+
         getCommand("swmap").setExecutor(new MapCmdManager());
+        getCommand("swmap").setTabCompleter(new SWTabCompleter());
         if (config.partyEnabled()) {
             getCommand("swparty").setExecutor(new PartyCmdManager());
         }

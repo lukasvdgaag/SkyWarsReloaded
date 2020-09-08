@@ -25,9 +25,7 @@ public class ArenasMenu {
 
         Runnable update = () -> {
             if ((SkyWarsReloaded.getIC().hasViewers("arenasmenu"))) {
-                Bukkit.getConsoleSender().sendMessage("DEBUG #1 : Arenasmenu has viewers");
                 ArrayList<GameMap> maps = GameMap.getSortedArenas();
-                Bukkit.getConsoleSender().sendMessage("DEBUG #2 : " + maps.size() + " maps have been fetched");
                 ArrayList<Inventory> invs1 = SkyWarsReloaded.getIC().getMenu("arenasmenu").getInventories();
 
                 for (Inventory inv : invs1) {

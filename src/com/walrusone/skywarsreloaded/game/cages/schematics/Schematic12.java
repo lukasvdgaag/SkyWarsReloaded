@@ -1,18 +1,21 @@
 package com.walrusone.skywarsreloaded.game.cages.schematics;
 
-/*import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.function.mask.ExistingBlockMask;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.transform.AffineTransform;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.World;
-import com.sk89q.worldedit.world.registry.WorldData;*/
+import com.sk89q.worldedit.world.registry.WorldData;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import org.bukkit.entity.Player;
@@ -20,31 +23,47 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class Schematic12 {
 
     public void pasteSchematic(File schematicFile, GameMap map, CoordLoc spawn, Player player) {
-        /*try {
+        try {
             World weWorld = new BukkitWorld(map.getCurrentWorld());
-            WorldData worldData = weWorld.getWorldData();
-            Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(schematicFile)).read(worldData);
+            WorldData worldData = (WorldData) weWorld.getClass().getDeclaredMethod("getWorldData").invoke(weWorld);
+            ClipboardFormat cf = ClipboardFormat.class.getEnumConstants()[0];
+            Method cm = cf.getClass().getDeclaredMethod("getReader", InputStream.class);
+            cm.setAccessible(true);
+            ClipboardReader reader = (ClipboardReader) cm.invoke(cf, new FileInputStream(schematicFile));
+            Clipboard clipboard = (Clipboard) reader.getClass().getMethod("read", WorldData.class).invoke(reader, worldData);
+            // Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(schematicFile)).read(worldData); // clipboard format
 
             EditSession extent = WorldEdit.getInstance().getEditSessionFactory().getEditSession(weWorld, 250);
             AffineTransform transform = new AffineTransform();
 
-            ForwardExtentCopy copy = new ForwardExtentCopy(clipboard, clipboard.getRegion(), clipboard.getOrigin(), extent, new Vector(spawn.getX(), spawn.getY(), spawn.getZ()));
+            //ForwardExtentCopy copy = new ForwardExtentCopy(clipboard, clipboard.getRegion(), clipboard.getOrigin(), extent, new Vector(spawn.getX(), spawn.getY(), spawn.getZ()));
+            Constructor<ForwardExtentCopy> con = ForwardExtentCopy.class.getConstructor(Extent.class, Region.class, Vector.class, Extent.class, Vector.class);
+            con.setAccessible(true);
+            ForwardExtentCopy copy = con.newInstance(clipboard, clipboard.getRegion(), (Vector) clipboard.getClass().getMethod("getOrigin").invoke(clipboard), extent, new Vector(spawn.getX(), spawn.getY(), spawn.getZ()));
+
+            // new ForwardExtentCopy(clipboard, region, origin, BlockVector3, EditSession, Vector)
             if (!transform.isIdentity()) copy.setTransform(transform);
             copy.setSourceMask(new ExistingBlockMask(clipboard));
             Operations.completeLegacy(copy);
-            extent.flushQueue();
+            extent.getClass().getMethod("flushQueue").invoke(extent);
+
+            // invoke method flushQueue
 
             HashMap<UUID, EditSession> sessions = SchematicCage.pastedSessions.containsKey(map) ? SchematicCage.pastedSessions.get(map) : new HashMap<>();
             sessions.put(player.getUniqueId(), extent);
             SchematicCage.pastedSessions.put(map, sessions);
-        } catch (IOException | MaxChangedBlocksException e) {
+        } catch (MaxChangedBlocksException | NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException | IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 }

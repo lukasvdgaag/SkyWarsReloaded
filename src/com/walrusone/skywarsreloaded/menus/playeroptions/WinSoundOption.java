@@ -58,7 +58,7 @@ public class WinSoundOption extends PlayerOption {
         if (!soundFile.exists()) {
             if (SkyWarsReloaded.getNMS().getVersion() < 9) {
                 saveWinFile("winsounds18.yml");
-            } else if (SkyWarsReloaded.getNMS().getVersion() < 13 && SkyWarsReloaded.getNMS().getVersion() > 8) {
+            } else if (SkyWarsReloaded.getNMS().getVersion() < 13) {
                 saveWinFile("winsounds112.yml");
             } else {
                 SkyWarsReloaded.get().saveResource("winsounds.yml", false);
@@ -102,7 +102,7 @@ public class WinSoundOption extends PlayerOption {
             }
         }
         Collections.sort(playerOptions);
-        if (playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0 || playerOptions.get(3).getPage() == 0) {
+        if (playerOptions.size()>=4 && playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0 || playerOptions.get(3).getPage() == 0) {
             FileConfiguration storage = YamlConfiguration.loadConfiguration(soundFile);
             updateFile(soundFile, storage);
         }

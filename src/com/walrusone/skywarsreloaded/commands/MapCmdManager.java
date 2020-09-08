@@ -13,9 +13,11 @@ import java.util.List;
 
 public class MapCmdManager implements CommandExecutor {
     private List<BaseCmd> mapcmds = new ArrayList<>();
+    private static MapCmdManager mcm;
 
     //Add New Commands Here
     public MapCmdManager() {
+        mcm = this;
         mapcmds.add(new ListCmd("map"));
         mapcmds.add(new CreateCmd("map"));
         mapcmds.add(new EditCmd("map"));
@@ -28,12 +30,14 @@ public class MapCmdManager implements CommandExecutor {
         mapcmds.add(new DeleteCmd("map"));
         mapcmds.add(new MinimumCmd("map"));
         mapcmds.add(new CreatorCmd("map"));
-        mapcmds.add(new DebugCmd("map"));
+        mapcmds.add(new DebugCmd("map")); // new
         mapcmds.add(new ArenaCmd("map"));
         mapcmds.add(new AddSpawnCmd("map"));
         mapcmds.add(new ChestTypeCmd("map"));
         mapcmds.add(new LegacyLoadCmd("map"));
     }
+
+    public static List<BaseCmd> getCommands() { return mcm.mapcmds; }
 
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
         if (args.length == 0 || getCommands(args[0]) == null) {

@@ -115,10 +115,6 @@ public class PlayerData {
             final Location respawn = SkyWarsReloaded.getCfg().getSpawn();
             if (SkyWarsReloaded.get().isEnabled()) {
 
-                // TODO REMOVE DEBUG HERE
-                Bukkit.getConsoleSender().sendMessage("Skywars is enabled");
-                Bukkit.getConsoleSender().sendMessage("PlayerQuit: " + playerQuit);
-
                 if (playerQuit) {
                     if (SkyWarsReloaded.getCfg().bungeeMode()) {
                         Bukkit.getConsoleSender().sendMessage("Now connecting player to lobby (1)");

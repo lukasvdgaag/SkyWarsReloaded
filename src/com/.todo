@@ -1,3 +1,26 @@
+# version 5.2.1
+Added support for both WorldEdit version in one SWR version! There's no need to download a server-based version anymore.
+Added a 5 tick (0.25 second) cooldown for lobby items. TODO
+Removed some debug.
+
+
+# version 5.2.0
+Added tab complete for all commands.
+Added new {votes} option to the messages that are sent when you vote for a game option.
+Rewritten all messages in the messages.yml to have less ugly color combinations and better grammar.
+Added join and leave messages in the chat.
+Re-added the join titles. Apparently, the start titles were displayed on join.
+Added some issue fixes in case a sign is missing at a registered sign location.
+Added new {map} and {creator} placeholders to the game start titles.
+Added a default string: "&cNo events" for the {nextevent_name} placeholder in case there are no events.
+Fixed the random vote item still popping up in the menu when disabled.
+Fixed some bugs for player option menus.
+Removed some debug that was left from a bug fixing.
+
+# version 5.1.1
+Fixed bug regarding the '/swm spawn' command producing an NPE.
+Fixed bug regarding the '/swm debug' command to display an empty string in the command list.
+
 # version 5.1.0
 Recoded the scoreboard system!
 Added 1.16.2 support.

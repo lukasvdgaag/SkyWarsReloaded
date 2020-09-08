@@ -230,21 +230,14 @@ public class MatchManager {
             }
         }
         Util.get().clear(player);
-        if (SkyWarsReloaded.getCfg().titlesEnabled()) {
-            for (final Player p : gameMap.getAlivePlayers()) {
-                if (!p.equals(player)) {
-                    Util.get().sendTitle(p, 2, 20, 2, "",
-                            new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
-                                    .setVariable("players", "" + gameMap.getPlayerCount())
-                                    .setVariable("playercount", gameMap.getPlayerCount() + "")
-                                    .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-joined-the-game"));
-                }
+        if (!gameMap.getAlivePlayers().contains(player) || gameMap.getTeamSize() == 1) {
+            for (final Player p : gameMap.getAllPlayers()) {
+                p.sendMessage(new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
+                        .setVariable("players", "" + gameMap.getAllPlayers().size())
+                        .setVariable("playercount", gameMap.getAllPlayers().size() + "")
+                        .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-joined-the-game"));
             }
         }
-        new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
-                .setVariable("players", "" + gameMap.getPlayerCount())
-                .setVariable("playercount", gameMap.getPlayerCount() + "")
-                .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-joined-the-game");
 
         for (final Player p : gameMap.getAlivePlayers()) {
             if (!p.equals(player)) {
@@ -261,15 +254,20 @@ public class MatchManager {
         }
 
         gameMap.setMatchState(gameMap.getMatchState());
-        String designer;
         if (SkyWarsReloaded.getCfg().titlesEnabled()) {
-            if (gameMap.getDesigner() != null && gameMap.getDesigner().length() > 0) {
-                designer = new Messaging.MessageFormatter().setVariable("designer", gameMap.getDesigner()).format("titles.start-subtitle");
-            } else {
-                designer = new Messaging.MessageFormatter().format("titles.start-subtitle");
-            }
-            Util.get().sendTitle(player, 5, 60, 5, new Messaging.MessageFormatter().setVariable("map", gameMap.getDisplayName()).format("titles.start-title"),
-                    designer);
+            String subtitle = new Messaging.MessageFormatter()
+                    .setVariable("map", gameMap.getName())
+                    .setVariable("designer", gameMap.getDesigner())
+                    .setVariable("creator", gameMap.getDesigner())
+                    .format("titles.join-subtitle");
+            String maintitle = new Messaging.MessageFormatter()
+                    .setVariable("map", gameMap.getDisplayName())
+                    .setVariable("designer", gameMap.getDesigner())
+                    .setVariable("creator", gameMap.getDesigner()).format("titles.join-title");
+
+
+            Util.get().sendTitle(player, 15, 60, 15, maintitle,
+                    subtitle);
         }
     }
 
@@ -837,7 +835,6 @@ public class MatchManager {
                 PlayerStat ps = PlayerStat.getPlayerStats(player);
                 if (ps != null && leftGame) {
                     String cageName = ps.getGlassColor();
-                    // todo check this is beta
                     if (gameMap.getTeamSize() == 1 || SkyWarsReloaded.getCfg().isUseSeparateCages()) {
                         if (cageName.startsWith("custom-")) {
                             new SchematicCage().removeSpawnPlatform(gameMap, player);
@@ -869,7 +866,7 @@ public class MatchManager {
                 }
                 message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
                         .setVariable("players", "" + gameMap.getPlayerCount())
-                        .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.left-the-game"), player);
+                        .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-left-the-game"), player);
             }
 
             for (final Player p : gameMap.getAlivePlayers()) {

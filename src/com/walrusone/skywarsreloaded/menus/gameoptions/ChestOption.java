@@ -68,9 +68,13 @@ public class ChestOption extends GameOption {
             if (gameMap.getMatchState().equals(MatchState.WAITINGSTART) || gameMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
                 new VotingMenu(player);
             }
+
+            int votes = getVotes(false).getOrDefault(vote, 0);
+
             MatchManager.get().message(gameMap, new Messaging.MessageFormatter()
                     .setVariable("player", player.getName())
-                    .setVariable("chest", type).format("game.votechest"));
+                    .setVariable("chest", type)
+                    .setVariable("votes", votes+"").format("game.votechest"));
         }
     }
 
@@ -100,7 +104,6 @@ public class ChestOption extends GameOption {
         Vote cVote = gameMap.getChestOption().getVoted();
         populateChests(gameMap.getChests(), cVote, false);
         populateChests(gameMap.getCenterChests(), cVote, true);
-        // todo send voting summary
         if (SkyWarsReloaded.getCfg().isChestVoteEnabled() && gameMap.getTimer() < 5) {
             MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", cVote.name().toLowerCase().replace("chest", "")).format("game.vote-announcements.chests"));
         }

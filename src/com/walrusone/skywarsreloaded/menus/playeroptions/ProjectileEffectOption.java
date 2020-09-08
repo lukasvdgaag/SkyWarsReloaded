@@ -84,7 +84,7 @@ public class ProjectileEffectOption extends PlayerOption {
         }
 
         Collections.sort(playerOptions);
-        if (playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0 || playerOptions.get(3).getPage() == 0) {
+        if (playerOptions.size()>=4 && playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0 || playerOptions.get(3).getPage() == 0) {
             FileConfiguration storage = YamlConfiguration.loadConfiguration(particleFile);
             updateFile(particleFile, storage);
         }

@@ -66,7 +66,7 @@ public class TauntOption extends PlayerOption {
         if (!tauntFile.exists()) {
             if (SkyWarsReloaded.getNMS().getVersion() < 9) {
                 saveTauntFile("taunts18.yml");
-            } else if (SkyWarsReloaded.getNMS().getVersion() < 13 && SkyWarsReloaded.getNMS().getVersion() > 8) {
+            } else if (SkyWarsReloaded.getNMS().getVersion() < 13) {
                 saveTauntFile("taunts112.yml");
             } else {
                 SkyWarsReloaded.get().saveResource("taunts.yml", false);
@@ -99,7 +99,7 @@ public class TauntOption extends PlayerOption {
             }
         }
         Collections.sort(playerOptions);
-        if (playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0 || playerOptions.get(3).getPage() == 0) {
+        if (playerOptions.size()>=4 && playerOptions.get(3) != null && playerOptions.get(3).getPosition() == 0 || playerOptions.get(3).getPage() == 0) {
             FileConfiguration storage = YamlConfiguration.loadConfiguration(tauntFile);
             updateFile(tauntFile, storage);
         }

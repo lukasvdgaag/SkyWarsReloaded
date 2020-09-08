@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 public abstract class GameOption {
 
@@ -26,13 +27,6 @@ public abstract class GameOption {
     ArrayList<String> itemList;
     ArrayList<Vote> voteList;
     private IconMenu iconMenu;
-
-    public HashMap<Player, Vote> chestVotes = new HashMap<>();
-    public HashMap<Player, Vote> weatherVotes = new HashMap<>();
-    public HashMap<Player, Vote> timeVotes = new HashMap<>();
-    public HashMap<Player, Vote> modifierVotes = new HashMap<>();
-    public HashMap<Player, Vote> healthVotes = new HashMap<>();
-
 
     protected abstract void doSlotNine(Player player);
 
@@ -61,13 +55,11 @@ public abstract class GameOption {
         ArrayList<Inventory> invs = new ArrayList<>();
         Inventory inv = Bukkit.createInventory(null, 36, new Messaging.MessageFormatter().format(name));
         inv.clear();
-        if (SkyWarsReloaded.getCfg().isRandomVoteEnabled()) {
-            inv.setItem(9, SkyWarsReloaded.getIM().getItem(itemList.get(0)));
-        }
+        if (SkyWarsReloaded.getCfg().isRandomVoteEnabled()) inv.setItem(9, SkyWarsReloaded.getIM().getItem(itemList.get(0)));
         inv.setItem(11, SkyWarsReloaded.getIM().getItem(itemList.get(1)));
         inv.setItem(13, SkyWarsReloaded.getIM().getItem(itemList.get(2)));
         inv.setItem(15, SkyWarsReloaded.getIM().getItem(itemList.get(3)));
-        if (!(this instanceof ChestOption) || (this instanceof ChestOption && gameMap.allowScanvenger() && SkyWarsReloaded.getCfg().isScavengerChestEnabled())) {
+        if (!(this instanceof ChestOption) || (SkyWarsReloaded.getCfg().isScavengerChestEnabled())) {
             inv.setItem(17, SkyWarsReloaded.getIM().getItem(itemList.get(4)));
         }
         invs.add(inv);
@@ -95,7 +87,7 @@ public abstract class GameOption {
                 } else if (slot == 15) {
                     doSlotFifteen(event.getPlayer());
                 } else if (slot == 17) {
-                    if (!(this instanceof ChestOption) || (this instanceof ChestOption && gameMap.allowScanvenger()) && SkyWarsReloaded.getCfg().isScavengerChestEnabled()) {
+                    if (!(this instanceof ChestOption) || (SkyWarsReloaded.getCfg().isScavengerChestEnabled())) {
                         doSlotSeventeen(event.getPlayer());
                     }
                 }
@@ -106,11 +98,11 @@ public abstract class GameOption {
 
     public void restore() {
         Inventory inv = iconMenu.getInventory(0);
-        inv.setItem(9, SkyWarsReloaded.getIM().getItem(itemList.get(0)));
+        if (SkyWarsReloaded.getCfg().isRandomVoteEnabled()) inv.setItem(9, SkyWarsReloaded.getIM().getItem(itemList.get(0)));
         inv.setItem(11, SkyWarsReloaded.getIM().getItem(itemList.get(1)));
         inv.setItem(13, SkyWarsReloaded.getIM().getItem(itemList.get(2)));
         inv.setItem(15, SkyWarsReloaded.getIM().getItem(itemList.get(3)));
-        if (!(this instanceof ChestOption) || (this instanceof ChestOption && gameMap.allowScanvenger() && SkyWarsReloaded.getCfg().isScavengerChestEnabled())) {
+        if (!(this instanceof ChestOption) || (SkyWarsReloaded.getCfg().isScavengerChestEnabled())) {
             inv.setItem(17, SkyWarsReloaded.getIM().getItem(itemList.get(4)));
         }
         updateScoreboard();
@@ -124,7 +116,7 @@ public abstract class GameOption {
         }
     }
 
-    private HashMap<Vote, Integer> getVotes(boolean getRandom) {
+    public HashMap<Vote, Integer> getVotes(boolean getRandom) {
         HashMap<Vote, Integer> votes = new HashMap<>();
         votes.put(voteList.get(0), 0);
         votes.put(voteList.get(1), 0);
