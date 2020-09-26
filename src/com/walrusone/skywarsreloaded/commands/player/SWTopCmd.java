@@ -7,6 +7,7 @@ import com.walrusone.skywarsreloaded.managers.Leaderboard;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
 import java.util.List;
+import java.util.StringJoiner;
 
 public class SWTopCmd extends BaseCmd {
     public SWTopCmd(String t) {
@@ -45,12 +46,10 @@ public class SWTopCmd extends BaseCmd {
             player.sendMessage(new Messaging.MessageFormatter().format("leaderboard.footer"));
             return true;
         }
-        StringBuilder types = new StringBuilder();
+        StringJoiner types = new StringJoiner(", ");
         for (String add : SkyWarsReloaded.get().getUseable()) {
-            types.append(add);
-            types.append(", ");
+            types.add(add);
         }
-        types.substring(0, types.length() - 2);
         player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", types.toString()).format("leaderboard.invalidtype"));
         return false;
     }
