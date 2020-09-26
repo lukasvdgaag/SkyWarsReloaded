@@ -28,7 +28,7 @@ public class InfoCmd extends BaseCmd {
         player.sendMessage(new Messaging.MessageFormatter().setVariable("leader", Bukkit.getPlayer(party.getLeader()).getName()).format("party.info2"));
         StringJoiner members = new StringJoiner(", ");
         for (UUID uuid : party.getMembers()) {
-            members.append(Bukkit.getPlayer(uuid).getName());
+            members.add(Bukkit.getPlayer(uuid).getName());
         }
         player.sendMessage(new Messaging.MessageFormatter().setVariable("members", members.toString()).format("party.info3"));
         return true;
