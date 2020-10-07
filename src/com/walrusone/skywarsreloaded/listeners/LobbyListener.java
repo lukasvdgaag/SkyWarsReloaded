@@ -27,7 +27,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.UUID;
+import java.util.*;
 
 public class LobbyListener implements org.bukkit.event.Listener {
     public LobbyListener() {
@@ -244,8 +244,9 @@ public class LobbyListener implements org.bukkit.event.Listener {
                         player.sendMessage(new Messaging.MessageFormatter().format("error.could-not-join"));
                     }
                 } else {
-                    e.getPlayer().sendMessage(org.bukkit.ChatColor.RED + "YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SW SETSPAWN BEFORE STARTING A GAME");
-                    SkyWarsReloaded.get().getLogger().info("YOU MUST SET SPAWN IN THE LOBBY WORLD WITH /SW SETSPAWN BEFORE STARTING A GAME");
+                    e.getPlayer().sendMessage(org.bukkit.ChatColor.RED + "Oh no! It's not possible to join a game at this time. The server admin hasn't set up the Skywars properly. " +
+                            "The skywars lobby spawn has to be set.");
+                    SkyWarsReloaded.get().getLogger().info("It's not possible for people to join games if the skywars lobby spawn hasn't been set. Set it using '/sw setspawn'");
                 }
             }
         }

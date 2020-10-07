@@ -17,8 +17,8 @@ enabledLobbyGuard: false
 economyEnabled: false
 clearInventoryOnLobbyJoin: true
 slimeworldmanager:
-  source: file
   enable: false
+  source: file
 game:
   win:
     clearInventory: true
@@ -39,7 +39,9 @@ game:
   ecoForWin: 5
   ecoForKill: 1
   xpForWin: 5
+  winCommands: []
   xpForKill: 1
+  killCommands: []
   vip1Multiplier: 2
   vip2Multiplier: 3
   vip3Multiplier: 4
@@ -57,8 +59,10 @@ game:
     strength:
     jump: 
 teams:
+  useTeamChat: true
   usePlayerNames: true
   usePlayerGlassColors: true
+  useTeamNumberInMenu: true
   teamCageMaterial: WOOL
   useTeamMaterialBytes: false
   standardTeamMaterialByte: 4

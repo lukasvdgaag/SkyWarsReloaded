@@ -59,7 +59,7 @@ public class SWRMVdWPlaceholder {
 
         PlaceholderAPI.registerPlaceholder(p, "swr_level", e -> {
             Player player = e.getPlayer();
-            return "" + Util.get().getPlayerLevel(player);
+            return "" + Util.get().getPlayerLevel(player, false);
         });
     }
 }

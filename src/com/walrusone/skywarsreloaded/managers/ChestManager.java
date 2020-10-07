@@ -245,7 +245,10 @@ public class ChestManager {
             return "opcenterchest.yml";
         } else if (ct == ChestType.NORMALCENTER) {
             return "centerchest.yml";
-        } else {
+        } else if (ct == ChestType.CRATE) {
+            return "crates.yml";
+        }
+        else {
             return "chest.yml";
         }
     }
@@ -263,6 +266,8 @@ public class ChestManager {
             return ChestType.NORMALCENTER;
         } else if (fileName.equalsIgnoreCase("chest.yml")) {
             return ChestType.NORMAL;
+        } else if (fileName.equalsIgnoreCase("crates.yml")) {
+            return ChestType.CRATE;
         }
         return null;
     }

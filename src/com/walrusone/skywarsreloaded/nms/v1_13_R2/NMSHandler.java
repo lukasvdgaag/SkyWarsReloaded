@@ -292,7 +292,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
         if (mat.equalsIgnoreCase("banner")) {
             return new ItemStack(Material.valueOf(col + "_BANNER"), 1);
         }
-        return new ItemStack(Material.valueOf(col + "_GLASS"), 1);
+        return new ItemStack(Material.valueOf(col + "_STAINED_GLASS"), 1);
     }
 
     private String getColorFromByte(byte color) {

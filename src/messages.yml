@@ -1,11 +1,13 @@
 chat:
-  lobbychat: '&7[&bSkyWars&7] &7{prefix} &b{displayname}&f: &7{message}'
-  specchat: '&7[{&bmapname}&7] &7{prefix} &b{displayname}&f: &7{message}'
-  ingamechat: '&7[{&bmapname}&7] &7{prefix} &b{displayname}&f: &7{message}'
+  lobbychat: '&7[&bSkyWars&7] &6&l{level} &b{displayname}&f: &7{message}'
+  specchat: '&8[&cSpec&8] &6&l{level} &b{displayname}&f: &7{message}'
+  ingamechat: '&8[&7Chat&8] &6&l{level} &b{displayname}&f: &7{message}'
+  teamchat: '&8[&aTeam&8] &6&l{level} &b{displayname}&f: &7{message}'
   externalPrefix: ''
 command:
   kit-create: '&aSuccessfully created the kit {kit}'
-  kit-update: '&aThe kit {kit}&7''s contents have been updated with your inventory contents'
+  kit-update: '&aThe kit {kit}&7''s contents have been updated with your inventory
+    contents'
   kit-enable: '&7The kit {kit} &7is now {state}!'
   kit-perm: '&7The kit {kit} &7{state} requires a permission to unlock'
   kit-fall: '&7Fall damage has been {state} &7for the kit {kit}'
@@ -19,7 +21,8 @@ command:
   kit-listheader2: '&9==============================================='
   kit-list: '&6{filename}&f - &e{position}&f - &a{status}'
   kit-load: '&aLoaded the kit {kit} into your inventory'
-  kit-loadmsg: '&7&oUse the &e&o/swkit update &7&ocommand to save any changes you make!'
+  kit-loadmsg: '&7&oUse the &e&o/swkit update &7&ocommand to save any changes you
+    make!'
   kit-loreerror: '&cYou must specify a number between 1 and 16 or "locked"!'
   kit-lore: '&aYou successfully set lore line {line} of kit {kit}'
   kit-name: '&7You changed the display name of the kit to: {kit}'
@@ -27,7 +30,8 @@ command:
   no-kit: '&cCouldn''t find a kit with the name {kit}'
   stats-cleared: '&cYou cleared {player}''s stats!'
   must-be-online: '&cThat player is not online!'
-  reload: '&aSuccessfully reloaded the &bSkyWarsReloaded&a plugin by &bGaagjesCraft Network Team&a!'
+  reload: '&aSuccessfully reloaded the &bSkyWarsReloaded&a plugin by &bGaagjesCraft
+    Network Team&a!'
   player-not-found: '&cCouldn''t find a player with that name!'
   spawnset: '&aThe Skywars lobby spawn has successfully been set to your location!'
   setstat: '&a{player}''s {stat} was set to {amount}!'
@@ -37,8 +41,8 @@ command:
   invalid-color: '&cThat is not a valid color!'
   invalid-sound: '&cThat is not a valid sound!'
   chestadd: '&aAdded the item(s) in your {method} to {type} chests at {percent} percent!'
-  stat-types: '&cThe stat could either be "wins", "losses", "kills", "deaths", "elo", "xp", "pareffect",
-    "proeffect", "glasscolor", "killsound", or "winsound"'
+  stat-types: '&cThe stat could either be "wins", "losses", "kills", "deaths", "elo",
+    "xp", "pareffect", "proeffect", "glasscolor", "killsound", or "winsound"'
 kit:
   vote-random: '&cRandom'
   rand-lore: '&7Selects a random kit.'
@@ -52,13 +56,15 @@ event:
 maps:
   waitingLobbySpawn: '&aThe waiting lobby spawn of map {mapname} has been set to your
     location!'
-  setLookDirection: '&aThe look direction spawn of map {mapname} has been set to your location!'
+  setLookDirection: '&aThe look direction spawn of map {mapname} has been set to your
+    location!'
   created: '&aSuccessfully created a new arena called {mapname}!'
   creator: '&aThe creator of map {mapname} has been set to {creator}!'
   deleted: '&cYou deleted an arena called {mapname}! This cannot be undone.'
   listHeader: '&7--------------[&aArena List&7]--------------'
   listResult: '&7{filename}&f - &b{displayname}&f - {status}'
-  minplayer: '&aThe minimum amount of players to start the map {mapname} has been set to {min}!'
+  minplayer: '&aThe minimum amount of players to start the map {mapname} has been
+    set to {min}!'
   teamsize: '&aThe team size of map {mapname} has been set to {size}!'
   name: '&bThe display name of map {mapname} has been set to {displayname}!'
   refreshed: '&7Successfully reloaded the map data of the map {mapname}!'
@@ -70,10 +76,13 @@ maps:
   changecreator: '&bEnter the new creator in the chat.'
   addSpawn: '&aSpawn &e#{num}&a has been added to map {mapname}'
   addDeathSpawn: '&aDeathMatch Spawn &e#{num}&a added to map {mapname}'
-  spawnRemoved: '&cSpawn &7#{num}&c of team &7{team}&c has been removed from the map {mapname}'
-  deathSpawnRemoved: '&cDeathMatch Spawn &7#{num}&c has been removed from the map {mapname}'
+  spawnRemoved: '&cSpawn &7#{num}&c of team &7{team}&c has been removed from the map
+    {mapname}'
+  deathSpawnRemoved: '&cDeathMatch Spawn &7#{num}&c has been removed from the map
+    {mapname}'
   specSpawn: '&aThe spectator spawn of map {mapname} has been set to your location'
-  chestPlacementType: '&7From now on, all chests you place in the arena {mapname} will be &e{type} &7chests.'
+  chestPlacementType: '&7From now on, all chests you place in the arena {mapname}
+    will be &e{type} &7chests.'
   addChest: '&aAdded a new chest to the map {mapname}'
   addCenterChest: '&aAdded a new center chest to the map {mapname}'
   removeChest: '&cRemoved a chest from the map {mapname}'
@@ -109,14 +118,15 @@ error:
   map-remove: '&cFailed to delete the arena. A manual deletion may be necessary!'
   map-creator: '&cThe creator name must have at least one character!'
   map-exists: '&cUnable to create the arena: there already is an arena with that name!'
-  map-world-exists: '&cUnable to create the arena: there already is a world with that name!'
+  map-world-exists: '&cUnable to create the arena: there already is a world with that
+    name!'
   map-does-not-exist: '&cThere''s now map with that name!'
   map-not-editing: '&cTo use this command, you must be editing a map!'
   map-fail-load: '&cSkyWars was unable to load that map!'
   map-not-registered: '&cSkyWars could not register that map!'
   map-failed-to-register: '&cSkyWars could not register that map. Check the console
-    for more information. It''s most likely that the map does not have at least 2 player spawns. If you already set these spawns, please
-    set them again.'
+    for more information. It''s most likely that the map does not have at least 2
+    player spawns. If you already set these spawns, please set them again.'
   map-register-is-it-saved: '&cSkyWars could not register that map! Is it saved?'
   map-register-not-exist: '&cSkyWars could not register that map! It doesn''t exist!'
   map-not-in-edit: '&cThat map currently isn''t being edited!'
@@ -136,7 +146,8 @@ error:
     "op", "opcenter", or "crate"'
   chestmethod: '&c[method] must be either "hand" or "inv"'
   schematicsInUse: '&cMap commands are disabled when using schematics!'
-  nospawn: '&cThe SkyWars lobby spawn has to be set before you can do this! Set it using &o/sw setspawn'
+  nospawn: '&cThe SkyWars lobby spawn has to be set before you can do this! Set it
+    using &o/sw setspawn'
   nopermission: '&cYou don''t have the permission to vote!'
   elochange: '&cPlayer ELO cannot be changed while player is in game!'
 game:
@@ -201,8 +212,8 @@ signs:
   remove: '&cSuccessfully removed a SkyWars sign!'
   addedleader: '&aSuccessfully created a SkyWars leaderboard sign!'
   invalid-type: '&cThat is not a valid leaderboard type'
-  invalid-range: '&cThe entered position is outside of your leaderboard range. Check your
-    configuration.'
+  invalid-range: '&cThe entered position is outside of your leaderboard range. Check
+    your configuration.'
   teamSize: '&7{teamsize} players per team'
   teamState: '&7{teamcount} of {maxteams} teams'
 spectate:
@@ -519,19 +530,20 @@ helpList:
       map names [mapname]'
     name: '&a/swmap name &e[mapname] [name] &e- &2Sets the display name for the map
       named [mapname]'
-    debug: '&a/swmap debug &e[mapname] &e- &2Get debug info about you and the target arena.'
+    debug: '&a/swmap debug &e[mapname] &e- &2Get debug info about you and the target
+      arena.'
     refresh: '&a/swmap refresh &e[mapname] &e- &2Reloads the maps data file.'
     register: '&a/swmap register &e[mapname] &e- &2Registers a map named &e[mapname]'
     unregister: '&a/swmap unregister &e[mapname] &e- &2Unregisters a map named &e[mapname]'
     save: '&a/swmap save &e[mapname] &e- &2Saves a open map named &e[mapname]'
     arenas: '&a/swmap arenas &e- &2Opens the Arenas GUI'
-    spawn: '&a/swmap spawn &e[type] &e- &2Sets a spawn point for a arena. Type can be
-      player, spec, or deathmatch'
+    spawn: '&a/swmap spawn &e[type] &e- &2Sets a spawn point for a arena. Type can
+      be player, spec, or deathmatch'
     chesttype: '&a/swmap chesttype &e- &2Toggles between the type of chest being placed
       (Normal or Center)'
-    legacyload: '&a/swmap legacyload &e[mapname] &e- &2Loads the chests and player spawns
-      of a map using the SWR Legacy Map Loader. Should only be used when pasting schematics.
-      Do not run more than once per map!!'
+    legacyload: '&a/swmap legacyload &e[mapname] &e- &2Loads the chests and player
+      spawns of a map using the SWR Legacy Map Loader. Should only be used when pasting
+      schematics. Do not run more than once per map!!'
   swkit:
     header1: '&7-----------------[&aKit Commands&7]-----------------'
     create: '&a/swkit create &e[kitname] &e- &2Create a kit using the items in your

@@ -1,7 +1,17 @@
-# version 5.2.1
+# version 5.3.0
+Added team chats! Send messages to your team members only. Use a a '!' in front of the message to talk globally.
+Added a {level} placeholder to the chat formats so you can display the player's EXP level.
 Added support for both WorldEdit version in one SWR version! There's no need to download a server-based version anymore.
-Added a 5 tick (0.25 second) cooldown for lobby items. TODO
+Added an option to set the team number as the material amount in the team selection menu.
+Added a 5 tick (0.25 second) cooldown for lobby items.
+Fixed the menus bugging back when opening from another menu on 1.16+.
+Fixed the teamMaterial item in the selection menu not being shown when it wasn't WOOL, BANNER or STAINED_GLASS
+Fixed a bug for chat messages in which the plugin would break when the message contained a '%'-character.
+Fixed a typo in the messages.yml
 Removed some debug.
+
+TODO Fix inventory not being restored right when leaving in waitstart in a team game
+TODO Fix team game being in waitstart status when all players left after countdown.
 
 
 # version 5.2.0

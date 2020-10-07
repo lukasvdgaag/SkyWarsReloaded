@@ -29,6 +29,11 @@
 package com.walrusone.skywarsreloaded.utilities.minecraftping;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.stream.JsonReader;
+import net.minidev.json.JSONArray;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;

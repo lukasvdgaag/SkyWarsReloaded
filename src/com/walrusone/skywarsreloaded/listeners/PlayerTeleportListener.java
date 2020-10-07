@@ -1,9 +1,11 @@
 package com.walrusone.skywarsreloaded.listeners;
 
+import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -11,9 +13,13 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class PlayerTeleportListener implements org.bukkit.event.Listener {
     public PlayerTeleportListener() {
     }
+
+    public static List<Player> cooldowns = Lists.newArrayList();
 
     @org.bukkit.event.EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
     public void onPlayerTeleport(PlayerTeleportEvent a1) {
@@ -23,6 +29,8 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
         if (gameMap == null) {
             if (SkyWarsReloaded.getCfg().getSpawn() != null) {
                 if ((!a1.getFrom().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) && (a1.getTo().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld()))) {
+                    cooldowns.add(player);
+                    Bukkit.getScheduler().runTaskLaterAsynchronously(SkyWarsReloaded.get(), () -> cooldowns.remove(player), 5);
                     com.walrusone.skywarsreloaded.managers.PlayerStat.updatePlayer(a1.getPlayer().getUniqueId().toString());
                     return;
                 }

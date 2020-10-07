@@ -47,7 +47,7 @@ public class ChestAddCmd extends BaseCmd {
 
         int percent;
         if (Util.get().isInteger(args[3])) {
-            percent = Integer.valueOf(args[3]);
+            percent = Integer.parseInt(args[3]);
         } else {
             player.sendMessage(new Messaging.MessageFormatter().format("error.chestpercent"));
             return false;

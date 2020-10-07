@@ -72,7 +72,17 @@ public class TeamSelectionMenu {
                             .setVariable("teamcolor", tCard.getTeamName())
                             .format("menu.team_select_menu.item_title");
                     byte color = SkyWarsReloaded.getCfg().isUseTeamMaterialBytes() ? tCard.getByte() : (byte) SkyWarsReloaded.getCfg().getStandardTeamMaterialByte();
-                    ItemStack item = SkyWarsReloaded.getNMS().getColorItem(mat, color);
+                    ItemStack item;
+                    if (SkyWarsReloaded.getNMS().getVersion() >= 13) {
+                        item = new ItemStack(Material.valueOf(mat.toUpperCase()));
+                    }
+                    else {
+                        item = SkyWarsReloaded.getNMS().getColorItem(mat, color);
+                    }
+                    if (SkyWarsReloaded.getCfg().isUseTeamNumberInMenu()) {
+                        item.setAmount(tCard.getPosition()+1);
+                    }
+
                     lores.clear();
 
                     for (String line : SkyWarsReloaded.getMessaging().getFile().getStringList("menu.team_select_menu.lore.general-lore")) {

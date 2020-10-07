@@ -176,6 +176,7 @@ public class Config {
     private int standardTeamMaterialByte;
     private boolean useSeparateCages;
     private boolean changeTablistNames;
+    private boolean useTeamNumberInMenu;
 
     private int timeAfterMatch;
     private boolean fireworksEnabled;
@@ -265,6 +266,7 @@ public class Config {
     private boolean useSlimeWorldManager = false;
     private String slimeWorldManagerSource = "file";
     private boolean usePartyAndFriends = false;
+    private boolean useTeamChat = true;
 
 
     public Config() {
@@ -349,6 +351,7 @@ public class Config {
 
             usePlayerNames = SkyWarsReloaded.get().getConfig().getBoolean("teams.usePlayerNames");
             usePlayerGlassColors = SkyWarsReloaded.get().getConfig().getBoolean("teams.usePlayerGlassColors");
+            useTeamNumberInMenu = SkyWarsReloaded.get().getConfig().getBoolean("teams.useTeamNumberInMenu");
             teamMaterial = SkyWarsReloaded.get().getConfig().getString("teams.teamCageMaterial");
             standardTeamMaterialByte = SkyWarsReloaded.get().getConfig().getInt("teams.standardTeamMaterialByte");
             useTeamMaterialBytes = SkyWarsReloaded.get().getConfig().getBoolean("teams.useTeamMaterialBytes");
@@ -358,7 +361,7 @@ public class Config {
                 }
             }
             useSeparateCages = SkyWarsReloaded.get().getConfig().getBoolean("teams.useSeparateCages");
-            changeTablistNames = SkyWarsReloaded.get().getConfig().getBoolean("team.changeTablistNames");
+            changeTablistNames = SkyWarsReloaded.get().getConfig().getBoolean("teams.changeTablistNames");
 
             maxPartySize = SkyWarsReloaded.get().getConfig().getInt("parties.maxPartySize");
             partyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("parties.enabled");
@@ -474,6 +477,7 @@ public class Config {
             limitGameChat = SkyWarsReloaded.get().getConfig().getBoolean("chat.limitGameChatToGame");
             limitSpecChat = SkyWarsReloaded.get().getConfig().getBoolean("chat.limitSpecChatToSpec");
             limitLobbyChat = SkyWarsReloaded.get().getConfig().getBoolean("chat.limitLobbyChatToLobby");
+            useTeamChat = SkyWarsReloaded.get().getConfig().getBoolean("chat.useTeamChat");
 
             for (int i = 0; i < itemNames.size(); i++) {
                 String name = itemNames.get(i);
@@ -607,6 +611,7 @@ public class Config {
 
         SkyWarsReloaded.get().getConfig().set("teams.usePlayerNames", usePlayerNames);
         SkyWarsReloaded.get().getConfig().set("teams.usePlayerGlassColors", usePlayerGlassColors);
+        SkyWarsReloaded.get().getConfig().set("teams.useTeamNumberInMenu", useTeamNumberInMenu);
         SkyWarsReloaded.get().getConfig().set("teams.teamCageMaterial", teamMaterial.toUpperCase());
         SkyWarsReloaded.get().getConfig().set("teams.standardTeamMaterialByte", standardTeamMaterialByte);
         SkyWarsReloaded.get().getConfig().set("teams.useTeamMaterialBytes", useTeamMaterialBytes);
@@ -713,6 +718,7 @@ public class Config {
         SkyWarsReloaded.get().getConfig().getBoolean("chat.limitGameChatToGame", limitGameChat);
         SkyWarsReloaded.get().getConfig().getBoolean("chat.limitSpecChatToSpec", limitSpecChat);
         SkyWarsReloaded.get().getConfig().getBoolean("chat.limitLobbyChatToLobby", limitLobbyChat);
+        SkyWarsReloaded.get().getConfig().getBoolean("chat.useTeamChat", useTeamChat);
 
         for (String name : itemNames) {
             SkyWarsReloaded.get().getConfig().set("items." + name, materials.get(name));
@@ -1329,11 +1335,14 @@ public class Config {
     public boolean isChangeTablistNames() {
         return changeTablistNames;
     }
+    public boolean isUseTeamNumberInMenu() { return useTeamNumberInMenu; }
 
 
     public boolean isUseSlimeWorldManager() { return useSlimeWorldManager; }
     public String getSlimeWorldManagerSource() { return slimeWorldManagerSource; }
     public boolean isUsePartyAndFriends() { return usePartyAndFriends; }
+
+    public boolean isUseTeamChat() { return useTeamChat; }
 
 }
 

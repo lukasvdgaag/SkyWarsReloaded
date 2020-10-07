@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.utilities;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
@@ -497,8 +498,33 @@ public class Util {
         }
     }
 
-    public int getPlayerLevel(Player player) {
-        if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
+    public static HashMap<GameMap, Integer> getSortedGames(List<GameMap> hm) {
+        HashMap<GameMap, Integer> games = new HashMap<>();
+        for (GameMap g : hm) {
+            if (g.canAddPlayer()) games.put(g, g.getAllPlayers().size());
+        }
+
+        // Create a list from elements of HashMap
+        List<Map.Entry<GameMap, Integer>> list = new LinkedList<>(games.entrySet());
+
+        // Sort the list
+        Collections.sort(list, new Comparator<Map.Entry<GameMap, Integer>>() {
+            public int compare(Map.Entry<GameMap, Integer> o1,
+                               Map.Entry<GameMap, Integer> o2) {
+                return (o1.getValue()).compareTo(o2.getValue());
+            }
+        });
+
+        // put data from sorted list to hashmap
+        HashMap<GameMap, Integer> temp = new LinkedHashMap<GameMap, Integer>();
+        for (Map.Entry<GameMap, Integer> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
+    }
+
+    public int getPlayerLevel(Player player, boolean checkForActualEXP) {
+        if (SkyWarsReloaded.getCfg().displayPlayerExeperience() && checkForActualEXP) {
             return player.getLevel();
         } else {
             PlayerStat ps = PlayerStat.getPlayerStats(player);
@@ -558,5 +584,8 @@ public class Util {
         return time;
     }
 
+    public int getPlayerLevel(Player player) {
+        return getPlayerLevel(player, true);
+    }
 
 }

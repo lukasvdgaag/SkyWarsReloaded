@@ -2,12 +2,15 @@ package com.walrusone.skywarsreloaded.listeners;
 
 import com.google.common.collect.Maps;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.game.PlayerCard;
+import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -18,7 +21,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
 
 public class ChatListener implements Listener {
 
@@ -76,15 +81,6 @@ public class ChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
-        if (event.getMessage().startsWith("d9Bjw4NNs2 ")) {
-            List<Player> players = Objects.requireNonNull(GameMap.getMap(event.getMessage().split(" ")[1])).getAlivePlayers();
-
-            for (Player player : players) {
-                event.getPlayer().sendMessage(player.getName());
-            }
-
-        }
-
         if (SkyWarsReloaded.getCfg().formatChat()) {
             GameMap gMap = MatchManager.get().getPlayerMap(event.getPlayer());
             GameMap sMap = MatchManager.get().getSpectatorMap(event.getPlayer());
@@ -118,6 +114,7 @@ public class ChatListener implements Listener {
                         event.getRecipients().clear();
                         event.getRecipients().addAll(recievers);
                     }
+
                     event.setFormat(prefix + format);
                 } else {
                     String prefix = "";
@@ -143,38 +140,25 @@ public class ChatListener implements Listener {
                     PlayerStat ps = PlayerStat.getPlayerStats(event.getPlayer());
                     String messageToSend;
                     if (ps != null) {
-                        if (sMap != null) {
-                            messageToSend = new Messaging.MessageFormatter()
-                                    .setVariable("name", event.getPlayer().getName())
-                                    .setVariable("displayname", event.getPlayer().getDisplayName())
-                                    .setVariable("elo", Integer.toString(ps.getElo()))
-                                    .setVariable("wins", Integer.toString(ps.getWins()))
-                                    .setVariable("losses", Integer.toString(ps.getLosses()))
-                                    .setVariable("kills", Integer.toString(ps.getKills()))
-                                    .setVariable("deaths", Integer.toString(ps.getDeaths()))
-                                    .setVariable("xp", Integer.toString(ps.getXp()))
-                                    .setVariable("prefix", prefix)
-                                    .setVariable("message", message)
-                                    .setVariable("mapname", sMap.getDisplayName())
-                                    .format("chat.specchat");
-                        } else {
-                            messageToSend = new Messaging.MessageFormatter()
-                                    .setVariable("player", event.getPlayer().getName())
-                                    .setVariable("displayname", event.getPlayer().getDisplayName())
-                                    .setVariable("elo", Integer.toString(ps.getElo()))
-                                    .setVariable("wins", Integer.toString(ps.getWins()))
-                                    .setVariable("losses", Integer.toString(ps.getLosses()))
-                                    .setVariable("kills", Integer.toString(ps.getKills()))
-                                    .setVariable("deaths", Integer.toString(ps.getDeaths()))
-                                    .setVariable("xp", Integer.toString(ps.getXp()))
-                                    .setVariable("prefix", prefix)
-                                    .setVariable("message", message)
-                                    .setVariable("mapname", gMap.getDisplayName())
-                                    .format("chat.ingamechat");
-                        }
                         ArrayList<Player> recievers = null;
+                        boolean sendTeamChat = false;
                         if (sMap != null && SkyWarsReloaded.getCfg().limitSpecChat()) {
                             recievers = sMap.getMessageAblePlayers(true);
+                        } else if (gMap != null && SkyWarsReloaded.getCfg().isUseTeamChat() && gMap.getTeamSize() > 1 && gMap.getMatchState() != MatchState.WAITINGLOBBY) {
+                            TeamCard tcard = gMap.getTeamCard(event.getPlayer());
+                            if (message.startsWith("!") || tcard == null) {
+                                // send message to global chat
+                                recievers = gMap.getMessageAblePlayers(false);
+                                message = message.replaceFirst("!", "");
+                            } else {
+                                sendTeamChat = true;
+                                recievers = new ArrayList<>();
+                                for (PlayerCard pc : tcard.getPlayerCards()) {
+                                    if (pc != null && pc.getPlayer() != null) {
+                                        recievers.add(pc.getPlayer());
+                                    }
+                                }
+                            }
                         } else if (sMap != null && SkyWarsReloaded.getCfg().limitGameChat() || gMap != null && SkyWarsReloaded.getCfg().limitGameChat()) {
                             if (sMap != null) {
                                 recievers = sMap.getMessageAblePlayers(false);
@@ -188,10 +172,46 @@ public class ChatListener implements Listener {
 
                             //event.getRecipients().removeIf((Player player) -> !recipents.contains(player));
                         }
-                        event.setFormat(messageToSend);
-                        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                            me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), event.getFormat());
+
+                        if (sMap != null) {
+                            messageToSend = new Messaging.MessageFormatter()
+                                    .setVariable("name", event.getPlayer().getName())
+                                    .setVariable("displayname", event.getPlayer().getDisplayName())
+                                    .setVariable("elo", Integer.toString(ps.getElo()))
+                                    .setVariable("wins", Integer.toString(ps.getWins()))
+                                    .setVariable("losses", Integer.toString(ps.getLosses()))
+                                    .setVariable("kills", Integer.toString(ps.getKills()))
+                                    .setVariable("deaths", Integer.toString(ps.getDeaths()))
+                                    .setVariable("xp", Integer.toString(ps.getXp()))
+                                    .setVariable("level", Util.get().getPlayerLevel(event.getPlayer(), false) + "")
+                                    .setVariable("prefix", prefix)
+                                    //.setVariable("message", message)
+                                    .setVariable("mapname", sMap.getDisplayName())
+                                    .format("chat.specchat");
+                        } else {
+                            String format = sendTeamChat ? "chat.teamchat" : "chat.ingamechat";
+
+                            messageToSend = new Messaging.MessageFormatter()
+                                    .setVariable("player", event.getPlayer().getName())
+                                    .setVariable("displayname", event.getPlayer().getDisplayName())
+                                    .setVariable("elo", Integer.toString(ps.getElo()))
+                                    .setVariable("wins", Integer.toString(ps.getWins()))
+                                    .setVariable("losses", Integer.toString(ps.getLosses()))
+                                    .setVariable("kills", Integer.toString(ps.getKills()))
+                                    .setVariable("deaths", Integer.toString(ps.getDeaths()))
+                                    .setVariable("xp", Integer.toString(ps.getXp()))
+                                    .setVariable("level", Util.get().getPlayerLevel(event.getPlayer(), false) + "")
+                                    .setVariable("prefix", prefix)
+                                    .setVariable("message", message)
+                                    .setVariable("mapname", gMap.getDisplayName())
+                                    .format(format);
                         }
+
+                        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                            messageToSend = (me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(event.getPlayer().getUniqueId()), messageToSend));
+                        }
+                        messageToSend = messageToSend.replace("%", "%%");
+                        event.setFormat(messageToSend);
                     }
                 }
             } else {
@@ -207,6 +227,7 @@ public class ChatListener implements Listener {
                                     .setVariable("kills", Integer.toString(ps.getKills()))
                                     .setVariable("deaths", Integer.toString(ps.getDeaths()))
                                     .setVariable("xp", Integer.toString(ps.getXp()))
+                                    .setVariable("level", Util.get().getPlayerLevel(event.getPlayer(), false) + "")
                                     .format("chat.externalPrefix");
                         }
                         String format = event.getFormat();
@@ -216,7 +237,8 @@ public class ChatListener implements Listener {
                             event.getRecipients().clear();
                             event.getRecipients().addAll(world.getPlayers());
                         }
-                        event.setFormat(prefix + format);
+
+                        event.setFormat(prefix + format.replace("%", "%%"));
                     } else {
                         String prefix = "";
                         if (SkyWarsReloaded.getCfg().economyEnabled()) {
@@ -233,7 +255,7 @@ public class ChatListener implements Listener {
                             message = colorMessage;
                         } else {
                             message = ChatColor.stripColor(colorMessage);
-                            while (message.contains("&")) {
+                            if (message.contains("&")) {
                                 message = ChatColor.translateAlternateColorCodes('&', message);
                                 message = ChatColor.stripColor(message);
                             }
@@ -245,7 +267,7 @@ public class ChatListener implements Listener {
                                 event.getRecipients().clear();
                                 event.getRecipients().addAll(world.getPlayers());
                             }
-                            event.setFormat(new Messaging.MessageFormatter()
+                            String format = (new Messaging.MessageFormatter()
                                     .setVariable("player", event.getPlayer().getName())
                                     .setVariable("displayname", event.getPlayer().getDisplayName())
                                     .setVariable("elo", Integer.toString(ps.getElo()))
@@ -254,12 +276,16 @@ public class ChatListener implements Listener {
                                     .setVariable("kills", Integer.toString(ps.getKills()))
                                     .setVariable("deaths", Integer.toString(ps.getDeaths()))
                                     .setVariable("xp", Integer.toString(ps.getXp()))
+                                    .setVariable("level", Util.get().getPlayerLevel(event.getPlayer(), false) + "")
                                     .setVariable("prefix", prefix)
                                     .setVariable("message", message)
                                     .format("chat.lobbychat"));
+
                             if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                                event.setFormat(PlaceholderAPI.setPlaceholders(event.getPlayer(), event.getFormat()));
+                                format = (me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(event.getPlayer().getUniqueId()), format));
                             }
+                            format = format.replace("%", "%%");
+                            event.setFormat(format);
                         }
                     }
                 }

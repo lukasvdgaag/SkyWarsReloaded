@@ -28,6 +28,8 @@
  */
 package com.walrusone.skywarsreloaded.utilities.minecraftping;
 
+import com.google.gson.JsonObject;
+
 import java.util.List;
 
 /**
@@ -37,16 +39,32 @@ import java.util.List;
  */
 public class MinecraftPingReply {
 
-    private Description description;
+    private String description;
     private Players players;
     private Version version;
     private String favicon;
 
+    public void setFavicon(String favicon) {
+        this.favicon = favicon;
+    }
+
+    public void setVersion(Version version) {
+        this.version = version;
+    }
+
+    public void setPlayers(Players players) {
+        this.players = players;
+    }
+
     /**
      * @return the MOTD
      */
-    public Description getDescription() {
+    public String getDescription() {
         return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -69,16 +87,16 @@ public class MinecraftPingReply {
     public String getFavicon() {
         return this.favicon;
     }
-    
+
     public class Description {
         private String text;
-    	
-    	/**
-    	 * @return Server description text
-    	 */
-    	public String getText() {
+
+        /**
+         * @return Server description text
+         */
+        public String getText() {
             return this.text;
-    	}
+        }
     }
 
     public class Players {

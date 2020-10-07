@@ -1,95 +1,273 @@
+# Debug mode prints some extra information in the console if it's set to true.
+# This is useful for developers to figure out the source of a bug/problem.
 debugMode: false
-spawn: null
+
+
+###################
+# Bungee Settings #
+###################
+#
+# Enable bungee mode if you intend to use Skywars on a bungee server WITH one arena per server.
+# Do not enable this if your server is bungee, but you are hosting all arenas on one server.
 bungeeMode: false
+# The name of the bungee lobby where players should be sent to after a game.
+# Name as specified in the config.yml on the bungee host.
 bungeeLobby: lobby
+# Whether this is the skywars lobby server to send the players to after a game.
+# This server should not have any arenas, but is only for joining other games.
 isLobbyServer: false
+# A list of arena game servers.
+# The format is as following: "server-name:port:display-name:max-players:team-size"
+# An example server would be: "bones:127.0. 0.1:Bones:16:1"
 gameServers:
   - server-name:port:display name:max players:team size
-gameEndCommands:
+
+
+####################
+# General Settings #
+####################
+#
+# A list of commands to be executed by the console when a game ends
+# These commands do not have placeholder support!
+gameEndCommands: []
+# Total of seconds a player has to wait before executing a taunt again
 tauntCooldown: 10
+# Whether you want players to be put in a random game when they stand on a pressure plate
+#   Stone Pressure Plate = random game
+#   Iron Pressure Plate = random solo game
+#   Gold Pressure Plate = random team game
 enablePressurePlateJoin: true
+# Whether you want players to be teleported to the skywars lobby spawn location when they join the server
 teleportToSpawnOnJoin: false
+# Whether you want players to be teleported to the skywars lobby spawn location when they enter the lobby world
 teleportToSpawnOnWorldEnter: true
+# A valid link to a resource pack ZIP file - this requires "promptForResourcePackOnJoin" to be enabled
 resourcepack: https://www.dropbox.com/s/8scs6c911y3mqbg/taunts-resource-pack.zip?dl=1
+# Whether you want to send a resource pack download request to the players when they join
 promptForResourcePackOnJoin: false
+# Whether you want the Skywars lobby scoreboard to appear if the player is in the lobby world
 lobbyBoardEnabled: false
+# Whether you want the XP bar in the Skywars lobby to have the value of the player's Skywars XP amount
 displayPlayerLevelOnXpBar: true
+# If you enable the lobbyGuard, players without permission won't be able to break/place blocks or drop items
 enabledLobbyGuard: false
+# Whether you want to use Vault Economy to let players buy game options such as cages, killsounds etc.
 economyEnabled: false
+# Whether you want the player's inventory to be cleared when they join the skywars lobby world
 clearInventoryOnLobbyJoin: true
+
+# All SlimeWorldManager Option
+# SlimeWorldManager is an alternate plugin for world loading
+# It loads worlds async, with less lag, and stores worlds more efficient and lightweight
+# IMPORTANT: When switching, your arena worlds will be lost and you will have to recreate/transfer the world.
+#            The mapData will not be lost, so make sure all chests and spawns are at the same locations.
 slimeworldmanager:
-  source: file
+  # Whether you want to use SlimeWorldManager as the default world manager instead of Bukkit
   enable: false
+  # The source that we should store the worlds in.
+  # This could be file, mysql, or mongodb
+  source: file
+
+
+#################
+# Game Settings #
+#################
 game:
   win:
+    # Whether you want the players' inventories to be cleared when they win a game
     clearInventory: true
+    # Whether you want to enable flight for the winning players
     enableFlight: false
+  # Whether you want to kick a player when they switch worlds while playing a Skywars game
   kickOnWorldTeleport: true
+  # Whether you want to enable the QuickDeath feature
+  # This instantly kills a player when they become at a y-coord lower than the one set at "quickDeathY"
   enableQuickDeath: true
+  # The y-coord that a player has to reach to activate the QuickDeath feature
   quickDeathY: -10
+  # Whether you want to enable the PVPTimer feature
+  # PVPTimer disables PVP and other damage causes until x seconds after the game has started
   enablePVPTimer: true
-  PVPTimerTime: 10 # this is the time in seconds
+  # The time in seconds that players can't PvP with each other, or take damage (except void) after a game started
+  PVPTimerTime: 10
+  # Whether you want to display a global message (sent to the whole server) when someone wins a game
   enableWinMessage: true
+  # Whether you want to enable the lookDirection feature
+  # This sets the yaw-pitch location of a player in their cages to a custom location (preferable the center of the map)
+  # You can set the look direction with the command "/swm spawn look"
   enableLookDirection: true
   worldBorder:
+    # Whether you want to enable the world border in games
     enabled: false
+    # The size of the border measured in blocks from the center location (x=0,z=0)
     borderSize: 400
+  # Whether you want to show health above the players' heads
   showHealth: true
+  # The amount of damage that a snowball causes
   snowballDamage: 1
+  # The amount of damage that an egg causes
   eggDamage: 1
+  # The amount of money to receive when a player wins a game
+  # VAULT REQUIRED, and "enableEconomy" has to be enabled
   ecoForWin: 5
+  # The amount of money to receive when a player kills an opponent
+  # VAULT REQUIRED, and "enableEconomy" has to be enabled
   ecoForKill: 1
+  # The amount of XP that a player receives when they win a game
   xpForWin: 5
-  winCommands: 
+  # A list of commands to be executed for the winning players when a game is won
+  # You can use the <player> placeholder as name of the winning player
+  winCommands: []
+  # The amount of XP that a player receives when they kill an opponent
   xpForKill: 1
-  killCommands:
+  # A list of commands to be executed for a player when they kill an opponent
+  # You can use the <player> placeholder as name of the player who killed
+  killCommands: []
+  # The amount that one vote counts for for a player that has the permission "sw.vip1"
   vip1Multiplier: 2
+  # The amount that one vote counts for for a player that has the permission "sw.vip2"
   vip2Multiplier: 3
+  # The amount that one vote counts for for a player that has the permission "sw.vip3"
   vip3Multiplier: 4
+  # The amount that one vote counts for for a player that has the permission "sw.vip4"
   vip4Multiplier: 5
+  # The amount that one vote counts for for a player that has the permission "sw.vip5"
   vip5Multiplier: 10
+  # Number of seconds after which the game stops when it has ended
   timeAfterMatch: 15
+  # Number of seconds for countdown when the game is starting
   waitTimer: 10
+  # Whether the waitTimer should be reset when a new player join the game
   resetTimerOnJoin: false
+  # Whether you want you want players to vote for a general kit
+  # Everyone in the game will receive the kit that has the most votes
   kitVotingEnabled: false
+  # Whether you want players to be put in spectator mode when they die, or to just join a game as spectator
   spectateEnabled: true
+  # Maximum amount of blocks measured from the center (x=0,z=0) in which the player searches for spawns, chests etc.
+  # All chests beyond this amount of blocks from the center will not be filled, and players cannot go beyond these blocks
   maxMapSize: 400
+  # Whether you want to enable taunts
+  # Taunts are things to draw attention to the player executing the taunt
+  # It will display some particle effects, and optionally a message in the chat
   tauntsEnabled: true
+  # Levels of game modifiers to be voted for in the game
+  # For example Speed II
   modifierLevel:
-    speed:
-    strength:
-    jump: 
+    # Speed modifier level
+    speed: 1
+    # Strength modifier level
+    strength: 1
+    # Jump modifier level
+    jump: 1
+
+
+##################
+# Teams Settings #
+##################
+#
+# All settings regarding teams
 teams:
+  # Whether you want to use team chat
+  # This is a chat that only teammates can read.
+  # Players can start their message with "!" to talk in the regular chat
+  useTeamChat: true
+  # Whether you want to use player names on the scoreboard/messages
+  # If false, the team number/name will be displayed instead
   usePlayerNames: true
+  # Whether you want to let players use their own selected cage
+  # If false, the cages of all players in the team will be identical from color and shape
   usePlayerGlassColors: true
+  # Whether you want to use the team number as material amount in the team selection menu
+  useTeamNumberInMenu: true
+  # The material of the items in the team selection menu
   teamCageMaterial: WOOL
+  # Whether you want each team selection item to have its own color based on the team number
+  # Please know to only enable this if your item supports colors (wool, stained_glass, banners)
   useTeamMaterialBytes: false
+  # The color/byte/data of the items in the team selection menu
+  # This option only applies if "useTeamMaterialBytes" is set to false on 1.8-1.12
   standardTeamMaterialByte: 4
+  # Whether you want to use separate cages for team mates
+  # If you set this to false, all players will be put in one cage (make sure to change the cage type to "cube" for that arena)
+  # If true, each player has its own cage, which also supports schematics and regular blocks
   useSeparateCages: true
+  # Whether you want to change the color of the players in the tablist, based on what team they are in
   changeTablistNames: false
+
+#################
+# Chat Settings #
+#################
 chat:
+  # Whether you want to use Skywars' custom chat formatter
   enableFormatter: true
+  # Whether you want to limit the messages sent in-game to the game
+  # Players that do not attend in that game will not receive the message(s)
   limitGameChatToGame: true
+  # Whether you want to limit the messages sent in the skywars lobby to the lobby world only
   limitLobbyChatToLobby: true
+  # Whether you want to limit the messages sent as spectators in a game to all spectators only
+  # Players that are not spectating the game will not see the messages in their chat
   limitSpecChatToSpec: true
+  # Whether you want to use another plugin's chat formatter
+  # This only applies if "enableFormatter" is enabled
   externalChat:
+    # If true, the plugin will not use the formats from the messages.yml, but will still manage the people that get the messages
     useExternalChat: false
-    addPrefix: false  
+    # Whether you want to add a prefix, found in the messages.yml, to the other plugin's chat format
+    addPrefix: false
+
+
+##################
+# Party Settings #
+##################
 parties:
+  # Whether you want to enable the /swparty commands
   enabled: true
+  # Whether you want to enable support for the PartyAndFriends plugin
+  # Please note that this will only work on Bungee networks! It does not (yet) support spigot servers
   enablePartyAndFriendsSupport: false
+  # Maximum amount of players in a party
   maxPartySize: 4
+  # ----------- This option is not used for anything in the plugin
   lobbyWorlds: []
-holograms: 
+
+#####################
+# Hologram Settings #
+#####################
+#
+# Please know that you will need to have the HolographicsDisplay plugin installed to make this work
+# You can find it here: https://dev.bukkit.org/projects/holographic-displays
+holograms:
+  # Whether you want to enable holograms in your server
+  # Please know that after enabling this option you will have to RESTART your server!
+  # Want to learn how to create holograms? Read this: https://gaagjescraft.net/skywars/creating-holograms
   enabled: false
+
+
+##################
+# Chest Settings #
+##################
 chests:
+  # The maximum amount of items in a chest
   maxItemsChest: 26
-  maxItemsDoubleChest: 53 
+  # The maximum amount of items in a double chest
+  maxItemsDoubleChest: 53
+
+
+################
+# Kit Menu Settings #
+################
 kit:
+  # The size of the kit menu (should be dividable by 9, not greater than 54)
   menuSize: 45
+  # in case of kit voting enabled, this is the slot item for selecting a random kit
   randPos: 0
+  # in case of kit voting enabled, this is the item material for selecting a random kit
   randItem: NETHER_STAR
+  # clicking this slot will remove your current selected kit, and you will play without a kit
   noKitPos: 44
+  # the slot material of the unselect kit item
   noKitItem: GLASS
 titles:
   enabled: true

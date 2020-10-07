@@ -37,6 +37,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -101,6 +102,10 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onClick(PlayerInteractEvent a1) {
+        InventoryView v = a1.getPlayer().getOpenInventory();
+        if (v != null && v.getTopInventory() != null && v.getTopInventory().getType() != InventoryType.CRAFTING) return;
+
+
         final GameMap gameMap = MatchManager.get().getPlayerMap(a1.getPlayer());
         if (gameMap == null) {
             if (Util.get().isSpawnWorld(a1.getPlayer().getWorld())) {
@@ -111,6 +116,11 @@ public class PlayerInteractListener implements Listener {
                     }
                 }
                 if (a1.hasItem()) {
+                    if (PlayerTeleportListener.cooldowns.contains(a1.getPlayer())) {
+                        a1.setCancelled(true);
+                        return;
+                    }
+
                     if (a1.getItem().equals(SkyWarsReloaded.getIM().getItem("optionselect"))) {
                         a1.setCancelled(true);
                         Util.get().playSound(a1.getPlayer(), a1.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenOptionsMenuSound(), 0.5F, 1);

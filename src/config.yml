@@ -1,5 +1,4 @@
 debugMode: false
-spawn: null
 bungeeMode: false
 bungeeLobby: lobby
 isLobbyServer: false
@@ -18,8 +17,8 @@ enabledLobbyGuard: false
 economyEnabled: false
 clearInventoryOnLobbyJoin: true
 slimeworldmanager:
-  source: file
   enable: false
+  source: file
 game:
   win:
     clearInventory: true
@@ -40,9 +39,9 @@ game:
   ecoForWin: 5
   ecoForKill: 1
   xpForWin: 5
-  winCommands: 
+  winCommands: []
   xpForKill: 1
-  killCommands:
+  killCommands: []
   vip1Multiplier: 2
   vip2Multiplier: 3
   vip3Multiplier: 4
@@ -62,12 +61,14 @@ game:
 teams:
   usePlayerNames: true
   usePlayerGlassColors: true
+  useTeamNumberInMenu: true
   teamCageMaterial: YELLOW_WOOL
   useTeamMaterialBytes: false
   standardTeamMaterialByte: 4
   useSeparateCages: true
   changeTablistNames: false
 chat:
+  useTeamChat: true
   enableFormatter: true
   limitGameChatToGame: true
   limitLobbyChatToLobby: true
