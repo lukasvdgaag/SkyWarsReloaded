@@ -299,30 +299,26 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                                 swrServer.setHostname(serverParts[5]);
                             }
 
-                            Player player = Iterables.getFirst(SkyWarsReloaded.get().getServer().getOnlinePlayers(), null);
+                            /*Player player = Iterables.getFirst(SkyWarsReloaded.get().getServer().getOnlinePlayers(), null);
                             if (player != null) {
+                                Bukkit.getLogger().warning("Data we're trying to send: " + serverParts[0]);
                                 sendBungeeMsg(player, "PlayerCount", serverParts[0]);
-                            } else {
+                            } else {*/
                                 try {
                                     String hostname = swrServer.getHostname() == null ? "127.0.0.1" : swrServer.getHostname();
 
                                     MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname(hostname).setPort(swrServer.getPort()));
-                                    final String[] serverInfo = data.getDescription().split(":");
+                                    final String[] serverInfo = data.getDescription().getText().split(":");
                                     swrServer.setMatchState(serverInfo[0]);
-                                    /*if (Util.get().isInteger(serverInfo[1])) {
-                                        swrServer.setPlayerCount(Integer.parseInt(serverInfo[1]));
-                                    }
-                                    if (Util.get().isInteger(serverInfo[2])) {
-                                        swrServer.setMaxPlayers(Integer.parseInt(serverInfo[2]));
-                                    }
-                                    swrServer.setDisplayName(serverInfo[3]);*/
+                                    swrServer.setPlayerCount(Integer.parseInt(serverInfo[1]));
+                                    swrServer.setMaxPlayers(Integer.parseInt(serverInfo[2]));
                                     swrServer.updateSigns();
 
                                 } catch (IOException e) {
                                     swrServer.setMatchState(MatchState.OFFLINE);
                                     swrServer.updateSigns();
                                 }
-                            }
+                            /*}*/
                         }
                     }
                 }.runTaskTimer(this, 20, 200);
@@ -493,7 +489,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                                 String hostname = swrServer.getHostname() == null ? "127.0.0.1" : swrServer.getHostname();
 
                                 MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname(hostname).setPort(swrServer.getPort()));
-                                final String[] serverInfo = data.getDescription().split(":");
+                                final String[] serverInfo = data.getDescription().getText().split(":");
                                 swrServer.setMatchState(serverInfo[0]);
                                 /*if (Util.get().isInteger(serverInfo[1])) {
                                     swrServer.setPlayerCount(Integer.parseInt(serverInfo[1]));

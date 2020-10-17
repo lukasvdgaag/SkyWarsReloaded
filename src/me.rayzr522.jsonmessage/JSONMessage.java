@@ -116,8 +116,8 @@ public class JSONMessage {
      */
     public JsonObject toJSON() {
         JsonObject obj = new JsonObject();
-
-        obj.addProperty("text", "");
+// todo test this
+        //obj.addProperty("text", "");
 
         JsonArray array = new JsonArray();
 
@@ -125,7 +125,8 @@ public class JSONMessage {
                 .map(MessagePart::toJSON)
                 .forEach(array::add);
 
-        obj.add("extra", array);
+       // obj.add("extra", array);
+        obj.add("text", array.get(0));
 
         return obj;
     }

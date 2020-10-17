@@ -208,43 +208,44 @@ public class SWRServer {
             if (bs instanceof Sign) {
                 sign = (Sign) bs;
             }
-            assert sign != null;
-            Block b = sign.getBlock();
-            org.bukkit.material.Sign meteSign = (org.bukkit.material.Sign) b.getState().getData();
-            Block attachedBlock = b.getRelative(meteSign.getAttachedFace());
-            setMaterial(attachedBlock);
-            String signState = "";
-            if (state.equals(MatchState.OFFLINE)) {
-                signState = new Messaging.MessageFormatter().format("signs.offline");
-            } else if (state.equals(MatchState.WAITINGSTART) || state.equals(MatchState.WAITINGLOBBY)) {
-                signState = new Messaging.MessageFormatter().format("signs.joinable");
-            } else if (state.equals(MatchState.PLAYING)) {
-                signState = new Messaging.MessageFormatter().format("signs.playing");
-            } else if (state.equals(MatchState.ENDING)) {
-                signState = new Messaging.MessageFormatter().format("signs.ending");
+            if (sign != null && sign.getBlock() != null) {
+                Block b = sign.getBlock();
+                org.bukkit.material.Sign meteSign = (org.bukkit.material.Sign) b.getState().getData();
+                Block attachedBlock = b.getRelative(meteSign.getAttachedFace());
+                setMaterial(attachedBlock);
+                String signState = "";
+                if (state.equals(MatchState.OFFLINE)) {
+                    signState = new Messaging.MessageFormatter().format("signs.offline");
+                } else if (state.equals(MatchState.WAITINGSTART) || state.equals(MatchState.WAITINGLOBBY)) {
+                    signState = new Messaging.MessageFormatter().format("signs.joinable");
+                } else if (state.equals(MatchState.PLAYING)) {
+                    signState = new Messaging.MessageFormatter().format("signs.playing");
+                } else if (state.equals(MatchState.ENDING)) {
+                    signState = new Messaging.MessageFormatter().format("signs.ending");
+                }
+                sign.getBlock().getChunk().load();
+                sign.setLine(0, new Messaging.MessageFormatter().setVariable("matchstate", signState).
+                        setVariable("mapname", displayName.toUpperCase()).
+                        setVariable("playercount", "" + playerCount).
+                        setVariable("teamsize", "" + teamsize).
+                        setVariable("maxplayers", "" + maxPlayers).format("signs.line1"));
+                sign.setLine(1, new Messaging.MessageFormatter().setVariable("matchstate", signState).
+                        setVariable("mapname", displayName.toUpperCase()).
+                        setVariable("playercount", "" + playerCount).
+                        setVariable("teamsize", "" + teamsize).
+                        setVariable("maxplayers", "" + maxPlayers).format("signs.line2"));
+                sign.setLine(2, new Messaging.MessageFormatter().setVariable("matchstate", signState).
+                        setVariable("mapname", displayName.toUpperCase()).
+                        setVariable("playercount", "" + playerCount).
+                        setVariable("teamsize", "" + teamsize).
+                        setVariable("maxplayers", "" + maxPlayers).format("signs.line3"));
+                sign.setLine(3, new Messaging.MessageFormatter().setVariable("matchstate", signState).
+                        setVariable("mapname", displayName.toUpperCase()).
+                        setVariable("playercount", "" + playerCount).
+                        setVariable("teamsize", "" + teamsize).
+                        setVariable("maxplayers", "" + maxPlayers).format("signs.line4"));
+                sign.update();
             }
-            sign.getBlock().getChunk().load();
-            sign.setLine(0, new Messaging.MessageFormatter().setVariable("matchstate", signState).
-                    setVariable("mapname", displayName.toUpperCase()).
-                    setVariable("playercount", "" + playerCount).
-                    setVariable("teamsize", "" + teamsize).
-                    setVariable("maxplayers", "" + maxPlayers).format("signs.line1"));
-            sign.setLine(1, new Messaging.MessageFormatter().setVariable("matchstate", signState).
-                    setVariable("mapname", displayName.toUpperCase()).
-                    setVariable("playercount", "" + playerCount).
-                    setVariable("teamsize", "" + teamsize).
-                    setVariable("maxplayers", "" + maxPlayers).format("signs.line2"));
-            sign.setLine(2, new Messaging.MessageFormatter().setVariable("matchstate", signState).
-                    setVariable("mapname", displayName.toUpperCase()).
-                    setVariable("playercount", "" + playerCount).
-                    setVariable("teamsize", "" + teamsize).
-                    setVariable("maxplayers", "" + maxPlayers).format("signs.line3"));
-            sign.setLine(3, new Messaging.MessageFormatter().setVariable("matchstate", signState).
-                    setVariable("mapname", displayName.toUpperCase()).
-                    setVariable("playercount", "" + playerCount).
-                    setVariable("teamsize", "" + teamsize).
-                    setVariable("maxplayers", "" + maxPlayers).format("signs.line4"));
-            sign.update();
         }
     }
 

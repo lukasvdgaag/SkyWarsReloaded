@@ -185,7 +185,7 @@ public class ChatListener implements Listener {
                                     .setVariable("xp", Integer.toString(ps.getXp()))
                                     .setVariable("level", Util.get().getPlayerLevel(event.getPlayer(), false) + "")
                                     .setVariable("prefix", prefix)
-                                    //.setVariable("message", message)
+                                    .setVariable("message", message)
                                     .setVariable("mapname", sMap.getDisplayName())
                                     .format("chat.specchat");
                         } else {

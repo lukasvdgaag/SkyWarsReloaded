@@ -28,8 +28,6 @@
  */
 package com.walrusone.skywarsreloaded.utilities.minecraftping;
 
-import com.google.gson.JsonObject;
-
 import java.util.List;
 
 /**
@@ -39,31 +37,26 @@ import java.util.List;
  */
 public class MinecraftPingReply {
 
-    private String description;
+    private Description description;
     private Players players;
     private Version version;
     private String favicon;
 
-    public void setFavicon(String favicon) {
-        this.favicon = favicon;
-    }
-
-    public void setVersion(Version version) {
-        this.version = version;
-    }
-
-    public void setPlayers(Players players) {
-        this.players = players;
+    public MinecraftPingReply(Description desc, Players prs, Version vs, String fav) {
+        this.description = desc;
+        this.players = prs;
+        this.version= vs;
+        this.favicon= fav;
     }
 
     /**
      * @return the MOTD
      */
-    public String getDescription() {
+    public Description getDescription() {
         return this.description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(Description description) {
         this.description = description;
     }
 
@@ -74,11 +67,19 @@ public class MinecraftPingReply {
         return this.players;
     }
 
+    public void setPlayers(Players players) {
+        this.players = players;
+    }
+
     /**
      * @return @{link Version}
      */
     public Version getVersion() {
         return this.version;
+    }
+
+    public void setVersion(Version version) {
+        this.version = version;
     }
 
     /**
@@ -88,8 +89,16 @@ public class MinecraftPingReply {
         return this.favicon;
     }
 
-    public class Description {
+    public void setFavicon(String favicon) {
+        this.favicon = favicon;
+    }
+
+    public static class Description {
         private String text;
+
+        public Description(String txt) {
+            this.text = txt;
+        }
 
         /**
          * @return Server description text
@@ -99,10 +108,15 @@ public class MinecraftPingReply {
         }
     }
 
-    public class Players {
+    public static class Players {
         private int max;
         private int online;
         private List<Player> sample;
+
+        public Players(int max, int online) {
+            this.max = max;
+            this.online = online;
+        }
 
         /**
          * @return Maximum player count
@@ -126,9 +140,38 @@ public class MinecraftPingReply {
         }
     }
 
+    public static class Version {
+        private String name;
+        private int protocol;
+
+        public Version(String name, int protocol) {
+            this.name = name;
+            this.protocol = protocol;
+        }
+
+        /**
+         * @return Version name (ex: 13w41a)
+         */
+        public String getName() {
+            return this.name;
+        }
+
+        /**
+         * @return Protocol version
+         */
+        public int getProtocol() {
+            return this.protocol;
+        }
+    }
+
     public class Player {
         private String name;
         private String id;
+
+        public Player(String name, String id) {
+            this.name = name;
+            this.id = id;
+        }
 
         /**
          * @return Name of player
@@ -144,25 +187,6 @@ public class MinecraftPingReply {
             return this.id;
         }
 
-    }
-
-    public class Version {
-        private String name;
-        private int protocol;
-
-        /**
-         * @return Version name (ex: 13w41a)
-         */
-        public String getName() {
-            return this.name;
-        }
-
-        /**
-         * @return Protocol version
-         */
-        public int getProtocol() {
-            return this.protocol;
-        }
     }
 
 }

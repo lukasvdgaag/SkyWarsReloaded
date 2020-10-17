@@ -29,6 +29,9 @@
 package com.walrusone.skywarsreloaded.utilities.minecraftping;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.bukkit.Bukkit;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -125,7 +128,16 @@ public class MinecraftPing {
         in.close();
         socket.close();
 
-        return new Gson().fromJson(json, MinecraftPingReply.class);
+        JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
+        MinecraftPingReply mpr = new MinecraftPingReply(
+                new MinecraftPingReply.Description(obj.getAsJsonObject("description").getAsJsonArray("extra").get(0).getAsJsonObject().get("text").getAsString()),
+                new MinecraftPingReply.Players(obj.getAsJsonObject("players").get("max").getAsInt(), obj.getAsJsonObject("players").get("online").getAsInt()),
+                new MinecraftPingReply.Version(obj.getAsJsonObject("version").get("name").getAsString(), obj.getAsJsonObject("version").get("protocol").getAsInt()),
+                ""
+        );
+
+        return mpr;
+       // return new Gson().fromJson(json, MinecraftPingReply.class);
     }
 
 }

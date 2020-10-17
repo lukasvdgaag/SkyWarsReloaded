@@ -1,9 +1,11 @@
 # version 5.3.0
-Added team chats! Send messages to your team members only. Use a a '!' in front of the message to talk globally.
+Added team chats! Send messages to your team members only. Use an '!' in front of the message to talk globally.
 Added a {level} placeholder to the chat formats so you can display the player's EXP level.
 Added support for both WorldEdit version in one SWR version! There's no need to download a server-based version anymore.
 Added an option to set the team number as the material amount in the team selection menu.
 Added a 5 tick (0.25 second) cooldown for lobby items.
+Fixed bungeecord people not able to join games.
+Fixed bungeecord signs not updating correctly.
 Fixed the menus bugging back when opening from another menu on 1.16+.
 Fixed the teamMaterial item in the selection menu not being shown when it wasn't WOOL, BANNER or STAINED_GLASS
 Fixed a bug for chat messages in which the plugin would break when the message contained a '%'-character.
@@ -12,7 +14,7 @@ Removed some debug.
 
 TODO Fix inventory not being restored right when leaving in waitstart in a team game
 TODO Fix team game being in waitstart status when all players left after countdown.
-
+TODO Add anti-cheat by teleporting all players to their spawns again when releasing them
 
 # version 5.2.0
 Added tab complete for all commands.
