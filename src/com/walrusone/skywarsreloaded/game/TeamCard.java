@@ -14,6 +14,7 @@ import org.bukkit.scoreboard.Team;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.StringJoiner;
 
 public class TeamCard {
     private ArrayList<PlayerCard> playerCards = new ArrayList();
@@ -202,15 +203,11 @@ public class TeamCard {
     }
 
     public String getPlayerNames() {
-        StringBuilder name = new StringBuilder();
+        StringJoiner name = new StringJoiner(", ");
         for (PlayerCard pCard : playerCards) {
             if (pCard.getPlayer() != null) {
-                name.append(pCard.getPlayer().getDisplayName());
-                name.append(", ");
+                name.add(pCard.getPlayer().getDisplayName());
             }
-        }
-        if (name.length() > 2) {
-            return name.substring(0, name.length() - 2);
         }
         return name.toString();
     }

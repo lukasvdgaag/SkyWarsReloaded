@@ -7,6 +7,8 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
+import java.util.StringJoiner;
+
 public class HoloAddCmd extends BaseCmd {
 
     public HoloAddCmd(String t) {
@@ -23,12 +25,10 @@ public class HoloAddCmd extends BaseCmd {
             if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
                 LeaderType type = LeaderType.matchType(args[1].toUpperCase());
                 if (type == null || !SkyWarsReloaded.get().getUseable().contains(type.toString())) {
-                    StringBuilder types = new StringBuilder();
+                    StringJoiner types = new StringJoiner(", ");
                     for (String add : SkyWarsReloaded.get().getUseable()) {
-                        types.append(add);
-                        types.append(", ");
+                        types.add(add);
                     }
-                    types.substring(0, types.length() - 2);
                     player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", types.toString()).format("leaderboard.invalidtype"));
                     return false;
                 }
@@ -38,12 +38,10 @@ public class HoloAddCmd extends BaseCmd {
                     return true;
                 }
 
-                StringBuilder formats = new StringBuilder();
+                StringJoiner formats = new StringJoiner(", ");
                 for (String add : SkyWarsReloaded.getHoloManager().getFormats(type)) {
-                    formats.append(add);
-                    formats.append(", ");
+                    formats.add(add);
                 }
-                formats.substring(0, formats.length() - 2);
                 player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", formats.toString()).format("leaderboard.invalidformat"));
                 return false;
             }

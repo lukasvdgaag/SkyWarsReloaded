@@ -3,6 +3,8 @@ package com.walrusone.skywarsreloaded.commands.maps;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 
+import java.util.StringJoiner;
+
 public class CreatorCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public CreatorCmd(String t) {
         type = t;
@@ -14,10 +16,9 @@ public class CreatorCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
 
     public boolean run() {
         String worldName = args[1];
-        StringBuilder creator = new StringBuilder();
+        StringJoiner creator = new StringJoiner(" ");
         for (int i = 2; i < args.length; i++) {
-            creator.append(args[i]);
-            creator.append(" ");
+            creator.add(args[i]);
         }
         //creator.substring(0, creator.length() - 1);
         if (creator.length() == 0) {

@@ -6,6 +6,7 @@ import com.walrusone.skywarsreloaded.utilities.Party;
 import org.bukkit.Bukkit;
 
 import java.util.UUID;
+import java.util.StringJoiner;
 
 public class InfoCmd extends BaseCmd {
     public InfoCmd(String t) {
@@ -25,12 +26,10 @@ public class InfoCmd extends BaseCmd {
 
         player.sendMessage(new Messaging.MessageFormatter().setVariable("partyname", party.getPartyName()).format("party.info1"));
         player.sendMessage(new Messaging.MessageFormatter().setVariable("leader", Bukkit.getPlayer(party.getLeader()).getName()).format("party.info2"));
-        StringBuilder members = new StringBuilder();
+        StringJoiner members = new StringJoiner(", ");
         for (UUID uuid : party.getMembers()) {
-            members.append(Bukkit.getPlayer(uuid).getName());
-            members.append(", ");
+            members.add(Bukkit.getPlayer(uuid).getName());
         }
-        members.substring(0, members.length() - 2);
         player.sendMessage(new Messaging.MessageFormatter().setVariable("members", members.toString()).format("party.info3"));
         return true;
     }
