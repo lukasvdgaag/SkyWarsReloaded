@@ -9,13 +9,13 @@ import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
-import org.bukkit.craftbukkit.v1_16_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R1.scoreboard.CraftScoreboard;
 import org.bukkit.craftbukkit.v1_16_R1.scoreboard.CraftScoreboardManager;
+import org.bukkit.craftbukkit.v1_16_R1.CraftServer;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -53,7 +53,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     }
 
     public void respawnPlayer(Player player) {
-        ((CraftServer)Bukkit.getServer()).getHandle().moveToWorld(((EntityPlayer)player),false);
+        ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer)player).getHandle(), false);
     }
 
     public void sendParticles(World world, String type, float x, float y, float z, float offsetX, float offsetY, float offsetZ, float data, int amount) {

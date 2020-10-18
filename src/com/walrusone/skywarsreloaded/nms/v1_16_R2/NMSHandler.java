@@ -32,7 +32,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
     }
 
     public void respawnPlayer(Player player) {
-        ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(((EntityPlayer) player), false);
+        ((CraftServer) Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer)player).getHandle(), false);
     }
 
     public void sendParticles(World world, String type, float x, float y, float z, float offsetX, float offsetY, float offsetZ, float data, int amount) {
