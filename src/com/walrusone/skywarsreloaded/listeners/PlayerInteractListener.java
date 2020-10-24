@@ -105,7 +105,6 @@ public class PlayerInteractListener implements Listener {
         InventoryView v = a1.getPlayer().getOpenInventory();
         if (v != null && v.getTopInventory() != null && v.getTopInventory().getType() != InventoryType.CRAFTING) return;
 
-
         final GameMap gameMap = MatchManager.get().getPlayerMap(a1.getPlayer());
         if (gameMap == null) {
             if (Util.get().isSpawnWorld(a1.getPlayer().getWorld())) {
@@ -306,7 +305,12 @@ public class PlayerInteractListener implements Listener {
                         // TODO ADD TEAM SELECTION MENU + ADD SOUND
                         return;
                     } else if (a1.getItem().isSimilar(SkyWarsReloaded.getIM().getItem("exitGameItem"))) {
-                        MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, true, true);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, true, true);
+                            }
+                        }.runTaskLater(SkyWarsReloaded.get(), 1);
                     }
                 }
                 return;
