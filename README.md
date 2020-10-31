@@ -5,7 +5,7 @@ The most popular Skywars plugin ever built for Spigot and Bukkit!
 
 This plugin is based off the of the old SkywarsReloaded plugin (4.1.3), but adds more features, fixes, and 1.14-1.16 support! You can just update to this version without removing any of your current Skywars files. Everything works the same. Please note that the official/old Skywars plugin is no longer maintained. We will, however, continue to maintain this version until further notice!
 
-[Link to the SpigotMC download page](https://gaagjescraft.net/swr)
+[Link to the SpigotMC download page](https://gaagjescraft.net/swr)<br>
 Check out the extension: [SkyWarsReloaded Extension](https://gaagjescraft.net/swre)
 
 ## Installation
