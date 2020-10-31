@@ -14,3 +14,39 @@ This plugin is based off the of the old SkywarsReloaded plugin (4.1.3), but adds
 5. Copy the files to your "plugins" folder.
 6. Start the Minecraft server
 7. Done! (Make sure to follow the Setup Steps)
+
+## Requirements
+
+**Required Plugins**: *Skywars requires the following plugins*
+* WorldEdit
+
+**Optional Plugins**: *Skywars can use the following plugins but does not require them for the basic functions*
+
+* Skywars-Extention
+* Vault
+* HolographicDisplays
+* PlaceholderAPI
+* Multiverse-Core
+* MVdWPlaceholderAPI
+* PerWorldInventory
+* SlimeWorldManager
+* PartyAndFriends (for bungeecord installations)
+
+## Commands & Permissions
+
+* List of available commands [*[here]*](https://github.com/TechnicallyCoded/SkywarsReloadedWiki/wiki/commands)
+* List of permissions [*[here]*](https://github.com/TechnicallyCoded/SkywarsReloadedWiki/wiki/permissions)
+
+## Support
+
+Are you having trouble running the plugin?
+
+**Get help in our Discord server!**
+When asking for help, provide the necessary context required for people to help you. This includes one or more of the following:
+
+1. Logs (most important part usually). We recommend that you use our own "paste" website to submit your logs
+2. Partial logs are harder to work with than your entire log file, we need the most information about what's happening
+3. An image or recording of your problem in-game, if possible.
+4. A description of what you have already tried.. We don't want to waste your time.
+
+[![Discord Logo](https://upload.wikimedia.org/wikipedia/sco/thumb/9/98/Discord_logo.svg/905px-Discord_logo.svg.png)](https://gaagjescraft.net/discord)
