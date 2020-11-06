@@ -58,13 +58,14 @@ public class SWRPlaceholderAPI extends PlaceholderExpansion {
             return "" + (stat.getWins() + stat.getLosses());
         } else if (identifier.equalsIgnoreCase("level")) {
             return "" + Util.get().getPlayerLevel(p, false);
-        } else if (identifier.equals("kill_death")) {
+        } else if (identifier.equalsIgnoreCase("kill_death")) {
             double statt = (double) stat.getKills() / (double) stat.getDeaths();
             return String.format("%1$,.2f", statt);
-        } else if (identifier.equals("win_loss")) {
+        } else if (identifier.equalsIgnoreCase("win_loss")) {
             double statt = (double) stat.getWins() / (double) stat.getLosses();
             return String.format("%1$,.2f", statt);
-        } else {
+        }
+        else {
             return null;
         }
 

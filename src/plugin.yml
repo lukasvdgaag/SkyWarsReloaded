@@ -1,9 +1,8 @@
 name: Skywars
 main: com.walrusone.skywarsreloaded.SkyWarsReloaded
-version: 5.3.1
+version: 5.3.2
 api-version: 1.13
 website: https://gaagjescraft.net/
-snapshot: 1
 author: GaagjesCraft Network Team (GCNT)
 softdepend:
   - Vault
