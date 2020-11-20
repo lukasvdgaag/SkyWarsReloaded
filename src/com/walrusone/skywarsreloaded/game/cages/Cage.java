@@ -73,7 +73,7 @@ public abstract class Cage {
                             if (player != null) {
                                 PlayerStat pStat = PlayerStat.getPlayerStats(player);
                                 if (pStat != null) {
-                                    String col = pStat.getGlassColor().toLowerCase();
+                                    String col = pStat.getGlassColor() == null ? "none" : pStat.getGlassColor().toLowerCase();
                                     byte cByte = Util.get().getByteFromColor(col);
                                     GlassColorOption color = (GlassColorOption) GlassColorOption.getPlayerOptionByKey(col);
                                     if (SkyWarsReloaded.getCfg().isUseSeparateCages()) {

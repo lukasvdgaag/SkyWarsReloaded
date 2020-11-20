@@ -267,7 +267,7 @@ public class Config {
     private String slimeWorldManagerSource = "file";
     private boolean usePartyAndFriends = false;
     private boolean useTeamChat = true;
-
+    private String timeFormat = "mm:ss";
 
     public Config() {
         load();
@@ -288,6 +288,7 @@ public class Config {
             resourcePack = SkyWarsReloaded.get().getConfig().getString("resourcepack");
             promptResource = SkyWarsReloaded.get().getConfig().getBoolean("promptForResourcePackOnJoin");
             clearInventoryOnLobbyJoin = SkyWarsReloaded.get().getConfig().getBoolean("clearInventoryOnLobbyJoin");
+            timeFormat = SkyWarsReloaded.get().getConfig().getString("timeFormat");
 
             lobbyBoardEnabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyBoardEnabled");
             protectlobby = SkyWarsReloaded.get().getConfig().getBoolean("enabledLobbyGuard");
@@ -549,6 +550,7 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("resourcepack", resourcePack);
         SkyWarsReloaded.get().getConfig().set("promptForResourcePackOnJoin", promptResource);
         SkyWarsReloaded.get().getConfig().set("clearInventoryOnLobbyJoin", clearInventoryOnLobbyJoin);
+        SkyWarsReloaded.get().getConfig().set("timeFormat", timeFormat);
 
         SkyWarsReloaded.get().getConfig().set("lobbyBoardEnabled", lobbyBoardEnabled);
         SkyWarsReloaded.get().getConfig().set("lobbyBoardEnabled", lobbyBoardEnabled);
@@ -1343,6 +1345,7 @@ public class Config {
     public boolean isUsePartyAndFriends() { return usePartyAndFriends; }
 
     public boolean isUseTeamChat() { return useTeamChat; }
+    public String getTimeFormat() { return timeFormat; }
 
 }
 

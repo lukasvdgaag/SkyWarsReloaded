@@ -544,7 +544,8 @@ public class Util {
     }
 
     public String getFormattedTime(int x) {
-        String hms;
+        return secondsToTimeString(x);
+       /* String hms;
         if (x >= 3600) {
             hms = String.format("%02d:%02d:%02d", TimeUnit.SECONDS.toHours(x),
                     TimeUnit.SECONDS.toMinutes(x) % TimeUnit.HOURS.toMinutes(1),
@@ -553,7 +554,7 @@ public class Util {
             hms = String.format("%02d:%02d", TimeUnit.SECONDS.toMinutes(x) % TimeUnit.HOURS.toMinutes(1),
                     TimeUnit.SECONDS.toSeconds(x) % TimeUnit.MINUTES.toSeconds(1));
         }
-        return hms;
+        return hms;*/
     }
 
     public boolean isSpawnWorld(World world) {
@@ -573,15 +574,40 @@ public class Util {
     }
 
     public String secondsToTimeString(int seconds) {
-        String time = "";
+        String returnFormat = SkyWarsReloaded.getCfg().getTimeFormat();
+        int secs;
+        int mins = 0;
+
         if (seconds < 60) {
-            time = seconds + "";
+            secs = seconds;
         } else {
-            int mins = (int) seconds / 60;
-            int secs = (int) seconds % 60;
-            time = mins + ":" + (secs < 10 ? "0" + secs : secs);
+            mins = (int) seconds / 60;
+            secs = (int) seconds % 60;
         }
-        return time;
+
+        if (returnFormat.equals("simplified")) {
+            if (mins > 0) {
+                return mins + ":" + (secs < 10 ? "0" + secs : secs);
+            }
+            else {
+                return secs + "";
+            }
+        }
+        if (returnFormat.equals("simplified-zeros")) {
+            if (mins > 0) {
+                return (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
+            }
+            else {
+                return secs + "";
+            }
+        }
+
+        returnFormat = returnFormat.replaceAll("(?<!\\\\)mm", mins < 10 ? "0" + mins : mins +"");
+        returnFormat = returnFormat.replaceAll("(?<!\\\\)m", mins + "");
+        returnFormat = returnFormat.replaceAll("(?<!\\\\)ss", secs < 10 ? "0" + secs : secs +"");
+        returnFormat = returnFormat.replaceAll("(?<!\\\\)s", secs + "");
+
+        return returnFormat;
     }
 
     public int getPlayerLevel(Player player) {

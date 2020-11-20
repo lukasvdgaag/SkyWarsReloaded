@@ -55,6 +55,13 @@ enabledLobbyGuard: false
 economyEnabled: false
 # Whether you want the player's inventory to be cleared when they join the skywars lobby world
 clearInventoryOnLobbyJoin: true
+# The format that in which we should format the time countdowns.
+# You can use 'simplified' for 'm:ss' when time is >60, and 's' when time <60.
+# You can use 'simplified-zeros' for 'mm:ss' when time >60, and 's' when time <60.
+#
+# For other formats, you could use 'ss' seconds with leading zero's when <10, and 's' without leading zero's when <10.
+# You can also use 'mm' minutes with leading zero's when <10, and 'm' without leading zero's when <10.
+timeFormat: simplified
 
 # All SlimeWorldManager Option
 # SlimeWorldManager is an alternate plugin for world loading
