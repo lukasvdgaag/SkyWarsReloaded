@@ -229,8 +229,8 @@ public class DataStorage {
         FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
         Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("playerFile.yml"));
         YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-        playerConfig.options().copyDefaults(true);
         playerConfig.setDefaults(defConfig);
+        playerConfig.options().copyDefaults();
         try {
             playerConfig.save(playerFile);
         } catch (IOException e) {
