@@ -1,3 +1,7 @@
+# version 5.3.3
+Fixed a bug where it would say your teams were unbalanced on register when separate cages was disabled.
+Fixed a bug for bungeecord servers regarding JSON stuff.
+
 # version 5.3.2
 Added support for 1.16.4
 Fixed PAPI placeholders 'kill_death' and 'win_loss' to only be detected when all characters were lowercase.
@@ -18,10 +22,6 @@ Fixed the teamMaterial item in the selection menu not being shown when it wasn't
 Fixed a bug for chat messages in which the plugin would break when the message contained a '%'-character.
 Fixed a typo in the messages.yml
 Removed some debug.
-
-TODO Fix inventory not being restored right when leaving in waitstart in a team game
-TODO Fix team game being in waitstart status when all players left after countdown.
-TODO Add anti-cheat by teleporting all players to their spawns again when releasing them
 
 # version 5.2.0
 Added tab complete for all commands.

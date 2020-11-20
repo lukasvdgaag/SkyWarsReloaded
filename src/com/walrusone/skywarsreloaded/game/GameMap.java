@@ -1048,7 +1048,8 @@ public class GameMap {
         if (spawnLocations.size() > 1) {
             int maxPlayers = getMaxPlayers();
             int actualMaxPlayers = teamCards.size() * teamSize;
-            if ((teamSize > 1 && maxPlayers == actualMaxPlayers) || (teamSize == 1 && maxPlayers > 1)) {
+
+            if ((teamSize > 1 && maxPlayers == actualMaxPlayers || !SkyWarsReloaded.getCfg().isUseSeparateCages()) || (teamSize == 1 && maxPlayers > 1)) {
                 if (spectateSpawn == null && SkyWarsReloaded.getCfg().spectateEnable()) {
                     SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - No spectator spawn has been set. Set it using '/swm spawn spec'");
                     registered = false;
