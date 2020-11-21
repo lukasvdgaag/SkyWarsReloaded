@@ -8,6 +8,8 @@ This plugin is based off the of the old SkywarsReloaded plugin (4.1.3), but adds
 [Link to the SpigotMC download page](https://gaagjescraft.net/swr)<br>
 Check out the extension: [SkyWarsReloaded Extension](https://gaagjescraft.net/swre)
 
+*Want to see what we are working on or planning to add? Check out the [SkyWarsReloaded project board](https://github.com/users/lukasvdgaag/projects/2)!
+
 ## Installation
 
 1. Head over to the download page.
