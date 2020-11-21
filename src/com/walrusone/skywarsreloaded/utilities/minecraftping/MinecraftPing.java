@@ -130,7 +130,7 @@ public class MinecraftPing {
 
         JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
         MinecraftPingReply mpr = new MinecraftPingReply(
-                new MinecraftPingReply.Description(obj.getAsJsonObject("description").getAsJsonArray("extra").get(0).getAsJsonObject().get("text").getAsString()),
+                new MinecraftPingReply.Description(obj.getAsJsonObject("description").getAsJsonArray("extra").get(0).getAsJsonPrimitive().getAsJsonObject().get("text").getAsString()),
                 new MinecraftPingReply.Players(obj.getAsJsonObject("players").get("max").getAsInt(), obj.getAsJsonObject("players").get("online").getAsInt()),
                 new MinecraftPingReply.Version(obj.getAsJsonObject("version").get("name").getAsString(), obj.getAsJsonObject("version").get("protocol").getAsInt()),
                 ""
