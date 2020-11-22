@@ -204,18 +204,18 @@ public class DataStorage {
 
                         copyDefaults(playerFile);
                         FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
-                        pData.setWins(fc.getInt("wins"));
-                        pData.setLosts(fc.getInt("losses"));
-                        pData.setKills(fc.getInt("kills"));
-                        pData.setDeaths(fc.getInt("deaths"));
-                        pData.setElo(fc.getInt("elo"));
-                        pData.setXp(fc.getInt("xp"));
-                        pData.setParticleEffect(fc.getString("pareffect"));
-                        pData.setProjectileEffect(fc.getString("proeffect"));
-                        pData.setGlassColor(fc.getString("glasscolor"));
-                        pData.setKillSound(fc.getString("killsound"));
-                        pData.setWinSound(fc.getString("winsound"));
-                        pData.setTaunt(fc.getString("taunt"));
+                        pData.setWins(fc.getInt("wins", 0));
+                        pData.setLosts(fc.getInt("losses", 0));
+                        pData.setKills(fc.getInt("kills", 0));
+                        pData.setDeaths(fc.getInt("deaths", 0));
+                        pData.setElo(fc.getInt("elo", 0));
+                        pData.setXp(fc.getInt("xp", 0));
+                        pData.setParticleEffect(fc.getString("pareffect", "none"));
+                        pData.setProjectileEffect(fc.getString("proeffect", "none"));
+                        pData.setGlassColor(fc.getString("glasscolor", "none"));
+                        pData.setKillSound(fc.getString("killsound", "none"));
+                        pData.setWinSound(fc.getString("winsound", "none"));
+                        pData.setTaunt(fc.getString("taunt", "none"));
                     } catch (IOException ioException) {
                         System.out.println("Failed to load player " + pData.getId() + ": " + ioException.getMessage());
                     }
