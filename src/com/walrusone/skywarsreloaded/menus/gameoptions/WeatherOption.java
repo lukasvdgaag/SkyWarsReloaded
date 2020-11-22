@@ -97,7 +97,7 @@ public class WeatherOption extends GameOption {
     }
 
     protected Vote getDefault() {
-        return Vote.WEATHERSUN;
+        return gameMap.getDefaultWeather();
     }
 
 

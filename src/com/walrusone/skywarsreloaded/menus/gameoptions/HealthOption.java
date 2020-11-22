@@ -92,7 +92,7 @@ public class HealthOption extends GameOption {
     }
 
     protected Vote getDefault() {
-        return Vote.HEALTHTEN;
+        return gameMap.getDefaultHealth();
     }
 
     public void completeOption() {

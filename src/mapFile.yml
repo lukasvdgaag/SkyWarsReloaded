@@ -8,6 +8,11 @@ cage: standard
 teamSize: 1
 allowFriendlyFire: false
 environment: NORMAL
+defaultChestType: CHESTNORMAL
+defaultHealth: HEALTHTWENTY
+defaultTime: TIMENOON
+defaultWeather: WEATHERSUN
+defaultModifier: MODIFIERNONE
 allowScanvenger: false
 events:
   DisableRegenEvent:

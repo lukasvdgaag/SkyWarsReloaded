@@ -96,7 +96,7 @@ public class ChestOption extends GameOption {
     }
 
     protected Vote getDefault() {
-        return Vote.CHESTNORMAL;
+        return gameMap.getDefaultChestType();
     }
 
 

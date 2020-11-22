@@ -93,7 +93,7 @@ public class TimeOption extends GameOption {
     }
 
     protected Vote getDefault() {
-        return Vote.TIMENOON;
+        return gameMap.getDefaultTime();
     }
 
     public void completeOption() {

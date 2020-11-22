@@ -94,7 +94,7 @@ public class ModifierOption extends GameOption {
     }
 
     protected Vote getDefault() {
-        return Vote.MODIFIERNONE;
+        return gameMap.getDefaultModifier();
     }
 
     public void completeOption() {

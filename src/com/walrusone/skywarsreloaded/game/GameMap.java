@@ -3,10 +3,7 @@ package com.walrusone.skywarsreloaded.game;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
-import com.walrusone.skywarsreloaded.enums.GameType;
-import com.walrusone.skywarsreloaded.enums.MatchState;
-import com.walrusone.skywarsreloaded.enums.ScoreVar;
+import com.walrusone.skywarsreloaded.enums.*;
 import com.walrusone.skywarsreloaded.events.SkyWarsJoinEvent;
 import com.walrusone.skywarsreloaded.game.cages.*;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
@@ -96,6 +93,11 @@ public class GameMap {
     private ArrayList<CoordLoc> chests;
     private ArrayList<CoordLoc> centerChests;
     private String environment;
+    private Vote defaultChestType;
+    private Vote defaultHealth;
+    private Vote defaultTime;
+    private Vote defaultWeather;
+    private Vote defaultModifier;
     private String displayName;
     private String designedBy;
     private ArrayList<SWRSign> signs;
@@ -143,6 +145,13 @@ public class GameMap {
         timeOption = new TimeOption(this, name + "time");
         weatherOption = new WeatherOption(this, name + "weather");
         modifierOption = new ModifierOption(this, name + "modifier");
+        // Set default options
+        defaultChestType = Vote.CHESTNORMAL;
+        defaultHealth = Vote.HEALTHTWENTY;
+        defaultTime = Vote.TIMENOON;
+        defaultWeather = Vote.WEATHERSUN;
+        defaultModifier = Vote.MODIFIERNONE;
+
         gameboard = new GameBoard(this);
         if (legacy) {
             boolean loaded = loadWorldForScanning(name);
@@ -862,6 +871,11 @@ public class GameMap {
         fc.set("cage", cage.getType().toString().toLowerCase());
         fc.set("teamSize", teamSize);
         fc.set("environment", environment);
+        fc.set("defaultChestType", defaultChestType.name());
+        fc.set("defaultHealth", defaultHealth.name());
+        fc.set("defaultTime", defaultTime.name());
+        fc.set("defaultWeather", defaultWeather.name());
+        fc.set("defaultModifier", defaultModifier.name());
         fc.set("allowFriendlyFire", allowFriendlyFire);
         fc.set("allowScavenger", allowScanvenger);
 
@@ -943,6 +957,7 @@ public class GameMap {
         File mapFile = new File(mapDataDirectory, name + ".yml");
         copyDefaults(mapFile);
 
+        // Start parse options
         FileConfiguration fc = YamlConfiguration.loadConfiguration(mapFile);
         displayName = fc.getString("displayname", name);
         designedBy = fc.getString("creator", "");
@@ -955,6 +970,29 @@ public class GameMap {
         allowFriendlyFire = fc.getBoolean("allowFriendlyFire", false);
         allowScanvenger = fc.getBoolean("allowScavenger", false);
 
+        // Default Vote Types
+        String cfgDefaultChestType = fc.getString("defaultChestType", "CHESTNORMAL");
+        if (cfgDefaultChestType.startsWith("CHEST"))
+            defaultChestType = Vote.getByValue(cfgDefaultChestType, Vote.CHESTNORMAL);
+        else defaultChestType = Vote.CHESTNORMAL;
+        String cfgDefaultHealth = fc.getString("defaultHealth", "HEALTHTWENTY");
+        if (cfgDefaultHealth.startsWith("HEALTH"))
+            defaultHealth = Vote.getByValue(cfgDefaultHealth, Vote.HEALTHTWENTY);
+        else defaultHealth = Vote.HEALTHTWENTY;
+        String cfgDefaultTime = fc.getString("defaultTime", "TIMENOON");
+        if (cfgDefaultTime.startsWith("TIME"))
+            defaultTime = Vote.getByValue(cfgDefaultTime, Vote.TIMENOON);
+        else defaultTime = Vote.TIMENOON;
+        String cfgDefaultWeather = fc.getString("defaultWeather", "WEATHERSUN");
+        if (cfgDefaultWeather.startsWith("WEATHER"))
+            defaultWeather = Vote.getByValue(cfgDefaultWeather, Vote.WEATHERSUN);
+        else defaultWeather = Vote.WEATHERSUN;
+        String cfgDefaultModifier = fc.getString("defaultModifier", "MODIFIERNONE");
+        if (cfgDefaultModifier.startsWith("MODIFIER"))
+            defaultModifier = Vote.getByValue(cfgDefaultModifier, Vote.MODIFIERNONE);
+        else defaultModifier = Vote.MODIFIERNONE;
+
+        // Icon
         customJoinMenuIcon = fc.getBoolean("enableCustomJoinMenuItem", false);
         SkyWarsReloaded.getIM().addExtraItem("joinitem-" + name, new ArrayList<>(), fc.getString("customJoinMenuItem", "LEATHER_HELMET"));
         customJoinMenuItem = SkyWarsReloaded.getIM().getItem("joinitem-" + name);
@@ -1370,6 +1408,26 @@ public class GameMap {
 
     public ArrayList<CoordLoc> getCenterChests() {
         return centerChests;
+    }
+
+    public Vote getDefaultChestType() {
+        return defaultChestType;
+    }
+
+    public Vote getDefaultHealth() {
+        return defaultHealth;
+    }
+
+    public Vote getDefaultTime() {
+        return defaultTime;
+    }
+
+    public Vote getDefaultWeather() {
+        return defaultWeather;
+    }
+
+    public Vote getDefaultModifier() {
+        return defaultModifier;
     }
 
     public MatchState getMatchState() {

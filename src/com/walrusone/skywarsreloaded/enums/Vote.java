@@ -60,4 +60,12 @@ public enum Vote {
         }
         return list.get(new Random().nextInt(4));
     }
+
+    public static Vote getByValue(String name, Vote defValue) {
+        try {
+            return Vote.valueOf(name.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return defValue;
+        }
+    }
 }
