@@ -13,7 +13,6 @@ defaultHealth: HEALTHTWENTY
 defaultTime: TIMENOON
 defaultWeather: WEATHERSUN
 defaultModifier: MODIFIERNONE
-allowScanvenger: false
 events:
   DisableRegenEvent:
     enabled: false

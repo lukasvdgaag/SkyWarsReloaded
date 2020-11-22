@@ -146,11 +146,6 @@ public class GameMap {
         weatherOption = new WeatherOption(this, name + "weather");
         modifierOption = new ModifierOption(this, name + "modifier");
         // Set default options
-        defaultChestType = Vote.CHESTNORMAL;
-        defaultHealth = Vote.HEALTHTWENTY;
-        defaultTime = Vote.TIMENOON;
-        defaultWeather = Vote.WEATHERSUN;
-        defaultModifier = Vote.MODIFIERNONE;
 
         gameboard = new GameBoard(this);
         if (legacy) {
@@ -972,9 +967,13 @@ public class GameMap {
 
         // Default Vote Types
         String cfgDefaultChestType = fc.getString("defaultChestType", "CHESTNORMAL");
-        if (cfgDefaultChestType.startsWith("CHEST"))
+        Bukkit.getConsoleSender().sendMessage("Default chest type of map " + name + " is " + cfgDefaultChestType);
+        if (cfgDefaultChestType.startsWith("CHEST")) {
             defaultChestType = Vote.getByValue(cfgDefaultChestType, Vote.CHESTNORMAL);
+            Bukkit.getConsoleSender().sendMessage("Default chest type of map" + name + " started with CHEST and is set to " + defaultChestType);
+        }
         else defaultChestType = Vote.CHESTNORMAL;
+
         String cfgDefaultHealth = fc.getString("defaultHealth", "HEALTHTWENTY");
         if (cfgDefaultHealth.startsWith("HEALTH"))
             defaultHealth = Vote.getByValue(cfgDefaultHealth, Vote.HEALTHTWENTY);
