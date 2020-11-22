@@ -753,11 +753,11 @@ public class MatchManager {
                     }
 
                     playerData.restore(playerQuit);
+                    gameMap.removePlayer(player.getUniqueId());
                     PlayerData.getPlayerData().remove(playerData);
                     PlayerStat.resetScoreboard(player);
 
                     if (gameMap.getSpectators().contains(player.getUniqueId())) {
-                        gameMap.removePlayer(player.getUniqueId());
                         gameMap.getSpectators().remove(player.getUniqueId());
                     }
                 } else {
