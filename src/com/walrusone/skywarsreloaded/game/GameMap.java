@@ -205,8 +205,7 @@ public class GameMap {
             } else {
                 SkyWarsReloaded.get().getLogger().info("Maps directory is missing or no Maps were found!");
             }
-        }
-        else {
+        } else {
             File dataDirectory = SkyWarsReloaded.get().getDataFolder();
             File maps = new File(dataDirectory, "mapsData");
             if (maps.exists() && maps.isDirectory()) {
@@ -560,55 +559,55 @@ public class GameMap {
         }
         boolean result = false;
         PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
+        if (ps == null || !ps.isInitialized()) return false;
+
         if (teamSize > 1) {
             teamCards.sort(new TeamCardComparator());
         } else {
             Collections.shuffle(teamCards);
         }
-        if (ps != null && ps.isInitialized()) {
-            if (SkyWarsReloaded.getCfg().debugEnabled()) {
-                Bukkit.getLogger().log(Level.WARNING, "#addPlayers: " + player.getName() + "'s PlayerStats are initialized");
-            }
-            if (teamSize == 1 || (getMatchState() == MatchState.WAITINGSTART)) {
-                TeamCard reserved = null;
-                if (teamToTry == null) {
-                    for (TeamCard tCard : teamCards) {
-                        if (SkyWarsReloaded.getCfg().debugEnabled()) {
-                            Bukkit.getLogger().log(Level.WARNING, "#addPlayers: --teamCard: " + (tCard.getPlace()+1));
-                            Bukkit.getLogger().log(Level.WARNING, "#addPlayers: (" + (tCard.getPlace()+1) + ") fullCount: " + tCard.getFullCount());
-                        }
-                        if (tCard.getFullCount() > 0) {
-                            reserved = tCard.sendReservation(player, ps);
-                            break;
-                        }
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            Bukkit.getLogger().log(Level.WARNING, "#addPlayers: " + player.getName() + "'s PlayerStats are initialized");
+        }
+        if (teamSize == 1 || (getMatchState() == MatchState.WAITINGSTART)) {
+            TeamCard reserved = null;
+            if (teamToTry == null) {
+                for (TeamCard tCard : teamCards) {
+                    if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                        Bukkit.getLogger().log(Level.WARNING, "#addPlayers: --teamCard: " + (tCard.getPlace() + 1));
+                        Bukkit.getLogger().log(Level.WARNING, "#addPlayers: (" + (tCard.getPlace() + 1) + ") fullCount: " + tCard.getFullCount());
                     }
-                } else {
-                    if (teamToTry.getFullCount() > 0) {
-                        reserved = teamToTry.sendReservation(player, ps);
-                    }
-                }
-                if (reserved != null) {
-                    result = reserved.joinGame(player);
-                    if (result) {
-                        PlayerStat.resetScoreboard(player);
+                    if (tCard.getFullCount() > 0) {
+                        reserved = tCard.sendReservation(player, ps);
+                        break;
                     }
                 }
             } else {
-                PlayerStat.resetScoreboard(player);
-                addWaitingPlayer(player);
-                getJoinQueue().add(new PlayerCard(null, player.getUniqueId(), -1, null));
-                Bukkit.getPluginManager().callEvent(new SkyWarsJoinEvent(player, this));
-                if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
-                    getKitVoteOption().updateKitVotes();
+                if (teamToTry.getFullCount() > 0) {
+                    reserved = teamToTry.sendReservation(player, ps);
                 }
-                if (SkyWarsReloaded.getCfg().resetTimerOnJoin()) {
-                    setTimer(SkyWarsReloaded.getCfg().getWaitTimer());
-                }
-                result = true;
             }
-            this.update();
-            gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
+            if (reserved != null) {
+                result = reserved.joinGame(player);
+                if (result) {
+                    PlayerStat.resetScoreboard(player);
+                }
+            }
+        } else {
+            PlayerStat.resetScoreboard(player);
+            addWaitingPlayer(player);
+            getJoinQueue().add(new PlayerCard(null, player.getUniqueId(), -1, null));
+            Bukkit.getPluginManager().callEvent(new SkyWarsJoinEvent(player, this));
+            if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
+                getKitVoteOption().updateKitVotes();
+            }
+            if (SkyWarsReloaded.getCfg().resetTimerOnJoin()) {
+                setTimer(SkyWarsReloaded.getCfg().getWaitTimer());
+            }
+            result = true;
         }
+        this.update();
+        gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
         return result;
     }
 
@@ -719,6 +718,8 @@ public class GameMap {
                 break;
             }
         }
+        spectators.remove(uuid);
+        waitingPlayers.remove(uuid);
         this.update();
         gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
     }
@@ -970,8 +971,7 @@ public class GameMap {
         if (cfgDefaultChestType.startsWith("CHEST")) {
             defaultChestType = Vote.getByValue(cfgDefaultChestType, Vote.CHESTNORMAL);
             Bukkit.getConsoleSender().sendMessage("Default chest type of map" + name + " started with CHEST and is set to " + defaultChestType);
-        }
-        else defaultChestType = Vote.CHESTNORMAL;
+        } else defaultChestType = Vote.CHESTNORMAL;
 
         String cfgDefaultHealth = fc.getString("defaultHealth", "HEALTHTWENTY");
         if (cfgDefaultHealth.startsWith("HEALTH"))
@@ -1165,7 +1165,6 @@ public class GameMap {
             }
             wm.copyWorld(source, target);
         }
-
 
 
         boolean loaded = SkyWarsReloaded.getWM().loadWorld(mapName, World.Environment.valueOf(environment));

@@ -6,7 +6,6 @@ import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.matchevents.MatchEvent;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
 import org.bukkit.Bukkit;
@@ -15,7 +14,8 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,18 +35,18 @@ public class PlayerStat {
 
     private final String uuid;
     private String playername;
-    private int wins;
-    private int losts;
-    private int kills;
-    private int deaths;
-    private int elo;
-    private int xp;
-    private String particleEffect;
-    private String projectileEffect;
-    private String glassColor;
-    private String killSound;
-    private String winSound;
-    private String taunt;
+    private int wins =0 ;
+    private int losts =0 ;
+    private int kills =0 ;
+    private int deaths =0 ;
+    private int elo =0 ;
+    private int xp =0 ;
+    private String particleEffect = "none";
+    private String projectileEffect = "none";
+    private String glassColor = "none";
+    private String killSound = "none";
+    private String winSound = "none";
+    private String taunt = "none";
     private boolean initialized;
     private PermissionAttachment perms;
 
