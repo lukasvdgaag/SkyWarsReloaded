@@ -145,7 +145,6 @@ public class GameMap {
         timeOption = new TimeOption(this, name + "time");
         weatherOption = new WeatherOption(this, name + "weather");
         modifierOption = new ModifierOption(this, name + "modifier");
-        // Set default options
 
         gameboard = new GameBoard(this);
         if (legacy) {
