@@ -182,9 +182,12 @@ public class MatchManager {
                 Util.get().logToFile(debugName + ChatColor.YELLOW + "Teleporting " + player.getName() + " to Skywars on map" + gameMap.getName());
             }
             spawn = new Location(world, sspawn.getX() + 0.5, sspawn.getY() + 1, sspawn.getZ() + 0.5);
-            if (Objects.requireNonNull(PlayerStat.getPlayerStats(player)).getGlassColor().startsWith("custom-")) {
+            PlayerStat pStat = PlayerStat.getPlayerStats(player);
+            if (pStat != null &&
+                pStat.getGlassColor() != null &&
+                pStat.getGlassColor().startsWith("custom-")
+            ) {
                 spawn = new Location(world, sspawn.getX() + 0.5, sspawn.getY() + 0.25, sspawn.getZ() + 0.5);
-
             }
             //Location newSpawn = new Location(world, spawn.getX() + 0.5, spawn.getY() + 0.25, spawn.getZ() + 0.5);
         }
