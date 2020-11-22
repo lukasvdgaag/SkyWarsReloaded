@@ -83,25 +83,27 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
                 final GameMap gMap = MatchManager.get().getDeadPlayerMap(a1.getPlayer());
                 if (gMap != null) {
                     World world = gMap.getCurrentWorld();
-                    Location respawn = new Location(world, 0.0D, 95.0D, 0.0D);
+                    CoordLoc cLoc = gMap.getSpectateSpawn();
+                    Location respawn = new Location(world, cLoc.getX(), cLoc.getY(), cLoc.getZ());
                     a1.setRespawnLocation(respawn);
                     new BukkitRunnable() {
                         public void run() {
                             MatchManager.get().addSpectator(gMap, a1.getPlayer());
                         }
-                    }.runTaskLater(SkyWarsReloaded.get(), 15L);
+                    }.runTaskLater(SkyWarsReloaded.get(), 1L);
                 }
             } else {
                 GameMap gMap = MatchManager.get().getDeadPlayerMap(a1.getPlayer());
                 if (gMap != null) {
                     World world = gMap.getCurrentWorld();
-                    Location respawn = new Location(world, 0.0D, 200.0D, 0.0D);
+                    Location respawn = SkyWarsReloaded.getCfg().getSpawn();
+                    if (respawn == null) respawn = new Location(world, 0.0D, 200.0D, 0.0D);
                     a1.setRespawnLocation(respawn);
                     new BukkitRunnable() {
                         public void run() {
                             pData.restore(false);
                         }
-                    }.runTaskLater(SkyWarsReloaded.get(), 15L);
+                    }.runTaskLater(SkyWarsReloaded.get(), 1L);
                 }
             }
         }
