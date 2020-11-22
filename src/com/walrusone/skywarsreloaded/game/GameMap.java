@@ -973,10 +973,10 @@ public class GameMap {
             Bukkit.getConsoleSender().sendMessage("Default chest type of map" + name + " started with CHEST and is set to " + defaultChestType);
         } else defaultChestType = Vote.CHESTNORMAL;
 
-        String cfgDefaultHealth = fc.getString("defaultHealth", "HEALTHTWENTY");
+        String cfgDefaultHealth = fc.getString("defaultHealth", "HEALTHTEN");
         if (cfgDefaultHealth.startsWith("HEALTH"))
-            defaultHealth = Vote.getByValue(cfgDefaultHealth, Vote.HEALTHTWENTY);
-        else defaultHealth = Vote.HEALTHTWENTY;
+            defaultHealth = Vote.getByValue(cfgDefaultHealth, Vote.HEALTHTEN);
+        else defaultHealth = Vote.HEALTHTEN;
         String cfgDefaultTime = fc.getString("defaultTime", "TIMENOON");
         if (cfgDefaultTime.startsWith("TIME"))
             defaultTime = Vote.getByValue(cfgDefaultTime, Vote.TIMENOON);
