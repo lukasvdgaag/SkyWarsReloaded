@@ -922,16 +922,9 @@ public class MatchManager {
     public GameMap getPlayerMap(final Player v0) {
         if (v0 != null) {
             for (final GameMap gameMap : GameMap.getMaps()) {
-                for (final UUID uuid : gameMap.getWaitingPlayers()) {
-                    if (v0.getUniqueId().equals(uuid)) {
-                        return gameMap;
-                    }
-                }
-                for (final Player player : gameMap.getAlivePlayers()) {
-                    if (v0.equals(player)) {
-                        return gameMap;
-                    }
-                }
+                if (gameMap.getAlivePlayers().contains(v0)) return gameMap;
+                else if (gameMap.getWaitingPlayers().contains(v0.getUniqueId())) return gameMap;
+                else if (gameMap.getSpectators().contains(v0.getUniqueId())) return gameMap;
             }
         }
         return null;
