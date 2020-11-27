@@ -129,8 +129,9 @@ public class MinecraftPing {
         socket.close();
 
         JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
+        // Example json response - {"description":{"extra":[{"text":"WAITINGSTART:0:8:Medieval #1"}],"text":""},"players":{"max":20,"online":1},"version":{"name":"Spigot 1.16.4","protocol":754}}
         MinecraftPingReply mpr = new MinecraftPingReply(
-                new MinecraftPingReply.Description(obj.getAsJsonObject("description").getAsJsonArray("extra").get(0).getAsJsonPrimitive().getAsJsonObject().get("text").getAsString()),
+                new MinecraftPingReply.Description(obj.getAsJsonObject("description").getAsJsonArray("extra").get(0).getAsJsonObject().get("text").getAsString()),
                 new MinecraftPingReply.Players(obj.getAsJsonObject("players").get("max").getAsInt(), obj.getAsJsonObject("players").get("online").getAsInt()),
                 new MinecraftPingReply.Version(obj.getAsJsonObject("version").get("name").getAsString(), obj.getAsJsonObject("version").get("protocol").getAsInt()),
                 ""
