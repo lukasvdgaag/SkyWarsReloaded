@@ -6,6 +6,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 
@@ -210,8 +211,20 @@ public class SWRServer {
             }
             if (sign != null && sign.getBlock() != null) {
                 Block b = sign.getBlock();
-                org.bukkit.material.Sign meteSign = (org.bukkit.material.Sign) b.getState().getData();
-                Block attachedBlock = b.getRelative(meteSign.getAttachedFace());
+                org.bukkit.material.Sign metaSign = (org.bukkit.material.Sign) b.getState().getData();
+                BlockFace attachedFace = metaSign.getAttachedFace();
+                if (attachedFace == null) {
+                    if (metaSign.isWallSign()) attachedFace = BlockFace.SOUTH;
+                    else {
+                        SkyWarsReloaded.get().getLogger().severe("ERROR: Sign at " + b.getX() + " " + b.getY() + " " + b.getZ() +
+                                " has no attached face saved! Please replace the sign.");
+                        continue;
+                    }
+                }
+                if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                    SkyWarsReloaded.get().getLogger().info("Sign face mod " + attachedFace.getModX() + " " + attachedFace.getModY() + " " + attachedFace.getModZ());
+                }
+                Block attachedBlock = b.getRelative(attachedFace);
                 setMaterial(attachedBlock);
                 String signState = "";
                 if (state.equals(MatchState.OFFLINE)) {
