@@ -14,6 +14,7 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemFlag;
@@ -173,7 +174,7 @@ public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
 
     public void setEntityTarget(Entity ent, Player player) {
         EntityCreature entity = (EntityCreature) ((org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity) ent).getHandle();
-        entity.setGoalTarget(((CraftPlayer) player).getHandle());
+        entity.setGoalTarget(((CraftPlayer) player).getHandle(), EntityTargetEvent.TargetReason.CLOSEST_PLAYER, true);
     }
 
     public void updateSkull(SkullMeta meta1, Player player) {
