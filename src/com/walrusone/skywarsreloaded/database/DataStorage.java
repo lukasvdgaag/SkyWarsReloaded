@@ -123,6 +123,7 @@ public class DataStorage {
                     Database database = SkyWarsReloaded.getDb();
 
                     if (database.checkConnection()) {
+                        SkyWarsReloaded.get().getLogger().severe("Failed to connect to the database, player data will not be loaded and will be unable to play!");
                         return;
                     }
 
@@ -221,6 +222,7 @@ public class DataStorage {
                     }
                 }
                 pData.setInitialized(true);
+                pData.saveStats();
             }
         }.runTaskAsynchronously(SkyWarsReloaded.get());
     }

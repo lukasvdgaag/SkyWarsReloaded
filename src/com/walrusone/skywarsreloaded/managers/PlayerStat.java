@@ -55,7 +55,6 @@ public class PlayerStat {
         this.uuid = player.getUniqueId().toString();
         this.playername = player.getName();
         this.perms = player.addAttachment(SkyWarsReloaded.get());
-        DataStorage.get().loadStats(this);
         if (SkyWarsReloaded.getCfg().economyEnabled()) {
             DataStorage.get().loadperms(this);
         }
@@ -64,8 +63,7 @@ public class PlayerStat {
                 updatePlayer(uuid);
             }
         }
-
-        saveStats();
+        DataStorage.get().loadStats(this);
     }
 
     public static void updatePlayer(final String uuid) {
@@ -317,41 +315,32 @@ public class PlayerStat {
     public void saveStats() {
         Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
         Bukkit.getLogger().log(Level.WARNING, "Now saving stats of player " + player.getName());
-
         new BukkitRunnable() {
+            @Override
             public void run() {
-                PlayerStat ps = PlayerStat.getPlayerStats(uuid);
-                if (ps == null) {
-                    this.cancel();
-                } else if (ps.isInitialized()) {
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            if (SkyWarsReloaded.getCfg().bungeeMode()) {
-                                if (player != null) {
-                                    if (!SkyWarsReloaded.getCfg().isLobbyServer()) {
-                                        Bukkit.getLogger().log(Level.WARNING, "Trying to let " + player.getName() + " join a game");
+                saveStatsSync(PlayerStat.this, player);
+            }
+        }.runTask(SkyWarsReloaded.get());
+    }
 
-                                        boolean joined = MatchManager.get().joinGame(player, GameType.ALL);
-                                        if (!joined) {
-                                            Bukkit.getLogger().log(Level.WARNING, "Failed to put " + player.getName() + " in a game");
-                                            if (SkyWarsReloaded.getCfg().debugEnabled()) {
-                                                Util.get().logToFile(ChatColor.YELLOW + "Couldn't find an arena for player " + player.getName() + ". Sending the player back to the skywars lobby.");
-                                            }
-                                            SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
-                                        }
-                                    }
-                                }
-                            }
+    public void saveStatsSync(PlayerStat ps, Player player) {
+        if (SkyWarsReloaded.getCfg().bungeeMode()) {
+            if (player != null) {
+                if (!SkyWarsReloaded.getCfg().isLobbyServer()) {
+                    Bukkit.getLogger().log(Level.WARNING, "Trying to let " + player.getName() + " join a game");
+
+                    boolean joined = MatchManager.get().joinGame(player, GameType.ALL);
+                    if (!joined) {
+                        Bukkit.getLogger().log(Level.WARNING, "Failed to put " + player.getName() + " in a game");
+                        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                            Util.get().logToFile(ChatColor.YELLOW + "Couldn't find an arena for player " + player.getName() + ". Sending the player back to the skywars lobby.");
                         }
-                    }.runTask(SkyWarsReloaded.get());
-
-                    DataStorage.get().saveStats(PlayerStat.getPlayerStats(uuid));
-                } else {
-                    saveStats();
+                        SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
+                    }
                 }
             }
-        }.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 0L);
+        }
+        DataStorage.get().saveStats(ps);
     }
 
     public String getId() {
