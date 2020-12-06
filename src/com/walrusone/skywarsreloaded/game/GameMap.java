@@ -551,6 +551,7 @@ public class GameMap {
     }
 
     public boolean addPlayers(@Nullable TeamCard teamToTry, final Player player) {
+        // IF busy return false
         if (Util.get().isBusy(player.getUniqueId())) {
             if (SkyWarsReloaded.getCfg().debugEnabled()) {
                 Bukkit.getLogger().log(Level.WARNING, "#addPlayers: " + player.getName() + " is busy, cannot join " + this.getName());
@@ -569,7 +570,8 @@ public class GameMap {
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
             Bukkit.getLogger().log(Level.WARNING, "#addPlayers: " + player.getName() + "'s PlayerStats are initialized");
         }
-        if (teamSize == 1 || (getMatchState() == MatchState.WAITINGSTART)) {
+        // If in any mode & WAITING while countdown
+        if (getMatchState() == MatchState.WAITINGSTART ) {
             TeamCard reserved = null;
             if (teamToTry == null) {
                 for (TeamCard tCard : teamCards) {
@@ -593,7 +595,8 @@ public class GameMap {
                     PlayerStat.resetScoreboard(player);
                 }
             }
-        } else {
+            // else if in Normal waiting mode
+        } else if (getMatchState() == MatchState.WAITINGLOBBY) {
             PlayerStat.resetScoreboard(player);
             addWaitingPlayer(player);
             getJoinQueue().add(new PlayerCard(null, player.getUniqueId(), -1, null));
@@ -607,7 +610,6 @@ public class GameMap {
             result = true;
         }
         this.update();
-        gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
         return result;
     }
 

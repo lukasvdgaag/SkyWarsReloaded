@@ -52,26 +52,29 @@ public class MatchManager {
     public boolean joinGame(Player player, GameType type) {
         GameMap.shuffle();
         GameMap map = null;
-        int highest = 999;
+        int highest = -1;
         ArrayList<GameMap> games = GameMap.getPlayableArenas(type);
 
         Collections.shuffle((games));
 
         for (final GameMap gameMap : games) {
-            Bukkit.getLogger().log(Level.WARNING, "#joinGame: --game: " + gameMap.getName());
-            if (gameMap.canAddPlayer() && gameMap.getPlayerCount() <= highest ) {
-                Bukkit.getLogger().log(Level.WARNING, "#joinGame: canAddPlayer: " + gameMap.canAddPlayer());
-                Bukkit.getLogger().log(Level.WARNING, "#joinGame: playerCount: " + gameMap.getPlayerCount());
-                Bukkit.getLogger().log(Level.WARNING, "#joinGame: highest: " + highest);
+            if (SkyWarsReloaded.getCfg().debugEnabled())
+                Bukkit.getLogger().log(Level.WARNING, "#joinGame: --game: " + gameMap.getName());
+            if (gameMap.canAddPlayer() && gameMap.getPlayerCount() > highest ) {
+                if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                    Bukkit.getLogger().log(Level.WARNING, "#joinGame: canAddPlayer: " + gameMap.canAddPlayer());
+                    Bukkit.getLogger().log(Level.WARNING, "#joinGame: playerCount: " + gameMap.getPlayerCount());
+                    Bukkit.getLogger().log(Level.WARNING, "#joinGame: highest: " + highest);
+                }
                 map = gameMap;
                 highest = gameMap.getPlayerCount();
             }
         }
 
-        if (games.size() == 1 && map == null) {
-            map = games.get(0);
-            Bukkit.getLogger().log(Level.WARNING, "#joinGame: --map = null:");
-            Bukkit.getLogger().log(Level.WARNING, "#joinGame: joining: " + map.getName());
+        if (map == null) {
+            if (SkyWarsReloaded.getCfg().debugEnabled())
+                Bukkit.getLogger().log(Level.WARNING, "#joinGame: --map = null:");
+            return false;
         }
 
         boolean joined = false;
@@ -802,7 +805,8 @@ public class MatchManager {
                 }
 
                 if (playerData.getTaggedBy() != null && playerData.getTaggedBy().getPlayer() != null) {
-                    gameMap.getPlayerCard(playerData.getTaggedBy().getPlayer()).addKill();
+                    PlayerCard pKillerCard = gameMap.getPlayerCard(playerData.getTaggedBy().getPlayer());
+                    if (pKillerCard != null) pKillerCard.addKill();
                 }
 
                 if (sendMessages) {
