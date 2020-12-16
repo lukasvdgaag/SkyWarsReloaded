@@ -5,8 +5,8 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import org.bukkit.Bukkit;
 
-import java.util.UUID;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 public class InfoCmd extends BaseCmd {
     public InfoCmd(String t) {
@@ -21,7 +21,7 @@ public class InfoCmd extends BaseCmd {
         Party party = Party.getParty(player);
         if (party == null) {
             player.sendMessage(new Messaging.MessageFormatter().format("party.notinaparty"));
-            return false;
+            return true;
         }
 
         player.sendMessage(new Messaging.MessageFormatter().setVariable("partyname", party.getPartyName()).format("party.info1"));

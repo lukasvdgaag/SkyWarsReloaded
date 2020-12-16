@@ -56,6 +56,6 @@ public class CreateCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         }
 
         sender.sendMessage(new Messaging.MessageFormatter().format("error.nospawn"));
-        return false;
+        return true;
     }
 }

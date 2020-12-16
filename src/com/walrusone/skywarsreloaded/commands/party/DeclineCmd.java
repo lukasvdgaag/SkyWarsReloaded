@@ -16,7 +16,7 @@ public class DeclineCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         Party party = Party.getPartyOfInvite(player);
         if (party == null) {
             player.sendMessage(new Messaging.MessageFormatter().format("party.noinvite"));
-            return false;
+            return true;
         }
 
         boolean result = party.declineInvite(player);

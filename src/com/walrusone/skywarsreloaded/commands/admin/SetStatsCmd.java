@@ -39,7 +39,7 @@ public class SetStatsCmd extends BaseCmd {
                     if (stat.equalsIgnoreCase("wins")) {
                         if (Util.get().isInteger(args[4])) {
                             if ((method.equalsIgnoreCase("set")) || (method.equalsIgnoreCase("add")) || (method.equalsIgnoreCase("remove"))) {
-                                int value = Integer.valueOf(args[4]).intValue();
+                                int value = Integer.parseInt(args[4]);
                                 int currentValue = pStat.getWins();
                                 int newValue = getNewValue(method, currentValue, value);
                                 pStat.setWins(newValue);
@@ -55,7 +55,7 @@ public class SetStatsCmd extends BaseCmd {
                     } else if (stat.equalsIgnoreCase("losses")) {
                         if (Util.get().isInteger(args[4])) {
                             if ((method.equalsIgnoreCase("set")) || (method.equalsIgnoreCase("add")) || (method.equalsIgnoreCase("remove"))) {
-                                int value = Integer.valueOf(args[4]).intValue();
+                                int value = Integer.parseInt(args[4]);
                                 int currentValue = pStat.getLosses();
                                 int newValue = getNewValue(method, currentValue, value);
                                 pStat.setLosts(newValue);
@@ -71,7 +71,7 @@ public class SetStatsCmd extends BaseCmd {
                     } else if (stat.equalsIgnoreCase("kills")) {
                         if (Util.get().isInteger(args[4])) {
                             if ((method.equalsIgnoreCase("set")) || (method.equalsIgnoreCase("add")) || (method.equalsIgnoreCase("remove"))) {
-                                int value = Integer.valueOf(args[4]).intValue();
+                                int value = Integer.parseInt(args[4]);
                                 int currentValue = pStat.getKills();
                                 int newValue = getNewValue(method, currentValue, value);
                                 pStat.setKills(newValue);
@@ -87,7 +87,7 @@ public class SetStatsCmd extends BaseCmd {
                     } else if (stat.equalsIgnoreCase("deaths")) {
                         if (Util.get().isInteger(args[4])) {
                             if ((method.equalsIgnoreCase("set")) || (method.equalsIgnoreCase("add")) || (method.equalsIgnoreCase("remove"))) {
-                                int value = Integer.valueOf(args[4]).intValue();
+                                int value = Integer.parseInt(args[4]);
                                 int currentValue = pStat.getDeaths();
                                 int newValue = getNewValue(method, currentValue, value);
                                 pStat.setDeaths(newValue);
@@ -105,7 +105,7 @@ public class SetStatsCmd extends BaseCmd {
                             GameMap gMap = MatchManager.get().getPlayerMap(swPlayer);
                             if (gMap == null) {
                                 if ((method.equalsIgnoreCase("set")) || (method.equalsIgnoreCase("add")) || (method.equalsIgnoreCase("remove"))) {
-                                    int value = Integer.valueOf(args[4]).intValue();
+                                    int value = Integer.parseInt(args[4]);
                                     int currentValue = pStat.getElo();
                                     int newValue = getNewValue(method, currentValue, value);
                                     pStat.setElo(newValue);
@@ -124,7 +124,7 @@ public class SetStatsCmd extends BaseCmd {
                     } else if (stat.equalsIgnoreCase("xp")) {
                         if (Util.get().isInteger(args[4])) {
                             if ((method.equalsIgnoreCase("set")) || (method.equalsIgnoreCase("add")) || (method.equalsIgnoreCase("remove"))) {
-                                int value = Integer.valueOf(args[4]).intValue();
+                                int value = Integer.parseInt(args[4]);
                                 int currentValue = pStat.getXp();
                                 int newValue = getNewValue(method, currentValue, value);
                                 pStat.setXp(newValue);

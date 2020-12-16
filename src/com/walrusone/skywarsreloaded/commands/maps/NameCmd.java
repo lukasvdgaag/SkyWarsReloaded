@@ -21,10 +21,9 @@ public class NameCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         }
         String displayName = b.toString();
 
-        //displayName.substring(0, displayName.length() - 1);
         if (displayName.length() == 0) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.map-name"));
-            return false;
+            return true;
         }
 
         GameMap map = GameMap.getMap(worldName);

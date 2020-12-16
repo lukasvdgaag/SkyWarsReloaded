@@ -16,12 +16,12 @@ public class NameCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         Party party = Party.getParty(player);
         if (party == null) {
             player.sendMessage(new Messaging.MessageFormatter().format("party.notinaparty"));
-            return false;
+            return true;
         }
 
         if (!party.getLeader().equals(player.getUniqueId())) {
             player.sendMessage(new Messaging.MessageFormatter().format("party.mustbepartyleader"));
-            return false;
+            return true;
         }
 
         String partyName = args[1];

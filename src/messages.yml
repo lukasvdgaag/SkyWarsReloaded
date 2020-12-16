@@ -43,6 +43,8 @@ command:
   chestadd: '&aAdded the item(s) in your {method} to {type} chests at {percent} percent!'
   stat-types: '&cThe stat could either be "wins", "losses", "kills", "deaths", "elo",
     "xp", "pareffect", "proeffect", "glasscolor", "killsound", or "winsound"'
+  hologram-removed: '&cThe nearest hologram has been removed!'
+  hologram-created: '&aYou successfully created a &b%type% %format% &ahologram!'
 kit:
   vote-random: '&cRandom'
   rand-lore: '&7Selects a random kit.'
@@ -113,6 +115,8 @@ party:
   info2: '&7Party Leader: &b{leader}'
   info3: '&7Party members: &b{members}'
 error:
+  no-holograms-found: '&cNo holograms were found!'
+  holograms-not-enabled: '&cHolograms are not enabled! Enable it in the config.yml and make sure you have HolographicDisplays installed. Does it disable itself? Stop the server, modify the config and start the server again!'
   map-min-be-int: '&cYou must specify a number!'
   map-name: '&cThe display name must have at least one character!'
   map-remove: '&cFailed to delete the arena. A manual deletion may be necessary!'

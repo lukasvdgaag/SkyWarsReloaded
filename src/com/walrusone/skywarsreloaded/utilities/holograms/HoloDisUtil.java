@@ -71,8 +71,8 @@ public class HoloDisUtil extends HologramsUtil {
                                     String mat = line.substring(5);
                                     if (mat.contains("playerhead")) {
                                         String num = mat.substring(12, mat.length() - 1);
-                                        if (Util.get().isInteger(num) && SkyWarsReloaded.getLB().getTopList(type) != null && SkyWarsReloaded.getLB().getTopList(type).size() > Integer.valueOf(num) - 1) {
-                                            Player player = Bukkit.getPlayer(SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(num) - 1).getUUID());
+                                        if (Util.get().isInteger(num) && SkyWarsReloaded.getLB().getTopList(type) != null && SkyWarsReloaded.getLB().getTopList(type).size() > Integer.parseInt(num) - 1) {
+                                            Player player = Bukkit.getPlayer(SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(num) - 1).getUUID());
                                             if (player != null) {
                                                 if (SkyWarsReloaded.getNMS().getVersion() < 13) {
                                                     item = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);

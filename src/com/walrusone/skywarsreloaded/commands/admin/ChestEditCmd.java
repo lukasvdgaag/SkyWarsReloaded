@@ -18,7 +18,6 @@ public class ChestEditCmd extends BaseCmd {
 
     @Override
     public boolean run() {
-
         String type = args[1];
         ChestType ct;
         if (type.equalsIgnoreCase("basic")) {
@@ -37,20 +36,20 @@ public class ChestEditCmd extends BaseCmd {
             ct = ChestType.CRATE;
         } else {
             player.sendMessage(new Messaging.MessageFormatter().format("error.chesttype"));
-            return false;
+            return true;
         }
 
         int percent;
         if (Util.get().isInteger(args[2])) {
-            percent = Integer.valueOf(args[2]);
+            percent = Integer.parseInt(args[2]);
         } else {
             player.sendMessage(new Messaging.MessageFormatter().format("error.chestpercent"));
-            return false;
+            return true;
         }
 
         if (!(percent > 0 && percent <= 100)) {
             player.sendMessage(new Messaging.MessageFormatter().format("error.chestpercent"));
-            return false;
+            return true;
         }
 
         SkyWarsReloaded.getCM().editChest(ct, percent, player);

@@ -30,11 +30,12 @@ public class HoloAddCmd extends BaseCmd {
                         types.add(add);
                     }
                     player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", types.toString()).format("leaderboard.invalidtype"));
-                    return false;
+                    return true;
                 }
                 String format = args[2];
                 if (SkyWarsReloaded.getHoloManager().getFormats(type).contains(format)) {
                     SkyWarsReloaded.getHoloManager().createLeaderHologram(player.getEyeLocation(), type, format);
+                    player.sendMessage(new Messaging.MessageFormatter().setVariable("%type%", type.name()).setVariable("%format%", format).format("command.hologram-created"));
                     return true;
                 }
 
@@ -43,13 +44,13 @@ public class HoloAddCmd extends BaseCmd {
                     formats.add(add);
                 }
                 player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", formats.toString()).format("leaderboard.invalidformat"));
-                return false;
+                return true;
             }
             player.sendMessage(ChatColor.RED + "You must have installed and enabled the HolographicDisplays plugin in order to use Holograms");
-            return false;
+            return true;
         }
-        player.sendMessage(ChatColor.RED + "Holograms are not enabled!");
-        return false;
+        player.sendMessage(new Messaging.MessageFormatter().format("error.holograms-not-enabled"));
+        return true;
     }
 
 }

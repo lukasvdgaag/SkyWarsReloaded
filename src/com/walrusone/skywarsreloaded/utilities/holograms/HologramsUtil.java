@@ -86,28 +86,28 @@ public abstract class HologramsUtil {
     private String getVariable(String var, @Nullable LeaderType type) {
         String[] parts = var.split("_");
         if (SkyWarsReloaded.getLB() != null && SkyWarsReloaded.getLB().getTopList(type) != null && Util.get().isInteger(parts[1])) {
-            if (SkyWarsReloaded.getLB().getTopList(type).size() > Integer.valueOf(parts[1]) - 1) {
+            if (SkyWarsReloaded.getLB().getTopList(type).size() > Integer.parseInt(parts[1]) - 1) {
                 if (parts[0].equalsIgnoreCase("elo")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getElo();
+                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getElo();
                 } else if (parts[0].equalsIgnoreCase("wins")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getWins();
+                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getWins();
                 } else if (parts[0].equalsIgnoreCase("losses")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getLoses();
+                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getLoses();
                 } else if (parts[0].equalsIgnoreCase("kills")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getKills();
+                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getKills();
                 } else if (parts[0].equalsIgnoreCase("deaths")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getDeaths();
+                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getDeaths();
                 } else if (parts[0].equalsIgnoreCase("xp")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getXp();
+                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getXp();
                 } else if (parts[0].equalsIgnoreCase("player")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getName();
+                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getName();
                 } else if (parts[0].equalsIgnoreCase("games_played")) {
-                    return "" + (SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getLoses() + SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getWins());
+                    return "" + (SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getLoses() + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getWins());
                 } else if (parts[0].equalsIgnoreCase("kill_death")) {
-                    double stat = (double) SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getKills() / (double) SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getDeaths();
+                    double stat = (double) SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getKills() / (double) SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getDeaths();
                     return String.format("%1$,.2f", stat);
                 } else if (parts[0].equalsIgnoreCase("win_loss")) {
-                    double stat = (double) SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getWins() / (double) SkyWarsReloaded.getLB().getTopList(type).get(Integer.valueOf(parts[1]) - 1).getLoses();
+                    double stat = (double) SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getWins() / (double) SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getLoses();
                     return String.format("%1$,.2f", stat);
                 }
             }

@@ -20,6 +20,6 @@ public class LegacyLoadCmd extends com.walrusone.skywarsreloaded.commands.BaseCm
         } else {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.map-register-not-exist"));
         }
-        return false;
+        return true;
     }
 }

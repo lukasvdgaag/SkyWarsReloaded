@@ -18,11 +18,10 @@ public class ArenaCmd
     public boolean run() {
         GameMap.openArenasManager(player);
         new BukkitRunnable() {
-
             public void run() {
+                GameMap.updateArenasManager();
             }
-
-        }.runTaskLater(SkyWarsReloaded.get(), 2L);
+        }.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 2L);
         return true;
     }
 }

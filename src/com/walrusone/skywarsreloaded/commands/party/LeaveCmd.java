@@ -16,7 +16,7 @@ public class LeaveCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         Party party = Party.getParty(player);
         if (party == null) {
             player.sendMessage(new Messaging.MessageFormatter().format("party.notinaparty"));
-            return false;
+            return true;
         }
 
         party.removeMember(player);

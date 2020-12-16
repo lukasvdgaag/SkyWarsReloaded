@@ -32,7 +32,7 @@ public class SWTopCmd extends BaseCmd {
                 player.sendMessage(new Messaging.MessageFormatter().format("leaderboard.no-data"));
             }
             for (i = 0; i < top.size(); i++) {
-                Leaderboard.LeaderData playerData = (Leaderboard.LeaderData) top.get(i);
+                Leaderboard.LeaderData playerData = top.get(i);
                 player.sendMessage(new Messaging.MessageFormatter().setVariable("rank", "" + (i + 1))
                         .setVariable("player", playerData.getName())
                         .setVariable("elo", "" + playerData.getElo())
@@ -51,6 +51,6 @@ public class SWTopCmd extends BaseCmd {
             types.add(add);
         }
         player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", types.toString()).format("leaderboard.invalidtype"));
-        return false;
+        return true;
     }
 }

@@ -13,7 +13,6 @@ public class EditCmd extends BaseCmd {
         argLength = 2;
     }
 
-
     public boolean run() {
         if (com.walrusone.skywarsreloaded.SkyWarsReloaded.getCfg().getSpawn() != null) {
             String worldName = args[1];
@@ -26,6 +25,6 @@ public class EditCmd extends BaseCmd {
             return true;
         }
         sender.sendMessage(new Messaging.MessageFormatter().format("error.nospawn"));
-        return false;
+        return true;
     }
 }
