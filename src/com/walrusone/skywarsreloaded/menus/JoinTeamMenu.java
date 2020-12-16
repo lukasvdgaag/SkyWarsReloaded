@@ -39,7 +39,7 @@ public class JoinTeamMenu {
                 ArrayList<GameMap> normalGames = GameMap.getPlayableArenas(GameType.TEAM);
                 ArrayList<SWRServer> bungeeGames = Lists.newArrayList();
                 
-                for (SWRServer s : SWRServer.getServers()) {
+                for (SWRServer s : SWRServer.getServersCopy()) {
                     if (s.getTeamSize() > 1) {
                         bungeeGames.add(s);
                     }

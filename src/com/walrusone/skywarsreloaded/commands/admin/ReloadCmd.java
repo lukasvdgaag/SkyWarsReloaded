@@ -24,7 +24,7 @@ public class ReloadCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         if (SkyWarsReloaded.getCfg().bungeeMode()) {
             SkyWarsReloaded.get().prepareServers();
 
-            for (SWRServer server : SWRServer.getServers()) {
+            for (SWRServer server : SWRServer.getServersCopy()) {
                 server.clearSigns();
                 List<String> signLocs = SkyWarsReloaded.get().getConfig().getStringList("signs." + server.getServerName());
                 if (signLocs != null) {

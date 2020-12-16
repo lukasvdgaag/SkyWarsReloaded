@@ -267,7 +267,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
             prepareServers();
 
-            for (SWRServer server : SWRServer.getServers()) {
+            for (SWRServer server : SWRServer.getServersCopy()) {
                 server.clearSigns();
                 List<String> signLocs = SkyWarsReloaded.get().getConfig().getStringList("signs." + server.getServerName());
                 if (signLocs != null) {
@@ -282,11 +282,13 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     }
 
     public void prepareServers() {
-        SWRServer.getServers().clear();
+        SWRServer.clearServers();
         for (String server : getCfg().getGameServers()) {
+            if (SkyWarsReloaded.getCfg().debugEnabled()) { SkyWarsReloaded.get().getLogger().warning(
+                    "Setting up pinging service for " + server); }
             final String[] serverParts = server.split(":");
             if (serverParts.length >= 5) {
-                SWRServer.getServers().add(new SWRServer(serverParts[0], Integer.parseInt(serverParts[1])));
+                SWRServer.addServer(new SWRServer(serverParts[0], Integer.parseInt(serverParts[1])));
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -309,19 +311,30 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
                                     MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname(hostname).setPort(swrServer.getPort()));
                                     final String[] serverInfo = data.getDescription().getText().split(":");
+                                    if (serverInfo.length < 3) {
+                                        SkyWarsReloaded.get().getLogger().warning("Skywars Server Ping failed! " +
+                                                hostname + ":" + swrServer.getPort() + " failed to return valid ping!\n" +
+                                                "(" + data.getDescription().getText() + ")");
+                                        return;
+                                    }
                                     swrServer.setMatchState(serverInfo[0]);
                                     swrServer.setPlayerCount(Integer.parseInt(serverInfo[1]));
                                     swrServer.setMaxPlayers(Integer.parseInt(serverInfo[2]));
-                                    swrServer.updateSigns();
-
                                 } catch (IOException e) {
                                     swrServer.setMatchState(MatchState.OFFLINE);
-                                    swrServer.updateSigns();
+                                    e.printStackTrace();
+                                } finally {
+                                    new BukkitRunnable() {
+                                        @Override
+                                        public void run() {
+                                            swrServer.updateSigns();
+                                        }
+                                    }.runTask(SkyWarsReloaded.get());
                                 }
                             /*}*/
                         }
                     }
-                }.runTaskTimer(this, 20, 200);
+                }.runTaskTimerAsynchronously(this, 20, 200);
             }
         }
     }
@@ -329,7 +342,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     public void updateServers() {
         new BukkitRunnable() {
             public void run() {
-                for (SWRServer server : SWRServer.getServers()) {
+                for (SWRServer server : SWRServer.getServersCopy()) {
                     Player player = Iterables.getFirst(SkyWarsReloaded.get().getServer().getOnlinePlayers(), null);
                     if (player != null) {
                         sendBungeeMsg(player, "PlayerCount", server.getServerName());

@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,21 +17,27 @@ import java.util.List;
 public class SWRServer {
 
 
-    private static ArrayList<SWRServer> servers;
-
-    static {
-        SWRServer.servers = new ArrayList<>();
-    }
+    private static ArrayList<SWRServer> servers = new ArrayList<>();
+    private static final Object serversLock = new Object();
 
     private String serverName;
+    private final Object serverNameLock = new Object();
     private String displayName;
+    private final Object displayNameLock = new Object();
     private int playerCount;
+    private final Object playerCountLock = new Object();
     private int maxPlayers;
+    private final Object maxPlayersLock = new Object();
     private int port;
+    private final Object portLock = new Object();
     private MatchState state;
+    private final Object stateLock = new Object();
     private ArrayList<Location> signs;
+    private final Object signsLock = new Object();
     private int teamsize;
+    private final Object teamsizeLock = new Object();
     private String hostname;
+    private final Object hostnameLock = new Object();
 
     public SWRServer(final String name, final int port) {
         this.serverName = name;
@@ -44,38 +51,62 @@ public class SWRServer {
     }
 
     public String getHostname() {
-        return this.hostname;
+        synchronized (hostnameLock) {
+            return this.hostname;
+        }
     }
 
     public void setHostname(String host) {
-        this.hostname = host;
+        synchronized (hostnameLock) {
+            this.hostname = host;
+        }
     }
 
-    public static ArrayList<SWRServer> getServers() {
-        return SWRServer.servers;
+    public static ArrayList<SWRServer> getServersCopy() {
+        synchronized (serversLock) {
+            return new ArrayList<>(servers);
+        }
     }
 
-    public static void setPlayers(final ArrayList<SWRServer> serverData) {
-        SWRServer.servers = serverData;
+    public static void addServer(SWRServer server) {
+        synchronized (serversLock) {
+            servers.add(server);
+        }
+    }
+
+    public static void clearServers() {
+        synchronized (serversLock) {
+            servers.clear();
+        }
+    }
+
+    public static void setServerData(final ArrayList<SWRServer> serverData) {
+        synchronized (serversLock) {
+            SWRServer.servers = serverData;
+        }
     }
 
     public static SWRServer getServer(final String name) {
-        for (final SWRServer server : getServers()) {
-            if (server.getServerName().equals(name)) {
-                return server;
+        synchronized (serversLock) {
+            for (final SWRServer server : getServersCopy()) {
+                if (server.getServerName().equals(name)) {
+                    return server;
+                }
             }
+            return null;
         }
-        return null;
     }
 
     public static SWRServer getAvailableServer() {
         int highestPlayers = 0;
         SWRServer swrServer = null;
-        for (SWRServer server : getServers()) {
-            if ((server.getMatchState().equals(MatchState.WAITINGSTART) || server.getMatchState().equals(MatchState.WAITINGLOBBY)) && server.getPlayerCount() < server.getMaxPlayers()) {
-                if (server.getPlayerCount() >= highestPlayers) {
-                    highestPlayers = server.getPlayerCount();
-                    swrServer = server;
+        synchronized (serversLock) {
+            for (SWRServer server : getServersCopy()) {
+                if ((server.getMatchState().equals(MatchState.WAITINGSTART) || server.getMatchState().equals(MatchState.WAITINGLOBBY)) && server.getPlayerCount() < server.getMaxPlayers()) {
+                    if (server.getPlayerCount() >= highestPlayers) {
+                        highestPlayers = server.getPlayerCount();
+                        swrServer = server;
+                    }
                 }
             }
         }
@@ -83,14 +114,14 @@ public class SWRServer {
     }
 
     public static void saveAllSigns() {
-        for (SWRServer server : servers) {
+        for (SWRServer server : getServersCopy()) {
             server.saveSigns();
         }
     }
 
     public static SWRServer getSign(Location loc) {
-        for (SWRServer server : servers) {
-            if (server.getSigns().contains(loc)) {
+        for (SWRServer server : getServersCopy()) {
+            if (server.getSignsCopy().contains(loc)) {
                 return server;
             }
         }
@@ -98,7 +129,7 @@ public class SWRServer {
     }
 
     public static SWRServer getServerByDisplayName(String stripColor) {
-        for (SWRServer server : servers) {
+        for (SWRServer server : getServersCopy()) {
             if (ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', server.getDisplayName())).equalsIgnoreCase(stripColor)) {
                 return server;
             }
@@ -107,92 +138,138 @@ public class SWRServer {
     }
 
     private static void updateBlock(Block block, String item) {
-        block.setType(SkyWarsReloaded.getIM().getItem(item).getType());
-        if ((SkyWarsReloaded.getNMS().getVersion() < 13) && (
-                (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("WOOL"))) || (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("STAINED_GLASS"))) || (SkyWarsReloaded.getIM().getItem(item).getType().equals(Material.valueOf("STAINED_CLAY"))))) {
-            SkyWarsReloaded.getNMS().setBlockWithColor(block.getWorld(), block.getX(), block.getY(), block.getZ(), SkyWarsReloaded.getIM().getItem(item).getType(), SkyWarsReloaded.getIM().getItem(item).getData().getData());
+        ItemStack itemStack = SkyWarsReloaded.getIM().getItem(item);
+        Material material = itemStack.getType();
+        block.setType(material);
+        if (SkyWarsReloaded.getNMS().getVersion() < 13 && (
+                material.equals(Material.valueOf("WOOL")) ||
+                material.equals(Material.valueOf("STAINED_GLASS")) ||
+                material.equals(Material.valueOf("STAINED_CLAY")))
+        ) {
+            SkyWarsReloaded.getNMS().setBlockWithColor(
+                    block.getWorld(), block.getX(), block.getY(), block.getZ(),
+                    material,
+                    itemStack.getData().getData());
         }
     }
 
     public int getTeamSize() {
-        return this.teamsize;
+        synchronized (teamsizeLock) {
+            return this.teamsize;
+        }
     }
 
-    public void setTeamsize(int size) { this.teamsize = size ;}
+    public void setTeamsize(int size) {
+        synchronized (teamsizeLock) {
+            this.teamsize = size;
+        }
+    }
 
     public String getServerName() {
-        return serverName;
+        synchronized (serverNameLock) {
+            return serverName;
+        }
     }
 
     public int getPlayerCount() {
-        return this.playerCount;
+        synchronized (playerCountLock) {
+            return this.playerCount;
+        }
     }
 
     public void setPlayerCount(int count) {
-        this.playerCount = count;
+        synchronized (playerCountLock) {
+            this.playerCount = count;
+        }
     }
 
     public int getMaxPlayers() {
-        return this.maxPlayers;
+        synchronized (maxPlayersLock) {
+            return this.maxPlayers;
+        }
     }
 
     public void setMaxPlayers(int max) {
-        this.maxPlayers = max;
+        synchronized (maxPlayersLock) {
+            this.maxPlayers = max;
+        }
     }
 
     public MatchState getMatchState() {
-        return this.state;
+        synchronized (stateLock) {
+            return this.state;
+        }
     }
 
     public void setMatchState(String gameStarted) {
-        try {
-            this.state = MatchState.valueOf(gameStarted);
-        } catch (IllegalArgumentException e) {
-            this.state = MatchState.OFFLINE;
+        synchronized (stateLock) {
+            try {
+                this.state = MatchState.valueOf(gameStarted);
+            } catch (IllegalArgumentException e) {
+                this.state = MatchState.OFFLINE;
+            }
         }
     }
 
     public void setMatchState(MatchState serverState) {
-        state = serverState;
+        synchronized (stateLock) {
+            state = serverState;
+        }
     }
 
     public String getDisplayName() {
-        return this.displayName;
+        synchronized (displayNameLock) {
+            return this.displayName;
+        }
     }
 
     public void setDisplayName(String string) {
-        this.displayName = string;
+        synchronized (displayNameLock) {
+            this.displayName = string;
+        }
     }
 
     public int getPort() {
-        return this.port;
+        synchronized (portLock) {
+            return this.port;
+        }
     }
 
-    public ArrayList<Location> getSigns() {
-        return signs;
+    public ArrayList<Location> getSignsCopy() {
+        synchronized (signsLock) {
+            return new ArrayList<>(signs);
+        }
     }
 
     public void addSign(Location loc) {
-        this.signs.add(loc);
+        synchronized (signsLock) {
+            this.signs.add(loc);
+        }
         saveSigns();
     }
 
     public void clearSigns() {
-        signs.clear();
+        synchronized (signsLock) {
+            signs.clear();
+        }
     }
 
     public boolean hasGameSign(Location loc) {
-        return signs.contains(loc);
+        synchronized (signsLock) {
+            return signs.contains(loc);
+        }
     }
 
     public void removeSign(Location loc) {
-        signs.remove(loc);
+        synchronized (signsLock) {
+            signs.remove(loc);
+        }
         saveSigns();
     }
 
     public void saveSigns() {
         List<String> signLocs = new ArrayList<>();
-        for (Location loc : signs) {
+        for (Location loc : getSignsCopy()) {
             signLocs.add(Util.get().locationToString(loc));
         }
         SkyWarsReloaded.get().getConfig().set("signs." + this.getServerName(), signLocs);
@@ -201,8 +278,9 @@ public class SWRServer {
         SkyWarsReloaded.getCfg().load();
     }
 
+    /** WARNING: Must be run on main thread */
     public void updateSigns() {
-        for (Location loc : signs) {
+        for (Location loc : getSignsCopy()) {
             if (loc.getBlock() == null) { return; }
             BlockState bs = loc.getBlock().getState();
             Sign sign = null;
@@ -239,44 +317,46 @@ public class SWRServer {
                 sign.getBlock().getChunk().load();
                 sign.setLine(0, new Messaging.MessageFormatter().setVariable("matchstate", signState).
                         setVariable("mapname", displayName.toUpperCase()).
-                        setVariable("playercount", "" + playerCount).
-                        setVariable("teamsize", "" + teamsize).
-                        setVariable("maxplayers", "" + maxPlayers).format("signs.line1"));
+                        setVariable("playercount", "" + getPlayerCount()).
+                        setVariable("teamsize", "" + getTeamSize()).
+                        setVariable("maxplayers", "" + getMaxPlayers()).format("signs.line1"));
                 sign.setLine(1, new Messaging.MessageFormatter().setVariable("matchstate", signState).
                         setVariable("mapname", displayName.toUpperCase()).
-                        setVariable("playercount", "" + playerCount).
-                        setVariable("teamsize", "" + teamsize).
-                        setVariable("maxplayers", "" + maxPlayers).format("signs.line2"));
+                        setVariable("playercount", "" + getPlayerCount()).
+                        setVariable("teamsize", "" + getTeamSize()).
+                        setVariable("maxplayers", "" + getMaxPlayers()).format("signs.line2"));
                 sign.setLine(2, new Messaging.MessageFormatter().setVariable("matchstate", signState).
                         setVariable("mapname", displayName.toUpperCase()).
-                        setVariable("playercount", "" + playerCount).
-                        setVariable("teamsize", "" + teamsize).
-                        setVariable("maxplayers", "" + maxPlayers).format("signs.line3"));
+                        setVariable("playercount", "" + getPlayerCount()).
+                        setVariable("teamsize", "" + getTeamSize()).
+                        setVariable("maxplayers", "" + getMaxPlayers()).format("signs.line3"));
                 sign.setLine(3, new Messaging.MessageFormatter().setVariable("matchstate", signState).
                         setVariable("mapname", displayName.toUpperCase()).
-                        setVariable("playercount", "" + playerCount).
-                        setVariable("teamsize", "" + teamsize).
-                        setVariable("maxplayers", "" + maxPlayers).format("signs.line4"));
+                        setVariable("playercount", "" + getPlayerCount()).
+                        setVariable("teamsize", "" + getTeamSize()).
+                        setVariable("maxplayers", "" + getMaxPlayers()).format("signs.line4"));
                 sign.update();
             }
         }
     }
 
+    /** WARNING: Must be run on main thread */
     private void setMaterial(Block attachedBlock) {
-        if (state.equals(MatchState.OFFLINE)) {
+        MatchState tmpState = getMatchState();
+        if (tmpState.equals(MatchState.OFFLINE)) {
             updateBlock(attachedBlock, "blockoffline");
-        } else if (state.equals(MatchState.WAITINGSTART) || state.equals(MatchState.WAITINGLOBBY)) {
+        } else if (tmpState.equals(MatchState.WAITINGSTART) || tmpState.equals(MatchState.WAITINGLOBBY)) {
             updateBlock(attachedBlock, "blockwaiting");
-        } else if (state.equals(MatchState.PLAYING)) {
+        } else if (tmpState.equals(MatchState.PLAYING)) {
             updateBlock(attachedBlock, "blockplaying");
-        } else if (state.equals(MatchState.ENDING)) {
+        } else if (tmpState.equals(MatchState.ENDING)) {
             updateBlock(attachedBlock, "blockending");
         }
     }
 
     public boolean canAddParty(Party party) {
         // todo add specific test for parties
-        if (this.state != MatchState.WAITINGSTART && !state.equals(MatchState.WAITINGLOBBY)) {
+        if (getMatchState() != MatchState.WAITINGSTART && !getMatchState().equals(MatchState.WAITINGLOBBY)) {
             return false;
         }
 
@@ -285,7 +365,7 @@ public class SWRServer {
     }
 
     public boolean canAddPlayer() {
-        if (this.state != MatchState.WAITINGSTART && !state.equals(MatchState.WAITINGLOBBY)) {
+        if (getMatchState() != MatchState.WAITINGSTART && !getMatchState().equals(MatchState.WAITINGLOBBY)) {
             return false;
         }
 
