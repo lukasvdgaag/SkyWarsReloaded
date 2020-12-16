@@ -569,33 +569,36 @@ public class GameMap {
         }
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
             Bukkit.getLogger().log(Level.WARNING, "#addPlayers: " + player.getName() + "'s PlayerStats are initialized");
+            Bukkit.getLogger().log(Level.WARNING, "#addPlayers: MatchState: " + getMatchState().name());
         }
         // If in any mode & WAITING while countdown
         if (getMatchState() == MatchState.WAITINGSTART ) {
-            TeamCard reserved = null;
-            if (teamToTry == null) {
+            TeamCard reservedTeamCard = null;
+            if (teamToTry == null) { // If not in party mode
                 for (TeamCard tCard : teamCards) {
                     if (SkyWarsReloaded.getCfg().debugEnabled()) {
                         Bukkit.getLogger().log(Level.WARNING, "#addPlayers: --teamCard: " + (tCard.getPlace() + 1));
                         Bukkit.getLogger().log(Level.WARNING, "#addPlayers: (" + (tCard.getPlace() + 1) + ") fullCount: " + tCard.getFullCount());
                     }
-                    if (tCard.getFullCount() > 0) {
-                        reserved = tCard.sendReservation(player, ps);
+                    if (tCard.getFullCount() > 0) { // If space available
+                        reservedTeamCard = tCard.sendReservation(player, ps);
                         break;
                     }
                 }
-            } else {
+            } else { // In party mode
                 if (teamToTry.getFullCount() > 0) {
-                    reserved = teamToTry.sendReservation(player, ps);
+                    reservedTeamCard = teamToTry.sendReservation(player, ps);
                 }
             }
-            if (reserved != null) {
-                result = reserved.joinGame(player);
+            if (reservedTeamCard != null) { // If setup for player success
+                result = reservedTeamCard.joinGame(player); // tp to arena
                 if (result) {
                     PlayerStat.resetScoreboard(player);
                 }
+            } else { // Warn console that setup failed
+                SkyWarsReloaded.get().getLogger().warning("Failed to send reservation for " + player.getName());
             }
-            // else if in Normal waiting mode
+            // else if in lobby waiting mode
         } else if (getMatchState() == MatchState.WAITINGLOBBY) {
             PlayerStat.resetScoreboard(player);
             addWaitingPlayer(player);
@@ -608,6 +611,9 @@ public class GameMap {
                 setTimer(SkyWarsReloaded.getCfg().getWaitTimer());
             }
             result = true;
+        }
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            Bukkit.getLogger().info("#addPlayers: result = " + result);
         }
         this.update();
         return result;
@@ -1102,6 +1108,7 @@ public class GameMap {
                 registered = true;
                 gameboard = new GameBoard(this);
                 refreshMap();
+                getJoinQueue().start();
                 SkyWarsReloaded.get().getLogger().info("Registered Map " + name + "!");
                 return 0;
             } else {
@@ -1119,6 +1126,7 @@ public class GameMap {
     /*Inventories*/
 
     public void unregister(boolean save) {
+        getJoinQueue().kill();
         if (save) {
             this.registered = false;
             stopGameInProgress();

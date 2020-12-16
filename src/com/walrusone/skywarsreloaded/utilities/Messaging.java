@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.utilities;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import org.bukkit.ChatColor;
@@ -58,7 +59,7 @@ public final class Messaging {
 
     private void copyDefaults(File playerFile) {
         FileConfiguration playerConfig = YamlConfiguration.loadConfiguration(playerFile);
-        Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("messages.yml"));
+        Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("messages.yml"), Charsets.UTF_8);
         YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
         playerConfig.options().copyDefaults(true);
         playerConfig.setDefaults(defConfig);
