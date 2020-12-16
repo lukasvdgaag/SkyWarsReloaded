@@ -5,11 +5,7 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.walrusone.skywarsreloaded.api.NMS;
-import com.walrusone.skywarsreloaded.commands.CmdManager;
-import com.walrusone.skywarsreloaded.commands.KitCmdManager;
-import com.walrusone.skywarsreloaded.commands.MapCmdManager;
-import com.walrusone.skywarsreloaded.commands.PartyCmdManager;
-import com.walrusone.skywarsreloaded.commands.SWTabCompleter;
+import com.walrusone.skywarsreloaded.commands.*;
 import com.walrusone.skywarsreloaded.config.Config;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.database.Database;
@@ -32,6 +28,7 @@ import com.walrusone.skywarsreloaded.utilities.holograms.HologramsUtil;
 import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPing;
 import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPingOptions;
 import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPingReply;
+import com.walrusone.skywarsreloaded.utilities.mygcnt.GCNTUpdater;
 import com.walrusone.skywarsreloaded.utilities.placeholders.SWRMVdWPlaceholder;
 import com.walrusone.skywarsreloaded.utilities.placeholders.SWRPlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
@@ -70,6 +67,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private HologramsUtil hu;
     private boolean loaded;
     private BukkitTask specObserver;
+    private GCNTUpdater updater;
 
     public static SkyWarsReloaded get() {
         return instance;
@@ -144,6 +142,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             return;
         }
         this.getLogger().info("Loading support for " + version);
+        
+        this.updater = new GCNTUpdater();
 
         servername = "none";
 
@@ -279,6 +279,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             }
 
         }
+
+        checkUpdates();
     }
 
     public void prepareServers() {
@@ -620,4 +622,29 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         return loaded;
     }
 
+    public void checkUpdates() {
+        this.updater = new GCNTUpdater();
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            updater.checkForUpdate();
+            if (updater.getUpdateStatus() == 1) {
+                Bukkit.getLogger().info("====================");
+                Bukkit.getLogger().info("SkyWarsReloaded Updater");
+                Bukkit.getLogger().info("");
+                Bukkit.getLogger().info("We found a newer version of SkyWarsReloaded!");
+                Bukkit.getLogger().info("");
+                Bukkit.getLogger().info("New version: " + updater.getLatestVersion());
+                Bukkit.getLogger().info("Your version: " + updater.getCurrentVersion());
+                Bukkit.getLogger().info("");
+                Bukkit.getLogger().info("You can download it here:");
+                Bukkit.getLogger().info(updater.getUpdateURL());
+                Bukkit.getLogger().info("----------------------------------");
+            }
+
+        },0 ,20*60*60);
+    }
+
+    public GCNTUpdater getUpdater() {
+        return updater;
+    }
 }

@@ -268,6 +268,7 @@ public class Config {
     private boolean usePartyAndFriends = false;
     private boolean useTeamChat = true;
     private String timeFormat = "mm:ss";
+    private boolean checkForBetaVersion = true;
 
     public Config() {
         load();
@@ -277,6 +278,8 @@ public class Config {
         if (!loading) {
             loading = true;
             debug = SkyWarsReloaded.get().getConfig().getBoolean("debugMode");
+
+            checkForBetaVersion = SkyWarsReloaded.get().getConfig().getBoolean("updater.checkForBetaVersions");
 
             gameServers = SkyWarsReloaded.get().getConfig().getStringList("gameServers");
 
@@ -537,6 +540,8 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("debugMode", debug);
         SkyWarsReloaded.get().getConfig().set("gameServers", gameServers);
         SkyWarsReloaded.get().getConfig().set("isLobbyServer", isLobbyServer);
+
+        SkyWarsReloaded.get().getConfig().set("updater.checkForBetaVersions", checkForBetaVersion);
 
         if (spawn != null) {
             SkyWarsReloaded.get().getConfig().set("spawn", Util.get().locationToString(spawn));
@@ -1346,6 +1351,8 @@ public class Config {
 
     public boolean isUseTeamChat() { return useTeamChat; }
     public String getTimeFormat() { return timeFormat; }
+
+    public boolean isCheckForBetaVersion() { return checkForBetaVersion; }
 
 }
 
