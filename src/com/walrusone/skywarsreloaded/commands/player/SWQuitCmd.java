@@ -17,7 +17,7 @@ public class SWQuitCmd extends BaseCmd {
     public boolean run() {
         GameMap map = MatchManager.get().getPlayerMap(player);
         if (map == null) {
-            return false;
+            return true;
         }
         MatchManager.get().playerLeave(player, EntityDamageEvent.DamageCause.CUSTOM, true, true, true);
         return true;

@@ -68,7 +68,7 @@ public class ProjectileEffectOption extends PlayerOption {
                                     && Util.get().isFloat(parts[3])
                                     && Util.get().isInteger(parts[4])
                                     && Util.get().isInteger(parts[5])) {
-                                effects.add(new ParticleEffect(parts[0].toUpperCase(), Float.valueOf(parts[1]), Float.valueOf(parts[2]), Float.valueOf(parts[3]), Integer.valueOf(parts[4]), Integer.valueOf(parts[5])));
+                                effects.add(new ParticleEffect(parts[0].toUpperCase(), Float.valueOf(parts[1]), Float.valueOf(parts[2]), Float.valueOf(parts[3]), Integer.parseInt(parts[4]), Integer.parseInt(parts[5])));
                             } else {
                                 SkyWarsReloaded.get().getLogger().info("The particle effect " + key + " has an invalid particle effect");
                             }

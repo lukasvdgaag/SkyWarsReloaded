@@ -25,7 +25,7 @@ public class LoreCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         }
 
         if (com.walrusone.skywarsreloaded.utilities.Util.get().isInteger(args[2])) {
-            kit.setLoreLine(Integer.valueOf(args[2]).intValue(), message.toString().trim());
+            kit.setLoreLine(Integer.parseInt(args[2]), message.toString().trim());
         } else if (args[2].equalsIgnoreCase("locked")) {
             kit.setLockedLore(message.toString().trim());
         } else {

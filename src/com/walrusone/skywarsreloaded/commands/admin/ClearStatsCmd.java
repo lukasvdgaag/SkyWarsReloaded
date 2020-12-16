@@ -34,14 +34,8 @@ public class ClearStatsCmd extends com.walrusone.skywarsreloaded.commands.BaseCm
                 DataStorage.get().saveStats(pStat);
                 sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1]).format("command.stats-cleared"));
                 return true;
-
-
             }
-
-
         } else {
-
-
             new BukkitRunnable() {
                 public void run() {
                     OfflinePlayer offlinePlayer = null;

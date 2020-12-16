@@ -21,12 +21,12 @@ public class InviteCmd extends BaseCmd {
         Party party = Party.getParty(player);
         if (party == null) {
             player.sendMessage(new Messaging.MessageFormatter().format("party.mustcreate"));
-            return false;
+            return true;
         }
 
         if (!party.getLeader().equals(player.getUniqueId())) {
             player.sendMessage(new Messaging.MessageFormatter().format("party.mustbepartyleader"));
-            return false;
+            return true;
         }
 
         String invite = args[1];
@@ -51,7 +51,7 @@ public class InviteCmd extends BaseCmd {
                     .tooltip(new Messaging.MessageFormatter().format("party.clicktoaccept"))
                     .color(ChatColor.AQUA)
                     .runCommand("/swp a")
-                    .send(new Player[]{invited});
+                    .send(invited);
 
             player.sendMessage(new Messaging.MessageFormatter().setVariable("player", invited.getName()).format("party.invited"));
         } else {

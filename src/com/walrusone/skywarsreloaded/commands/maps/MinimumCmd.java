@@ -16,10 +16,10 @@ public class MinimumCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         String worldName = args[1];
         if (!com.walrusone.skywarsreloaded.utilities.Util.get().isInteger(args[2])) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.map-min-be-int"));
-            return false;
+            return true;
         }
 
-        int min = Integer.valueOf(args[2]).intValue();
+        int min = Integer.parseInt(args[2]);
         GameMap map = GameMap.getMap(worldName);
         if (map != null) {
             map.setMinTeams(min);

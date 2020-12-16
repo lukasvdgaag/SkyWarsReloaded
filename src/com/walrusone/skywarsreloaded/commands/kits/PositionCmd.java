@@ -20,14 +20,14 @@ public class PositionCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd 
         }
         int position;
         if (com.walrusone.skywarsreloaded.utilities.Util.get().isInteger(args[2])) {
-            position = Integer.valueOf(args[2]).intValue();
+            position = Integer.parseInt(args[2]);
         } else {
             player.sendMessage(new Messaging.MessageFormatter().format("error.position"));
-            return false;
+            return true;
         }
         if ((position < 0) || (position > 35)) {
             player.sendMessage(new Messaging.MessageFormatter().format("error.position"));
-            return false;
+            return true;
         }
 
         kit.setPosition(position);

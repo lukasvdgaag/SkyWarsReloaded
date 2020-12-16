@@ -17,7 +17,7 @@ public class CreateCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         Party party = Party.getParty(player);
         if (party != null) {
             player.sendMessage(new Messaging.MessageFormatter().format("party.alreadyinparty"));
-            return false;
+            return true;
         }
 
         new Party(player, partyName);

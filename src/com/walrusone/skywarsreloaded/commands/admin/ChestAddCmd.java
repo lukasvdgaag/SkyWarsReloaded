@@ -42,7 +42,7 @@ public class ChestAddCmd extends BaseCmd {
             ct = ChestType.CRATE;
         } else {
             player.sendMessage(new Messaging.MessageFormatter().format("error.chesttype"));
-            return false;
+            return true;
         }
 
         int percent;
@@ -50,19 +50,19 @@ public class ChestAddCmd extends BaseCmd {
             percent = Integer.parseInt(args[3]);
         } else {
             player.sendMessage(new Messaging.MessageFormatter().format("error.chestpercent"));
-            return false;
+            return true;
         }
 
         if (!(percent > 0 && percent <= 100)) {
             player.sendMessage(new Messaging.MessageFormatter().format("error.chestpercent"));
-            return false;
+            return true;
         }
 
 
         String method = args[2];
         if (!method.equalsIgnoreCase("hand") && !method.equalsIgnoreCase("inv")) {
             player.sendMessage(new Messaging.MessageFormatter().format("error.chestmethod"));
-            return false;
+            return true;
         }
 
         List<ItemStack> items = new ArrayList<>();

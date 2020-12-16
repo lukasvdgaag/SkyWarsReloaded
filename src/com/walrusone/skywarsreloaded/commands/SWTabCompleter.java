@@ -2,10 +2,6 @@ package com.walrusone.skywarsreloaded.commands;
 
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.commands.BaseCmd;
-import com.walrusone.skywarsreloaded.commands.CmdManager;
-import com.walrusone.skywarsreloaded.commands.KitCmdManager;
-import com.walrusone.skywarsreloaded.commands.MapCmdManager;
 import com.walrusone.skywarsreloaded.enums.ChestType;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.game.GameMap;
@@ -46,7 +42,8 @@ public class SWTabCompleter implements TabCompleter {
                     possibilities = Lists.newArrayList("player", "spec", "look", "lobby", "deathmatch");
                 }
             }
-        } else if (command.getName().equalsIgnoreCase("swkit")) {
+        }
+        else if (command.getName().equalsIgnoreCase("swkit")) {
             if (args.length == 1) {
                 for (BaseCmd cmd : KitCmdManager.getCommands()) {
                     if (Util.get().hp(cmd.getType(), commandSender, cmd.cmdName)) {
@@ -70,7 +67,8 @@ public class SWTabCompleter implements TabCompleter {
                     possibilities = Lists.newArrayList("locked", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17");
                 }
             }
-        } else if (command.getName().equalsIgnoreCase("skywars")) {
+        }
+        else if (command.getName().equalsIgnoreCase("skywars")) {
 
             if (args.length == 1) {
                 for (BaseCmd cmd : CmdManager.getCommands()) {
@@ -109,10 +107,10 @@ public class SWTabCompleter implements TabCompleter {
                     possibilities = Lists.newArrayList("set", "add", "remove");
                 }
             }
-        } else {
+        }
+        else {
             return null;
         }
-
 
         for (String str : possibilities) {
             if (args[args.length - 1].equals("") || str.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))

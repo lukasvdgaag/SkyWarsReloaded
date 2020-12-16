@@ -157,18 +157,18 @@ public class MobSpawnEvent extends MatchEvent {
         if (mapFile.exists()) {
             FileConfiguration fc = YamlConfiguration.loadConfiguration(mapFile);
             fc.set("events." + eventName + ".enabled", Boolean.valueOf(enabled));
-            fc.set("events." + eventName + ".minStart", Integer.valueOf(min));
-            fc.set("events." + eventName + ".maxStart", Integer.valueOf(max));
-            fc.set("events." + eventName + ".length", Integer.valueOf(length));
-            fc.set("events." + eventName + ".chance", Integer.valueOf(chance));
+            fc.set("events." + eventName + ".minStart", Integer.parseInt(min));
+            fc.set("events." + eventName + ".maxStart", Integer.parseInt(max));
+            fc.set("events." + eventName + ".length", Integer.parseInt(length));
+            fc.set("events." + eventName + ".chance", Integer.parseInt(chance));
             fc.set("events." + eventName + ".title", title);
             fc.set("events." + eventName + ".subtitle", subtitle);
             fc.set("events." + eventName + ".startMessage", startMessage);
             fc.set("events." + eventName + ".endMessage", endMessage);
             fc.set("events." + eventName + ".announceTimer", Boolean.valueOf(announceEvent));
             fc.set("events." + eventName + ".repeatable", Boolean.valueOf(repeatable));
-            fc.set("events." + eventName + ".minMobsPerPlayer", Integer.valueOf(minMobsPerPlayer));
-            fc.set("events." + eventName + ".maxMobsPerPlayer", Integer.valueOf(maxMobsPerPlayer));
+            fc.set("events." + eventName + ".minMobsPerPlayer", Integer.parseInt(minMobsPerPlayer));
+            fc.set("events." + eventName + ".maxMobsPerPlayer", Integer.parseInt(maxMobsPerPlayer));
             fc.set("events." + eventName + ".mobs", mobs);
             try {
                 fc.save(mapFile);

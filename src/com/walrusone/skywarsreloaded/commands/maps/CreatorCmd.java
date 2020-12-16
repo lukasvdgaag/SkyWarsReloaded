@@ -23,7 +23,7 @@ public class CreatorCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         //creator.substring(0, creator.length() - 1);
         if (creator.length() == 0) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.map-creator"));
-            return false;
+            return true;
         }
         GameMap map = GameMap.getMap(worldName);
         if (map != null) {
