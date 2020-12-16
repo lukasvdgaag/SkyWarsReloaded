@@ -4,14 +4,16 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 
 public class GameQueue {
-    private Queue<PlayerCard> queue = new LinkedList<>();
+    private List<PlayerCard> queue = new ArrayList<>();
     private GameMap map;
-    private boolean running = false;
+    private BukkitRunnable runnableQueue;
 
     GameQueue(GameMap g) {
         map = g;
@@ -19,24 +21,35 @@ public class GameQueue {
 
     public void add(PlayerCard pCard) {
         queue.add(pCard);
-        if (!running) {
-            sendToGame();
-        }
     }
 
     private void sendToGame() {
-        if (!queue.isEmpty()) {
-            running = true;
-            if (SkyWarsReloaded.get().isEnabled()) {
-                new BukkitRunnable() {
-                    public void run() {
-                        MatchManager.get().teleportToArena(map, (PlayerCard) queue.poll());
-                        GameQueue.this.sendToGame();
-                    }
-                }.runTaskLater(SkyWarsReloaded.get(), 2L);
+        if (SkyWarsReloaded.get().isEnabled()) {
+            final PlayerCard pCard = queue.get(0);
+            if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                if (pCard != null) {
+                    SkyWarsReloaded.get().getLogger().info(
+                            "#GameQueue:sendToGame: pCard uuid " + pCard.getUUID());
+                }
             }
-        } else {
-            running = false;
+            MatchManager.get().teleportToArena(map, pCard);
+            queue.remove(0);
         }
+    }
+
+    public void start() {
+        queue.clear();
+        runnableQueue = new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (queue.isEmpty()) return;
+                sendToGame();
+            }
+        };
+        runnableQueue.runTaskTimer(SkyWarsReloaded.get(), 0, 2);
+    }
+
+    public void kill() {
+        runnableQueue.cancel();
     }
 }

@@ -236,7 +236,6 @@ public class DataStorage {
         try {
             playerConfig.save(playerFile);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
