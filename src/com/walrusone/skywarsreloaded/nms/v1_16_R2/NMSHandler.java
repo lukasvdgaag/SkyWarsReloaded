@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.nms.v1_16_R2;
 
+import com.walrusone.skywarsreloaded.nms.NMS;
 import net.minecraft.server.v1_16_R2.*;
 import net.minecraft.server.v1_16_R2.PacketPlayOutTitle.EnumTitleAction;
 import org.bukkit.Material;
@@ -26,7 +27,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.util.List;
 import java.util.Random;
 
-public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
+public class NMSHandler implements NMS {
 
     public boolean removeFromScoreboardCollection(Scoreboard scoreboard) {
         return false;

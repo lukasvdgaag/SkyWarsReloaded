@@ -42,6 +42,10 @@ public class MatchManager {
     private String debugName;
     private boolean debug;
 
+    public MatchManager() {
+        debug = SkyWarsReloaded.getCfg().debugEnabled();
+    }
+
     public static MatchManager get() {
         if (MatchManager.instance == null) {
             MatchManager.instance = new MatchManager();
@@ -74,6 +78,11 @@ public class MatchManager {
         if (map == null) {
             if (SkyWarsReloaded.getCfg().debugEnabled())
                 Bukkit.getLogger().log(Level.WARNING, "#joinGame: --map = null:");
+//            // TODO: REMOVE
+            if (player.hasPermission("sw.calerobypass")) {
+                addSpectator(games.get(0), player);
+                return true;
+            }
             return false;
         }
 

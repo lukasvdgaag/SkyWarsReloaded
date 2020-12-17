@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.nms.v1_9_R1;
 
+import com.walrusone.skywarsreloaded.nms.NMS;
 import net.minecraft.server.v1_9_R1.*;
 import net.minecraft.server.v1_9_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_9_R1.PacketPlayOutTitle.EnumTitleAction;
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
+public class NMSHandler implements NMS {
     public NMSHandler() {
     }
 

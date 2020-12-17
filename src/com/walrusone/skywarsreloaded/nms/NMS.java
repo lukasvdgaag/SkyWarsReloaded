@@ -1,4 +1,4 @@
-package com.walrusone.skywarsreloaded.api;
+package com.walrusone.skywarsreloaded.nms;
 
 import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
