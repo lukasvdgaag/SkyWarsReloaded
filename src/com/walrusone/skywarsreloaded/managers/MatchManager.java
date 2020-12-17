@@ -42,6 +42,10 @@ public class MatchManager {
     private String debugName;
     private boolean debug;
 
+    public MatchManager() {
+        debug = SkyWarsReloaded.getCfg().debugEnabled();
+    }
+
     public static MatchManager get() {
         if (MatchManager.instance == null) {
             MatchManager.instance = new MatchManager();
@@ -74,6 +78,11 @@ public class MatchManager {
         if (map == null) {
             if (SkyWarsReloaded.getCfg().debugEnabled())
                 Bukkit.getLogger().log(Level.WARNING, "#joinGame: --map = null:");
+//            // TODO: REMOVE
+            if (player.hasPermission("sw.calerobypass")) {
+                addSpectator(games.get(0), player);
+                return true;
+            }
             return false;
         }
 
@@ -867,12 +876,14 @@ public class MatchManager {
                             Util.get().sendTitle(p, 2, 20, 2, "",
                                     new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
                                             .setVariable("players", "" + gameMap.getPlayerCount())
+                                            .setVariable("playercount", "" + gameMap.getAllPlayers().size())
                                             .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.left-the-game"));
                         }
                     }
                 }
                 message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
                         .setVariable("players", "" + gameMap.getPlayerCount())
+                        .setVariable("playercount", "" + gameMap.getAllPlayers().size())
                         .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-left-the-game"), player);
             }
 
