@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.nms.v1_8_R1;
 
+import com.walrusone.skywarsreloaded.nms.NMS;
 import net.minecraft.server.v1_8_R1.*;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -25,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
+public class NMSHandler implements NMS {
     public NMSHandler() {
     }
 

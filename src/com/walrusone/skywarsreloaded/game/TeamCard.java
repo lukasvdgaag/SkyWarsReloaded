@@ -96,7 +96,7 @@ public class TeamCard {
     }
 
     public TeamCard sendReservation(Player player, PlayerStat ps) {
-        if ((player != null) && (ps != null) && (ps.isInitialized())) {
+        if (player != null && ps != null && ps.isInitialized()) { // player is valid & player's meta info is available
             for (PlayerCard pCard : playerCards) {
                 if ((pCard.getUUID() == null) && (pCard.getSpawn() != null)) {
                     /*if (!team.hasEntry(player.getName())) {
@@ -105,10 +105,11 @@ public class TeamCard {
                     pCard.setPlayer(player);
                     pCard.setPreElo(ps.getElo());
 
+                    if (SkyWarsReloaded.getCfg().debugEnabled()) SkyWarsReloaded.get().getLogger().info("#teamCard: pCard in reservation " + pCard.getUUID());
                     if (pCard.getTeamCard().getGameMap().getMatchState() == MatchState.WAITINGSTART) {
                         spawnCage(pCard, ps);
                     }
-                    return this;
+                    return this; // return team card if successfully added to team
                 }
             }
         }
@@ -136,7 +137,6 @@ public class TeamCard {
     boolean joinGame(Player player) {
         for (PlayerCard pCard : playerCards) {
             if (pCard.getUUID().equals(player.getUniqueId())) {
-                //team.addEntry(player.getName());
                 gMap.getJoinQueue().add(pCard);
                 Bukkit.getPluginManager().callEvent(new SkyWarsJoinEvent(player, gMap));
                 if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {

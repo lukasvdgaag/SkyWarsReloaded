@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.nms.v1_15_R1;
 
 import com.google.common.collect.Lists;
+import com.walrusone.skywarsreloaded.nms.NMS;
 import net.minecraft.server.v1_15_R1.*;
 import net.minecraft.server.v1_15_R1.PacketPlayOutTitle.EnumTitleAction;
 import org.bukkit.Material;
@@ -30,7 +31,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-public class NMSHandler implements com.walrusone.skywarsreloaded.api.NMS {
+public class NMSHandler implements NMS {
     private Collection<CraftScoreboard> scoreboardCollection = Lists.newArrayList();
 
     public NMSHandler() {

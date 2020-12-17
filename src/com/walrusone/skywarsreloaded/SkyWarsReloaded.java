@@ -4,7 +4,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import com.walrusone.skywarsreloaded.api.NMS;
+import com.walrusone.skywarsreloaded.nms.NMS;
 import com.walrusone.skywarsreloaded.commands.*;
 import com.walrusone.skywarsreloaded.config.Config;
 import com.walrusone.skywarsreloaded.database.DataStorage;
