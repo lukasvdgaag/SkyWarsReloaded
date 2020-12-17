@@ -115,6 +115,7 @@ party:
   info2: '&7Party Leader: &b{leader}'
   info3: '&7Party members: &b{members}'
 error:
+  not-looking-at-chest: '&cYou must be looking at a chest within a 5 blocks ratio!'
   no-holograms-found: '&cNo holograms were found!'
   holograms-not-enabled: '&cHolograms are not enabled! Enable it in the config.yml and make sure you have HolographicDisplays installed. Does it disable itself? Stop the server, modify the config and start the server again!'
   map-min-be-int: '&cYou must specify a number!'
@@ -543,8 +544,9 @@ helpList:
     arenas: '&a/swmap arenas &e- &2Opens the Arenas GUI'
     spawn: '&a/swmap spawn &e[type] &e- &2Sets a spawn point for a arena. Type can
       be player, spec, or deathmatch'
-    chesttype: '&a/swmap chesttype &e- &2Toggles between the type of chest being placed
+    chesttype: '&a/swmap chesttype &e[mapname] - &2Toggles between the type of chest being placed
       (Normal or Center)'
+    checkchest: '&a/swmap checkchest &e[mapname] - &2Lets you know what type of chest it is that you''re looking at'
     legacyload: '&a/swmap legacyload &e[mapname] &e- &2Loads the chests and player
       spawns of a map using the SWR Legacy Map Loader. Should only be used when pasting
       schematics. Do not run more than once per map!!'

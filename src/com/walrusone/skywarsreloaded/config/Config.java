@@ -269,6 +269,7 @@ public class Config {
     private boolean useTeamChat = true;
     private String timeFormat = "mm:ss";
     private boolean checkForBetaVersion = true;
+    private boolean displayTimerOnLevelbar = true;
 
     public Config() {
         load();
@@ -307,6 +308,7 @@ public class Config {
             xpEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.xpLeaderboardEnabled");
             leaderboardUpdateInterval = SkyWarsReloaded.get().getConfig().getInt("leaderboards.leaderboardUpdateInterval");
 
+            displayTimerOnLevelbar = SkyWarsReloaded.get().getConfig().getBoolean("game.displayTimerOnLevelbar");
             enableFlightOnWin = SkyWarsReloaded.get().getConfig().getBoolean("game.win.enableFlight");
             clearInventoryOnWin = SkyWarsReloaded.get().getConfig().getBoolean("game.win.clearInventory");
             kickOnWorldTeleport = SkyWarsReloaded.get().getConfig().getBoolean("game.kickOnWorldTeleport");
@@ -571,6 +573,7 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("leaderboards.xpLeaderboardEnabled", xpEnabled);
         SkyWarsReloaded.get().getConfig().set("leaderboards.leaderboardUpdateInterval", leaderboardUpdateInterval);
 
+        SkyWarsReloaded.get().getConfig().set("game.displayTimerOnLevelbar", displayTimerOnLevelbar);
         SkyWarsReloaded.get().getConfig().set("game.win.clearInventory", clearInventoryOnWin);
         SkyWarsReloaded.get().getConfig().set("game.win.enableFlight", enableFlightOnWin);
         SkyWarsReloaded.get().getConfig().set("game.kickOnWorldTeleport", kickOnWorldTeleport);
@@ -1353,6 +1356,8 @@ public class Config {
     public String getTimeFormat() { return timeFormat; }
 
     public boolean isCheckForBetaVersion() { return checkForBetaVersion; }
-
+    public boolean isDisplayPlayerExeperience() {
+        return displayPlayerExeperience;
+    }
 }
 

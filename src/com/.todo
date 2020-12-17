@@ -2,10 +2,14 @@
 Added a fun little updater to check for updates from MyGCNT.
 Added new config option to change the time display formats on scoreboards and other messages.
 Added a new command to teleport players to the skywars lobby: /sw lobby
+Added a new command to check if a chest is center/regular: /swm checkchest
 Added default voting types to arenas (including default chests), configurable per arena.
 Added a confirmation message to the /sw hologram command to let you know the hologram was created.
+Added a new config option to allow the disabling of displaying the timer on the xp level bar: "game.displayTimerOnLevelbar".
 Added configurable messages for the hologram creation and removing commands.
 Added async to Bungeecord pings to decrease the threat weight.
+Fixed the player count on leave messages being invisible.
+Fixed UTF-8 characters not working in files.
 Fixed commands sending wrong usage messages when the usage was right.
 Fixed players getting kicked out of their game on Bungeecord servers.
 Removed some junk classes, saving space.

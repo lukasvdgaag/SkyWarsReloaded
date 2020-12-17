@@ -1473,11 +1473,13 @@ public class GameMap {
         return this.timer;
     }
 
-    public void setTimer(final int lenght) {
-        this.timer = lenght;
-        if (matchState != MatchState.PLAYING) {
-            for (Player player : getAllPlayers()) {
-                player.setLevel(lenght);
+    public void setTimer(final int length) {
+        this.timer = length;
+        if (SkyWarsReloaded.getCfg().isDisplayPlayerExeperience()) {
+            if (matchState != MatchState.PLAYING) {
+                for (Player player : getAllPlayers()) {
+                    player.setLevel(length);
+                }
             }
         }
         getGameBoard().updateScoreboard();

@@ -867,12 +867,14 @@ public class MatchManager {
                             Util.get().sendTitle(p, 2, 20, 2, "",
                                     new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
                                             .setVariable("players", "" + gameMap.getPlayerCount())
+                                            .setVariable("playercount", "" + gameMap.getPlayerCount())
                                             .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.left-the-game"));
                         }
                     }
                 }
                 message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
                         .setVariable("players", "" + gameMap.getPlayerCount())
+                        .setVariable("playercount", "" + gameMap.getPlayerCount())
                         .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-left-the-game"), player);
             }
 
