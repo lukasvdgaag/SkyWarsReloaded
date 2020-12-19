@@ -8,6 +8,7 @@ Added a confirmation message to the /sw hologram command to let you know the hol
 Added a new config option to allow the disabling of displaying the timer on the xp level bar: "game.displayTimerOnLevelbar".
 Added configurable messages for the hologram creation and removing commands.
 Added async to Bungeecord pings to decrease the threat weight.
+Fixed teammates being able to damage each other when friendly fire was disabled.
 Fixed the player count on leave messages being invisible.
 Fixed UTF-8 characters not working in files.
 Fixed commands sending wrong usage messages when the usage was right.

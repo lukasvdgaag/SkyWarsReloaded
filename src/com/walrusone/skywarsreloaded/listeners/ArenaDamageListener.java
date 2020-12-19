@@ -26,7 +26,11 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
                 if ((gameMap.getMatchState() == MatchState.ENDING || gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY) ||
                         gameMap.isDisableDamage()) {
                     event.setCancelled(true);
-                } else {
+                }
+                else if (!gameMap.allowFriendlyFire() && damager instanceof Player && gameMap.getMatchState() == MatchState.PLAYING && gameMap.getTeamCard(target).equals(gameMap.getTeamCard((Player)damager))) {
+                    event.setCancelled(true);
+                }
+                else {
                     event.setCancelled(false);
                     if (gameMap.getProjectilesOnly()) {
                         if ((damager instanceof Projectile)) {
