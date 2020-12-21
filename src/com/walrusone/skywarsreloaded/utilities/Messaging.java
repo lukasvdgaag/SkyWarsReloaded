@@ -3,9 +3,12 @@ package com.walrusone.skywarsreloaded.utilities;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -94,6 +97,19 @@ public final class Messaging {
             return this;
         }
 
+        public void send(Player player, String message) {
+            String formatted = format(message, true, player);
+            player.sendMessage(formatted);
+        }
+
+        public String format(String message, boolean placeholders, Player player) {
+            String format = format(message);
+            if (placeholders && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                return PlaceholderAPI.setPlaceholders(player, format);
+            }
+            return format;
+        }
+
         public String format(String message) {
             if ((message == null) || (message.isEmpty())) {
                 return "";
@@ -106,15 +122,6 @@ public final class Messaging {
             if (message == null) {
                 return "";
             }
-
-           /* for (String s : variableMap.keySet()) {
-                if (!s.startsWith("{") && !s.endsWith("}")) {
-                    message = message.replace("{" + s + "}", variableMap.get(s));
-                }
-                else {
-                    message = message.replace(s, variableMap.get(s));
-                }
-            }*/
 
             Matcher matcher = PATTERN.matcher(message);
 
