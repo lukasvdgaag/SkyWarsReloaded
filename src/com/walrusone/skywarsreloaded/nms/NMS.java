@@ -81,4 +81,7 @@ public abstract interface NMS {
     public abstract void deleteCache();
 
     public abstract Block getHitBlock(ProjectileHitEvent paramProjectileHitEvent);
+
+    public abstract void sendJSON(Player sender, String json);
+
 }

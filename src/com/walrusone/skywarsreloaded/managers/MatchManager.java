@@ -173,7 +173,9 @@ public class MatchManager {
         }
 
         Player player = pCard.getPlayer();
-        PlayerData.getPlayerData().add(new PlayerData(player)); //todo fix issue with inventories getting returned incorrectly.
+        if (PlayerData.getPlayerData(player.getUniqueId()) == null) {
+            PlayerData.getPlayerData().add(new PlayerData(player));
+        }
         World world = gameMap.getCurrentWorld();
         Location spawn;
 

@@ -519,8 +519,9 @@ helpList:
     projectile: '&a/sw projectile &e- &2Opens projectile selection menu'
     particle: '&a/sw particle &e- &2Opens particle selection menu'
     hologram: '&a/sw hologram &e[stat] [format] &e- &2Creates a leaderboard hologram
-      at your eye location.'
-    holoremove: '&a/sw holoremove &e- &2Removes the closest hologram leaderboard.'
+      at your eye location'
+    holoremove: '&a/sw holoremove &e- &2Removes the closest hologram leaderboard'
+    lobby: '&a/sw lobby &e- &2Teleport to Skywars lobby'
   swmap:
     header1: '&7-----------------[&aMap Commands&7]-----------------'
     create: '&a/swmap create &e[mapname] &e- &2Creates a map named &e[mapname]'

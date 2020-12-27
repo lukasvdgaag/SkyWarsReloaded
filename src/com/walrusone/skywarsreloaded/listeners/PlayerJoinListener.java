@@ -21,7 +21,7 @@ public class PlayerJoinListener implements Listener {
             BaseComponent base = new TextComponent("§d§l[SkyWarsReloaded] §aA new update has been found: §b" + SkyWarsReloaded.get().getUpdater().getLatestVersion() + "§a. Click here to update!");
             base.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, SkyWarsReloaded.get().getUpdater().getUpdateURL()));
             base.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent("§7Click here to update to the latest version!")}));
-            a1.getPlayer().spigot().sendMessage(base);
+            SkyWarsReloaded.getNMS().sendJSON(a1.getPlayer(), "[\"\",{\"text\":\"§d§l[SkyWarsReloaded] §aA new update has been found: §b" + SkyWarsReloaded.get().getUpdater().getLatestVersion() + "§a. Click here to update!\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"" + SkyWarsReloaded.get().getUpdater().getUpdateURL() + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"§7Click here to update to the latest version!\"}]}}}]");
         }
 
         new BukkitRunnable() {
@@ -46,8 +46,8 @@ public class PlayerJoinListener implements Listener {
             PlayerStat.removePlayer(a1.getPlayer().getUniqueId().toString());
         }
         //new BukkitRunnable() {
-           // @Override
-            //public void run() {
+        // @Override
+        //public void run() {
         if (!SkyWarsReloaded.getCfg().bungeeMode()) {
             for (GameMap gMap : GameMap.getMaps()) {
                 if (gMap.getCurrentWorld() != null && gMap.getCurrentWorld().equals(a1.getPlayer().getWorld())) {
@@ -58,7 +58,7 @@ public class PlayerJoinListener implements Listener {
             }
         }
         //    }
-       // }.runTaskLater(SkyWarsReloaded.get(), 1);
+        // }.runTaskLater(SkyWarsReloaded.get(), 1);
 
         PlayerStat player = new PlayerStat(a1.getPlayer());
         PlayerStat.getPlayers().add(player);

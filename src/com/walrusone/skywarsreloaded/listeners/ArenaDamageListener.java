@@ -4,16 +4,32 @@ import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.FallingBlock;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import com.walrusone.skywarsreloaded.matchevents.EnderDragonEvent;
+import com.walrusone.skywarsreloaded.matchevents.MatchEvent;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.*;
 
 public class ArenaDamageListener implements org.bukkit.event.Listener {
     public ArenaDamageListener() {
+    }
+
+    @EventHandler
+    public void dragonDamage(EntityDamageEvent e) {
+        if (e.getEntity() instanceof EnderDragon) {
+            GameMap map = GameMap.getMap(e.getEntity().getLocation().getWorld().getName());
+            if (map == null) return;
+
+            for (MatchEvent event : map.getEvents()) {
+                if (event instanceof EnderDragonEvent) {
+                    if (((EnderDragonEvent)event).makeDragonInvulnerable) {
+                        e.setDamage(0);
+                    }
+                }
+            }
+
+         }
     }
 
     @EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
@@ -28,6 +44,11 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
                     event.setCancelled(true);
                 }
                 else if (!gameMap.allowFriendlyFire() && damager instanceof Player && gameMap.getMatchState() == MatchState.PLAYING && gameMap.getTeamCard(target).equals(gameMap.getTeamCard((Player)damager))) {
+                    event.setCancelled(true);
+                }
+                else if (!gameMap.allowFriendlyFire() && event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE && gameMap.getMatchState() == MatchState.PLAYING && ((Projectile)damager).getShooter() != null
+                        && ((Projectile)damager).getShooter() instanceof Player
+                        && gameMap.getTeamCard(target).equals(gameMap.getTeamCard((Player) ((Projectile)damager).getShooter()))) {
                     event.setCancelled(true);
                 }
                 else {

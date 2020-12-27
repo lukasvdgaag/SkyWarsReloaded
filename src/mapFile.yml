@@ -44,6 +44,7 @@ events:
     maxStart: 600
     length: -1
     chance: 100
+    makeDragonInvulnerable: true
     title: "&cEnderDragon"
     subtitle: "&1An EnderDragon has Spawned"
     startMessage: "&cEnderDragon &bevent has begun!"

@@ -42,8 +42,8 @@ public class FileWorldManager implements WorldManager {
         world.setAutoSave(false);
 
         SkyWarsReloaded.getNMS().setGameRule(world, "doMobSpawning", "false");
-        SkyWarsReloaded.getNMS().setGameRule(world, "mobGriefing", "false");
-        SkyWarsReloaded.getNMS().setGameRule(world, "doFireTick", "false");
+        SkyWarsReloaded.getNMS().setGameRule(world, "mobGriefing", "true");
+        SkyWarsReloaded.getNMS().setGameRule(world, "doFireTick", "true");
         SkyWarsReloaded.getNMS().setGameRule(world, "showDeathMessages", "false");
         SkyWarsReloaded.getNMS().setGameRule(world, "announceAdvancements", "false");
 

@@ -10,12 +10,12 @@ import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
-import org.bukkit.craftbukkit.v1_14_R1.scoreboard.CraftScoreboardManager;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_14_R1.scoreboard.CraftScoreboard;
+import org.bukkit.craftbukkit.v1_14_R1.scoreboard.CraftScoreboardManager;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -346,4 +346,12 @@ public class NMSHandler implements NMS {
     public Block getHitBlock(ProjectileHitEvent event) {
         return event.getHitBlock();
     }
+
+    @Override
+    public void sendJSON(Player sender, String json) {
+        final IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a(json);
+        final PacketPlayOutChat chat = new PacketPlayOutChat(icbc);
+        ((CraftPlayer) sender).getHandle().playerConnection.sendPacket(chat);
+    }
+
 }

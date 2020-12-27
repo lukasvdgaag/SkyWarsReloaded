@@ -449,7 +449,27 @@ public class PlayerInteractListener implements Listener {
                                     .setVariable("team", "" + result[1])
                                     .setVariable("mapname", map.getDisplayName())
                                     .format("maps.spawnRemoved"));
+                            return;
                         }
+
+                        CoordLoc loc = new CoordLoc(e.getBlock().getX(), e.getBlock().getY(), e.getBlock().getZ());
+                        if (map.getTeamSize() == 1) {
+                            List<CoordLoc> locs = map.spawnLocations.getOrDefault(1, Lists.newArrayList());
+                            for (int i = 0; i < locs.size(); i++) {
+                                CoordLoc l = locs.get(i);
+                                if (l.getX() == loc.getX() && l.getY() == loc.getY() && l.getZ() == loc.getZ()) {
+                                    locs.remove(i);
+                                    map.spawnLocations.put(1, locs);
+                                    e.getPlayer().sendMessage(new Messaging.MessageFormatter()
+                                            .setVariable("num", "" + 1)
+                                            .setVariable("team", "" + i)
+                                            .setVariable("mapname", map.getDisplayName())
+                                            .format("maps.spawnRemoved"));
+                                    break;
+                                }
+                            }
+                        }
+
                     } else if (e.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
                         boolean result = map.removeDeathMatchSpawn(e.getBlock().getLocation());
                         if (result) {

@@ -890,9 +890,9 @@ public class GameMap {
 
         if (teamSize == 1) {
             List<String> spawns = new ArrayList<>();
-            for (int team : spawnLocations.keySet()) {
-                if (spawnLocations.get(team) != null && spawnLocations.get(team).size() >= 1) {
-                    spawns.add(spawnLocations.get(team).get(0).getLocation());
+            if (spawnLocations.size() >= 1 && spawnLocations.containsKey(1)) {
+                for (CoordLoc loc : spawnLocations.get(1)) {
+                    spawns.add(loc.getLocation());
                 }
             }
             fc.set("spawns", spawns);
@@ -1017,10 +1017,14 @@ public class GameMap {
 
         if (teamSize == 1) {
             List<String> spawns = fc.getStringList("spawns");
+            List<CoordLoc> lls = Lists.newArrayList();
             for (int i = 0; i < spawns.size(); i++) {
-                spawnLocations.put(i + 1, Lists.newArrayList(Util.get().getCoordLocFromString(spawns.get(i))));
+                lls.add(Util.get().getCoordLocFromString(spawns.get(i)));
+                spawnLocations.remove(0);
+                spawnLocations.put(1, lls);
                 addTeamCard(i + 1);
             }
+
         } else {
             if (!(fc.get("spawns") instanceof List)) {
                 for (String team : fc.getConfigurationSection("spawns").getKeys(false)) {
@@ -1089,7 +1093,7 @@ public class GameMap {
         if (inEditing) {
             saveMap(null);
         }
-        if (spawnLocations.size() > 1) {
+        if (spawnLocations.size() > 1 || (teamSize == 1 && spawnLocations.size() == 1 && spawnLocations.get(1).size() > 1)) {
             int maxPlayers = getMaxPlayers();
             int actualMaxPlayers = teamCards.size() * teamSize;
 
@@ -1211,8 +1215,11 @@ public class GameMap {
         Block max = chunkWorld.getBlockAt(max1, 0, max1);
         Chunk cMin = min.getChunk();
         Chunk cMax = max.getChunk();
+        spawnLocations.clear();
         teamCards.clear();
         chests.clear();
+
+        List<CoordLoc> spawns = Lists.newArrayList();
 
         for (int cx = cMin.getX(); cx < cMax.getX(); cx++) {
             for (int cz = cMin.getZ(); cz < cMax.getZ(); cz++) {
@@ -1223,13 +1230,17 @@ public class GameMap {
                     if (te instanceof Beacon) {
                         Beacon beacon = (Beacon) te;
                         Block block = beacon.getBlock().getRelative(0, -1, 0);
-                        if (!block.getType().equals(Material.GOLD_BLOCK) && !block.getType().equals(Material.IRON_BLOCK)
-                                && !block.getType().equals(Material.DIAMOND_BLOCK) && !block.getType().equals(Material.EMERALD_BLOCK)) {
+                        if (block == null || (!block.getType().equals(Material.GOLD_BLOCK) && !block.getType().equals(Material.IRON_BLOCK)
+                                && !block.getType().equals(Material.DIAMOND_BLOCK) && !block.getType().equals(Material.EMERALD_BLOCK))) {
                             Location loc = beacon.getLocation();
-                            spawnLocations.put(spawnLocations.size(), Lists.newArrayList(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())));
-                            addTeamCard(spawnLocations.size());
-                            if (message) {
-                                sender.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + getMaxPlayers()).setVariable("mapname", getDisplayName()).format("maps.addSpawn"));
+                            if (teamSize == 1) {
+                                spawns = spawnLocations.getOrDefault(1,Lists.newArrayList());
+                                spawns.add(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+                                spawnLocations.put(1, spawns);
+                                addTeamCard(spawnLocations.size());
+                                if (message) {
+                                    sender.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + getMaxPlayers()).setVariable("mapname", getDisplayName()).format("maps.addSpawn"));
+                                }
                             }
                         }
                     } else if (te instanceof Chest) {
@@ -1662,7 +1673,17 @@ public class GameMap {
         }
 
         teamCards.removeIf(card -> card.getPosition() + 1 == teamNumber);
-        teamCards.add(new TeamCard(teamSize, this, prefix, getStringColor(teamCards.size()), teamCards.size() + 1, spawnLocations.get(teamNumber)));
+        List<CoordLoc> locs = Lists.newArrayList();
+        if (teamSize == 1) {
+            if (spawnLocations.size() > 0 && spawnLocations.containsKey(1)) {
+                locs.add(spawnLocations.get(1).get(teamNumber-1));
+            }
+        }
+        else {
+            locs = spawnLocations.get(teamNumber);
+        }
+
+        teamCards.add(new TeamCard(teamSize, this, prefix, getStringColor(teamCards.size()), teamCards.size() + 1, locs));
         if (saveFile) {
             saveArenaData();
         }
@@ -1674,7 +1695,10 @@ public class GameMap {
 
     public void addTeamCard(Location loc, int team) {
         if (teamSize == 1) {
-            spawnLocations.put(spawnLocations.size() + 1, Lists.newArrayList(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())));
+            List<CoordLoc> locs = spawnLocations.getOrDefault(1, Lists.newArrayList());
+            locs.add(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+            spawnLocations.put(1, locs);
+            //spawnLocations.put(spawnLocations.size() + 1, Lists.newArrayList(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())));
         } else {
             List<CoordLoc> locs;
             if (spawnLocations.containsKey(team)) {
@@ -1768,7 +1792,7 @@ public class GameMap {
 
     public int[] removeTeamCard(Location loc) {
         CoordLoc remove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        if (teamSize == 1 || SkyWarsReloaded.getCfg().isUseSeparateCages()) {
+        if (teamSize == 1 || !SkyWarsReloaded.getCfg().isUseSeparateCages()) {
             TeamCard toRemove = null;
             boolean removeWholeTeam = false;
             for (TeamCard tCard : teamCards) {
@@ -2210,7 +2234,7 @@ public class GameMap {
         int earliestStartTime = Integer.MAX_VALUE;
         for (MatchEvent event : getEvents()) {
             if (event.isEnabled()) {
-                if (event.getStartTime() < earliestStartTime) {
+                if (event.getStartTime() < earliestStartTime && event.getStartTime() >= 0) {
                     earliestStartTime = event.getStartTime();
                     latest = event;
                 }

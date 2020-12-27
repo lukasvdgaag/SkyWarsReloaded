@@ -4,7 +4,9 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.entity.Player;
 
@@ -36,6 +38,23 @@ public class DebugCmd extends BaseCmd {
         sender.sendMessage("Status: " + gMap.getMatchState().name());
         sender.sendMessage("Players: " + gMap.getPlayerCount() + "/" + gMap.getMaxPlayers());
         sender.sendMessage("Playable arenas amount: " + GameMap.getPlayableArenas(GameType.ALL).size());
+        sender.sendMessage(" ");
+        sender.sendMessage(" ");
+
+        sender.sendMessage("-- Debug of teams");
+        sender.sendMessage("Teamcards: " + gMap.getTeamCards().size());
+        for (TeamCard card : gMap.getTeamCards()) {
+            sender.sendMessage("#" + (card.getPosition()+1) + ": p=" + card.getPlayerCards().size() + ", s=" + card.getSpawn().size());
+        }
+        sender.sendMessage(" ");
+
+        sender.sendMessage("Spawn teams: " + gMap.spawnLocations.size());
+        for (int key : gMap.spawnLocations.keySet()) {
+            for (CoordLoc loc : gMap.spawnLocations.get(key)) {
+                sender.sendMessage("T" + key + ": " + loc.getLocation());
+            }
+        }
+
         sender.sendMessage(" ");
         if (sender instanceof Player) {
             sender.sendMessage("-- Debug of player: " + sender.getName());

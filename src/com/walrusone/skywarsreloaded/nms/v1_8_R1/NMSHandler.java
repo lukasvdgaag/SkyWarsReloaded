@@ -260,4 +260,12 @@ public class NMSHandler implements NMS {
         }
         return hitBlock;
     }
+
+    @Override
+    public void sendJSON(Player sender, String json) {
+        final IChatBaseComponent icbc = ChatSerializer.a(json);
+        final PacketPlayOutChat chat = new PacketPlayOutChat(icbc);
+        ((CraftPlayer) sender).getHandle().playerConnection.sendPacket(chat);
+    }
+
 }

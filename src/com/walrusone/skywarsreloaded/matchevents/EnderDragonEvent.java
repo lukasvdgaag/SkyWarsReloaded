@@ -23,6 +23,8 @@ import java.io.IOException;
 public class EnderDragonEvent extends MatchEvent {
     private BukkitTask br;
 
+    public boolean makeDragonInvulnerable = true;
+
     public EnderDragonEvent(GameMap map, boolean b) {
         gMap = map;
         enabled = b;
@@ -49,6 +51,7 @@ public class EnderDragonEvent extends MatchEvent {
             endMessage = fc.getString("events." + eventName + ".endMessage");
             announceEvent = fc.getBoolean("events." + eventName + ".announceTimer");
             repeatable = fc.getBoolean("events." + eventName + ".repeatable");
+            makeDragonInvulnerable = fc.getBoolean("events." + eventName + ".makeDragonInvulnerable");
         }
     }
 
@@ -117,6 +120,7 @@ public class EnderDragonEvent extends MatchEvent {
             fc.set("events." + eventName + ".endMessage", endMessage);
             fc.set("events." + eventName + ".announceTimer", (announceEvent));
             fc.set("events." + eventName + ".repeatable", (repeatable));
+            fc.set("events." + eventName + ".makeDragonInvulnerable", makeDragonInvulnerable);
             try {
                 fc.save(mapFile);
             } catch (IOException e) {
