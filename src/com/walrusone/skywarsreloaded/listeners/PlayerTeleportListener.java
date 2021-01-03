@@ -32,7 +32,7 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
                     cooldowns.add(player);
                     Bukkit.getScheduler().runTaskLaterAsynchronously(SkyWarsReloaded.get(), () -> cooldowns.remove(player), 5);
                     com.walrusone.skywarsreloaded.managers.PlayerStat.updatePlayer(a1.getPlayer().getUniqueId().toString());
-                    if (SkyWarsReloaded.get().getUpdater().getUpdateStatus() == 1 && a1.getPlayer().isOp() || a1.getPlayer().hasPermission("sw.admin")) {
+                    if (SkyWarsReloaded.get().getUpdater().getUpdateStatus() == 1 && (a1.getPlayer().isOp() || a1.getPlayer().hasPermission("sw.admin"))) {
                         //player.spigot().sendMessage(base);
                         SkyWarsReloaded.getNMS().sendJSON(player, "[\"\",{\"text\":\"§d§l[SkyWarsReloaded] §aA new update has been found: §b" + SkyWarsReloaded.get().getUpdater().getLatestVersion() + "§a. Click here to update!\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"" + SkyWarsReloaded.get().getUpdater().getUpdateURL() + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"§7Click here to update to the latest version!\"}]}}}]");
                     }

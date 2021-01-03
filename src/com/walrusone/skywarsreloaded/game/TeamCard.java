@@ -9,12 +9,11 @@ import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 public class TeamCard {
     private ArrayList<PlayerCard> playerCards = new ArrayList();
@@ -39,11 +38,13 @@ public class TeamCard {
         position = (pos - 1);
         for (int i = 0; i < size; i++) {
             CoordLoc loc;
-            if (SkyWarsReloaded.getCfg().isUseSeparateCages()) {
-                loc = teamSpawns.size() >= i+1 ? teamSpawns.get(i) : null;
-            }
+            if (teamSpawns == null) loc = null;
             else {
-                loc = teamSpawns.size()>=1 ? teamSpawns.get(0) : null;
+                if (SkyWarsReloaded.getCfg().isUseSeparateCages()) {
+                    loc = teamSpawns.size() >= i + 1 ? teamSpawns.get(i) : null;
+                } else {
+                    loc = teamSpawns.size() >= 1 ? teamSpawns.get(0) : null;
+                }
             }
             playerCards.add(new PlayerCard(this, null, -1, loc));
         }

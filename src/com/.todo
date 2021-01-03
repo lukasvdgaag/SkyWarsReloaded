@@ -1,3 +1,6 @@
+# version 5.4.1
+Fixed updater message showing when no update was available.
+
 # version 5.4.0
 Added a fun little updater to check for updates from MyGCNT.
 Added new config option to change the time display formats on scoreboards and other messages.

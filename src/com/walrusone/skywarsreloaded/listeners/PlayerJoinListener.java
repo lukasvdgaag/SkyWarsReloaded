@@ -17,7 +17,7 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(final PlayerJoinEvent a1) {
-        if (SkyWarsReloaded.get().getUpdater().getUpdateStatus() == 1) {
+        if (SkyWarsReloaded.get().getUpdater().getUpdateStatus() == 1 && (a1.getPlayer().isOp() || a1.getPlayer().hasPermission("sw.admin"))) {
             BaseComponent base = new TextComponent("§d§l[SkyWarsReloaded] §aA new update has been found: §b" + SkyWarsReloaded.get().getUpdater().getLatestVersion() + "§a. Click here to update!");
             base.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, SkyWarsReloaded.get().getUpdater().getUpdateURL()));
             base.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent("§7Click here to update to the latest version!")}));

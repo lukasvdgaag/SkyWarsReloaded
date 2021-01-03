@@ -1215,11 +1215,10 @@ public class GameMap {
         Block max = chunkWorld.getBlockAt(max1, 0, max1);
         Chunk cMin = min.getChunk();
         Chunk cMax = max.getChunk();
-        spawnLocations.clear();
         teamCards.clear();
         chests.clear();
 
-        List<CoordLoc> spawns = Lists.newArrayList();
+        List<CoordLoc> spawns;
 
         for (int cx = cMin.getX(); cx < cMax.getX(); cx++) {
             for (int cz = cMin.getZ(); cz < cMax.getZ(); cz++) {

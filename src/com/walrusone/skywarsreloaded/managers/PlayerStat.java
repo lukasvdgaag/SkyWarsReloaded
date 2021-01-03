@@ -206,7 +206,8 @@ public class PlayerStat {
                 killdeath = String.format("%1$,.2f", ((double) ((double) ps.getKills() / (double) ps.getDeaths())));
             }
 
-            if (identifier.equals("lobbyboard")) {
+            GameMap gMap = MatchManager.get().getGame(player);
+            if (identifier.equals("lobbyboard") || gMap == null) {
                 return line
                         .replace("{elo}", Integer.toString(ps.getElo()))
                         .replace("{wins}", Integer.toString(ps.getWins()))
@@ -220,7 +221,6 @@ public class PlayerStat {
                         .replace("{level}", Integer.toString(Util.get().getPlayerLevel(player)));
             }
             else {
-                GameMap gMap = MatchManager.get().getGame(player);
                 int currentPlayers;
                 if (gMap.getMatchState()== MatchState.WAITINGLOBBY) currentPlayers = gMap.getWaitingPlayers().size();
                 else if (gMap.getMatchState() == MatchState.ENDING) currentPlayers = gMap.getAllPlayers().size();
