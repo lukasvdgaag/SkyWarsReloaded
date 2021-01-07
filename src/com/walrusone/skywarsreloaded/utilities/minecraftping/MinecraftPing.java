@@ -28,15 +28,17 @@
  */
 package com.walrusone.skywarsreloaded.utilities.minecraftping;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.bukkit.Bukkit;
+import com.google.gson.JsonPrimitive;
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -48,7 +50,7 @@ public class MinecraftPing {
      *
      * @param hostname - a valid String hostname
      * @return {@link MinecraftPingReply}
-     * @throws IOException
+     * @throws IOException If fail / cannot connect
      */
     public MinecraftPingReply getPing(final String hostname) throws IOException {
         return this.getPing(new MinecraftPingOptions().setHostname(hostname));
@@ -59,14 +61,26 @@ public class MinecraftPing {
      *
      * @param options - a filled instance of {@link MinecraftPingOptions}
      * @return {@link MinecraftPingReply}
-     * @throws IOException
+     * @throws IOException If fail / cannot connect
      */
     public MinecraftPingReply getPing(final MinecraftPingOptions options) throws IOException {
         MinecraftPingUtil.validate(options.getHostname(), "Hostname cannot be null.");
-        MinecraftPingUtil.validate(options.getPort(), "Port cannot be null.");
+        // TODO: Useless check: int is never null! -- MinecraftPingUtil.validate(options.getPort(), "Port cannot be null.");
+
+
+        if (SkyWarsReloaded.getCfg().debugEnabled()) { SkyWarsReloaded.get().getLogger().warning(
+                "Ping setup socket " + options.getHostname() + " " + options.getPort() + " " + options.getTimeout()); }
 
         final Socket socket = new Socket();
-        socket.connect(new InetSocketAddress(options.getHostname(), options.getPort()), options.getTimeout());
+        try {
+            socket.connect(new InetSocketAddress(options.getHostname(), options.getPort()), options.getTimeout());
+        } catch (ConnectException e) {
+            SkyWarsReloaded.get().getLogger().warning(
+                    "Failed to ping server " +
+                            options.getHostname() + ":" + options.getPort() +
+                            " (" + e.getMessage() + ")"
+            );
+        }
 
         final DataInputStream in = new DataInputStream(socket.getInputStream());
         final DataOutputStream out = new DataOutputStream(socket.getOutputStream());
@@ -86,12 +100,18 @@ public class MinecraftPing {
         MinecraftPingUtil.writeVarInt(out, handshake_bytes.size());
         out.write(handshake_bytes.toByteArray());
 
+        if (SkyWarsReloaded.getCfg().debugEnabled()) { SkyWarsReloaded.get().getLogger().warning(
+                "Ping send " + options.getHostname() + " " + options.getPort() + " " + options.getTimeout()); }
+
         //> Status request
 
         out.writeByte(0x01); // Size of packet
         out.writeByte(MinecraftPingUtil.PACKET_STATUSREQUEST);
 
         //< Status response
+
+        if (SkyWarsReloaded.getCfg().debugEnabled()) { SkyWarsReloaded.get().getLogger().warning(
+                "Ping start receive " + options.getHostname() + " " + options.getPort() + " " + options.getTimeout()); }
 
         MinecraftPingUtil.readVarInt(in); // Size
         int id = MinecraftPingUtil.readVarInt(in);
@@ -105,6 +125,10 @@ public class MinecraftPing {
 
         byte[] data = new byte[length];
         in.readFully(data);
+
+        if (SkyWarsReloaded.getCfg().debugEnabled()) { SkyWarsReloaded.get().getLogger().warning(
+                "Ping done " + options.getHostname() + " " + options.getPort() + " " + options.getTimeout()); }
+
         String json = new String(data, options.getCharset());
 
         //> Ping
@@ -128,17 +152,45 @@ public class MinecraftPing {
         in.close();
         socket.close();
 
-        JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
-        // Example json response - {"description":{"extra":[{"text":"WAITINGSTART:0:8:Medieval #1"}],"text":""},"players":{"max":20,"online":1},"version":{"name":"Spigot 1.16.4","protocol":754}}
-        MinecraftPingReply mpr = new MinecraftPingReply(
-                new MinecraftPingReply.Description(obj.getAsJsonObject("description").getAsJsonArray("extra").get(0).getAsJsonObject().get("text").getAsString()),
-                new MinecraftPingReply.Players(obj.getAsJsonObject("players").get("max").getAsInt(), obj.getAsJsonObject("players").get("online").getAsInt()),
-                new MinecraftPingReply.Version(obj.getAsJsonObject("version").get("name").getAsString(), obj.getAsJsonObject("version").get("protocol").getAsInt()),
-                ""
-        );
+        // DEBUG: Example json response -
+        // {"description":{"extra":[{"text":"WAITINGSTART:0:8:Medieval #1"}],"text":""},"players":{"max":20,"online":1},"version":{"name":"Spigot 1.16.4","protocol":754}}
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            SkyWarsReloaded.get().getLogger().info("JSON Ping Reply: " + json);
+        }
 
-        return mpr;
+        JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
+
+        // Get Ping Version
+        int replyProtocolVersion = obj.getAsJsonObject("version").get("protocol").getAsInt();
+        MinecraftPingReply.Version pingVersion = new MinecraftPingReply.Version(
+                obj.getAsJsonObject("version").get("name").getAsString(),
+                replyProtocolVersion);
+
+        // Get Ping Players
+        MinecraftPingReply.Players pingPlayers = new MinecraftPingReply.Players(
+                obj.getAsJsonObject("players").get("max").getAsInt(),
+                obj.getAsJsonObject("players").get("online").getAsInt());
+
+        // Get Ping Description for correct protocol version
+        MinecraftPingReply.Description pingDescription =
+                new MinecraftPingReply.Description(getMotdTextFromJsonResponse(obj));
+
+        // Put all together
+        return new MinecraftPingReply(pingDescription, pingPlayers, pingVersion, "");
+
        // return new Gson().fromJson(json, MinecraftPingReply.class);
+    }
+
+    private String getMotdTextFromJsonResponse(JsonObject obj) {
+        JsonElement jsonElement = obj.get("description");
+        if (jsonElement instanceof JsonPrimitive)  return jsonElement.getAsString();
+        jsonElement = jsonElement.getAsJsonObject().get("extra");
+        if (jsonElement instanceof JsonPrimitive)  return jsonElement.getAsString();
+        jsonElement = jsonElement.getAsJsonArray().get(0);
+        if (jsonElement instanceof JsonPrimitive)  return jsonElement.getAsString();
+        jsonElement = jsonElement.getAsJsonObject().get("text");
+        if (jsonElement instanceof JsonPrimitive)  return jsonElement.getAsString();
+        else return "";
     }
 
 }
