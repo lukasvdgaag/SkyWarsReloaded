@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands;
 
+import com.walrusone.skywarsreloaded.api.command.SWRCmdManager;
 import com.walrusone.skywarsreloaded.commands.kits.*;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -10,7 +11,7 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KitCmdManager implements CommandExecutor {
+public class KitCmdManager implements CommandExecutor, SWRCmdManager {
     private List<BaseCmd> kitcmds = new ArrayList<>();
     private static KitCmdManager kcm;
 
@@ -30,14 +31,14 @@ public class KitCmdManager implements CommandExecutor {
         kitcmds.add(new ListCmd("kit"));
     }
 
-    public static List<BaseCmd> getCommands() { return kcm.kitcmds; }
+    public static List<BaseCmd> getCommand() { return kcm.kitcmds; }
 
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
-        if (args.length == 0 || getCommands(args[0]) == null) {
+        if (args.length == 0 || getCommand(args[0]) == null) {
             s.sendMessage(new Messaging.MessageFormatter().format("helpList.header"));
             sendHelp(kitcmds, s);
             s.sendMessage(new Messaging.MessageFormatter().format("helpList.footer"));
-        } else getCommands(args[0]).processCmd(s, args);
+        } else getCommand(args[0]).processCmd(s, args);
         return true;
     }
 
@@ -55,7 +56,7 @@ public class KitCmdManager implements CommandExecutor {
         }
     }
 
-    private BaseCmd getCommands(String s) {
+    public BaseCmd getCommand(String s) {
         return getCmd(kitcmds, s);
     }
 
@@ -70,5 +71,17 @@ public class KitCmdManager implements CommandExecutor {
             }
         }
         return null;
+    }
+
+    @Override
+    public void registerCommand(BaseCmd commandIn) {
+        if (commandIn == null) return;
+        kitcmds.add(commandIn);
+    }
+
+    @Override
+    public void unregisterCommand(BaseCmd commandIn) {
+        if (commandIn == null) return;
+        kitcmds.remove(commandIn);
     }
 }

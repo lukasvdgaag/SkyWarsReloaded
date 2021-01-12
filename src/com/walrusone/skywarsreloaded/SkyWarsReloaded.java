@@ -4,6 +4,8 @@ import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.walrusone.skywarsreloaded.api.SkywarsReloadedAPI;
+import com.walrusone.skywarsreloaded.api.impl.SkywarsReloadedImpl;
 import com.walrusone.skywarsreloaded.nms.NMS;
 import com.walrusone.skywarsreloaded.commands.*;
 import com.walrusone.skywarsreloaded.config.Config;
@@ -53,6 +55,12 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
     private static SkyWarsReloaded instance;
     private static Database db;
+    private static SkywarsReloadedAPI swrAPI = null;
+    private MainCmdManager mainCmdManager = null;
+    private KitCmdManager kitCmdManager = null;
+    private MapCmdManager mapCmdManager = null;
+    private PartyCmdManager partyCmdManager = null;
+    private SWTabCompleter swTabCompleter = null;
     private ArrayList<String> useable = new ArrayList<>();
     private Messaging messaging;
     private Leaderboard leaderboard;
@@ -71,6 +79,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
     public static SkyWarsReloaded get() {
         return instance;
+    }
+
+    public static SkywarsReloadedAPI getAPI() {
+        return swrAPI;
     }
 
     public static Messaging getMessaging() {
@@ -279,8 +291,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             }
 
         }
-
         checkUpdates();
+        swrAPI = new SkywarsReloadedImpl(this);
     }
 
     public void prepareServers() {
@@ -438,16 +450,23 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             new SpectateTeamMenu();
         }
 
-        getCommand("skywars").setExecutor(new CmdManager());
-        getCommand("skywars").setTabCompleter(new SWTabCompleter());
+        swTabCompleter = new SWTabCompleter();
 
-        getCommand("swkit").setExecutor(new KitCmdManager());
-        getCommand("swkit").setTabCompleter(new SWTabCompleter());
+        mainCmdManager = new MainCmdManager();
+        getCommand("skywars").setExecutor(mainCmdManager);
+        getCommand("skywars").setTabCompleter(swTabCompleter);
 
-        getCommand("swmap").setExecutor(new MapCmdManager());
-        getCommand("swmap").setTabCompleter(new SWTabCompleter());
+        kitCmdManager = new KitCmdManager();
+        getCommand("swkit").setExecutor(kitCmdManager);
+        getCommand("swkit").setTabCompleter(swTabCompleter);
+
+        mapCmdManager = new MapCmdManager();
+        getCommand("swmap").setExecutor(mapCmdManager);
+        getCommand("swmap").setTabCompleter(swTabCompleter);
+
         if (config.partyEnabled()) {
-            getCommand("swparty").setExecutor(new PartyCmdManager());
+            partyCmdManager = new PartyCmdManager();
+            getCommand("swparty").setExecutor(partyCmdManager);
         }
         if (getCfg().borderEnabled()) {
             if (specObserver != null) {
@@ -604,6 +623,30 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
         player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+    }
+
+
+    // GETTERS AND SETTERS
+
+
+    public MainCmdManager getMainCmdManager() {
+        return this.mainCmdManager;
+    }
+
+    public KitCmdManager getKitCmdManager() {
+        return this.kitCmdManager;
+    }
+
+    public MapCmdManager getMapCmdManager() {
+        return this.mapCmdManager;
+    }
+
+    public PartyCmdManager getPartyCmdManager() {
+        return this.partyCmdManager;
+    }
+
+    public SWTabCompleter getSwTabCompleter() {
+        return this.swTabCompleter;
     }
 
     public String getServerName() {

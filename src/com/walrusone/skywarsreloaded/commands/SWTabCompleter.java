@@ -24,7 +24,7 @@ public class SWTabCompleter implements TabCompleter {
 
         if (command.getName().equalsIgnoreCase("swmap")) {
             if (args.length == 1) {
-                for (BaseCmd cmd : MapCmdManager.getCommands()) {
+                for (BaseCmd cmd : MapCmdManager.getCommand()) {
                     if (Util.get().hp(cmd.getType(), commandSender, cmd.cmdName)) {
                         possibilities.add(cmd.cmdName);
                     }
@@ -45,7 +45,7 @@ public class SWTabCompleter implements TabCompleter {
         }
         else if (command.getName().equalsIgnoreCase("swkit")) {
             if (args.length == 1) {
-                for (BaseCmd cmd : KitCmdManager.getCommands()) {
+                for (BaseCmd cmd : KitCmdManager.getCommand()) {
                     if (Util.get().hp(cmd.getType(), commandSender, cmd.cmdName)) {
                         possibilities.add(cmd.cmdName);
                     }
@@ -71,7 +71,7 @@ public class SWTabCompleter implements TabCompleter {
         else if (command.getName().equalsIgnoreCase("skywars")) {
 
             if (args.length == 1) {
-                for (BaseCmd cmd : CmdManager.getCommands()) {
+                for (BaseCmd cmd : MainCmdManager.getCommand()) {
                     if (Util.get().hp(cmd.getType(), commandSender, cmd.cmdName)) {
                         possibilities.add(cmd.cmdName);
                     }

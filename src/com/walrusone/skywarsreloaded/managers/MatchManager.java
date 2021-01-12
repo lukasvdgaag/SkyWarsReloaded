@@ -78,8 +78,7 @@ public class MatchManager {
         if (map == null) {
             if (SkyWarsReloaded.getCfg().debugEnabled())
                 Bukkit.getLogger().log(Level.WARNING, "#joinGame: --map = null:");
-//            // TODO: REMOVE
-            if (player.hasPermission("sw.calerobypass")) {
+            if (player.hasPermission("sw.admin.joinBypass")) { // TODO: Not fully tested, scoreboard doesn't appear
                 addSpectator(games.get(0), player);
                 return true;
             }

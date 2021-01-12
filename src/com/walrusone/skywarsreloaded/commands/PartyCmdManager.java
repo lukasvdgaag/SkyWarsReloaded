@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.commands;
 
 
+import com.walrusone.skywarsreloaded.api.command.SWRCmdManager;
 import com.walrusone.skywarsreloaded.commands.party.*;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -11,7 +12,7 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PartyCmdManager implements CommandExecutor {
+public class PartyCmdManager implements CommandExecutor, SWRCmdManager {
     private List<BaseCmd> partycmds = new ArrayList<>();
 
     //Add New Commands Here
@@ -27,11 +28,11 @@ public class PartyCmdManager implements CommandExecutor {
     }
 
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
-        if (args.length == 0 || getCommands(args[0]) == null) {
+        if (args.length == 0 || getCommand(args[0]) == null) {
             s.sendMessage(new Messaging.MessageFormatter().format("helpList.header"));
             sendHelp(partycmds, s);
             s.sendMessage(new Messaging.MessageFormatter().format("helpList.footer"));
-        } else getCommands(args[0]).processCmd(s, args);
+        } else getCommand(args[0]).processCmd(s, args);
         return true;
     }
 
@@ -49,7 +50,7 @@ public class PartyCmdManager implements CommandExecutor {
         }
     }
 
-    private BaseCmd getCommands(String s) {
+    public BaseCmd getCommand(String s) {
         return getCmd(partycmds, s);
     }
 
@@ -64,5 +65,17 @@ public class PartyCmdManager implements CommandExecutor {
             }
         }
         return null;
+    }
+
+    @Override
+    public void registerCommand(BaseCmd commandIn) {
+        if (commandIn == null) return;
+        partycmds.add(commandIn);
+    }
+
+    @Override
+    public void unregisterCommand(BaseCmd commandIn) {
+        if (commandIn == null) return;
+        partycmds.remove(commandIn);
     }
 }

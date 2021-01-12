@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class Config {
 
@@ -335,6 +336,7 @@ public class Config {
             vip4 = SkyWarsReloaded.get().getConfig().getInt("game.vip4Multiplier");
             vip5 = SkyWarsReloaded.get().getConfig().getInt("game.vip5Multiplier");
             spawn = Util.get().stringToLocation(SkyWarsReloaded.get().getConfig().getString("spawn"));
+            debugTesting();
             timeAfterMatch = SkyWarsReloaded.get().getConfig().getInt("game.timeAfterMatch");
             fireworksPer5Tick = SkyWarsReloaded.get().getConfig().getInt("fireworks.per5Ticks");
             fireworksEnabled = SkyWarsReloaded.get().getConfig().getBoolean("fireworks.enabled");
@@ -515,6 +517,20 @@ public class Config {
             }
         }
         loading = false;
+    }
+
+    private void debugTesting() {
+        if (debugEnabled()) {
+            Logger log = SkyWarsReloaded.get().getLogger();
+            //log.info("[DEBUG] spawn.x null? " + String.join(", ", SkyWarsReloaded.get().getServer().getWorlds()));
+            //if (t3) return;
+            boolean t1 = getSpawn() == null;
+            log.info("[DEBUG] spawn null? " + t1);
+            if (t1) return;
+            boolean t2 = getSpawn().getWorld() == null;
+            log.info("[DEBUG] spawn.world null? " + t2);
+            if (t2) return;
+        }
     }
 
     private void addMaterial(String key, String mat, String def) {

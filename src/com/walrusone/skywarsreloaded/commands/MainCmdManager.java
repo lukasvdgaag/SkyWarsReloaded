@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.commands;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.api.command.SWRCmdManager;
 import com.walrusone.skywarsreloaded.commands.admin.*;
 import com.walrusone.skywarsreloaded.commands.player.*;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -12,12 +13,12 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CmdManager implements CommandExecutor {
+public class MainCmdManager implements CommandExecutor, SWRCmdManager {
     private List<BaseCmd> admincmds = new ArrayList<>();
     private List<BaseCmd> pcmds = new ArrayList<>();
-    private static CmdManager cm;
+    private static MainCmdManager cm;
 
-    public CmdManager() {
+    public MainCmdManager() {
         cm = this;
         admincmds.add(new ReloadCmd("sw"));
         admincmds.add(new ChestAddCmd("sw"));
@@ -58,19 +59,19 @@ public class CmdManager implements CommandExecutor {
         }
     }
 
-    public static List<BaseCmd> getCommands() {
+    public static List<BaseCmd> getCommand() {
         List<BaseCmd> a = cm.admincmds;
         a.addAll(cm.pcmds);
         return a;
     }
 
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
-        if (args.length == 0 || getCommands(args[0]) == null) {
+        if (args.length == 0 || getCommand(args[0]) == null) {
             s.sendMessage(new Messaging.MessageFormatter().format("helpList.header"));
             sendHelp(admincmds, s, "1");
             sendHelp(pcmds, s, "2");
             s.sendMessage(new Messaging.MessageFormatter().format("helpList.footer"));
-        } else getCommands(args[0]).processCmd(s, args);
+        } else getCommand(args[0]).processCmd(s, args);
         return true;
     }
 
@@ -88,7 +89,7 @@ public class CmdManager implements CommandExecutor {
         }
     }
 
-    private BaseCmd getCommands(String s) {
+    public BaseCmd getCommand(String s) {
         BaseCmd cmd;
         cmd = getCmd(admincmds, s);
         if (cmd == null) cmd = getCmd(pcmds, s);
@@ -106,5 +107,39 @@ public class CmdManager implements CommandExecutor {
             }
         }
         return null;
+    }
+
+    @Override
+    public void registerCommand(BaseCmd commandIn) {
+        registerCommand(commandIn, 0);
+    }
+
+    public void registerCommand(BaseCmd commandIn, int type) {
+        if (commandIn == null || type < 0 || type > 1) return;
+        switch (type) {
+            case 0:
+                pcmds.add(commandIn);
+                break;
+            case 1:
+                admincmds.add(commandIn);
+                break;
+        }
+    }
+
+    @Override
+    public void unregisterCommand(BaseCmd commandIn) {
+        unregisterCommand(commandIn, 0);
+    }
+
+    public void unregisterCommand(BaseCmd commandIn, int type) {
+        if (commandIn == null || type < 0 || type > 1) return;
+        switch (type) {
+            case 0:
+                pcmds.remove(commandIn);
+                break;
+            case 1:
+                admincmds.remove(commandIn);
+                break;
+        }
     }
 }
