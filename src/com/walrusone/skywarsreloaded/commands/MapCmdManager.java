@@ -39,7 +39,7 @@ public class MapCmdManager implements CommandExecutor, SWRCmdManager {
         mapcmds.add(new LegacyLoadCmd("map"));
     }
 
-    public static List<BaseCmd> getCommand() { return mcm.mapcmds; }
+    public static List<BaseCmd> getCommands() { return mcm.mapcmds; }
 
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
         if (args.length == 0 || getCommand(args[0]) == null) {

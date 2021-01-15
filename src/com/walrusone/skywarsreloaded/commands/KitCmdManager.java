@@ -31,7 +31,7 @@ public class KitCmdManager implements CommandExecutor, SWRCmdManager {
         kitcmds.add(new ListCmd("kit"));
     }
 
-    public static List<BaseCmd> getCommand() { return kcm.kitcmds; }
+    public static List<BaseCmd> getCommands() { return kcm.kitcmds; }
 
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
         if (args.length == 0 || getCommand(args[0]) == null) {

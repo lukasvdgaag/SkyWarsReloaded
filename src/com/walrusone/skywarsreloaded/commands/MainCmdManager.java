@@ -59,7 +59,7 @@ public class MainCmdManager implements CommandExecutor, SWRCmdManager {
         }
     }
 
-    public static List<BaseCmd> getCommand() {
+    public static List<BaseCmd> getCommands() {
         List<BaseCmd> a = cm.admincmds;
         a.addAll(cm.pcmds);
         return a;
