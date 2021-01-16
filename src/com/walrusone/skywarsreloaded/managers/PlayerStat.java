@@ -118,7 +118,7 @@ public class PlayerStat {
                     updatePlayer(uuid);
                 }
             }
-        }.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 10L);
+        }.runTaskLaterAsynchronously(SkyWarsReloaded.get(),  10L);
     }
 
     public static ArrayList<PlayerStat> getPlayers() {

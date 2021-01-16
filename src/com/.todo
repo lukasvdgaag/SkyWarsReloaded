@@ -1,3 +1,7 @@
+# version 5.4.2
+Fixed next event placeholders for scoreboards not displayed the right events and going negative.
+Fixed /sw holoadd's succession message placeholders not being replaced.
+
 # version 5.4.1
 Fixed updater message showing when no update was available.
 

@@ -35,7 +35,7 @@ public class HoloAddCmd extends BaseCmd {
                 String format = args[2];
                 if (SkyWarsReloaded.getHoloManager().getFormats(type).contains(format)) {
                     SkyWarsReloaded.getHoloManager().createLeaderHologram(player.getEyeLocation(), type, format);
-                    player.sendMessage(new Messaging.MessageFormatter().setVariable("%type%", type.name()).setVariable("%format%", format).format("command.hologram-created"));
+                    player.sendMessage(new Messaging.MessageFormatter().setVariable("type", type.name()).setVariable("format", format).format("command.hologram-created"));
                     return true;
                 }
 

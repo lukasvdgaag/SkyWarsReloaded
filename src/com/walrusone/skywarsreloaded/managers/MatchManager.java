@@ -340,7 +340,7 @@ public class MatchManager {
                 }
 
                 if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
-                    if (gameMap.getAllPlayers().size() >= gameMap.getMinTeams() || gameMap.getForceStart() && gameMap.getAllPlayers().size() > 0) {
+                    if (gameMap.getAllPlayers().size() >= gameMap.getMinTeams() || (gameMap.getForceStart() && gameMap.getAllPlayers().size() > 0)) {
                         if (gameMap.getTimer() <= 0) {
                             this.cancel();
                             for (final Player player : gameMap.getAlivePlayers()) {

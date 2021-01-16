@@ -2232,8 +2232,8 @@ public class GameMap {
         MatchEvent latest = null;
         int earliestStartTime = Integer.MAX_VALUE;
         for (MatchEvent event : getEvents()) {
-            if (event.isEnabled()) {
-                if (event.getStartTime() < earliestStartTime && event.getStartTime() >= 0) {
+            if (event.isEnabled() && event.getStartTime() > timer) {
+                if (event.getStartTime() < earliestStartTime) {
                     earliestStartTime = event.getStartTime();
                     latest = event;
                 }

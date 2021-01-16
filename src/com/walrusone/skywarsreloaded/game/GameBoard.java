@@ -31,7 +31,7 @@ public class GameBoard {
     public void updateScoreboard(Player player) {
         String sb = "";
         if (gMap.getMatchState() == MatchState.WAITINGSTART || gMap.getMatchState() == MatchState.WAITINGLOBBY) {
-            if (gMap.getAllPlayers().size() >= gMap.getMinTeams() || gMap.getForceStart()) {
+            if (gMap.getAllPlayers().size() >= gMap.getMinTeams() || (gMap.getForceStart() && gMap.getAllPlayers().size() != 0)) {
                 sb = "waitboard-countdown";
             } else {
                 sb = "waitboard";
