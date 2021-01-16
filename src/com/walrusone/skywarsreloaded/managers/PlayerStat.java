@@ -115,6 +115,7 @@ public class PlayerStat {
                         this.cancel();
                     }
                 } else {
+                    // TODO: Possible stackoverflow error (calls itself)
                     updatePlayer(uuid);
                 }
             }

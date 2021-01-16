@@ -1,7 +1,7 @@
 package com.walrusone.skywarsreloaded.commands;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.api.command.SWRCmdManager;
+import com.walrusone.skywarsreloaded.api.command.SWRCmdManagerAPI;
 import com.walrusone.skywarsreloaded.commands.admin.*;
 import com.walrusone.skywarsreloaded.commands.player.*;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainCmdManager implements CommandExecutor, SWRCmdManager {
+public class MainCmdManager implements CommandExecutor, SWRCmdManagerAPI {
     private List<BaseCmd> admincmds = new ArrayList<>();
     private List<BaseCmd> pcmds = new ArrayList<>();
     private static MainCmdManager cm;
@@ -129,6 +129,11 @@ public class MainCmdManager implements CommandExecutor, SWRCmdManager {
     @Override
     public void unregisterCommand(BaseCmd commandIn) {
         unregisterCommand(commandIn, 0);
+    }
+
+    @Override
+    public BaseCmd getSubCommand(String name) {
+        return null;
     }
 
     public void unregisterCommand(BaseCmd commandIn, int type) {

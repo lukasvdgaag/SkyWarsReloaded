@@ -1,6 +1,6 @@
 package com.walrusone.skywarsreloaded.commands;
 
-import com.walrusone.skywarsreloaded.api.command.SWRCmdManager;
+import com.walrusone.skywarsreloaded.api.command.SWRCmdManagerAPI;
 import com.walrusone.skywarsreloaded.commands.kits.*;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KitCmdManager implements CommandExecutor, SWRCmdManager {
+public class KitCmdManager implements CommandExecutor, SWRCmdManagerAPI {
     private List<BaseCmd> kitcmds = new ArrayList<>();
     private static KitCmdManager kcm;
 
@@ -83,5 +83,10 @@ public class KitCmdManager implements CommandExecutor, SWRCmdManager {
     public void unregisterCommand(BaseCmd commandIn) {
         if (commandIn == null) return;
         kitcmds.remove(commandIn);
+    }
+
+    @Override
+    public BaseCmd getSubCommand(String name) {
+        return null;
     }
 }
