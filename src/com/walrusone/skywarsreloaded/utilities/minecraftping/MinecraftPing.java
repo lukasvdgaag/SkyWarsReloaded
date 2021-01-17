@@ -153,7 +153,10 @@ public class MinecraftPing {
         socket.close();
 
         // DEBUG: Example json response -
-        // {"description":{"extra":[{"text":"WAITINGSTART:0:8:Medieval #1"}],"text":""},"players":{"max":20,"online":1},"version":{"name":"Spigot 1.16.4","protocol":754}}
+        // 1.8 description is the motd
+        // 1.12 description is obj that contains text field which is motd
+        // 1.13+ desc is obj, which contains extra field, which is an array which contains, at pos 0, obj which contains text field, which is motd
+        // 1.16 example: {"description":{"extra":[{"text":"WAITINGSTART:0:8:Medieval #1"}],"text":""},"players":{"max":20,"online":1},"version":{"name":"Spigot 1.16.4","protocol":754}}
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
             SkyWarsReloaded.get().getLogger().info("JSON Ping Reply: " + json);
         }
@@ -183,14 +186,19 @@ public class MinecraftPing {
 
     private String getMotdTextFromJsonResponse(JsonObject obj) {
         JsonElement jsonElement = obj.get("description");
+        // 1.8
         if (jsonElement instanceof JsonPrimitive)  return jsonElement.getAsString();
-        jsonElement = jsonElement.getAsJsonObject().get("extra");
-        if (jsonElement instanceof JsonPrimitive)  return jsonElement.getAsString();
+        // 1.12
+        JsonObject descJsonObj = jsonElement.getAsJsonObject();
+        if (descJsonObj.has("text")) jsonElement = descJsonObj.get("text"); // 1.12
+        else if (descJsonObj.has("extra")) jsonElement = descJsonObj.get("extra"); // 1.13+
+        if (jsonElement instanceof JsonPrimitive)  return jsonElement.getAsString(); // will be false in 1.13+
+        // 1.13+
         jsonElement = jsonElement.getAsJsonArray().get(0);
         if (jsonElement instanceof JsonPrimitive)  return jsonElement.getAsString();
         jsonElement = jsonElement.getAsJsonObject().get("text");
         if (jsonElement instanceof JsonPrimitive)  return jsonElement.getAsString();
-        else return "";
+        return "";
     }
 
 }
