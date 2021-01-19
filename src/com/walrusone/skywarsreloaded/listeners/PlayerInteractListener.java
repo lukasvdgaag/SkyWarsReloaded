@@ -17,7 +17,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
-import me.gaagjescraft.network.team.skywarsreloaded.extension.Main;
+import me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.NoArenaAction;
 import me.gaagjescraft.network.team.skywarsreloaded.extension.menus.SingleJoinMenu;
 import org.bukkit.*;
@@ -129,8 +129,8 @@ public class PlayerInteractListener implements Listener {
                         if (SkyWarsReloaded.getIC().has("joinmenu")) {
                             Util.get().playSound(a1.getPlayer(), a1.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenJoinMenuSound(), 1, 1);
                             if (Bukkit.getPluginManager().isPluginEnabled("Skywars-Extension")) {
-                                if (Main.get().getConfig().getBoolean("override_item_join_actions")) {
-                                    NoArenaAction action = NoArenaAction.valueOf(Main.get().getConfig().getString("no_arena_specified_action"));
+                                if (SWExtension.get().getConfig().getBoolean("override_item_join_actions")) {
+                                    NoArenaAction action = NoArenaAction.valueOf(SWExtension.get().getConfig().getString("no_arena_specified_action"));
                                     if (action == NoArenaAction.OPEN_CUSTOM_JOIN_MENU) {
                                         new SingleJoinMenu().openMenu(a1.getPlayer(), 1);
                                         return;
@@ -143,17 +143,17 @@ public class PlayerInteractListener implements Listener {
                                         }
 
                                         if (maps.isEmpty()) {
-                                            a1.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.get().getConfig().getString("no_solo_arenas")));
+                                            a1.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', SWExtension.get().getConfig().getString("no_solo_arenas")));
                                             return;
                                         }
-                                        a1.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.get().getConfig().getString("solo_join")));
+                                        a1.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', SWExtension.get().getConfig().getString("solo_join")));
                                         GameMap map;
                                         Random r = new Random();
                                         map = maps.get(r.nextInt(maps.size()));
 
                                         boolean b = map.addPlayers((TeamCard) null, a1.getPlayer());
                                         if (b) {
-                                            a1.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
+                                            a1.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
                                         } else {
                                             a1.getPlayer().sendMessage((new Messaging.MessageFormatter()).format("error.could-not-join2"));
                                         }
