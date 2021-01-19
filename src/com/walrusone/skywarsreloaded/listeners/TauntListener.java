@@ -24,7 +24,7 @@ public class TauntListener implements org.bukkit.event.Listener {
     public void pressedTauntKey(PlayerToggleSneakEvent e) {
         Player player = e.getPlayer();
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
-        if (gameMap == null) {
+        if (gameMap == null || MatchManager.get().getSpectatorMap(player) != null) {
             return;
         }
         String uuid = e.getPlayer().getUniqueId().toString();
@@ -32,7 +32,7 @@ public class TauntListener implements org.bukkit.event.Listener {
             if (lastHandSwap.containsKey(uuid)) {
                 if (System.currentTimeMillis() - ((Long)lastHandSwap.get(uuid)) < 500L) {
                     if (lastTaunt.containsKey(uuid)) {
-                        if (System.currentTimeMillis() - ((Long) lastTaunt.get(uuid)) < SkyWarsReloaded.getCfg().getCooldown() * 1000) {
+                        if (System.currentTimeMillis() - ((Long) lastTaunt.get(uuid)) < SkyWarsReloaded.getCfg().getCooldown() * 1000L) {
                             int cooldown = (int) ((SkyWarsReloaded.getCfg().getCooldown() * 1000 - (System.currentTimeMillis() - ((Long) lastTaunt.get(uuid)))) / 1000L);
                             int seconds = cooldown % 60 + 1;
                             int minutes = (cooldown - (seconds - 1)) / 60;

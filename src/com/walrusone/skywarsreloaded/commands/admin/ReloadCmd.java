@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.commands.admin;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.events.SkyWarsReloadEvent;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -8,6 +9,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -53,6 +55,8 @@ public class ReloadCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
                 sender.sendMessage(base.toPlainText());
             }
         }
+
+        Bukkit.getPluginManager().callEvent(new SkyWarsReloadEvent());
         return true;
     }
 }

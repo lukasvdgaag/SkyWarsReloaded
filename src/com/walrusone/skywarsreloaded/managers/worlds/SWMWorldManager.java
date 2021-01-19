@@ -61,7 +61,6 @@ public class SWMWorldManager implements WorldManager {
         try {
             SlimeWorld sw = plugin.loadWorld(loader, worldName, true, properties);
             Bukkit.getScheduler().runTask(SkyWarsReloaded.get(), () -> plugin.generateWorld(sw));
-
         } catch (IOException | CorruptedWorldException | WorldInUseException | NewerFormatException | UnknownWorldException e) {
             Bukkit.getLogger().log(Level.SEVERE, "Something went wrong whilst loading a world for the arena " + worldName);
             e.printStackTrace();
@@ -69,7 +68,11 @@ public class SWMWorldManager implements WorldManager {
         }
 
         World world = Bukkit.getWorld(worldName);
-        if (world==null) return false;
+
+        if (world==null) {
+            Bukkit.getLogger().log(Level.SEVERE, "Something went wrong whilst loading a world for the arena " + worldName + ". World is null.");
+            return false;
+        }
         world.setSpawnFlags(true, true);
         world.setPVP(true);
         world.setStorm(false);

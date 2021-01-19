@@ -21,7 +21,7 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
 
     public static List<Player> cooldowns = Lists.newArrayList();
 
-    @org.bukkit.event.EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
+    @org.bukkit.event.EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onPlayerTeleport(PlayerTeleportEvent a1) {
         Player player = a1.getPlayer();
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
@@ -66,7 +66,11 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
                 }
 
             }
-        } else if ((a1.getCause().equals(TeleportCause.END_PORTAL)) || (player.hasPermission("sw.opteleport")) || (a1.getTo().getWorld().equals(a1.getFrom().getWorld()))) {
+        }
+        else if (a1.getCause().equals(TeleportCause.SPECTATE)) {
+            a1.setCancelled(true);
+        }
+        else if ((a1.getCause().equals(TeleportCause.END_PORTAL)) || (player.hasPermission("sw.opteleport")) || (a1.getTo().getWorld().equals(a1.getFrom().getWorld()))) {
             a1.setCancelled(false);
         } else if ((a1.getCause().equals(TeleportCause.ENDER_PEARL)) && (gameMap.getMatchState() != MatchState.ENDING) && (gameMap.getMatchState() != MatchState.WAITINGSTART && gameMap.getMatchState() != MatchState.WAITINGLOBBY)) {
             a1.setCancelled(false);

@@ -107,10 +107,6 @@ public class PlayerData {
             }
 
             player.setFireTicks(0);
-            player.setScoreboard(sb);
-            if (SkyWarsReloaded.getCfg().lobbyBoardEnabled() && !SkyWarsReloaded.getCfg().bungeeMode()) {
-                PlayerStat.updateScoreboard(player, "lobbyboard");
-            }
 
             final Location respawn = SkyWarsReloaded.getCfg().getSpawn();
             if (SkyWarsReloaded.get().isEnabled()) {
@@ -146,6 +142,10 @@ public class PlayerData {
                 }
             }
 
+            player.setScoreboard(sb);
+            if (SkyWarsReloaded.getCfg().lobbyBoardEnabled() && !SkyWarsReloaded.getCfg().bungeeMode()) {
+                PlayerStat.updateScoreboard(player, "lobbyboard");
+            }
 
             if (SkyWarsReloaded.getCfg().debugEnabled()) {
                 Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Finished restoring " + player.getName() + ". Teleporting to Spawn");

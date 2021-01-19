@@ -770,6 +770,12 @@ public class GameMap {
                 allPlayers.add(pl);
             }
         }
+        for (UUID player : spectators) {
+            Player pl = Bukkit.getPlayer(player);
+            if (!allPlayers.contains(pl)) {
+                allPlayers.add(pl);
+            }
+        }
         return allPlayers;
     }
 

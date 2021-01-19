@@ -19,7 +19,13 @@ public class SWQuitCmd extends BaseCmd {
         if (map == null) {
             return true;
         }
-        MatchManager.get().playerLeave(player, EntityDamageEvent.DamageCause.CUSTOM, true, true, true);
+        if (map.getTeamCard(player) == null && map.getSpectators().contains(player.getUniqueId())) {
+            map.getSpectators().remove(player.getUniqueId());
+            MatchManager.get().removeSpectator(player);
+        }
+        else {
+            MatchManager.get().playerLeave(player, EntityDamageEvent.DamageCause.CUSTOM, true, true, true);
+        }
         return true;
     }
 }

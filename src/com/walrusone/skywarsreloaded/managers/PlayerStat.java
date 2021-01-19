@@ -207,7 +207,7 @@ public class PlayerStat {
                 killdeath = String.format("%1$,.2f", ((double) ((double) ps.getKills() / (double) ps.getDeaths())));
             }
 
-            GameMap gMap = MatchManager.get().getGame(player);
+            GameMap gMap = MatchManager.get().getPlayerMap(player);
             if (identifier.equals("lobbyboard") || gMap == null) {
                 return line
                         .replace("{elo}", Integer.toString(ps.getElo()))

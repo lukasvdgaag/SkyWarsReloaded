@@ -770,9 +770,7 @@ public class MatchManager {
                     PlayerData.getPlayerData().remove(playerData);
                     PlayerStat.resetScoreboard(player);
 
-                    if (gameMap.getSpectators().contains(player.getUniqueId())) {
-                        gameMap.getSpectators().remove(player.getUniqueId());
-                    }
+                    gameMap.getSpectators().remove(player.getUniqueId());
                 } else {
                     if (debug) {
                         Util.get().logToFile(debugName + ChatColor.YELLOW + player.getName() + " died. Respawning.");
@@ -928,17 +926,10 @@ public class MatchManager {
         Util.get().doCommands(SkyWarsReloaded.getCfg().getKillCommands(), killer);
     }
 
-    public GameMap getGame(Player player) {
-        for (GameMap map : GameMap.getMaps()) {
-            if (map.getAllPlayers().contains(player)) return map;
-        }
-        return null;
-    }
-
     public GameMap getPlayerMap(final Player v0) {
         if (v0 != null) {
             for (final GameMap gameMap : GameMap.getMaps()) {
-                if (gameMap.getAlivePlayers().contains(v0)) return gameMap;
+                if (gameMap.getAllPlayers().contains(v0)) return gameMap;
                 else if (gameMap.getWaitingPlayers().contains(v0.getUniqueId())) return gameMap;
                 else if (gameMap.getSpectators().contains(v0.getUniqueId())) return gameMap;
             }

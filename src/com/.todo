@@ -1,4 +1,10 @@
 # version 5.4.2
+Added a 'SkyWarsReloadEvent' event for developers, called when '/sw reload' is executed.
+Fixed scoreboard placeholders for spectators not being replaced.
+Fixed '/sw quit' not working for spectators.
+Fixed not showing the right scoreboard when leaving a game.
+Fixed taunts still working while spectating a game.
+Fixed being able to teleport to other players using the spectator menu.
 Fixed next event placeholders for scoreboards not displayed the right events and going negative.
 Fixed /sw holoadd's succession message placeholders not being replaced.
 
