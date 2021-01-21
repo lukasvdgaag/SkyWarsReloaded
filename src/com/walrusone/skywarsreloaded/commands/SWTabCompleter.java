@@ -95,7 +95,7 @@ public class SWTabCompleter implements TabCompleter {
                 if (args[0].equalsIgnoreCase("chestadd") && Util.get().hp("sw", commandSender, "chestadd")) {
                     possibilities = Lists.newArrayList("hand", "inv");
                 } else if (args[0].equalsIgnoreCase("stat") && Util.get().hp("sw", commandSender, "stat")) {
-                    possibilities = Lists.newArrayList("wins", "losses", "kills", "deaths", "elo", "xp", "pareffect", "proeffect", "glasscolor", "killsound", "winsound");
+                    possibilities = Lists.newArrayList("wins", "losses", "kills", "deaths", "xp", "pareffect", "proeffect", "glasscolor", "killsound", "winsound");
                 } else if (args[0].equalsIgnoreCase("hologram") && Util.get().hp("sw", commandSender, "hologram")) {
                     LeaderType lt = LeaderType.matchType(args[1].toUpperCase());
                     if (lt != null) {

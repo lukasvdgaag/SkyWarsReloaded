@@ -87,9 +87,7 @@ public abstract class HologramsUtil {
         String[] parts = var.split("_");
         if (SkyWarsReloaded.getLB() != null && SkyWarsReloaded.getLB().getTopList(type) != null && Util.get().isInteger(parts[1])) {
             if (SkyWarsReloaded.getLB().getTopList(type).size() > Integer.parseInt(parts[1]) - 1) {
-                if (parts[0].equalsIgnoreCase("elo")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getElo();
-                } else if (parts[0].equalsIgnoreCase("wins")) {
+                if (parts[0].equalsIgnoreCase("wins")) {
                     return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getWins();
                 } else if (parts[0].equalsIgnoreCase("losses")) {
                     return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getLoses();

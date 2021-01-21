@@ -26,7 +26,6 @@ public class Leaderboard {
 
     public Leaderboard() {
         loaded.put(LeaderType.DEATHS, false);
-        loaded.put(LeaderType.ELO, false);
         loaded.put(LeaderType.WINS, false);
         loaded.put(LeaderType.KILLS, false);
         loaded.put(LeaderType.LOSSES, false);
@@ -51,8 +50,8 @@ public class Leaderboard {
         }, 0, SkyWarsReloaded.getCfg().getUpdateTime() * 20);
     }
 
-    public void addLeader(LeaderType type, String uuid, String name, int wins, int loses, int kills, int deaths, int elo, int xp) {
-        leaders.get(type).add(new LeaderData(uuid, name, wins, loses, kills, deaths, elo, xp));
+    public void addLeader(LeaderType type, String uuid, String name, int wins, int loses, int kills, int deaths, int xp) {
+        leaders.get(type).add(new LeaderData(uuid, name, wins, loses, kills, deaths, xp));
     }
 
     public void resetLeader(LeaderType type) {
@@ -174,7 +173,6 @@ public class Leaderboard {
                             sign.getBlock().getChunk().load();
                             for (int i = 0; i < 4; i++) {
                                 sign.setLine(i, new Messaging.MessageFormatter().setVariable("name", top.get(pos - 1).getName())
-                                        .setVariable("elo", "" + top.get(pos - 1).getElo())
                                         .setVariable("kills", "" + top.get(pos - 1).getKills())
                                         .setVariable("wins", "" + top.get(pos - 1).getWins())
                                         .setVariable("xp", "" + top.get(pos - 1).getXp())
@@ -238,24 +236,13 @@ public class Leaderboard {
             if (type.equals(LeaderType.DEATHS)) {
                 return f2.getDeaths() - f1.getDeaths();
             } else if (type.equals(LeaderType.KILLS)) {
-                if (f2.getKills() == f1.getKills()) {
-                    return f2.getElo() - f1.getElo();
-                }
                 return f2.getKills() - f1.getKills();
             } else if (type.equals(LeaderType.LOSSES)) {
                 return f2.getLoses() - f1.getLoses();
             } else if (type.equals(LeaderType.WINS)) {
-                if (f2.getWins() == f1.getWins()) {
-                    return f2.getElo() - f1.getElo();
-                }
                 return f2.getWins() - f1.getWins();
-            } else if (type.equals(LeaderType.XP)) {
+            } else  {
                 return f2.getXp() - f1.getXp();
-            } else {
-                if (f2.getElo() == f1.getElo()) {
-                    return f2.getWins() - f1.getWins();
-                }
-                return f2.getElo() - f1.getElo();
             }
         }
     }
@@ -267,17 +254,15 @@ public class Leaderboard {
         private int loses;
         private int kills;
         private int deaths;
-        private int elo;
         private int xp;
 
-        LeaderData(String uuid, String name, int wins, int loses, int kills, int deaths, int elo, int xp) {
+        LeaderData(String uuid, String name, int wins, int loses, int kills, int deaths, int xp) {
             this.uuid = uuid;
             this.name = name;
             this.wins = wins;
             this.loses = loses;
             this.kills = kills;
             this.deaths = deaths;
-            this.elo = elo;
             this.xp = xp;
         }
 
@@ -299,10 +284,6 @@ public class Leaderboard {
 
         public int getDeaths() {
             return deaths;
-        }
-
-        public int getElo() {
-            return elo;
         }
 
         public int getXp() {

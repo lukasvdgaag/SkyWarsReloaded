@@ -168,8 +168,8 @@ public class Database {
         PreparedStatement preparedStatement = null;
 
         try {
-            String query = "INSERT INTO `sw_player` (`player_id`, `uuid`, `player_name`, `wins`, `losses`, `kills`, `deaths`, `elo`, `xp`, " +
-                    "`pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`, `taunt`) VALUES (NULL, ?, ?, 0, 0, 0, 0, 1500, 0, ?, ?, ?, ?, ?, ?);";
+            String query = "INSERT INTO `sw_player` (`player_id`, `uuid`, `player_name`, `wins`, `losses`, `kills`, `deaths`, `xp`, " +
+                    "`pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`, `taunt`) VALUES (NULL, ?, ?, 0, 0, 0, 0, 0, ?, ?, ?, ?, ?, ?);";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, fId);
             preparedStatement.setString(2, name);

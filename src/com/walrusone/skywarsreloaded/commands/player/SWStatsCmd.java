@@ -30,7 +30,6 @@ public class SWStatsCmd extends BaseCmd {
         if ((playerData != null) && (playerData.isInitialized())) {
             player.sendMessage(new Messaging.MessageFormatter().format("stats.header"));
             player.sendMessage(new Messaging.MessageFormatter().setVariable("player", playerData.getPlayerName()).format("stats.name"));
-            player.sendMessage(new Messaging.MessageFormatter().setVariable("elo", "" + playerData.getElo()).format("stats.elo"));
             player.sendMessage(new Messaging.MessageFormatter().setVariable("wins", "" + playerData.getWins())
                     .setVariable("losses", "" + playerData.getLosses()).format("stats.win-loss"));
             player.sendMessage(new Messaging.MessageFormatter().setVariable("kills", "" + playerData.getKills())

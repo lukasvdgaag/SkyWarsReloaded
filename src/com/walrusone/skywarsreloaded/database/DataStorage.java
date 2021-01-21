@@ -55,7 +55,6 @@ public class DataStorage {
                 fc.set("losses", pData.getLosses());
                 fc.set("kills", pData.getKills());
                 fc.set("deaths", pData.getDeaths());
-                fc.set("elo", pData.getElo());
                 fc.set("xp", pData.getXp());
                 fc.set("pareffect", pData.getParticleEffect());
                 fc.set("proeffect", pData.getProjectileEffect());
@@ -79,7 +78,7 @@ public class DataStorage {
             PreparedStatement preparedStatement = null;
 
             try {
-                String query = "UPDATE `sw_player` SET `player_name` = ?, `wins` = ?, `losses` = ?, `kills` = ?, `deaths` = ?, `elo` = ?, `xp` = ?, `pareffect` = ?, " +
+                String query = "UPDATE `sw_player` SET `player_name` = ?, `wins` = ?, `losses` = ?, `kills` = ?, `deaths` = ?, `xp` = ?, `pareffect` = ?, " +
                         "`proeffect` = ?, `glasscolor` = ?,`killsound` = ?, `winsound` = ?, `taunt` = ? WHERE `uuid` = ?;";
 
                 preparedStatement = connection.prepareStatement(query);
@@ -88,15 +87,14 @@ public class DataStorage {
                 preparedStatement.setInt(3, pData.getLosses());
                 preparedStatement.setInt(4, pData.getKills());
                 preparedStatement.setInt(5, pData.getDeaths());
-                preparedStatement.setInt(6, pData.getElo());
-                preparedStatement.setInt(7, pData.getXp());
-                preparedStatement.setString(8, pData.getParticleEffect());
-                preparedStatement.setString(9, pData.getProjectileEffect());
-                preparedStatement.setString(10, pData.getGlassColor());
-                preparedStatement.setString(11, pData.getKillSound());
-                preparedStatement.setString(12, pData.getWinSound());
-                preparedStatement.setString(13, pData.getTaunt());
-                preparedStatement.setString(14, pData.getId());
+                preparedStatement.setInt(6, pData.getXp());
+                preparedStatement.setString(7, pData.getParticleEffect());
+                preparedStatement.setString(8, pData.getProjectileEffect());
+                preparedStatement.setString(9, pData.getGlassColor());
+                preparedStatement.setString(10, pData.getKillSound());
+                preparedStatement.setString(11, pData.getWinSound());
+                preparedStatement.setString(12, pData.getTaunt());
+                preparedStatement.setString(13, pData.getId());
                 preparedStatement.executeUpdate();
 
             } catch (final SQLException sqlException) {
@@ -133,7 +131,6 @@ public class DataStorage {
                         pData.setLosts(0);
                         pData.setKills(0);
                         pData.setDeaths(0);
-                        pData.setElo(1500);
                         pData.setXp(0);
                         pData.setParticleEffect("none");
                         pData.setProjectileEffect("none");
@@ -147,7 +144,7 @@ public class DataStorage {
                         ResultSet resultSet = null;
 
                         try {
-                            String query = "SELECT `wins`, `losses`, `kills`, `deaths`, `elo`, `xp`, `pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`, `taunt` " +
+                            String query = "SELECT `wins`, `losses`, `kills`, `deaths`, `xp`, `pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`, `taunt` " +
                                     "FROM `sw_player` WHERE `uuid` = ? LIMIT 1;";
 
                             preparedStatement = connection.prepareStatement(query);
@@ -159,7 +156,6 @@ public class DataStorage {
                                 pData.setLosts(resultSet.getInt("losses"));
                                 pData.setKills(resultSet.getInt("kills"));
                                 pData.setDeaths(resultSet.getInt("deaths"));
-                                pData.setElo(resultSet.getInt("elo"));
                                 pData.setXp(resultSet.getInt("xp"));
                                 pData.setParticleEffect(resultSet.getString("pareffect"));
                                 pData.setProjectileEffect(resultSet.getString("proeffect"));
@@ -209,7 +205,6 @@ public class DataStorage {
                         pData.setLosts(fc.getInt("losses", 0));
                         pData.setKills(fc.getInt("kills", 0));
                         pData.setDeaths(fc.getInt("deaths", 0));
-                        pData.setElo(fc.getInt("elo", 0));
                         pData.setXp(fc.getInt("xp", 0));
                         pData.setParticleEffect(fc.getString("pareffect", "none"));
                         pData.setProjectileEffect(fc.getString("proeffect", "none"));
@@ -309,14 +304,14 @@ public class DataStorage {
                     ResultSet resultSet;
 
                     try {
-                        String query = "SELECT `uuid`, `wins`, `losses`, `kills`, `deaths`, `elo`, `xp` FROM `sw_player` GROUP BY `uuid` " +
+                        String query = "SELECT `uuid`, `wins`, `losses`, `kills`, `deaths`, `xp` FROM `sw_player` GROUP BY `uuid` " +
                                 "ORDER BY `" + type.toString().toLowerCase() + "` DESC LIMIT " + size + ";";
 
                         preparedStatement = connection.prepareStatement(query);
                         resultSet = preparedStatement.executeQuery();
                         SkyWarsReloaded.getLB().resetLeader(type);
                         while (resultSet.next()) {
-                            SkyWarsReloaded.getLB().addLeader(type, resultSet.getString(1), Bukkit.getOfflinePlayer(UUID.fromString(resultSet.getString(1))).getName(), resultSet.getInt(2), resultSet.getInt(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getInt(6), resultSet.getInt(7));
+                            SkyWarsReloaded.getLB().addLeader(type, resultSet.getString(1), Bukkit.getOfflinePlayer(UUID.fromString(resultSet.getString(1))).getName(), resultSet.getInt(2), resultSet.getInt(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getInt(6));
                         }
 
                     } catch (final SQLException sqlException) {
@@ -346,7 +341,7 @@ public class DataStorage {
 
                         FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
                         String uuid = playerFile.getName().replace(".yml", "");
-                        SkyWarsReloaded.getLB().addLeader(type, uuid, Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName(), fc.getInt("wins"), fc.getInt("losses"), fc.getInt("kills"), fc.getInt("deaths"), fc.getInt("elo"), fc.getInt("xp"));
+                        SkyWarsReloaded.getLB().addLeader(type, uuid, Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName(), fc.getInt("wins"), fc.getInt("losses"), fc.getInt("kills"), fc.getInt("deaths"), fc.getInt("xp"));
                     }
                 }
                 SkyWarsReloaded.getLB().finishedLoading(type);

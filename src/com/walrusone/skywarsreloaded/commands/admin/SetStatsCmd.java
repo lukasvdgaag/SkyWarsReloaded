@@ -2,8 +2,6 @@ package com.walrusone.skywarsreloaded.commands.admin;
 
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.database.DataStorage;
-import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.menus.playeroptions.ParticleEffectOption;
 import com.walrusone.skywarsreloaded.menus.playeroptions.ProjectileEffectOption;
@@ -100,28 +98,7 @@ public class SetStatsCmd extends BaseCmd {
                         } else {
                             sender.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
                         }
-                    } else if (stat.equalsIgnoreCase("elo")) {
-                        if (Util.get().isInteger(args[4])) {
-                            GameMap gMap = MatchManager.get().getPlayerMap(swPlayer);
-                            if (gMap == null) {
-                                if ((method.equalsIgnoreCase("set")) || (method.equalsIgnoreCase("add")) || (method.equalsIgnoreCase("remove"))) {
-                                    int value = Integer.parseInt(args[4]);
-                                    int currentValue = pStat.getElo();
-                                    int newValue = getNewValue(method, currentValue, value);
-                                    pStat.setElo(newValue);
-                                    DataStorage.get().saveStats(pStat);
-                                    sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
-                                            .setVariable("stat", stat).setVariable("amount", "" + newValue).format("command.setstat"));
-                                } else {
-                                    sender.sendMessage(new Messaging.MessageFormatter().format("command.method-must-be"));
-                                }
-                            } else {
-                                sender.sendMessage(new Messaging.MessageFormatter().format("error.elochange"));
-                            }
-                        } else {
-                            sender.sendMessage(new Messaging.MessageFormatter().format("command.must-be-int"));
-                        }
-                    } else if (stat.equalsIgnoreCase("xp")) {
+                    }  else if (stat.equalsIgnoreCase("xp")) {
                         if (Util.get().isInteger(args[4])) {
                             if ((method.equalsIgnoreCase("set")) || (method.equalsIgnoreCase("add")) || (method.equalsIgnoreCase("remove"))) {
                                 int value = Integer.parseInt(args[4]);

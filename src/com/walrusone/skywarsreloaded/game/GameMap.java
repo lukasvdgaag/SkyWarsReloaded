@@ -602,7 +602,7 @@ public class GameMap {
         } else if (getMatchState() == MatchState.WAITINGLOBBY) {
             PlayerStat.resetScoreboard(player);
             addWaitingPlayer(player);
-            getJoinQueue().add(new PlayerCard(null, player.getUniqueId(), -1, null));
+            getJoinQueue().add(new PlayerCard(null, player.getUniqueId(), null));
             Bukkit.getPluginManager().callEvent(new SkyWarsJoinEvent(player, this));
             if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
                 getKitVoteOption().updateKitVotes();
@@ -1465,9 +1465,7 @@ public class GameMap {
         int count = 0;
         for (TeamCard tCard : teamCards) {
             for (PlayerCard pCard : tCard.getPlayerCards()) {
-                if (pCard.getPreElo() != -1) {
-                    count++;
-                }
+                if (pCard.getPlayer() != null) count++;
             }
         }
         return count;

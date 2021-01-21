@@ -35,7 +35,6 @@ public class SWTopCmd extends BaseCmd {
                 Leaderboard.LeaderData playerData = top.get(i);
                 player.sendMessage(new Messaging.MessageFormatter().setVariable("rank", "" + (i + 1))
                         .setVariable("player", playerData.getName())
-                        .setVariable("elo", "" + playerData.getElo())
                         .setVariable("wins", "" + playerData.getWins())
                         .setVariable("losses", "" + playerData.getLoses())
                         .setVariable("kills", "" + playerData.getKills())

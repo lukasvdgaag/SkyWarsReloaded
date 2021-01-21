@@ -9,9 +9,12 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -23,7 +26,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class Util {
 
@@ -461,18 +463,6 @@ public class Util {
         }
     }
 
-    public String formatScore(int score) {
-        char color = '7';
-
-        if (score > 0) {
-            color = 'a';
-        } else if (score < 0) {
-            color = 'c';
-        }
-
-        return "\247" + color + "(" + (score > 0 ? "+" : "") + score + " Elo" + ")";
-    }
-
     public void setPlayerExperience(Player player, int amount) {
         if (amount <= 352) {
             int level = (int) Math.floor(quadraticEquationRoot(1, 6, -amount));
@@ -612,6 +602,16 @@ public class Util {
 
     public int getPlayerLevel(Player player) {
         return getPlayerLevel(player, true);
+    }
+
+    public void glowItem(Inventory inv, int slot) {
+        if (inv == null) return;
+        ItemStack item = inv.getItem(slot);
+        if (item == null) return;
+        ItemMeta meta = item.getItemMeta();
+        meta.addEnchant(Enchantment.DURABILITY,1,true);
+        meta.addItemFlags(ItemFlag.values());
+        item.setItemMeta(meta);
     }
 
 }

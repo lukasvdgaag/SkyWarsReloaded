@@ -137,7 +137,6 @@ public class Config {
     private boolean leaderSignsEnabled;
     private boolean leaderHeadsEnabled;
     private int leaderboardUpdateInterval;
-    private boolean eloEnabled;
     private boolean winsEnabled;
     private boolean lossesEnabled;
     private boolean killsEnabled;
@@ -301,7 +300,6 @@ public class Config {
             leaderSize = SkyWarsReloaded.get().getConfig().getInt("leaderboards.length");
             leaderSignsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.signsEnabled");
             leaderHeadsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.headsEnabled");
-            eloEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.eloLeaderboardEnabled");
             winsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.winsLeaderboardEnabled");
             lossesEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.lossesLeaderboardEnabled");
             killsEnabled = SkyWarsReloaded.get().getConfig().getBoolean("leaderboards.killsLeaderboardEnabled");
@@ -581,7 +579,6 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("leaderboards.length", leaderSize);
         SkyWarsReloaded.get().getConfig().set("leaderboards.signsEnabled", leaderSignsEnabled);
         SkyWarsReloaded.get().getConfig().set("leaderboards.headsEnabled", leaderHeadsEnabled);
-        SkyWarsReloaded.get().getConfig().set("leaderboards.eloLeaderboardEnabled", eloEnabled);
         SkyWarsReloaded.get().getConfig().set("leaderboards.winsLeaderboardEnabled", winsEnabled);
         SkyWarsReloaded.get().getConfig().set("leaderboards.lossesLeaderboardEnabled", lossesEnabled);
         SkyWarsReloaded.get().getConfig().set("leaderboards.killsLeaderboardEnabled", killsEnabled);
@@ -1171,8 +1168,6 @@ public class Config {
 
     public boolean isTypeEnabled(LeaderType type) {
         switch (type) {
-            case ELO:
-                return eloEnabled;
             case WINS:
                 return winsEnabled;
             case LOSSES:

@@ -10,11 +10,6 @@ public class SWRMVdWPlaceholder {
 
     public SWRMVdWPlaceholder(Plugin p) {
 
-        PlaceholderAPI.registerPlaceholder(p, "swr_elo", e -> {
-            Player player = e.getPlayer();
-            return "" + ((SkyWarsReloaded) p).getPlayerStat(player).getElo();
-        });
-
         PlaceholderAPI.registerPlaceholder(p, "swr_wins", e -> {
             Player player = e.getPlayer();
             return "" + ((SkyWarsReloaded) p).getPlayerStat(player).getWins();

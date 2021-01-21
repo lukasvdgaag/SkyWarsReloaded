@@ -39,7 +39,6 @@ public class PlayerStat {
     private int losts =0 ;
     private int kills =0 ;
     private int deaths =0 ;
-    private int elo =0 ;
     private int xp =0 ;
     private String particleEffect = "none";
     private String projectileEffect = "none";
@@ -210,7 +209,6 @@ public class PlayerStat {
             GameMap gMap = MatchManager.get().getPlayerMap(player);
             if (identifier.equals("lobbyboard") || gMap == null) {
                 return line
-                        .replace("{elo}", Integer.toString(ps.getElo()))
                         .replace("{wins}", Integer.toString(ps.getWins()))
                         .replace("{losses}", Integer.toString(ps.getLosses()))
                         .replace("{kills}", Integer.toString(ps.getKills()))
@@ -380,14 +378,6 @@ public class PlayerStat {
         this.deaths = a1;
     }
 
-    public int getElo() {
-        return this.elo;
-    }
-
-    public void setElo(final int a1) {
-        this.elo = a1;
-    }
-
     public int getLosses() {
         return this.losts;
     }
@@ -409,7 +399,6 @@ public class PlayerStat {
         this.wins = 0;
         this.kills = 0;
         this.deaths = 0;
-        this.elo = 1500;
     }
 
     public String getParticleEffect() {

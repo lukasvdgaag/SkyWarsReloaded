@@ -46,14 +46,14 @@ public class TeamCard {
                     loc = teamSpawns.size() >= 1 ? teamSpawns.get(0) : null;
                 }
             }
-            playerCards.add(new PlayerCard(this, null, -1, loc));
+            playerCards.add(new PlayerCard(this, null, loc));
         }
     }
 
     void updateCard(int size) {
         if (size > playerCards.size()) {
             for (int i = playerCards.size(); i < size; i++) {
-                playerCards.add(new PlayerCard(this, null, -1, spawns.get(i)));
+                playerCards.add(new PlayerCard(this, null, spawns.get(i)));
             }
         } else {
             while (size < playerCards.size()) {
@@ -100,11 +100,7 @@ public class TeamCard {
         if (player != null && ps != null && ps.isInitialized()) { // player is valid & player's meta info is available
             for (PlayerCard pCard : playerCards) {
                 if ((pCard.getUUID() == null) && (pCard.getSpawn() != null)) {
-                    /*if (!team.hasEntry(player.getName())) {
-                        team.addEntry(player.getName());
-                    }*/
                     pCard.setPlayer(player);
-                    pCard.setPreElo(ps.getElo());
 
                     if (SkyWarsReloaded.getCfg().debugEnabled()) SkyWarsReloaded.get().getLogger().info("#teamCard: pCard in reservation " + pCard.getUUID());
                     if (pCard.getTeamCard().getGameMap().getMatchState() == MatchState.WAITINGSTART) {

@@ -238,7 +238,6 @@ leaderboards:
   leaderboardUpdateInterval: 300
   signsEnabled: true
   headsEnabled: true  
-  eloLeaderboardEnabled: true
   winsLeaderboardEnabled: false
   lossesLeaderboardEnabled: false  
   killsLeaderboardEnabled: false

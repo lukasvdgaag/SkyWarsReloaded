@@ -41,7 +41,7 @@ command:
   invalid-color: '&cThat is not a valid color!'
   invalid-sound: '&cThat is not a valid sound!'
   chestadd: '&aAdded the item(s) in your {method} to {type} chests at {percent} percent!'
-  stat-types: '&cThe stat could either be "wins", "losses", "kills", "deaths", "elo",
+  stat-types: '&cThe stat could either be "wins", "losses", "kills", "deaths",
     "xp", "pareffect", "proeffect", "glasscolor", "killsound", or "winsound"'
   hologram-removed: '&cThe nearest hologram has been removed!'
   hologram-created: '&aYou successfully created a &b%type% %format% &ahologram!'
@@ -154,7 +154,6 @@ error:
   nospawn: '&cThe SkyWars lobby spawn has to be set before you can do this! Set it
     using &o/sw setspawn'
   nopermission: '&cYou don''t have the permission to vote!'
-  elochange: '&cPlayer ELO cannot be changed while player is in game!'
 game:
   select-team-before-voting: '&c&lYou must select a team before voting!'
   select-team-before-kit: '&c&lYou must select a team before choosing a kit!'
@@ -378,7 +377,6 @@ timer:
 stats:
   header: '&9>>>&3==&1==&3==&1==&3==&1==&3==&1==&3==&1==&9<<<'
   name: '&9>> &cName: &6{player}'
-  elo: '&9>> &cElo: &6{elo}'
   win-loss: '&9>> &cWins/Losses: &6{wins}/{losses}'
   kill-death: '&9>> &cKill/Death: &6{kills}/{deaths}'
   xp: '&9>> &cXP: &6{xp}'
@@ -442,7 +440,6 @@ scoreboards:
     lines:
       - '&e&lSKYWARS'
       - ''
-      - '&fELO: &a{elo}'
       - '&fWins: &a{wins}'
       - '&fKills: &a{kills}'
       - '&fXP: &a{xp}'
@@ -450,20 +447,15 @@ scoreboards:
       - '&egaagjescraft.net'
 leaderboard:
   header: '&9>>>&3==&1==&3== &5Leaderboard &1==&3==&1==&9<<<'
-  header2: '&b#Rank &aName: &dElo &eWins/&4Losses &eKills/&4Deaths &eXP'
+  header2: '&b#Rank &aName: &eWins/&4Losses &eKills/&4Deaths &eXP'
   no-data: '&cNo players found'
-  player-data: '&b#{rank} &a{player}: &d{elo} &e{wins}/&4{losses} &e{kills}/&4{deaths}
+  player-data: '&b#{rank} &a{player}: &e{wins}/&4{losses} &e{kills}/&4{deaths}
     &e{xp}'
   footer: '&9>>>&3==&1==&3==&1==&3==&1==&3==&1==&3==&1==&9<<<'
   updating: '&cThe leaderboard is currently being updated. Try again later!'
   invalidtype: '&cLeaderboard [stat] must be either: {validtypes}'
   invalidformat: '&cHolographic leaderboard [format] must be either: {validtypes}'
   signformats:
-    elo:
-      line1: '&lSkyWars ELO'
-      line2: '&b{position}'
-      line3: '&a{name}'
-      line4: '{elo}'
     wins:
       line1: '&lSkyWars Wins'
       line2: '&b{position}'

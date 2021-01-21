@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS `sw_player` (
   `losses`      INT(6)          NOT NULL DEFAULT 0,
   `kills`       INT(6)          NOT NULL DEFAULT 0,
   `deaths`      INT(6)          NOT NULL DEFAULT 0,
-  `elo`         INT(6)          NOT NULL DEFAULT 1500,
   `xp`      	INT(6)          NOT NULL DEFAULT 0,
   `pareffect`	VARCHAR(255)    NOT NULL,
   `proeffect`	VARCHAR(255)    NOT NULL,

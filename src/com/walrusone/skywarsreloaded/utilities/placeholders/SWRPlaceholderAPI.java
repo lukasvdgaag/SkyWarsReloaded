@@ -40,10 +40,7 @@ public class SWRPlaceholderAPI extends PlaceholderExpansion {
         }
 
         PlayerStat stat = SkyWarsReloaded.get().getPlayerStat(p);
-
-        if (identifier.equalsIgnoreCase("elo")) {
-            return "" + stat.getElo();
-        } else if (identifier.equalsIgnoreCase("wins")) {
+        if (identifier.equalsIgnoreCase("wins")) {
             return "" + stat.getWins();
         } else if (identifier.equalsIgnoreCase("losses")) {
             return "" + stat.getLosses();
@@ -59,11 +56,11 @@ public class SWRPlaceholderAPI extends PlaceholderExpansion {
         } else if (identifier.equalsIgnoreCase("level")) {
             return "" + Util.get().getPlayerLevel(p, false);
         } else if (identifier.equalsIgnoreCase("kill_death")) {
-            double statt = (double) stat.getKills() / (double) stat.getDeaths();
-            return String.format("%1$,.2f", statt);
+            double stat1 = (double) stat.getKills() / (double) stat.getDeaths();
+            return String.format("%1$,.2f", stat1);
         } else if (identifier.equalsIgnoreCase("win_loss")) {
-            double statt = (double) stat.getWins() / (double) stat.getLosses();
-            return String.format("%1$,.2f", statt);
+            double stat1 = (double) stat.getWins() / (double) stat.getLosses();
+            return String.format("%1$,.2f", stat1);
         }
         else {
             return null;

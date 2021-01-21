@@ -18,7 +18,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 
 public abstract class GameOption {
 
@@ -55,7 +54,8 @@ public abstract class GameOption {
         ArrayList<Inventory> invs = new ArrayList<>();
         Inventory inv = Bukkit.createInventory(null, 36, new Messaging.MessageFormatter().format(name));
         inv.clear();
-        if (SkyWarsReloaded.getCfg().isRandomVoteEnabled()) inv.setItem(9, SkyWarsReloaded.getIM().getItem(itemList.get(0)));
+        if (SkyWarsReloaded.getCfg().isRandomVoteEnabled())
+            inv.setItem(9, SkyWarsReloaded.getIM().getItem(itemList.get(0)));
         inv.setItem(11, SkyWarsReloaded.getIM().getItem(itemList.get(1)));
         inv.setItem(13, SkyWarsReloaded.getIM().getItem(itemList.get(2)));
         inv.setItem(15, SkyWarsReloaded.getIM().getItem(itemList.get(3)));

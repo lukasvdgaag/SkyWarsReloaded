@@ -12,9 +12,6 @@ public class PlayerCard {
 
     private UUID uuid;
     private TeamCard tCard;
-    private int preElo;
-    private int postElo;
-    private int eloChange;
 
     private CoordLoc spawn;
 
@@ -27,9 +24,8 @@ public class PlayerCard {
     private Vote modifier;
     private Vote health;
 
-    public PlayerCard(TeamCard tCard, UUID uuid, int BeginningElo, CoordLoc spawn) {
+    public PlayerCard(TeamCard tCard, UUID uuid, CoordLoc spawn) {
         this.uuid = uuid;
-        this.preElo = BeginningElo;
         this.tCard = tCard;
         this.kitVote = null;
         this.gameTime = null;
@@ -42,9 +38,6 @@ public class PlayerCard {
     }
 
     public void reset() {
-        this.preElo = -1;
-        this.postElo = 0;
-        this.eloChange = 0;
         this.kitVote = null;
         this.gameTime = null;
         this.weather = null;
@@ -75,14 +68,6 @@ public class PlayerCard {
 
     public void setSpawn(CoordLoc loc) {
         this.spawn = loc;
-    }
-
-    int getPreElo() {
-        return this.preElo;
-    }
-
-    void setPreElo(int x) {
-        this.preElo = x;
     }
 
     public GameKit getKitVote() {
@@ -126,44 +111,6 @@ public class PlayerCard {
 
     public void setModifier(Vote modifier) {
         this.modifier = modifier;
-    }
-
-    public int getPostElo() {
-        return this.postElo;
-    }
-
-    public int getEloChange() {
-        return this.eloChange;
-    }
-
-    public void calculateELO() {
-        int n = tCard.getGameMap().getPlayerCount();
-        float K = 32 / (float) (n - 1);
-
-        int curPlace = tCard.getPlace();
-        int curELO = preElo;
-
-        for (TeamCard tCard : tCard.getGameMap().getTeamCards()) {
-            PlayerCard opponent = tCard.getPlayerCards().get(0);
-            if (opponent.getUUID() != null && !opponent.getUUID().equals(uuid)) {
-                int opponentPlace = opponent.tCard.getPlace();
-                int opponentELO = opponent.getPreElo();
-
-                float S;
-                if (curPlace < opponentPlace)
-                    S = 1.0F;
-                else if (curPlace == opponentPlace)
-                    S = 0.5F;
-                else
-                    S = 0.0F;
-
-                float EA = 1 / (1.0f + (float) Math.pow(10.0f, (opponentELO - curELO) / 400.0f));
-
-                this.eloChange += Math.round(K * (S - EA));
-            }
-        }
-
-        this.postElo = this.preElo + this.eloChange;
     }
 
     public UUID getUUID() {

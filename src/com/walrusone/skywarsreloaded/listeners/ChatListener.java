@@ -90,7 +90,6 @@ public class ChatListener implements Listener {
                     String prefix = "";
                     if (SkyWarsReloaded.getCfg().addPrefix() && ps != null) {
                         prefix = new Messaging.MessageFormatter()
-                                .setVariable("elo", Integer.toString(ps.getElo()))
                                 .setVariable("wins", Integer.toString(ps.getWins()))
                                 .setVariable("losses", Integer.toString(ps.getLosses()))
                                 .setVariable("kills", Integer.toString(ps.getKills()))
@@ -177,7 +176,6 @@ public class ChatListener implements Listener {
                             messageToSend = new Messaging.MessageFormatter()
                                     .setVariable("name", event.getPlayer().getName())
                                     .setVariable("displayname", event.getPlayer().getDisplayName())
-                                    .setVariable("elo", Integer.toString(ps.getElo()))
                                     .setVariable("wins", Integer.toString(ps.getWins()))
                                     .setVariable("losses", Integer.toString(ps.getLosses()))
                                     .setVariable("kills", Integer.toString(ps.getKills()))
@@ -194,7 +192,6 @@ public class ChatListener implements Listener {
                             messageToSend = new Messaging.MessageFormatter()
                                     .setVariable("player", event.getPlayer().getName())
                                     .setVariable("displayname", event.getPlayer().getDisplayName())
-                                    .setVariable("elo", Integer.toString(ps.getElo()))
                                     .setVariable("wins", Integer.toString(ps.getWins()))
                                     .setVariable("losses", Integer.toString(ps.getLosses()))
                                     .setVariable("kills", Integer.toString(ps.getKills()))
@@ -221,7 +218,6 @@ public class ChatListener implements Listener {
                         String prefix = "";
                         if (SkyWarsReloaded.getCfg().addPrefix() && ps != null) {
                             prefix = new Messaging.MessageFormatter()
-                                    .setVariable("elo", Integer.toString(ps.getElo()))
                                     .setVariable("wins", Integer.toString(ps.getWins()))
                                     .setVariable("losses", Integer.toString(ps.getLosses()))
                                     .setVariable("kills", Integer.toString(ps.getKills()))
@@ -270,7 +266,6 @@ public class ChatListener implements Listener {
                             String format = (new Messaging.MessageFormatter()
                                     .setVariable("player", event.getPlayer().getName())
                                     .setVariable("displayname", event.getPlayer().getDisplayName())
-                                    .setVariable("elo", Integer.toString(ps.getElo()))
                                     .setVariable("wins", Integer.toString(ps.getWins()))
                                     .setVariable("losses", Integer.toString(ps.getLosses()))
                                     .setVariable("kills", Integer.toString(ps.getKills()))

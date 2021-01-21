@@ -1,31 +1,4 @@
 leaderboard:
-  elo:
-    leaders:
-      format:
-      - item:DIAMOND
-      - '&6Top Players - ELO'
-      - '&61st {player_1} - &b{elo_1}'
-      - '&62nd {player_2} - &b{elo_2}'
-      - '&63rd {player_3} - &b{elo_3}'
-      - '&64th {player_4} - &b{elo_4}'
-      - '&65th {player_5} - &b{elo_5}'
-      - '&66th {player_6} - &b{elo_6}'
-      - '&67th {player_7} - &b{elo_7}'
-      - '&68th {player_8} - &b{elo_8}'
-      - '&69th {player_9} - &b{elo_9}'
-      - '&610th {player_10} - &b{elo_10}'
-      - item:DIAMOND
-      locations:
-    topplayer:
-      format:
-      - item:{playerhead_1}
-      - '&6Top Player - ELO'
-      - '&6{player_1}'
-      - '&6ELO: &b{elo_1}'
-      - '&6Wins: &b{wins_1}'
-      - '&6Kills: &b{kills_1}'
-      - item:{playerhead_1}
-      locations:
   wins:
     leaders:
       format:
@@ -49,7 +22,6 @@ leaderboard:
       - '&6Top Player - WINS'
       - '&6{player_1}'
       - '&6wins: &b{wins_1}'
-      - '&6Wins: &b{elo_1}'
       - '&6Kills: &b{kills_1}'
       - item:{playerhead_1}
       locations:
@@ -76,7 +48,6 @@ leaderboard:
       - '&6Top Player - KILLS'
       - '&6{player_1}'
       - '&6kills: &b{kills_1}'
-      - '&6kills: &b{elo_1}'
       - '&6Kills: &b{wins_1}'
       - item:{playerhead_1}
       locations:
