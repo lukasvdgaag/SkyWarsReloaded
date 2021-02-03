@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.commands.kits;
 
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import org.bukkit.ChatColor;
 
 public class LoreCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public LoreCmd(String t) {
@@ -25,7 +26,19 @@ public class LoreCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         }
 
         if (com.walrusone.skywarsreloaded.utilities.Util.get().isInteger(args[2])) {
-            kit.setLoreLine(Integer.parseInt(args[2]), message.toString().trim());
+            int loreNumber = Integer.parseInt(args[2]);
+
+            if (loreNumber < 1 || loreNumber > 16) {
+                player.sendMessage(ChatColor.RED + "The lore number must be between 1 - 16 or \"locked\".");
+                return true;
+            }
+
+            for (int line = 0; line < loreNumber-1; line++) {
+                if (kit.getLores().size() < line+1) {
+                    kit.getLores().set(line," ");
+                }
+            }
+            kit.getLores().set(loreNumber-1,message.toString().trim());
         } else if (args[2].equalsIgnoreCase("locked")) {
             kit.setLockedLore(message.toString().trim());
         } else {

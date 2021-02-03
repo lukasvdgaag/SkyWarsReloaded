@@ -5,9 +5,7 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 
 public class GameQueue {
@@ -50,6 +48,7 @@ public class GameQueue {
     }
 
     public void kill() {
-        runnableQueue.cancel();
+        if (runnableQueue != null)
+            runnableQueue.cancel();
     }
 }

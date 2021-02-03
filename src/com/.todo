@@ -1,7 +1,9 @@
 # version 5.4.2
 Removed ELO from the plugin. Make sure to remove occurrences from the messages.yml, holograms.yml and other files.
+Recoded kit lores! They are no longer in format of "line1, line2" but are now in a list: "lores.unlocked"! [IMPORTANT!]
 Added a 'SkyWarsReloadEvent' event for developers, called when '/sw reload' is executed.
 Added a glow effect (enchantment) to the voting menu to the currently selected vote of a player.
+Fixed '/swm delete' throwing an error.
 Fixed scoreboard placeholders for spectators not being replaced.
 Fixed '/sw quit' not working for spectators.
 Fixed not showing the right scoreboard when leaving a game.
