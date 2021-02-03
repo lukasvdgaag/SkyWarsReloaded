@@ -6,10 +6,14 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
+import com.grinderwolf.swm.plugin.config.ConfigManager;
+import com.grinderwolf.swm.plugin.config.WorldData;
+import com.grinderwolf.swm.plugin.config.WorldsConfig;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.WorldCreator;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,49 +31,93 @@ public class SWMWorldManager implements WorldManager {
 
     @Override
     public World createEmptyWorld(String name, World.Environment environment) {
-        WorldCreator worldCreator = new WorldCreator(name);
+        WorldData worldData = new WorldData();
+        worldData.setSpawn("0, 64, 0");
+        SlimePropertyMap propertyMap = worldData.toPropertyMap();
+        propertyMap.setString(SlimeProperties.ENVIRONMENT, environment.name());
+        propertyMap.setString(SlimeProperties.DIFFICULTY, "normal");
+
+        try {
+            SlimeWorld world = plugin.createEmptyWorld(loader, name, false, propertyMap);
+
+            plugin.generateWorld(world);
+
+            Location location = new Location(Bukkit.getWorld(name), 0, 61, 0);
+            location.getBlock().setType(Material.BEDROCK);
+
+            WorldsConfig config = ConfigManager.getWorldConfig();
+            config.getWorlds().put(name, worldData);
+            config.save();
+
+            World world1 = (Bukkit.getWorld(name));
+            //if (world == null) return null;
+
+            world1.setDifficulty(org.bukkit.Difficulty.NORMAL);
+            world1.setSpawnFlags(true, true);
+            world1.setPVP(true);
+            world1.setStorm(false);
+            world1.setThundering(false);
+            world1.setWeatherDuration(Integer.MAX_VALUE);
+            world1.setKeepSpawnInMemory(false);
+            world1.setTicksPerAnimalSpawns(1);
+            world1.setTicksPerMonsterSpawns(1);
+            world1.setAutoSave(false);
+
+            SkyWarsReloaded.getNMS().setGameRule(world1, "doMobSpawning", "false");
+            SkyWarsReloaded.getNMS().setGameRule(world1, "mobGriefing", "false");
+            SkyWarsReloaded.getNMS().setGameRule(world1, "doFireTick", "false");
+            SkyWarsReloaded.getNMS().setGameRule(world1, "showDeathMessages", "false");
+            SkyWarsReloaded.getNMS().setGameRule(world1, "announceAdvancements", "false");
+
+            return world1;
+        } catch (WorldAlreadyExistsException | IOException e) {
+            e.printStackTrace();
+        }
+
+
+        /*WorldCreator worldCreator = new WorldCreator(name);
         worldCreator.environment(environment);
         worldCreator.generateStructures(false);
-        worldCreator.generator(SkyWarsReloaded.getNMS().getChunkGenerator());
-        World world = worldCreator.createWorld();
-        world.setDifficulty(org.bukkit.Difficulty.NORMAL);
-        world.setSpawnFlags(true, true);
-        world.setPVP(true);
-        world.setStorm(false);
-        world.setThundering(false);
-        world.setWeatherDuration(Integer.MAX_VALUE);
-        world.setKeepSpawnInMemory(false);
-        world.setTicksPerAnimalSpawns(1);
-        world.setTicksPerMonsterSpawns(1);
-        world.setAutoSave(false);
-
-        SkyWarsReloaded.getNMS().setGameRule(world, "doMobSpawning", "false");
-        SkyWarsReloaded.getNMS().setGameRule(world, "mobGriefing", "false");
-        SkyWarsReloaded.getNMS().setGameRule(world, "doFireTick", "false");
-        SkyWarsReloaded.getNMS().setGameRule(world, "showDeathMessages", "false");
-        SkyWarsReloaded.getNMS().setGameRule(world, "announceAdvancements", "false");
-
-        return world;
+        worldCreator.generator(SkyWarsReloaded.getNMS().getChunkGenerator());*/
+        return null;
     }
 
     @Override
     public boolean loadWorld(String worldName, World.Environment environment) {
-        SlimePropertyMap properties = new SlimePropertyMap();
-        properties.setString(SlimeProperties.ENVIRONMENT, environment.name());
-        properties.setString(SlimeProperties.DIFFICULTY, "normal");
+        WorldsConfig config = ConfigManager.getWorldConfig();
+        WorldData worldData = config.getWorlds().get(worldName);
+
+        if (Bukkit.getWorld(worldName) != null) {
+            World world = Bukkit.getWorld(worldName);
+            world.setSpawnFlags(true, true);
+            world.setPVP(true);
+            world.setStorm(false);
+            world.setThundering(false);
+            world.setWeatherDuration(Integer.MAX_VALUE);
+            world.setKeepSpawnInMemory(false);
+            world.setTicksPerAnimalSpawns(1);
+            world.setTicksPerMonsterSpawns(1);
+            world.setAutoSave(false);
+
+            SkyWarsReloaded.getNMS().setGameRule(world, "doMobSpawning", "false");
+            SkyWarsReloaded.getNMS().setGameRule(world, "mobGriefing", "false");
+            SkyWarsReloaded.getNMS().setGameRule(world, "doFireTick", "false");
+            SkyWarsReloaded.getNMS().setGameRule(world, "showDeathMessages", "false");
+            SkyWarsReloaded.getNMS().setGameRule(world, "announceAdvancements", "false");
+            return true;
+        }
 
         try {
-            SlimeWorld sw = plugin.loadWorld(loader, worldName, true, properties);
-            Bukkit.getScheduler().runTask(SkyWarsReloaded.get(), () -> plugin.generateWorld(sw));
+            SlimeWorld slimeWorld = plugin.loadWorld(loader, worldName, worldData.isReadOnly(), worldData.toPropertyMap());
+            plugin.generateWorld(slimeWorld);
         } catch (IOException | CorruptedWorldException | WorldInUseException | NewerFormatException | UnknownWorldException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Something went wrong whilst loading a world for the arena " + worldName);
             e.printStackTrace();
             return false;
         }
 
         World world = Bukkit.getWorld(worldName);
 
-        if (world==null) {
+        if (world == null) {
             Bukkit.getLogger().log(Level.SEVERE, "Something went wrong whilst loading a world for the arena " + worldName + ". World is null.");
             return false;
         }

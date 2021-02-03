@@ -1,6 +1,6 @@
 package com.walrusone.skywarsreloaded.menus.gameoptions.objects;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class GameKit {
 
@@ -28,7 +27,7 @@ public class GameKit {
     private String filename;
     private int position;
     private int page;
-    private Map<Integer, String> lores = Maps.newHashMap();
+    private List<String> lore;
     private String lockedLore;
     private boolean enabled;
     private boolean requirePermission;
@@ -49,30 +48,19 @@ public class GameKit {
         }
 
         icon = storage.getItemStack("icon");
-
         lIcon = storage.getItemStack("lockedIcon");
-
         name = storage.getString("name");
-
         position = storage.getInt("position");
-
         page = storage.getInt("page");
 
         if (page == 0) {
             page = 1;
             storage.set("page", page);
         }
-
-        for (int x = 1; x < 17; x++) {
-            lores.put(x, storage.getString("lores.line" + x, " "));
-        }
-
+        lore = storage.getStringList("lores.unlocked");
         lockedLore = storage.getString("lores.locked", "");
-
         enabled = storage.getBoolean("enabled");
-
         requirePermission = storage.getBoolean("requirePermission");
-
         filename = storage.getString("filename");
 
         try {
@@ -91,10 +79,8 @@ public class GameKit {
         filename = fnam;
         position = pos;
         page = pag;
-        lores.put(1, lore);
-        for (int x = 2; x < 17; x++) {
-            lores.put(x, " ");
-        }
+        this.lore = Lists.newArrayList();
+        this.lore.add(lore);
         lockedLore = "";
         enabled = true;
         requirePermission = false;
@@ -148,28 +134,19 @@ public class GameKit {
 
         ItemStack[] inventory = player.getInventory().getContents();
         storage.set("inventory", inventory);
-
         ItemStack[] armor = player.getInventory().getArmorContents();
         storage.set("armor", armor);
 
         storage.set("requirePermission", false);
-
         storage.set("icon", new ItemStack(Material.SNOW_BLOCK, 1));
-
         storage.set("lockedIcon", new ItemStack(Material.BARRIER, 1));
-
         storage.set("position", 0);
-
         storage.set("page", 1);
-
         storage.set("name", kitName);
-
         storage.set("enabled", false);
 
-        for (int x = 1; x < 17; x++) {
-            storage.set("lores.line" + x, " ");
-        }
-        storage.set("lores.locked", "&CPermission required to unlock this kit!");
+        storage.set("lores.unlocked", Lists.newArrayList("Lore line 1"));
+        storage.set("lores.locked", "&cA permission is required to unlock this kit!");
 
         storage.set("gameSettings.noRegen", false);
         storage.set("gameSettings.noPvp", false);
@@ -199,28 +176,18 @@ public class GameKit {
         FileConfiguration storage = YamlConfiguration.loadConfiguration(kitFile);
 
         storage.set("inventory", kit.getInventory());
-
         storage.set("armor", kit.getArmor());
 
         storage.set("requirePermission", kit.needPermission());
-
         storage.set("icon", kit.getIcon());
         storage.set("lockedIcon", kit.getLIcon());
-
         storage.set("position", kit.getPosition());
-
         storage.set("page", kit.getPage());
-
         storage.set("name", kit.getName());
-
         storage.set("enabled", kit.getEnabled());
 
-        for (int x = 1; x < 17; x++) {
-            storage.set("lores.line" + x, kit.getLores().get(x));
-        }
-
+        storage.set("lores.unlocked", kit.getLores());
         storage.set("lores.locked", kit.getLockedLore());
-
         storage.set("filename", kit.getFilename());
 
         try {
@@ -363,25 +330,14 @@ public class GameKit {
 
     public List<String> getColorLores() {
         List<String> colorLores = new ArrayList<>();
-        int spaces = 0;
-        for (int x = 1; x < 17; x++) {
-            if (lores.get(x).equals(" ")) {
-                spaces++;
-            } else {
-                if (spaces > 0) {
-                    for (int y = 1; y <= spaces; y++) {
-                        colorLores.add(" ");
-                    }
-                    spaces = 0;
-                }
-                colorLores.add(ChatColor.translateAlternateColorCodes('&', lores.get(x)));
-            }
+        for (String a : this.lore) {
+            colorLores.add(ChatColor.translateAlternateColorCodes('&', a));
         }
         return colorLores;
     }
 
-    public Map<Integer, String> getLores() {
-        return this.lores;
+    public List<String> getLores() {
+        return this.lore;
     }
 
     public String getColoredLockedLore() {
@@ -394,10 +350,6 @@ public class GameKit {
 
     public void setLockedLore(String lore) {
         this.lockedLore = lore;
-    }
-
-    public void setLoreLine(int line, String lore) {
-        this.lores.put(line, lore);
     }
 
 }

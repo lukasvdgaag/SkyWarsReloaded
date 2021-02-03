@@ -1137,7 +1137,7 @@ public class GameMap {
     /*Inventories*/
 
     public void unregister(boolean save) {
-        getJoinQueue().kill();
+        if (getJoinQueue() != null) getJoinQueue().kill();
         if (save) {
             this.registered = false;
             stopGameInProgress();
