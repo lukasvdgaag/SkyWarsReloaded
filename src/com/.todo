@@ -11,6 +11,7 @@ Fixed taunts still working while spectating a game.
 Fixed being able to teleport to other players using the spectator menu.
 Fixed next event placeholders for scoreboards not displayed the right events and going negative.
 Fixed /sw holoadd's succession message placeholders not being replaced.
+Fixed {winners..} placeholders sometimes not being removed on scoreboard.
 
 # version 5.4.1
 Fixed updater message showing when no update was available.
