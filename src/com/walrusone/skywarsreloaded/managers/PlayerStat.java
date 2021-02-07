@@ -166,7 +166,7 @@ public class PlayerStat {
         ArrayList<String> scores = new ArrayList<>();
         for (int i = 1; i < lines.size(); i++) {
             String s = ChatColor.translateAlternateColorCodes('&', getScoreboardLine(lines.get(i), player, identifier));
-            if (!ChatColor.stripColor(s).equalsIgnoreCase("remove")) {
+            if (!ChatColor.stripColor(s).contains("remove")) {
                 scores.add(s);
             }
         }

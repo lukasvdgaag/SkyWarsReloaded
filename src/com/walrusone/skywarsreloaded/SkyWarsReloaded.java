@@ -6,7 +6,6 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.walrusone.skywarsreloaded.api.SkywarsReloadedAPI;
 import com.walrusone.skywarsreloaded.api.impl.SkywarsReloadedImpl;
-import com.walrusone.skywarsreloaded.nms.NMS;
 import com.walrusone.skywarsreloaded.commands.*;
 import com.walrusone.skywarsreloaded.config.Config;
 import com.walrusone.skywarsreloaded.database.DataStorage;
@@ -22,7 +21,9 @@ import com.walrusone.skywarsreloaded.managers.worlds.SWMWorldManager;
 import com.walrusone.skywarsreloaded.managers.worlds.WorldManager;
 import com.walrusone.skywarsreloaded.menus.*;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
+import com.walrusone.skywarsreloaded.nms.NMS;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.PartyAndFriendsHook;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.holograms.HoloDisUtil;
@@ -209,7 +210,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
 
         if (getCfg().bungeeMode() && getCfg().isUsePartyAndFriends()) {
-            this.getServer().getPluginManager().registerEvents(new PerWorldInventoryListener(), this);
+            this.getServer().getPluginManager().registerEvents(new PartyAndFriendsHook(), this);
         }
 
         if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldManager") && getCfg().isUseSlimeWorldManager()) {
