@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.*;
 import com.walrusone.skywarsreloaded.events.SkyWarsJoinEvent;
+import com.walrusone.skywarsreloaded.events.SkyWarsMatchStateChangeEvent;
 import com.walrusone.skywarsreloaded.game.cages.*;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
@@ -1148,7 +1149,7 @@ public class GameMap {
     }
 
     public void stopGameInProgress() {
-        this.matchState = MatchState.OFFLINE;
+        this.setMatchState(MatchState.OFFLINE);
         for (final UUID uuid : this.getSpectators()) {
             final Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
             if (player != null) {
@@ -1303,9 +1304,9 @@ public class GameMap {
                 @Override
                 public void run() {
                     if (teamSize > 1) {
-                        matchState = MatchState.WAITINGLOBBY;
+                        setMatchState(MatchState.WAITINGLOBBY);
                     } else {
-                        matchState = MatchState.WAITINGSTART;
+                        setMatchState(MatchState.WAITINGSTART);
                     }
                     gameboard.updateScoreboard();
                     MatchManager.get().start(gMap);
@@ -1458,6 +1459,7 @@ public class GameMap {
     }
 
     public void setMatchState(final MatchState state) {
+        Bukkit.getPluginManager().callEvent(new SkyWarsMatchStateChangeEvent(this, state));
         this.matchState = state;
     }
 

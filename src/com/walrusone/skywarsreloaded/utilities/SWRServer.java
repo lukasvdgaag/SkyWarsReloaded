@@ -2,7 +2,9 @@ package com.walrusone.skywarsreloaded.utilities;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.events.SkyWarsMatchStateChangeEvent;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -202,18 +204,17 @@ public class SWRServer {
     }
 
     public void setMatchState(String gameStarted) {
-        synchronized (stateLock) {
-            try {
-                this.state = MatchState.valueOf(gameStarted);
-            } catch (IllegalArgumentException e) {
-                this.state = MatchState.OFFLINE;
-            }
+        try {
+            this.setMatchState(MatchState.valueOf(gameStarted));
+        } catch (IllegalArgumentException e) {
+            this.setMatchState(MatchState.OFFLINE);
         }
     }
 
     public void setMatchState(MatchState serverState) {
+        Bukkit.getPluginManager().callEvent(new SkyWarsMatchStateChangeEvent(this, serverState));
         synchronized (stateLock) {
-            state = serverState;
+            this.state = serverState;
         }
     }
 
