@@ -179,9 +179,10 @@ public class GameMap {
         return null;
     }
 
-    private static void addMap(String name) {
+    private static GameMap addMap(String name) {
         GameMap gMap = new GameMap(name);
         arenas.add(gMap);
+        return gMap;
     }
 
     public static void loadMaps() {
