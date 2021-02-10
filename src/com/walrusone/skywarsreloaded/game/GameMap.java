@@ -1659,9 +1659,7 @@ public class GameMap {
     }
 
     public World getCurrentWorld() {
-        World mapWorld;
-        mapWorld = SkyWarsReloaded.get().getServer().getWorld(name);
-        return mapWorld;
+        return SkyWarsReloaded.get().getServer().getWorld(name);
     }
 
     public CoordLoc getLookDirection() {
@@ -2245,7 +2243,7 @@ public class GameMap {
         MatchEvent latest = null;
         int earliestStartTime = Integer.MAX_VALUE;
         for (MatchEvent event : getEvents()) {
-            if (event.isEnabled() && event.getStartTime() > timer) {
+            if (event.isEnabled() && event.getStartTime() > getTimer()) {
                 if (event.getStartTime() < earliestStartTime) {
                     earliestStartTime = event.getStartTime();
                     latest = event;
