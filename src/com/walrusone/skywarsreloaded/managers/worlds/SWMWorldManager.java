@@ -84,8 +84,19 @@ public class SWMWorldManager implements WorldManager {
 
     @Override
     public boolean loadWorld(String worldName, World.Environment environment) {
+
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#loadWorld plugin: " + plugin);
+            SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#loadWorld worldName: " + worldName);
+        }
+
         WorldsConfig config = ConfigManager.getWorldConfig();
         WorldData worldData = config.getWorlds().get(worldName);
+
+        if (worldData == null) {
+            SkyWarsReloaded.get().getLogger().severe("An error occurred while loading \"" + worldName + "\" from SlimeWorldManager. Does the map exist?");
+            return false;
+        }
 
         if (Bukkit.getWorld(worldName) != null) {
             World world = Bukkit.getWorld(worldName);
@@ -105,6 +116,10 @@ public class SWMWorldManager implements WorldManager {
             SkyWarsReloaded.getNMS().setGameRule(world, "showDeathMessages", "false");
             SkyWarsReloaded.getNMS().setGameRule(world, "announceAdvancements", "false");
             return true;
+        }
+
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#loadWorld worldData: " + worldData);
         }
 
         try {
