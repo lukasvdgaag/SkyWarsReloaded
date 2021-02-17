@@ -76,7 +76,7 @@ public class TeamCard {
         return x;
     }
 
-    int getPlace() {
+    public int getPlace() {
         return place;
     }
 
