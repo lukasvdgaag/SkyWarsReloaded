@@ -64,7 +64,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private SWTabCompleter swTabCompleter = null;
     private ArrayList<String> useable = new ArrayList<>();
     private Messaging messaging;
-    private Leaderboard leaderboard;
+    private Leaderboard leaderboard = null;
+    private final Object leaderboardLock = new Object();
     private IconMenuController ic;
     private ItemsManager im;
     private PlayerOptionsManager pom;
@@ -91,7 +92,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     }
 
     public static Leaderboard getLB() {
-        return instance.leaderboard;
+        // TODO: Make non static
+        synchronized (instance.leaderboardLock) {
+            return instance.leaderboard;
+        }
     }
 
     public static Config getCfg() {
@@ -138,6 +142,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         loaded = false;
         instance = this;
 
+        // NMS Init
         String packageName = this.getServer().getClass().getPackage().getName();
         String version = packageName.substring(packageName.lastIndexOf('.') + 1);
 
@@ -155,16 +160,19 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             return;
         }
         this.getLogger().info("Loading support for " + version);
-        
+
+        // Updater init
         this.updater = new GCNTUpdater();
 
         servername = "none";
 
+        // Cages
         File cagesFolder = new File(getDataFolder(), "cages");
         if (!cagesFolder.exists()) {
             cagesFolder.mkdir();
         }
 
+        // Load config for 1.8
         if (nmsHandler.getVersion() < 9) {
             File config = new File(SkyWarsReloaded.get().getDataFolder(), "config.yml");
             if (!config.exists()) {
@@ -177,6 +185,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     }
                 }
             }
+        // Load config for 1.12
         } else if (nmsHandler.getVersion() < 13 && nmsHandler.getVersion() > 8) {
             File config = new File(SkyWarsReloaded.get().getDataFolder(), "config.yml");
             if (!config.exists()) {
@@ -190,29 +199,33 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 }
             }
         }
-
+        // Copy missing attributes
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
         saveConfig();
         reloadConfig();
 
+        // Load config data
         config = new Config();
+
+        // ------ All external integrations --------
+        // PAPI
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new SWRPlaceholderAPI().register();
         }
-
+        // MVdWPAPI
         if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
             new SWRMVdWPlaceholder(this);
         }
-
+        // PER WORLD INV
         if (Bukkit.getPluginManager().isPluginEnabled("PerWorldInventory")) {
             this.getServer().getPluginManager().registerEvents(new PerWorldInventoryListener(), this);
         }
-
+        // PAF
         if (getCfg().bungeeMode() && getCfg().isUsePartyAndFriends()) {
             this.getServer().getPluginManager().registerEvents(new PartyAndFriendsHook(), this);
         }
-
+        // SLIME WORLD MANAGER
         if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldManager") && getCfg().isUseSlimeWorldManager()) {
             wm = new SWMWorldManager();
         }
@@ -220,8 +233,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             wm = new FileWorldManager();
         }
 
+        // MENUS
         ic = new IconMenuController();
 
+        // LISTENERS
         if (nmsHandler.getVersion() > 8) {
             this.getServer().getPluginManager().registerEvents(new SwapHandListener(), this);
         }
@@ -236,6 +251,11 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         this.getServer().getPluginManager().registerEvents(new SpectateListener(), this);
         this.getServer().getPluginManager().registerEvents(new ChatListener(), this);
         this.getServer().getPluginManager().registerEvents(new ProjectileSpleefListener(), this);
+
+        // LOAD BEFORE HOLO - Holo needs server to be loaded to update correctly
+        load();
+
+        // Holograms
         if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
             hu = null;
             if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
@@ -248,17 +268,20 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             }
         }
 
-        load();
+        // Taunts
         if (SkyWarsReloaded.getCfg().tauntsEnabled()) {
             this.getServer().getPluginManager().registerEvents(new TauntListener(), this);
         }
+        // Particles
         if (SkyWarsReloaded.getCfg().particlesEnabled()) {
             this.getServer().getPluginManager().registerEvents(new ParticleEffectListener(), this);
         }
+        // Disabled commands
         if (config.disableCommands()) {
             this.getServer().getPluginManager().registerEvents(new PlayerCommandPrepocessListener(), this);
         }
 
+        // Plugin messaging channels
         if (getCfg().bungeeMode()) {
             this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
             this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
@@ -293,6 +316,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
         }
         checkUpdates();
+        // TODO: SWR API - Not finished
         swrAPI = new SkywarsReloadedImpl(this);
     }
 
@@ -382,7 +406,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             }
             for (final Player player : gameMap.getAlivePlayers()) {
                 if (player != null) {
-                    MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, false, true);
+                    MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, false, true);
                 }
             }
             getWM().deleteWorld(gameMap.getName(), false);
@@ -426,7 +450,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                         PlayerStat.getPlayers().add(new PlayerStat(v));
                     }
                 }
-                leaderboard = new Leaderboard();
+                synchronized (leaderboardLock) {
+                    leaderboard = new Leaderboard();
+                }
             }
         }.runTaskAsynchronously(this);
 

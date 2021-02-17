@@ -4,6 +4,7 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
+import com.walrusone.skywarsreloaded.managers.Leaderboard;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import java.util.List;
 
 public class HoloDisUtil extends HologramsUtil {
 
-    private static HashMap<LeaderType, HashMap<String, ArrayList<Hologram>>> holograms = new HashMap<>();
+    private static final HashMap<LeaderType, HashMap<String, ArrayList<Hologram>>> holograms = new HashMap<>();
 
     public HoloDisUtil() {
         getFC();
@@ -28,12 +30,18 @@ public class HoloDisUtil extends HologramsUtil {
 
     @Override
     public void createLeaderHologram(Location loc, LeaderType type, String formatKey) {
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#debug::createLeaderHologram: HEADER");
+        }
         Hologram hologram = HologramsAPI.createHologram(SkyWarsReloaded.get(), loc);
         holograms.computeIfAbsent(type, k -> new HashMap<>());
         holograms.get(type).computeIfAbsent(formatKey, k -> new ArrayList<>());
         holograms.get(type).get(formatKey).add(hologram);
         if (fc == null) {
             getFC();
+        }
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#debug::createLeaderHologram: fc = " + fc);
         }
         if (fc != null) {
             List<String> locs = new ArrayList<>();
@@ -47,12 +55,34 @@ public class HoloDisUtil extends HologramsUtil {
                 e.printStackTrace();
             }
         }
-        updateLeaderHolograms(type);
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#debug::createLeaderHologram: hologram = " + hologram);
+        }
+        updateLeaderHologramsWhenReady(type);
     }
 
-    @SuppressWarnings("deprecation")
+    /**
+     * Only update the holograms when the leaderboard obj is no longer null.
+     * This is required on startup
+     * @param type Type of leader list to update when ready
+     */
+    public void updateLeaderHologramsWhenReady(LeaderType type) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (SkyWarsReloaded.getLB() != null) {
+                    this.cancel();
+                    updateLeaderHolograms(type);
+                }
+            }
+        }.runTaskTimer(SkyWarsReloaded.get(), 10, 10);
+    }
+
     @Override
     public void updateLeaderHolograms(LeaderType type) {
+        // General vars
+        Leaderboard lbManager = SkyWarsReloaded.getLB();
+
         if (SkyWarsReloaded.get().serverLoaded()) {
             holograms.computeIfAbsent(type, k -> new HashMap<>());
             if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
@@ -62,6 +92,9 @@ public class HoloDisUtil extends HologramsUtil {
                 if (fc != null) {
                     for (String key : holograms.get(type).keySet()) {
                         for (Hologram hologram : holograms.get(type).get(key)) {
+                            if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                                SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#debug::updateLeaderHolograms: hologram PRE = " + hologram);
+                            }
                             hologram.clearLines();
                             List<String> format = fc.getStringList("leaderboard." + type.toString().toLowerCase() + "." + key + ".format");
                             for (int i = 0; i < format.size(); i++) {
@@ -71,8 +104,8 @@ public class HoloDisUtil extends HologramsUtil {
                                     String mat = line.substring(5);
                                     if (mat.contains("playerhead")) {
                                         String num = mat.substring(12, mat.length() - 1);
-                                        if (Util.get().isInteger(num) && SkyWarsReloaded.getLB().getTopList(type) != null && SkyWarsReloaded.getLB().getTopList(type).size() > Integer.parseInt(num) - 1) {
-                                            Player player = Bukkit.getPlayer(SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(num) - 1).getUUID());
+                                        if (Util.get().isInteger(num) && lbManager.getTopList(type) != null && lbManager.getTopList(type).size() > Integer.parseInt(num) - 1) {
+                                            Player player = Bukkit.getPlayer(lbManager.getTopList(type).get(Integer.parseInt(num) - 1).getUUID());
                                             if (player != null) {
                                                 if (SkyWarsReloaded.getNMS().getVersion() < 13) {
                                                     item = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
@@ -100,6 +133,10 @@ public class HoloDisUtil extends HologramsUtil {
                                     hologram.insertTextLine(i, ChatColor.translateAlternateColorCodes('&', line));
                                 }
                             }
+                            if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                                SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#debug::updateLeaderHolograms: hologram POST = " + hologram);
+                                SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#debug::updateLeaderHolograms lines = " + hologram.size());
+                            }
                         }
                     }
                 }
@@ -109,6 +146,9 @@ public class HoloDisUtil extends HologramsUtil {
 
     @Override
     public boolean removeHologram(Location loc) {
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#debug::createLeaderHologramremoveHologram loc = " + loc);
+        }
         Hologram hologram = null;
         LeaderType typeToRemove = null;
         String keyToRemove = null;

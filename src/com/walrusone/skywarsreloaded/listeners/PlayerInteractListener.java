@@ -308,7 +308,7 @@ public class PlayerInteractListener implements Listener {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                MatchManager.get().playerLeave(player, DamageCause.CUSTOM, true, true, true);
+                                MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, true, true);
                             }
                         }.runTaskLater(SkyWarsReloaded.get(), 1);
                     }

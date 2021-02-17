@@ -34,11 +34,17 @@ public abstract class HologramsUtil {
 
         if (holoFile.exists()) {
             fc = YamlConfiguration.loadConfiguration(holoFile);
+            if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#debug::getFC: fc = " + fc);
+            }
             for (LeaderType type : LeaderType.values()) {
                 if (fc.getConfigurationSection("leaderboard." + type.toString().toLowerCase()) != null) {
                     for (String key : fc.getConfigurationSection("leaderboard." + type.toString().toLowerCase()).getKeys(false)) {
                         formats.computeIfAbsent(type, k -> new ArrayList<>());
                         formats.get(type).add(key);
+                        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                            SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#debug::getFC: key = " + key);
+                        }
                     }
                 }
             }

@@ -90,7 +90,7 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
                     if (player.getLastDamageCause() != null) {
                         damageCause = player.getLastDamageCause().getCause();
                     }
-                    MatchManager.get().playerLeave(player, damageCause, true, true, true);
+                    MatchManager.get().removeAlivePlayer(player, damageCause, true, true, true);
                 } else {
                     e.setCancelled(true);
                 }
