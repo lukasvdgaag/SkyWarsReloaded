@@ -56,7 +56,7 @@ public class GameMap {
     }
 
     public HashMap<Integer, List<CoordLoc>> spawnLocations = new HashMap<>(); // first int is team number, list is spawn locations
-    private ArrayList<Crate> crates = new ArrayList<>();
+    private final ArrayList<Crate> crates = new ArrayList<>();
     private boolean forceStart;
     private boolean disableDamage = false;
     private boolean allowFallDamage;
@@ -67,15 +67,15 @@ public class GameMap {
     private boolean thunder;
     private boolean allowFriendlyFire;
     private boolean allowScanvenger;
-    private List<String> winners = new ArrayList<>();
+    private final List<String> winners = new ArrayList<>();
     private int strikeCounter;
     private int nextStrike;
     private MatchState matchState;
-    private ArrayList<TeamCard> teamCards;
+    private final ArrayList<TeamCard> teamCards;
     private int teamSize;
     private ChestPlacementType chestPlacementType;
-    private ArrayList<UUID> spectators = new ArrayList<>();
-    private String name;
+    private final ArrayList<UUID> spectators = new ArrayList<>();
+    private final String name;
     private int timer;
     private int minPlayers;
     private GameKit kit;
@@ -101,24 +101,24 @@ public class GameMap {
     private Vote defaultModifier;
     private String displayName;
     private String designedBy;
-    private ArrayList<SWRSign> signs;
+    private final ArrayList<SWRSign> signs;
     private GameBoard gameboard;
     private boolean registered;
-    private String arenakey;
-    private GameQueue joinQueue;
+    private final String arenakey;
+    private final GameQueue joinQueue;
     private boolean inEditing = false;
     private CoordLoc spectateSpawn;
     private CoordLoc lookDirection;
-    private ArrayList<CoordLoc> deathMatchSpawns;
+    private final ArrayList<CoordLoc> deathMatchSpawns;
     private boolean legacy = false;
-    private ArrayList<MatchEvent> events = new ArrayList<>();
-    private ArrayList<String> deathMatchWaiters = new ArrayList<>();
-    private ArrayList<String> anvils = new ArrayList<>();
+    private final ArrayList<MatchEvent> events = new ArrayList<>();
+    private final ArrayList<String> deathMatchWaiters = new ArrayList<>();
+    private final ArrayList<String> anvils = new ArrayList<>();
     private boolean customJoinMenuIcon = false;
     private ItemStack customJoinMenuItem = null;
     private CoordLoc waitingLobbySpawn;
     private ArrayList<UUID> waitingPlayers = Lists.newArrayList();
-    private HashMap<Player, Integer> playerKills = new HashMap<>();
+    private final HashMap<Player, Integer> playerKills = new HashMap<>();
 
     public GameMap(final String name) {
         this.name = name;
@@ -1257,10 +1257,25 @@ public class GameMap {
                                 }
                             }
                         }
+                    // Add chests found in the world to map chests
                     } else if (te instanceof Chest) {
                         Chest chest = (Chest) te;
-                        addChest(chest, ChestPlacementType.NORMAL);
+                        // If loadTrappedChestsAsCenter option is enabled, we check if the chest is trapped. If so it's a center chest
+                        if (SkyWarsReloaded.getCfg().getLoadTrappedChestsAsCenter() &&
+                                chest.getType().equals(Material.TRAPPED_CHEST)) {
+                            Block trappedChestBlock = chest.getBlock();
+                            if (trappedChestBlock != null) {
+                                // Replace the trapped chest with a chest to avoid anomalies in-game
+                                trappedChestBlock.setType(Material.CHEST);
+                                // Add the chest as center
+                                addChest(chest, ChestPlacementType.CENTER);
+                            }
+                        } else {
+                            // Add the chest as normal
+                            addChest(chest, ChestPlacementType.NORMAL);
+                        }
                         if (message) {
+                            // Inform the player scanning the map about found chests
                             sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", getDisplayName()).format("maps.addChest"));
                         }
                     }
@@ -2055,7 +2070,7 @@ public class GameMap {
         return null;
     }
 
-    public int getTeamsOut() {
+    public int getNumTeamsOut() {
         int count = 0;
         for (TeamCard tCard : teamCards) {
             if (tCard.isElmininated()) {
@@ -2065,8 +2080,8 @@ public class GameMap {
         return count;
     }
 
-    public int getTeamsleft() {
-        return teamCards.size() - getTeamsOut();
+    public int getTeamsLeft() {
+        return teamCards.size() - getNumTeamsOut();
     }
 
     public int getTeamSize() {
@@ -2255,7 +2270,7 @@ public class GameMap {
         return latest;
     }
 
-    public class TeamCardComparator implements Comparator<TeamCard> {
+    public static class TeamCardComparator implements Comparator<TeamCard> {
         @Override
         public int compare(TeamCard f1, TeamCard f2) {
             return Integer.compare(f1.getFullCount(), f2.getFullCount());
