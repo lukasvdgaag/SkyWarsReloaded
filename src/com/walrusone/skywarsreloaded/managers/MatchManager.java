@@ -4,6 +4,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.events.SkyWarsDeathEvent;
 import com.walrusone.skywarsreloaded.events.SkyWarsKillEvent;
@@ -598,32 +599,33 @@ public class MatchManager {
             final String winner = SkyWarsReloaded.getCfg().usePlayerNames() ? winners.getPlayerNames() : winners.getTeamName();
             final String map = gameMap.getDisplayName();
 
+            // Make sure winners are placed #1
+            winners.setPlace(1);
             for (PlayerCard pCard : winners.getPlayerCards()) {
-                Player win = pCard.getPlayer();
+                Player pWinner = pCard.getPlayer();
 
-                pCard.getTeamCard().setPlace(1);
-                if (win != null) {
-                    final PlayerStat winnerData = PlayerStat.getPlayerStats(win.getUniqueId().toString());
+                if (pWinner != null) {
+                    final PlayerStat winnerData = PlayerStat.getPlayerStats(pWinner.getUniqueId().toString());
                     if (winnerData != null) {
                         winnerData.setWins(winnerData.getWins() + 1);
-                        final int multiplier = Util.get().getMultiplier(win);
+                        final int multiplier = Util.get().getMultiplier(pWinner);
                         winnerData.setXp(winnerData.getXp() + (multiplier * SkyWarsReloaded.getCfg().getWinnerXP()));
                         if (SkyWarsReloaded.getCfg().economyEnabled()) {
-                            VaultUtils.get().give(win, multiplier * SkyWarsReloaded.getCfg().getWinnerEco());
+                            VaultUtils.get().give(pWinner, multiplier * SkyWarsReloaded.getCfg().getWinnerEco());
                         }
                         WinSoundOption sound = (WinSoundOption) WinSoundOption.getPlayerOptionByKey(winnerData.getWinSound());
                         if (sound != null) {
-                            sound.playSound(win.getLocation());
+                            sound.playSound(pWinner.getLocation());
                         }
 
-                        Util.get().sendActionBar(win, new Messaging.MessageFormatter().setVariable("xp", "" + multiplier * SkyWarsReloaded.getCfg().getWinnerXP()).format("game.win-actionbar"));
-                        Util.get().doCommands(SkyWarsReloaded.getCfg().getWinCommands(), win);
+                        Util.get().sendActionBar(pWinner, new Messaging.MessageFormatter().setVariable("xp", "" + multiplier * SkyWarsReloaded.getCfg().getWinnerXP()).format("game.win-actionbar"));
+                        Util.get().doCommands(SkyWarsReloaded.getCfg().getWinCommands(), pWinner);
                         if (SkyWarsReloaded.getCfg().getEnableFlightOnWin()) {
-                            win.setAllowFlight(true);
-                            win.setFlying(true);
+                            pWinner.setAllowFlight(true);
+                            pWinner.setFlying(true);
                         }
                         if (SkyWarsReloaded.getCfg().getClearInventoryOnWin()) {
-                            win.getInventory().clear();
+                            pWinner.getInventory().clear();
                         }
                         Bukkit.getPluginManager().callEvent(new SkyWarsWinEvent(winnerData, gameMap));
                     }
@@ -633,17 +635,17 @@ public class MatchManager {
                                 .setVariable("player1", winner).setVariable("map", map).format("game.broadcast-win"));
                     }
                     if (SkyWarsReloaded.getCfg().titlesEnabled()) {
-                        Util.get().sendTitle(win, 5, 80, 5, new Messaging.MessageFormatter().format("titles.endgame-title-won"), new Messaging.MessageFormatter().format("titles.endgame-subtitle-won"));
+                        Util.get().sendTitle(pWinner, 5, 80, 5, new Messaging.MessageFormatter().format("titles.endgame-title-won"), new Messaging.MessageFormatter().format("titles.endgame-subtitle-won"));
                     }
                     if (SkyWarsReloaded.getCfg().fireworksEnabled()) {
-                        Util.get().fireworks(win, 5, SkyWarsReloaded.getCfg().getFireWorksPer5Tick());
+                        Util.get().fireworks(pWinner, 5, SkyWarsReloaded.getCfg().getFireWorksPer5Tick());
                     }
                     if (SkyWarsReloaded.getCfg().particlesEnabled()) {
                         List<String> particles = new ArrayList<>();
                         particles.add("FIREWORKS_SPARK");
-                        Util.get().surroundParticles(win, 1, particles, 8, 0);
+                        Util.get().surroundParticles(pWinner, 1, particles, 8, 0);
                     }
-                    win.sendMessage(new Messaging.MessageFormatter()
+                    pWinner.sendMessage(new Messaging.MessageFormatter()
                             .setVariable("map", gameMap.getName()).format("game.won"));
                 }
             }
@@ -734,6 +736,33 @@ public class MatchManager {
         }
     }
 
+    public void removeAlivePlayer(final Player player, PlayerRemoveReason reason, boolean announceToOthers) {
+        // General consts
+        final UUID pUuid = player.getUniqueId();
+        final GameMap gMap = this.getPlayerMap(player);
+        final PlayerData pData = PlayerData.getPlayerData(pUuid);
+        final PlayerCard pCard = gMap.getPlayerCard(player);
+        final TeamCard teamCard = pCard.getTeamCard();
+
+        // Remove player options no matter if in game
+        SkyWarsReloaded.getOM().removePlayer(pUuid);
+
+        // Check player is in game
+        if (gMap == null) {
+            return;
+        }
+
+        if (gMap.getMatchState() == MatchState.PLAYING) {
+            // Process Team data
+            teamCard.getDead().add(pUuid);
+            pCard.getTeamCard().setPlace(gMap.getTeamsLeft() + 1); // + 1 because we are counting from 1
+
+            // Process Player Bukkit
+            player.setNoDamageTicks(1);
+        }
+    }
+
+    @Deprecated
     public void removeAlivePlayer(final Player player, DamageCause dCause, final boolean died, boolean sendMessages, boolean playerQuit) {
         SkyWarsReloaded.getOM().removePlayer(player.getUniqueId());
         UUID playerUuid = player.getUniqueId();
@@ -746,7 +775,7 @@ public class MatchManager {
             gameMap.getTeamCard(player).getDead().add(player.getUniqueId());
 
             PlayerCard pCard = gameMap.getPlayerCard(player);
-            pCard.getTeamCard().setPlace(gameMap.getTeamCards().size() + 1 - gameMap.getTeamsOut());
+            pCard.getTeamCard().setPlace(gameMap.getTeamCards().size() + 1 - gameMap.getNumTeamsOut());
             player.setNoDamageTicks(1);
             final PlayerData playerData = PlayerData.getPlayerData(player.getUniqueId());
             if (playerData != null) {
@@ -827,8 +856,8 @@ public class MatchManager {
                         }
                     }
 
-                    if (gameMap.getTeamsleft() <= 1) {
-                        if (gameMap.getTeamsleft() == 1) {
+                    if (gameMap.getTeamsLeft() <= 1) {
+                        if (gameMap.getTeamsLeft() == 1) {
                             this.won(gameMap, gameMap.getWinningTeam());
                         } else {
                             this.won(gameMap, null);
