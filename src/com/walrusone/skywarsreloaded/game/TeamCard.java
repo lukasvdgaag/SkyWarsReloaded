@@ -84,7 +84,7 @@ public class TeamCard {
         place = x;
     }
 
-    public List<CoordLoc> getSpawn() {
+    public List<CoordLoc> getSpawns() {
         return spawns;
     }
 

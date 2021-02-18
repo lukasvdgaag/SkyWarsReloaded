@@ -176,7 +176,7 @@ public class MatchManager {
 
     public void teleportToArena(final GameMap gameMap, PlayerCard pCard) {
         if (pCard.getPlayer() == null || (!gameMap.getMatchState().equals(MatchState.WAITINGLOBBY) && !gameMap.getMatchState().equals(MatchState.WAITINGSTART)) ||
-                (gameMap.getMatchState().equals(MatchState.WAITINGSTART) && pCard.getTeamCard().getSpawn() == null)) {
+                (gameMap.getMatchState().equals(MatchState.WAITINGSTART) && pCard.getTeamCard().getSpawns() == null)) {
             pCard.reset();
             return;
         }
@@ -764,6 +764,15 @@ public class MatchManager {
 
     @Deprecated
     public void removeAlivePlayer(final Player player, DamageCause dCause, final boolean died, boolean sendMessages, boolean playerQuit) {
+        // TODO: DEBUG ====== THIS MUST BE REMOVED ONCE Triple Deaths cause is found
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            try {
+                throw new Exception("This is NORMAL!! This is useful data to know from where the death is being called if you are having triple death issues.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         SkyWarsReloaded.getOM().removePlayer(player.getUniqueId());
         UUID playerUuid = player.getUniqueId();
 

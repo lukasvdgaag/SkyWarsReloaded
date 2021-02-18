@@ -44,7 +44,7 @@ public class DebugCmd extends BaseCmd {
         sender.sendMessage("-- Debug of teams");
         sender.sendMessage("Teamcards: " + gMap.getTeamCards().size());
         for (TeamCard card : gMap.getTeamCards()) {
-            sender.sendMessage("#" + (card.getPosition()+1) + ": p=" + card.getPlayerCards().size() + ", s=" + card.getSpawn().size());
+            sender.sendMessage("#" + (card.getPosition()+1) + ": p=" + card.getPlayerCards().size() + ", s=" + card.getSpawns().size());
         }
         sender.sendMessage(" ");
 

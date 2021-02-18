@@ -67,7 +67,7 @@ public class GhastEvent extends MatchEvent {
             br1 = new BukkitRunnable() {
                 public void run() {
                     for (int i = 0; i < gMap.getTeamCards().size(); i++) {
-                        Location loc = new Location(gMap.getCurrentWorld(), ((TeamCard) gMap.getTeamCards().get(i)).getSpawn().get(0).getX(), ((TeamCard) gMap.getTeamCards().get(i)).getSpawn().get(0).getY(), ((TeamCard) gMap.getTeamCards().get(i)).getSpawn().get(0).getZ());
+                        Location loc = new Location(gMap.getCurrentWorld(), ((TeamCard) gMap.getTeamCards().get(i)).getSpawns().get(0).getX(), ((TeamCard) gMap.getTeamCards().get(i)).getSpawns().get(0).getY(), ((TeamCard) gMap.getTeamCards().get(i)).getSpawns().get(0).getZ());
                         Location spawn;
                         do {
                             spawn = loc.clone().add(0.0D, 10.0D, 0.0D);

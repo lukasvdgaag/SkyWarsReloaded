@@ -417,8 +417,8 @@ public class GameMap {
         World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
         editWorld.setAutoSave(true);
         for (TeamCard tCard : gMap.getTeamCards()) {
-            if (tCard.getSpawn() != null) {
-                for (CoordLoc loc : tCard.getSpawn()) {
+            if (tCard.getSpawns() != null) {
+                for (CoordLoc loc : tCard.getSpawns()) {
                     editWorld.getBlockAt(loc.getX(), loc.getY(), loc.getZ()).setType(Material.DIAMOND_BLOCK);
                 }
             }
@@ -1203,7 +1203,7 @@ public class GameMap {
             world.setSpawnLocation(2000, 0, 2000);
             if (SkyWarsReloaded.getCfg().borderEnabled()) {
                 WorldBorder wb = world.getWorldBorder();
-                wb.setCenter(teamCards.get(0).getSpawn().get(0).getX(), teamCards.get(0).getSpawn().get(0).getZ());
+                wb.setCenter(teamCards.get(0).getSpawns().get(0).getX(), teamCards.get(0).getSpawns().get(0).getZ());
                 wb.setSize(SkyWarsReloaded.getCfg().getBorderSize());
             }
 
@@ -1721,19 +1721,19 @@ public class GameMap {
 
     public void addTeamCard(Location loc, int team) {
         if (teamSize == 1) {
-            List<CoordLoc> locs = spawnLocations.getOrDefault(1, Lists.newArrayList());
-            locs.add(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
-            spawnLocations.put(1, locs);
+            List<CoordLoc> spawnLocs = spawnLocations.getOrDefault(1, Lists.newArrayList());
+            spawnLocs.add(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+            spawnLocations.put(1, spawnLocs);
             //spawnLocations.put(spawnLocations.size() + 1, Lists.newArrayList(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())));
         } else {
-            List<CoordLoc> locs;
+            List<CoordLoc> spawnLocs;
             if (spawnLocations.containsKey(team)) {
-                locs = spawnLocations.get(team);
-                locs.add(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+                spawnLocs = spawnLocations.get(team);
+                spawnLocs.add(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
             } else {
-                locs = Lists.newArrayList(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+                spawnLocs = Lists.newArrayList(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
             }
-            spawnLocations.put(team, locs);
+            spawnLocations.put(team, spawnLocs);
         }
         addTeamCard(team);
     }
@@ -1817,17 +1817,17 @@ public class GameMap {
     }
 
     public int[] removeTeamCard(Location loc) {
-        CoordLoc remove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        CoordLoc locToRemove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         if (teamSize == 1 || !SkyWarsReloaded.getCfg().isUseSeparateCages()) {
             TeamCard toRemove = null;
             boolean removeWholeTeam = false;
             for (TeamCard tCard : teamCards) {
-                if (tCard.getSpawn() != null && tCard.getSpawn().size() >= 1) {
-                    for (int i = 0; i < tCard.getSpawn().size(); i++) {
-                        if (tCard.getSpawn().get(i).equals(remove)) {
+                if (tCard.getSpawns() != null && tCard.getSpawns().size() >= 1) {
+                    for (int i = 0; i < tCard.getSpawns().size(); i++) {
+                        if (tCard.getSpawns().get(i).equals(locToRemove)) {
                             toRemove = tCard;
-                            tCard.getSpawn().remove(remove);
-                            if (tCard.getSpawn().size() == 0) {
+                            tCard.getSpawns().remove(locToRemove);
+                            if (tCard.getSpawns().size() == 0) {
                                 removeWholeTeam = true;
                             }
                         }
@@ -1839,15 +1839,15 @@ public class GameMap {
                     teamCards.remove(toRemove);
                 }
                 for (int i : spawnLocations.keySet()) {
-                    spawnLocations.get(i).remove(remove);
+                    spawnLocations.get(i).remove(locToRemove);
                 }
                 saveArenaData();
                 return new int[]{1, toRemove.getPosition() + 1};
             }
         } else {
             for (TeamCard tCard : teamCards) {
-                if (tCard.getSpawn().contains(remove)) {
-                    spawnLocations.get(tCard.getPosition() + 1).remove(remove);
+                if (tCard.getSpawns().contains(locToRemove)) {
+                    spawnLocations.get(tCard.getPosition() + 1).remove(locToRemove);
                     if (spawnLocations.get(tCard.getPosition() + 1).size() == 0) {
                         teamCards.remove(tCard);
                     }
