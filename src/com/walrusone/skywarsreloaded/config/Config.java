@@ -190,6 +190,7 @@ public class Config {
     private int maxPartySize;
     private boolean partyEnabled;
     private List<String> lobbyWorlds;
+    private boolean loadTrappedChestsAsCenter;
     private int maxChest;
     private int maxDoubleChest;
     private boolean useHolograms;
@@ -374,6 +375,7 @@ public class Config {
             usePartyAndFriends = SkyWarsReloaded.get().getConfig().getBoolean("parties.enablePartyAndFriendsSupport");
             lobbyWorlds = SkyWarsReloaded.get().getConfig().getStringList("parties.lobbyWorlds");
 
+            loadTrappedChestsAsCenter = SkyWarsReloaded.get().getConfig().getBoolean("chests.loadTrappedChestsAsCenter");
             maxChest = SkyWarsReloaded.get().getConfig().getInt("chests.maxItemsChest");
             maxDoubleChest = SkyWarsReloaded.get().getConfig().getInt("chests.maxItemsDoubleChest");
 
@@ -646,6 +648,7 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("parties.enablePartyAndFriendsSupport", usePartyAndFriends);
         SkyWarsReloaded.get().getConfig().set("parties.lobbyWorlds", lobbyWorlds);
 
+        SkyWarsReloaded.get().getConfig().set("chests.loadTrappedChestsAsCenter", loadTrappedChestsAsCenter);
         SkyWarsReloaded.get().getConfig().set("chests.maxItemsChest", maxChest);
         SkyWarsReloaded.get().getConfig().set("chests.maxItemsDoubleChest", maxDoubleChest);
 
@@ -1241,6 +1244,10 @@ public class Config {
 
     public int getMaxDoubleChest() {
         return maxDoubleChest;
+    }
+
+    public boolean getLoadTrappedChestsAsCenter() {
+        return loadTrappedChestsAsCenter;
     }
 
     public int getMaxChest() {

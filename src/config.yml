@@ -85,6 +85,7 @@ parties:
 holograms: 
   enabled: false
 chests:
+  loadTrappedChestsAsCenter: false
   maxItemsChest: 26
   maxItemsDoubleChest: 53 
 kit:
