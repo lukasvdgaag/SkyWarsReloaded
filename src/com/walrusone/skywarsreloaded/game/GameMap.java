@@ -905,8 +905,8 @@ public class GameMap {
 
         if (teamSize == 1) {
             List<String> spawns = new ArrayList<>();
-            if (spawnLocations.size() >= 1 && spawnLocations.containsKey(1)) {
-                for (CoordLoc loc : spawnLocations.get(1)) {
+            if (spawnLocations.size() >= 1 && spawnLocations.containsKey(0)) {
+                for (CoordLoc loc : spawnLocations.get(0)) {
                     spawns.add(loc.getLocation());
                 }
             }
@@ -1036,8 +1036,8 @@ public class GameMap {
             for (int i = 0; i < spawns.size(); i++) {
                 lls.add(Util.get().getCoordLocFromString(spawns.get(i)));
                 spawnLocations.remove(0);
-                spawnLocations.put(1, lls);
-                addTeamCard(i + 1);
+                spawnLocations.put(0, lls);
+                addTeamCard(i);
             }
 
         } else {
@@ -1049,8 +1049,10 @@ public class GameMap {
                         for (String spawn : spawns) {
                             locs.add(Util.get().getCoordLocFromString(spawn));
                         }
-                        spawnLocations.put(Integer.parseInt(team.replace("team-", "")), locs);
-                        addTeamCard(Integer.parseInt(team.replace("team-", "")));
+                        // Remove 1 to change from user readable to program index
+                        int teamIndex = Integer.parseInt(team.replace("team-", "")) - 1;
+                        spawnLocations.put(teamIndex, locs);
+                        addTeamCard(teamIndex);
                     }
                 }
             }
@@ -1108,7 +1110,7 @@ public class GameMap {
         if (inEditing) {
             saveMap(null);
         }
-        if (spawnLocations.size() > 1 || (teamSize == 1 && spawnLocations.size() == 1 && spawnLocations.get(1).size() > 1)) {
+        if (spawnLocations.size() > 1 || (teamSize == 1 && spawnLocations.size() == 1 && spawnLocations.get(0).size() > 1)) {
             int maxPlayers = getMaxPlayers();
             int actualMaxPlayers = teamCards.size() * teamSize;
 
@@ -1233,7 +1235,7 @@ public class GameMap {
         teamCards.clear();
         chests.clear();
 
-        List<CoordLoc> spawns;
+        List<CoordLoc> soloSpawns;
 
         for (int cx = cMin.getX(); cx < cMax.getX(); cx++) {
             for (int cz = cMin.getZ(); cz < cMax.getZ(); cz++) {
@@ -1248,10 +1250,10 @@ public class GameMap {
                                 && !block.getType().equals(Material.DIAMOND_BLOCK) && !block.getType().equals(Material.EMERALD_BLOCK))) {
                             Location loc = beacon.getLocation();
                             if (teamSize == 1) {
-                                spawns = spawnLocations.getOrDefault(1,Lists.newArrayList());
-                                spawns.add(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
-                                spawnLocations.put(1, spawns);
-                                addTeamCard(spawnLocations.size());
+                                soloSpawns = spawnLocations.getOrDefault(0,Lists.newArrayList());
+                                soloSpawns.add(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+                                spawnLocations.put(0, soloSpawns);
+                                addTeamCard(soloSpawns.size() - 1);
                                 if (message) {
                                     sender.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + getMaxPlayers()).setVariable("mapname", getDisplayName()).format("maps.addSpawn"));
                                 }
@@ -1692,130 +1694,144 @@ public class GameMap {
         saveArenaData();
     }
 
-    public void addTeamCard(int teamNumber, boolean saveFile) {
+    public void addTeamCard(int teamIndex, boolean saveFile) {
         String prefix = "";
-        if (teamSize > 1) {
-            prefix = getChatColor(teamCards.size());
-        }
+        int teamCardsSize = teamCards.size();
 
-        teamCards.removeIf(card -> card.getPosition() + 1 == teamNumber);
+        // Reset if already exists
+        teamCards.removeIf(card -> card.getPosition() == teamIndex);
+
         List<CoordLoc> locs = Lists.newArrayList();
-        if (teamSize == 1) {
-            if (spawnLocations.size() > 0 && spawnLocations.containsKey(1)) {
-                locs.add(spawnLocations.get(1).get(teamNumber-1));
+        // Solo mode
+        if (teamSize <= 1) {
+            if (spawnLocations.size() > 0 && spawnLocations.containsKey(0)) {
+                locs.add(spawnLocations.get(0).get(teamIndex));
             }
+        // Teams mode
+        } else {
+            // Set prefix color
+            prefix = getChatColor(teamCardsSize);
+            locs = spawnLocations.get(teamIndex);
         }
-        else {
-            locs = spawnLocations.get(teamNumber);
-        }
-
-        teamCards.add(new TeamCard(teamSize, this, prefix, getStringColor(teamCards.size()), teamCards.size() + 1, locs));
+        // Add new team at index maxIndex + 1 which is also size()
+        teamCards.add(new TeamCard(teamSize, this, prefix, getStringColor(teamCardsSize), teamCardsSize, locs));
         if (saveFile) {
             saveArenaData();
         }
     }
 
-    public void addTeamCard(int teamNumber) {
-        addTeamCard(teamNumber, false);
+    /**
+     * Add a team slot to the current GameMap
+     * @param teamIndex Index of team starting at 0 to ...
+     */
+    public void addTeamCard(int teamIndex) {
+        addTeamCard(teamIndex, false);
     }
 
-    public void addTeamCard(Location loc, int team) {
+    public void addTeamCard(Location loc, int teamIndex) {
         if (teamSize == 1) {
-            List<CoordLoc> spawnLocs = spawnLocations.getOrDefault(1, Lists.newArrayList());
+            List<CoordLoc> spawnLocs = spawnLocations.getOrDefault(0, Lists.newArrayList());
             spawnLocs.add(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
-            spawnLocations.put(1, spawnLocs);
+            spawnLocations.put(0, spawnLocs);
             //spawnLocations.put(spawnLocations.size() + 1, Lists.newArrayList(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())));
         } else {
             List<CoordLoc> spawnLocs;
-            if (spawnLocations.containsKey(team)) {
-                spawnLocs = spawnLocations.get(team);
+            if (spawnLocations.containsKey(teamIndex)) {
+                spawnLocs = spawnLocations.get(teamIndex);
                 spawnLocs.add(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
             } else {
                 spawnLocs = Lists.newArrayList(new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
             }
-            spawnLocations.put(team, spawnLocs);
+            spawnLocations.put(teamIndex, spawnLocs);
         }
-        addTeamCard(team);
+        addTeamCard(teamIndex);
     }
 
     private String getChatColor(int size) {
-        double d = ((double) size + 1) / 14;
-        long i = (long) d;
-        double f = d - i;
-        int s = (int) (f * 14);
-        switch (s) {
+        double div14 = ((double) size + 1) / 14;
+        long longDiv14 = (long) div14;
+        double truncatedDiv14 = div14 - longDiv14;
+        int remainderDiv14 = (int) (truncatedDiv14 * 14);
+        switch (remainderDiv14) {
             case 1:
-                return ChatColor.GREEN + "";
+                return ChatColor.GREEN.toString();
             case 2:
-                return ChatColor.RED + "";
+                return ChatColor.RED.toString();
             case 3:
-                return ChatColor.DARK_BLUE + "";
+                return ChatColor.DARK_BLUE.toString();
             case 4:
-                return ChatColor.YELLOW + "";
+                return ChatColor.YELLOW.toString();
             case 5:
-                return ChatColor.WHITE + "";
+                return ChatColor.WHITE.toString();
             case 6:
-                return ChatColor.AQUA + "";
+                return ChatColor.AQUA.toString();
             case 7:
-                return ChatColor.GRAY + "";
+                return ChatColor.GRAY.toString();
             case 8:
-                return ChatColor.DARK_PURPLE + "";
+                return ChatColor.DARK_PURPLE.toString();
             case 9:
-                return ChatColor.DARK_GREEN + "";
+                return ChatColor.DARK_GREEN.toString();
             case 10:
-                return ChatColor.BLUE + "";
+                return ChatColor.BLUE.toString();
             case 11:
-                return ChatColor.DARK_GRAY + "";
+                return ChatColor.DARK_GRAY.toString();
             case 12:
-                return ChatColor.BLACK + "";
+                return ChatColor.BLACK.toString();
             case 13:
-                return ChatColor.LIGHT_PURPLE + "";
+                return ChatColor.LIGHT_PURPLE.toString();
             case 14:
-                return ChatColor.GOLD + "";
+                return ChatColor.GOLD.toString();
             default:
-                return ChatColor.GREEN + "";
+                return ChatColor.GREEN.toString();
         }
     }
 
-    private String getStringColor(int size) {
+    private String getStringColor(int index) {
         /*double d = ((double) size + 1) / 14;
         long i = (long) d;
         double f = d - i;
         int s = (int) (f * 14);*/
-        switch (size) {
-            case 1:
+        switch (index) {
+            case 0:
                 return "Lime";
-            case 2:
+            case 1:
                 return "Red";
-            case 3:
+            case 2:
                 return "Blue";
-            case 4:
+            case 3:
                 return "Yellow";
-            case 5:
+            case 4:
                 return "White";
-            case 6:
+            case 5:
                 return "Cyan";
-            case 7:
+            case 6:
                 return "Light Gray";
-            case 8:
+            case 7:
                 return "Purple";
-            case 9:
+            case 8:
                 return "Green";
-            case 10:
+            case 9:
                 return "Light Blue";
-            case 11:
+            case 10:
                 return "Gray";
-            case 12:
+            case 11:
                 return "Black";
-            case 13:
+            case 12:
                 return "Magenta";
-            case 14:
+            case 13:
                 return "Orange";
             default:
                 return "Lime";
         }
     }
 
+    /**
+     * Remove team slot by spawn location
+     * @param loc Bukkit location of the spawn
+     * @return
+     *      Array of which index 0 is the index of the spawn removed in that team (if only 1 spawn location, team is completely removed.
+     *      Index 1 is the index of the team removed from the map
+     */
     public int[] removeTeamCard(Location loc) {
         CoordLoc locToRemove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         if (teamSize == 1 || !SkyWarsReloaded.getCfg().isUseSeparateCages()) {
@@ -1842,19 +1858,37 @@ public class GameMap {
                     spawnLocations.get(i).remove(locToRemove);
                 }
                 saveArenaData();
-                return new int[]{1, toRemove.getPosition() + 1};
+                return new int[] { 0, toRemove.getPosition() };
             }
         } else {
+            boolean foundMatch = false;
+            List<TeamCard> cardsToRemove = new ArrayList<>();
+            List<CoordLoc> spawnsOfTeam = new ArrayList<>();
+            TeamCard tCardAffected = null;
+
             for (TeamCard tCard : teamCards) {
                 if (tCard.getSpawns().contains(locToRemove)) {
-                    spawnLocations.get(tCard.getPosition() + 1).remove(locToRemove);
-                    if (spawnLocations.get(tCard.getPosition() + 1).size() == 0) {
-                        teamCards.remove(tCard);
+                    spawnsOfTeam = spawnLocations.get(tCard.getPosition());
+                    spawnsOfTeam.remove(locToRemove);
+                    // If card empty -> remove completely
+                    if (spawnsOfTeam.size() == 0) {
+                        cardsToRemove.add(tCard);
                     }
-                    //addTeamCard(tCard.getPosition() + 1, true);
-                    saveArenaData();
-                    return new int[]{spawnLocations.get(tCard.getPosition() + 1).size() + 1, tCard.getPosition()};
+                    //addTeamCard(tCard.getPosition() + 1, true); -- remove ??
+                    foundMatch = true;
+                    tCardAffected = tCard;
+                    break;
                 }
+            }
+            // Remove empty ones
+            for (TeamCard tCard : cardsToRemove) {
+                teamCards.remove(tCard);
+            }
+            // Save if modified
+            if (foundMatch) {
+                saveArenaData();
+                // Use size since the removed spawn location for that team no longer exists, hence it's index was at maxIndex + 1 = size()
+                return new int[] { spawnsOfTeam.size(), tCardAffected.getPosition() };
             }
         }
         return null;

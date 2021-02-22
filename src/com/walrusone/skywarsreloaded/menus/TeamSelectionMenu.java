@@ -66,6 +66,7 @@ public class TeamSelectionMenu {
                 List<String> lores = new ArrayList<>();
                 for (TeamCard tCard : teamCards) {
                     String name = new Messaging.MessageFormatter()
+                            // + 1 for human readable format
                             .setVariable("team", (tCard.getPosition()+1) + "")
                             .   setVariable("playercount", tCard.getPlayersSize() + "")
                             .setVariable("teamsize", tCard.getSize() + "")
@@ -80,22 +81,25 @@ public class TeamSelectionMenu {
                         item = SkyWarsReloaded.getNMS().getColorItem(mat, color);
                     }
                     if (SkyWarsReloaded.getCfg().isUseTeamNumberInMenu()) {
-                        item.setAmount(tCard.getPosition()+1);
+                        // + 1 since item count cannot be 0 and human prefer starting at 1
+                        item.setAmount(tCard.getPosition() + 1);
                     }
 
                     lores.clear();
 
                     for (String line : SkyWarsReloaded.getMessaging().getFile().getStringList("menu.team_select_menu.lore.general-lore")) {
+                        // +1 position for index to be human readable
                         lores.add(ChatColor.translateAlternateColorCodes('&', line.replace("{team}", (tCard.getPosition()+1)+"")
-                        .replace("{playercount}", tCard.getPlayersSize() + "")
-                        .replace("{teamsize}", tCard.getSize()+"")
-                        .replace("{teamcolor}", tCard.getTeamName())));
+                            .replace("{playercount}", tCard.getPlayersSize() + "")
+                            .replace("{teamsize}", tCard.getSize()+"")
+                            .replace("{teamcolor}", tCard.getTeamName())));
                     }
 
                     for (PlayerCard pCard : tCard.getPlayerCards()) {
                         Player p = pCard.getPlayer();
                         if (p != null) {
                             lores.add(new Messaging.MessageFormatter()
+                                    // +1 position for index to be human readable
                                     .setVariable("team", (tCard.getPosition()+1) + "")
                                     .setVariable("playercount", tCard.getPlayersSize() + "")
                                     .setVariable("teamsize", tCard.getSize() + "")
@@ -204,8 +208,8 @@ public class TeamSelectionMenu {
                     }
 
                     Bukkit.getPluginManager().callEvent(new SkyWarsSelectTeamEvent(player, gMap, tCard));
+                    // +1 position for index to be human readable
                     player.sendMessage(ChatColor.YELLOW + "You joined team " + (tCard.getPosition()+1));
-                    //SkyWarsReloaded.getIC().show(player, gMap.getName() + "teamselect");
                     player.closeInventory();
                     SkyWarsReloaded.getIC().getMenu(gMap.getName() + "teamselect").update();
 

@@ -413,8 +413,8 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
-        GameMap gMap = MatchManager.get().getPlayerMap(e.getPlayer());
-        if (gMap == null) {
+        GameMap playerPlayingMap = MatchManager.get().getPlayerMap(e.getPlayer());
+        if (playerPlayingMap == null) {
             if (e.getBlock().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST) || e.getBlock().getType().equals(Material.DIAMOND_BLOCK) || e.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
                 GameMap map = GameMap.getMap(e.getPlayer().getWorld().getName());
                 if (map == null) {
@@ -445,8 +445,10 @@ public class PlayerInteractListener implements Listener {
                         int[] result = map.removeTeamCard(e.getBlock().getLocation());
                         if (result != null) {
                             e.getPlayer().sendMessage(new Messaging.MessageFormatter()
-                                    .setVariable("num", "" + result[0])
-                                    .setVariable("team", "" + result[1])
+                                    // Convert spawn index to human number
+                                    .setVariable("num", "" + result[0] + 1)
+                                    // Convert team index to human number
+                                    .setVariable("team", "" + result[1] + 1)
                                     .setVariable("mapname", map.getDisplayName())
                                     .format("maps.spawnRemoved"));
                             return;
@@ -454,13 +456,14 @@ public class PlayerInteractListener implements Listener {
 
                         CoordLoc loc = new CoordLoc(e.getBlock().getX(), e.getBlock().getY(), e.getBlock().getZ());
                         if (map.getTeamSize() == 1) {
-                            List<CoordLoc> locs = map.spawnLocations.getOrDefault(1, Lists.newArrayList());
+                            List<CoordLoc> locs = map.spawnLocations.getOrDefault(0, Lists.newArrayList());
                             for (int i = 0; i < locs.size(); i++) {
                                 CoordLoc l = locs.get(i);
                                 if (l.getX() == loc.getX() && l.getY() == loc.getY() && l.getZ() == loc.getZ()) {
                                     locs.remove(i);
-                                    map.spawnLocations.put(1, locs);
+                                    map.spawnLocations.put(0, locs);
                                     e.getPlayer().sendMessage(new Messaging.MessageFormatter()
+                                            // 1 because human readable
                                             .setVariable("num", "" + 1)
                                             .setVariable("team", "" + i)
                                             .setVariable("mapname", map.getDisplayName())
@@ -480,20 +483,20 @@ public class PlayerInteractListener implements Listener {
             }
             return;
         }
-        if (gMap.getMatchState().equals(MatchState.WAITINGSTART) || gMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
+        if (playerPlayingMap.getMatchState().equals(MatchState.WAITINGSTART) || playerPlayingMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
             e.setCancelled(true);
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    CoordLoc spawn = gMap.getPlayerCard(e.getPlayer()).getSpawn();
-                    e.getPlayer().teleport(new Location(gMap.getCurrentWorld(), spawn.getX() + 0.5, spawn.getY() + 1, spawn.getZ() + 0.5));
+                    CoordLoc spawn = playerPlayingMap.getPlayerCard(e.getPlayer()).getSpawn();
+                    e.getPlayer().teleport(new Location(playerPlayingMap.getCurrentWorld(), spawn.getX() + 0.5, spawn.getY() + 1, spawn.getZ() + 0.5));
                 }
             }.runTaskLater(SkyWarsReloaded.get(), 2);
         }
-        if (gMap.getMatchState().equals(MatchState.PLAYING)) {
+        if (playerPlayingMap.getMatchState().equals(MatchState.PLAYING)) {
             Block block = e.getBlock();
             if (block.getType().equals(Material.ENDER_CHEST)) {
-                for (Crate crate : gMap.getCrates()) {
+                for (Crate crate : playerPlayingMap.getCrates()) {
                     if (crate.getLocation().equals(block.getLocation())) {
                         e.setCancelled(true);
                         return;

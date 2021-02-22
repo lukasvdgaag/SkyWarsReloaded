@@ -44,7 +44,7 @@ public class DebugCmd extends BaseCmd {
         sender.sendMessage("-- Debug of teams");
         sender.sendMessage("Teamcards: " + gMap.getTeamCards().size());
         for (TeamCard card : gMap.getTeamCards()) {
-            sender.sendMessage("#" + (card.getPosition()+1) + ": p=" + card.getPlayerCards().size() + ", s=" + card.getSpawns().size());
+            sender.sendMessage("#" + card.getPosition() + ": p=" + card.getPlayerCards().size() + ", s=" + card.getSpawns().size());
         }
         sender.sendMessage(" ");
 
@@ -62,9 +62,9 @@ public class DebugCmd extends BaseCmd {
             GameMap dead = MatchManager.get().getPlayerMap(player);
             GameMap spec = MatchManager.get().getPlayerMap(player);
 
-            sender.sendMessage("Are u in-game as player? " + (map == null ? "no" : "yes") + " " + (map != null ? map.getName() : ""));
-            sender.sendMessage("Are u in-game as dead? " + (dead == null ? "no" : "yes") + " " + (dead != null ? dead.getName() : ""));
-            sender.sendMessage("Are u in-game as spec? " + (spec == null ? "no" : "yes") + " " + (spec != null ? spec.getName() : ""));
+            sender.sendMessage("Are you in-game as player? " + (map == null ? "no" : "yes") + " " + (map != null ? map.getName() : ""));
+            sender.sendMessage("Are you in-game as dead? " + (dead == null ? "no" : "yes") + " " + (dead != null ? dead.getName() : ""));
+            sender.sendMessage("Are you in-game as spec? " + (spec == null ? "no" : "yes") + " " + (spec != null ? spec.getName() : ""));
         }
         return true;
     }

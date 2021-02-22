@@ -35,7 +35,7 @@ public class TeamCard {
         name = (prefix + color);
         String col = color.replaceAll("\\s", "").toLowerCase();
         bColor = Util.get().getByteFromColor(col);
-        position = (pos - 1);
+        position = pos;
         for (int i = 0; i < size; i++) {
             CoordLoc loc;
             if (teamSpawns == null) loc = null;

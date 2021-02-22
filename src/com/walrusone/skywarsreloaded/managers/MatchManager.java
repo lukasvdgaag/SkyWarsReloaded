@@ -736,21 +736,20 @@ public class MatchManager {
         }
     }
 
-    public void removeAlivePlayer(final Player player, PlayerRemoveReason reason, boolean announceToOthers) {
+    public void removeAlivePlayer(final Player player, PlayerRemoveReason reason, @Nullable DamageCause deathCause, boolean announceToOthers) {
         // General consts
         final UUID pUuid = player.getUniqueId();
         final GameMap gMap = this.getPlayerMap(player);
+        // Check player is in game
+        if (gMap == null) {
+            return;
+        }
         final PlayerData pData = PlayerData.getPlayerData(pUuid);
         final PlayerCard pCard = gMap.getPlayerCard(player);
         final TeamCard teamCard = pCard.getTeamCard();
 
         // Remove player options no matter if in game
         SkyWarsReloaded.getOM().removePlayer(pUuid);
-
-        // Check player is in game
-        if (gMap == null) {
-            return;
-        }
 
         if (gMap.getMatchState() == MatchState.PLAYING) {
             // Process Team data
