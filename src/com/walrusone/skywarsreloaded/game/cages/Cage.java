@@ -180,7 +180,7 @@ public abstract class Cage {
                 }
             }
 
-            for (CoordLoc loc : tCard.getSpawn()) {
+            for (CoordLoc loc : tCard.getSpawns()) {
                 Bukkit.getScheduler().runTask(SkyWarsReloaded.get(), () -> {
                     removeSpawnHousing(gMap, loc);
                 });

@@ -190,8 +190,8 @@ public class MinecraftPing {
         if (jsonElement instanceof JsonPrimitive)  return jsonElement.getAsString();
         // 1.12
         JsonObject descJsonObj = jsonElement.getAsJsonObject();
-        if (descJsonObj.has("text")) jsonElement = descJsonObj.get("text"); // 1.12
-        else if (descJsonObj.has("extra")) jsonElement = descJsonObj.get("extra"); // 1.13+
+        if (descJsonObj.has("extra")) jsonElement = descJsonObj.get("extra"); // 1.13+
+        else if (descJsonObj.has("text")) jsonElement = descJsonObj.get("text"); // 1.12
         if (jsonElement instanceof JsonPrimitive)  return jsonElement.getAsString(); // will be false in 1.13+
         // 1.13+
         jsonElement = jsonElement.getAsJsonArray().get(0);

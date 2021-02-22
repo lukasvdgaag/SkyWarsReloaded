@@ -4,6 +4,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.events.SkyWarsDeathEvent;
 import com.walrusone.skywarsreloaded.events.SkyWarsKillEvent;
@@ -31,6 +32,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -53,11 +56,18 @@ public class MatchManager {
         return MatchManager.instance;
     }
 
+    /**
+     * Include online player into game
+     * @param player The player to add
+     * @param type Type of game (teams, single, etc..)
+     * @return Was successfully joined
+     */
     public boolean joinGame(Player player, GameType type) {
         GameMap.shuffle();
         GameMap map = null;
         int highest = -1;
         ArrayList<GameMap> games = GameMap.getPlayableArenas(type);
+        boolean wasJoined = false;
 
         Collections.shuffle((games));
 
@@ -76,22 +86,29 @@ public class MatchManager {
         }
 
         if (map == null) {
-            if (SkyWarsReloaded.getCfg().debugEnabled())
+            if (SkyWarsReloaded.getCfg().debugEnabled()) {
                 Bukkit.getLogger().log(Level.WARNING, "#joinGame: --map = null:");
-            if (player.hasPermission("sw.admin.joinBypass")) { // TODO: Not fully tested, scoreboard doesn't appear
-                addSpectator(games.get(0), player);
-                return true;
             }
-            return false;
+            // Allow joining as spec if you have permission
+            if (player.hasPermission("sw.admin.joinBypass")) { // TODO: Not fully tested, scoreboard doesn't appear
+                if (games.size() > 0) {
+                    addSpectator(games.get(0), player);
+                    wasJoined = true;
+                }
+            }
+            // else wasJoined is still false
+        } else {
+            wasJoined = map.addPlayers(null, player);
         }
-
-        boolean joined = false;
-        if (map != null) {
-            joined = map.addPlayers(null, player);
-        }
-        return joined;
+        return wasJoined;
     }
 
+    /**
+     * Add all players from party into game
+     * @param party The party
+     * @param type The game type
+     * @return Was successfully joined
+     */
     public boolean joinGame(Party party, GameType type) {
         GameMap.shuffle();
         GameMap map = null;
@@ -143,17 +160,10 @@ public class MatchManager {
 
 
     public void message(final GameMap gameMap, final String message) {
-        List<Player> worldPlayers = gameMap.getCurrentWorld().getPlayers();
-        if (worldPlayers != null && !worldPlayers.isEmpty()) {
-            for (Player player : worldPlayers) {
-                if (player != null) {
-                    player.sendMessage(message);
-                }
-            }
-        }
+        this.message(gameMap, message, null);
     }
 
-    public void message(final GameMap gameMap, final String message, Player skip) {
+    public void message(@NotNull final GameMap gameMap, final String message, @Nullable Player skip) {
         List<Player> worldPlayers = gameMap.getCurrentWorld().getPlayers();
         if (worldPlayers != null && !worldPlayers.isEmpty()) {
             for (Player player : worldPlayers) {
@@ -166,7 +176,7 @@ public class MatchManager {
 
     public void teleportToArena(final GameMap gameMap, PlayerCard pCard) {
         if (pCard.getPlayer() == null || (!gameMap.getMatchState().equals(MatchState.WAITINGLOBBY) && !gameMap.getMatchState().equals(MatchState.WAITINGSTART)) ||
-                (gameMap.getMatchState().equals(MatchState.WAITINGSTART) && pCard.getTeamCard().getSpawn() == null)) {
+                (gameMap.getMatchState().equals(MatchState.WAITINGSTART) && pCard.getTeamCard().getSpawns() == null)) {
             pCard.reset();
             return;
         }
@@ -335,11 +345,15 @@ public class MatchManager {
         gameMap.setTimer(this.getWaitTime());
         new BukkitRunnable() {
             public void run() {
+
+                // If we are not waiting for a game start (aka in game or ending) then cancel everything here
                 if (gameMap.getMatchState() != MatchState.WAITINGSTART && gameMap.getMatchState() != MatchState.WAITINGLOBBY) {
                     this.cancel();
+                    return;
                 }
 
                 if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
+                    // if there is at least one player per team OR forcestart is triggered while at least one player is present
                     if (gameMap.getAllPlayers().size() >= gameMap.getMinTeams() || (gameMap.getForceStart() && gameMap.getAllPlayers().size() > 0)) {
                         if (gameMap.getTimer() <= 0) {
                             this.cancel();
@@ -368,37 +382,62 @@ public class MatchManager {
                                     }
                                 }
                             }
+                            // Announce every 5 seconds OR every second if under or equal to 5
                             if (gameMap.getTimer() % 5 == 0 || gameMap.getTimer() <= 5) {
                                 MatchManager.this.announceTimer(gameMap);
                             }
                         }
-                        int timeLeft = gameMap.getTimer() == 0 ? gameMap.getTimer() : gameMap.getTimer() - 1;
-                        gameMap.setTimer(timeLeft);
-                    } else {
+                        // Decrease the timer unless we are already at 0
+                        gameMap.setTimer(gameMap.getTimer() > 0 ? gameMap.getTimer() - 1 : 0);
+                    } else { // if not at least 1 player per team AND force start is not triggered
+                        // Reset the timer
                         gameMap.setTimer(waitTime);
                     }
-                } else {
-                    if (gameMap.getAllPlayers().size() >= gameMap.getMinTeams() || gameMap.getForceStart()) {
-                        if (gameMap.getTimer() <= 0) {
-                            // TODO ADD TEAM ASSIGNING HERE
+                } else { // If not in waitingstart state (aka are we in a lobby mode?)
 
+                    // if there is at least one player per team OR forcestart is triggered while at least one player is present
+                    if (gameMap.getAllPlayers().size() >= gameMap.getMinTeams() || (gameMap.getForceStart() && gameMap.getAllPlayers().size() > 0)) {
+                        if (gameMap.getTimer() <= 0) {
+
+                            // Team assigning
+                            /*
+                                TODO: this is broken - lowest should start at max per team and reduce
+                                        only if it's actually lower.. there is no check for that rn. Also,
+                                        given this setup it requires that there is already a lone player in
+                                        the team before being able to add a nwe one.
+                                    - - -
+                                    Suggested setup:
+                                        - build a list of unassigned players (aka your new minions xD),
+                                        - build a ordered list of teams ranked from smallest to biggest
+                                        - iterate once over to find the lowest number of players in a team,
+                                        - then iterate over the teams again and take the last player in the list..
+                                            (to avoid shifting many players in memory)
+                                        - place each player into a team, then start back at the beginning when
+                                            the existing players in a team is higher than previously recorded lowest
+                                            and increase previous lowest to += 1
+                            */
                             for (Player player : gameMap.getAllPlayers()) {
                                 if (gameMap.getTeamCard(player) == null) {
                                     List<TeamCard> cards = gameMap.getTeamCards();
                                     Collections.shuffle(cards);
                                     int lowest = 0;
                                     for (TeamCard card : cards) {
+                                        // If team has a "lone" player AND
                                         if (card.getFullCount() > 0 && card.getPlayersSize() <= lowest) {
+                                            // Add player to team
                                             card.sendReservation(player, PlayerStat.getPlayerStats(player));
                                             break;
                                         }
+                                        // TODO: broken AF, no check before setting lowest
                                         lowest = card.getPlayersSize();
                                     }
                                 }
                             }
 
+                            // Remove all players from waiting lobby state and set the game to waiting start (in cages mode)
                             gameMap.clearWaitingPlayers();
                             gameMap.setMatchState(MatchState.WAITINGSTART);
+                            // Send all player tp their respective start cages
                             for (final Player player : gameMap.getAlivePlayers()) {
                                 Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getCountdownSound(), 1, 1F);
 
@@ -407,14 +446,15 @@ public class MatchManager {
                                 if (!b) {
                                     gameMap.getCage().setGlassColor(gameMap, gameMap.getTeamCard(player));
                                 }
-
+                                // This just runs the teleport-to-cage operation
                                 teleportToArena(gameMap, gameMap.getPlayerCard(player));
                             }
+                            // Wait 15 seconds before starting the game
                             gameMap.setTimer(15); // todo make this editable
-                        } else {
+                        } else { // if (gameMap.getTimer() <= 0)
                             gameMap.setTimer(gameMap.getTimer() - 1);
                         }
-                    } else {
+                    } else { // if not at least 1 player per team AND force start is not triggered
                         gameMap.setTimer(waitTime);
                     }
                 }
@@ -556,36 +596,36 @@ public class MatchManager {
                     gameMap.addWinner(winner.getPlayer().getName());
                 }
             }
-            String winName = SkyWarsReloaded.getCfg().usePlayerNames() ? winners.getPlayerNames() : winners.getTeamName();
-            final String winner = winName;
+            final String winner = SkyWarsReloaded.getCfg().usePlayerNames() ? winners.getPlayerNames() : winners.getTeamName();
             final String map = gameMap.getDisplayName();
 
+            // Make sure winners are placed #1
+            winners.setPlace(1);
             for (PlayerCard pCard : winners.getPlayerCards()) {
-                Player win = pCard.getPlayer();
+                Player pWinner = pCard.getPlayer();
 
-                pCard.getTeamCard().setPlace(1);
-                if (win != null) {
-                    final PlayerStat winnerData = PlayerStat.getPlayerStats(win.getUniqueId().toString());
+                if (pWinner != null) {
+                    final PlayerStat winnerData = PlayerStat.getPlayerStats(pWinner.getUniqueId().toString());
                     if (winnerData != null) {
                         winnerData.setWins(winnerData.getWins() + 1);
-                        final int multiplier = Util.get().getMultiplier(win);
+                        final int multiplier = Util.get().getMultiplier(pWinner);
                         winnerData.setXp(winnerData.getXp() + (multiplier * SkyWarsReloaded.getCfg().getWinnerXP()));
                         if (SkyWarsReloaded.getCfg().economyEnabled()) {
-                            VaultUtils.get().give(win, multiplier * SkyWarsReloaded.getCfg().getWinnerEco());
+                            VaultUtils.get().give(pWinner, multiplier * SkyWarsReloaded.getCfg().getWinnerEco());
                         }
                         WinSoundOption sound = (WinSoundOption) WinSoundOption.getPlayerOptionByKey(winnerData.getWinSound());
                         if (sound != null) {
-                            sound.playSound(win.getLocation());
+                            sound.playSound(pWinner.getLocation());
                         }
 
-                        Util.get().sendActionBar(win, new Messaging.MessageFormatter().setVariable("xp", "" + multiplier * SkyWarsReloaded.getCfg().getWinnerXP()).format("game.win-actionbar"));
-                        Util.get().doCommands(SkyWarsReloaded.getCfg().getWinCommands(), win);
+                        Util.get().sendActionBar(pWinner, new Messaging.MessageFormatter().setVariable("xp", "" + multiplier * SkyWarsReloaded.getCfg().getWinnerXP()).format("game.win-actionbar"));
+                        Util.get().doCommands(SkyWarsReloaded.getCfg().getWinCommands(), pWinner);
                         if (SkyWarsReloaded.getCfg().getEnableFlightOnWin()) {
-                            win.setAllowFlight(true);
-                            win.setFlying(true);
+                            pWinner.setAllowFlight(true);
+                            pWinner.setFlying(true);
                         }
                         if (SkyWarsReloaded.getCfg().getClearInventoryOnWin()) {
-                            win.getInventory().clear();
+                            pWinner.getInventory().clear();
                         }
                         Bukkit.getPluginManager().callEvent(new SkyWarsWinEvent(winnerData, gameMap));
                     }
@@ -595,17 +635,17 @@ public class MatchManager {
                                 .setVariable("player1", winner).setVariable("map", map).format("game.broadcast-win"));
                     }
                     if (SkyWarsReloaded.getCfg().titlesEnabled()) {
-                        Util.get().sendTitle(win, 5, 80, 5, new Messaging.MessageFormatter().format("titles.endgame-title-won"), new Messaging.MessageFormatter().format("titles.endgame-subtitle-won"));
+                        Util.get().sendTitle(pWinner, 5, 80, 5, new Messaging.MessageFormatter().format("titles.endgame-title-won"), new Messaging.MessageFormatter().format("titles.endgame-subtitle-won"));
                     }
                     if (SkyWarsReloaded.getCfg().fireworksEnabled()) {
-                        Util.get().fireworks(win, 5, SkyWarsReloaded.getCfg().getFireWorksPer5Tick());
+                        Util.get().fireworks(pWinner, 5, SkyWarsReloaded.getCfg().getFireWorksPer5Tick());
                     }
                     if (SkyWarsReloaded.getCfg().particlesEnabled()) {
                         List<String> particles = new ArrayList<>();
                         particles.add("FIREWORKS_SPARK");
-                        Util.get().surroundParticles(win, 1, particles, 8, 0);
+                        Util.get().surroundParticles(pWinner, 1, particles, 8, 0);
                     }
-                    win.sendMessage(new Messaging.MessageFormatter()
+                    pWinner.sendMessage(new Messaging.MessageFormatter()
                             .setVariable("map", gameMap.getName()).format("game.won"));
                 }
             }
@@ -625,11 +665,12 @@ public class MatchManager {
 
     private void endGame(final GameMap gameMap) {
         if (debug) {
-            Util.get().logToFile(debugName + ChatColor.YELLOW + "SkyWars Match Has Ended - Wating for teleport");
+            Util.get().logToFile(debugName + ChatColor.YELLOW + "SkyWars Match Has Ended - Waiting for teleport");
         }
         gameMap.update();
         gameMap.setTimer(0);
         if (SkyWarsReloaded.get().isEnabled() && !gameMap.getMatchState().equals(MatchState.OFFLINE)) {
+            // Save all player stats
             for (final Player player : gameMap.getAllPlayers()) {
                 new BukkitRunnable() {
                     public void run() {
@@ -640,15 +681,15 @@ public class MatchManager {
                     }
                 }.runTaskAsynchronously(SkyWarsReloaded.get());
             }
+            // Clear all players
             new BukkitRunnable() {
                 public void run() {
+                    // Clear Spectators
                     for (final UUID uuid : gameMap.getSpectators()) {
-                        final Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
-                        if (player != null) {
-                            removeSpectator(player);
-                        }
+                        MatchManager.this.removeSpectatorByUuid(uuid);
                     }
                     gameMap.getSpectators().clear();
+                    // Clear Alive players
                     for (final Player player : gameMap.getAlivePlayers()) {
                         if (player != null) {
                             if (PlayerData.getPlayerData(player.getUniqueId()) != null) {
@@ -657,22 +698,30 @@ public class MatchManager {
                                     pd.setTaggedBy(null);
                                 }
                             }
-                            MatchManager.this.playerLeave(player, DamageCause.CUSTOM, true, true, true);
+                            MatchManager.this.removeAlivePlayer(player, DamageCause.CUSTOM, true, true, true);
                         }
                     }
-                    new BukkitRunnable() {
-                        public void run() {
-                            if (SkyWarsReloaded.getCfg().bungeeMode()) {
-                                Util.get().doCommands(SkyWarsReloaded.getCfg().getGameEndCommands(), null);
-                            }
-                            gameMap.refreshMap();
-                            if (debug) {
-                                Util.get().logToFile(debugName + ChatColor.YELLOW + "SkyWars Match Has Ended - Anena has been refreshed");
-                            }
-                        }
-                    }.runTaskLater(SkyWarsReloaded.get(), (SkyWarsReloaded.getCfg().getTimeAfterMatch() * 20L));
                 }
-            }.runTaskLater(SkyWarsReloaded.get(), (SkyWarsReloaded.getCfg().getTimeAfterMatch() * 20L));
+            }.runTaskLater(SkyWarsReloaded.get(), SkyWarsReloaded.getCfg().getTimeAfterMatch() * 20L);
+            // Refresh map 5s after clearing all players in case some plugins do bad things
+            new BukkitRunnable() {
+                public void run() {
+                    if (SkyWarsReloaded.getCfg().bungeeMode()) {
+                        Util.get().doCommands(SkyWarsReloaded.getCfg().getGameEndCommands(), null);
+                    }
+                    gameMap.refreshMap();
+                    if (debug) {
+                        Util.get().logToFile(debugName + ChatColor.YELLOW + "SkyWars Match Has Ended - Anena has been refreshed");
+                    }
+                }
+            }.runTaskLater(SkyWarsReloaded.get(), (SkyWarsReloaded.getCfg().getTimeAfterMatch() + 5) * 20L);
+        }
+    }
+
+    public void removeSpectatorByUuid(UUID uuid) {
+        final Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
+        if (player != null) {
+            removeSpectator(player);
         }
     }
 
@@ -687,7 +736,42 @@ public class MatchManager {
         }
     }
 
-    public void playerLeave(final Player player, DamageCause dCause, final boolean died, boolean sendMessages, boolean playerQuit) {
+    public void removeAlivePlayer(final Player player, PlayerRemoveReason reason, @Nullable DamageCause deathCause, boolean announceToOthers) {
+        // General consts
+        final UUID pUuid = player.getUniqueId();
+        final GameMap gMap = this.getPlayerMap(player);
+        // Check player is in game
+        if (gMap == null) {
+            return;
+        }
+        final PlayerData pData = PlayerData.getPlayerData(pUuid);
+        final PlayerCard pCard = gMap.getPlayerCard(player);
+        final TeamCard teamCard = pCard.getTeamCard();
+
+        // Remove player options no matter if in game
+        SkyWarsReloaded.getOM().removePlayer(pUuid);
+
+        if (gMap.getMatchState() == MatchState.PLAYING) {
+            // Process Team data
+            teamCard.getDead().add(pUuid);
+            pCard.getTeamCard().setPlace(gMap.getTeamsLeft() + 1); // + 1 because we are counting from 1
+
+            // Process Player Bukkit
+            player.setNoDamageTicks(1);
+        }
+    }
+
+    @Deprecated
+    public void removeAlivePlayer(final Player player, DamageCause dCause, final boolean died, boolean sendMessages, boolean playerQuit) {
+        // TODO: DEBUG ====== THIS MUST BE REMOVED ONCE Triple Deaths cause is found
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            try {
+                throw new Exception("This is NORMAL!! This is useful data to know from where the death is being called if you are having triple death issues.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         SkyWarsReloaded.getOM().removePlayer(player.getUniqueId());
         UUID playerUuid = player.getUniqueId();
 
@@ -699,7 +783,7 @@ public class MatchManager {
             gameMap.getTeamCard(player).getDead().add(player.getUniqueId());
 
             PlayerCard pCard = gameMap.getPlayerCard(player);
-            pCard.getTeamCard().setPlace(gameMap.getTeamCards().size() + 1 - gameMap.getTeamsOut());
+            pCard.getTeamCard().setPlace(gameMap.getTeamCards().size() + 1 - gameMap.getNumTeamsOut());
             player.setNoDamageTicks(1);
             final PlayerData playerData = PlayerData.getPlayerData(player.getUniqueId());
             if (playerData != null) {
@@ -780,8 +864,8 @@ public class MatchManager {
                         }
                     }
 
-                    if (gameMap.getTeamsleft() <= 1) {
-                        if (gameMap.getTeamsleft() == 1) {
+                    if (gameMap.getTeamsLeft() <= 1) {
+                        if (gameMap.getTeamsLeft() == 1) {
                             this.won(gameMap, gameMap.getWinningTeam());
                         } else {
                             this.won(gameMap, null);

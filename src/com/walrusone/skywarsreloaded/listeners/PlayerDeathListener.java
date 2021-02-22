@@ -2,7 +2,6 @@ package com.walrusone.skywarsreloaded.listeners;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
-import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
@@ -43,7 +42,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         EntityDamageEvent.DamageCause dCause = damageCause;
         v2.setDeathMessage("");
 
-        MatchManager.get().playerLeave(player, dCause, false, true, true);
+        MatchManager.get().removeAlivePlayer(player, dCause, false, true, true);
         gameMap.getGameBoard().updateScoreboard();
     }
 
@@ -55,7 +54,10 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
             return;
         }
 
-        if (gameMap.getMatchState() == MatchState.ENDING && gameMap.getAlivePlayers().contains(e.getPlayer()) && e.getTo().getY() <= -10) {
+        if (gameMap.getMatchState() == MatchState.ENDING &&
+                gameMap.getAlivePlayers().contains(e.getPlayer()) &&
+                e.getTo().getY() <= SkyWarsReloaded.getCfg().getQuickDeathY()
+        ) {
             CoordLoc loc = gameMap.getSpectateSpawn();
             e.getPlayer().teleport(new Location(gameMap.getCurrentWorld(), loc.getX(), loc.getY(), loc.getZ()));
         }
@@ -68,7 +70,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
                         if (e.getPlayer().getLastDamageCause() != null) {
                             damageCause = e.getPlayer().getLastDamageCause().getCause();
                         }
-                        MatchManager.get().playerLeave(e.getPlayer(), damageCause, false, true, true);
+                        MatchManager.get().removeAlivePlayer(e.getPlayer(), damageCause, false, true, true);
                     }
                 }
             }

@@ -32,7 +32,7 @@ public class AddSpawnCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd 
 
                 if ((type.equalsIgnoreCase("player")) || (type.equalsIgnoreCase("p"))) {
                     if (gMap.getTeamSize() == 1 || !SkyWarsReloaded.getCfg().isUseSeparateCages()) {
-                        int newTeamNumber = gMap.getTeamSize() == 1 ? 1 : gMap.getTeamCards().size()+1;
+                        int newTeamNumber = gMap.getTeamSize() == 1 ? 0 : gMap.getTeamCards().size();
                         gMap.addTeamCard(player.getLocation(), newTeamNumber);
                         player.getLocation().getBlock().setType(Material.DIAMOND_BLOCK);
                         player.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + gMap.getMaxPlayers()).setVariable("mapname", gMap.getDisplayName()).format("maps.addSpawn"));
@@ -64,7 +64,8 @@ public class AddSpawnCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd 
                         return true;
                     }
                     if (gMap.getTeamSize() > 1 && SkyWarsReloaded.getCfg().isUseSeparateCages()) {
-                        gMap.addTeamCard(player.getLocation(), Integer.parseInt(args[2]));
+                        // Convert user input to index
+                        gMap.addTeamCard(player.getLocation(), Integer.parseInt(args[2]) - 1);
                         player.getLocation().getBlock().setType(Material.DIAMOND_BLOCK);
                         player.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + gMap.getMaxPlayers()).setVariable("mapname", gMap.getDisplayName()).format("maps.addSpawn"));
                     } else {
