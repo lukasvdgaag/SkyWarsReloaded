@@ -614,4 +614,9 @@ public class Util {
         item.setItemMeta(meta);
     }
 
+    public void ejectPassengers(Player player) {
+        if (player.getVehicle() != null) player.getVehicle().eject();
+        player.eject();
+    }
+
 }

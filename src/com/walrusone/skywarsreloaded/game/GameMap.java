@@ -581,19 +581,19 @@ public class GameMap {
                         Bukkit.getLogger().log(Level.WARNING, "#addPlayers: (" + (tCard.getPlace() + 1) + ") fullCount: " + tCard.getFullCount());
                     }
                     if (tCard.getFullCount() > 0) { // If space available
-                        if (player.getVehicle() != null) player.getVehicle().removePassenger(player);
+                        Util.get().ejectPassengers(player);
                         reservedTeamCard = tCard.sendReservation(player, ps);
                         break;
                     }
                 }
             } else { // In party mode
                 if (teamToTry.getFullCount() > 0) {
-                    if (player.getVehicle() != null) player.getVehicle().removePassenger(player);
+                    Util.get().ejectPassengers(player);
                     reservedTeamCard = teamToTry.sendReservation(player, ps);
                 }
             }
             if (reservedTeamCard != null) { // If setup for player success
-                if (player.getVehicle() != null) player.getVehicle().removePassenger(player);
+                Util.get().ejectPassengers(player);
                 result = reservedTeamCard.joinGame(player); // tp to arena
                 if (result) {
                     PlayerStat.resetScoreboard(player);
@@ -603,7 +603,7 @@ public class GameMap {
             }
             // else if in lobby waiting mode
         } else if (getMatchState() == MatchState.WAITINGLOBBY) {
-            if (player.getVehicle() != null) player.getVehicle().removePassenger(player);
+            Util.get().ejectPassengers(player);
             PlayerStat.resetScoreboard(player);
             addWaitingPlayer(player);
             getJoinQueue().add(new PlayerCard(null, player.getUniqueId(), null));
@@ -637,7 +637,7 @@ public class GameMap {
                     if (ps != null && player != null && ps.isInitialized()) {
                         for (TeamCard tCard : teamCards) {
                             if (tCard.getFullCount() > 0) {
-                                if (player.getVehicle() != null) player.getVehicle().removePassenger(player);
+                                Util.get().ejectPassengers(player);
                                 TeamCard reserve = tCard.sendReservation(player, ps);
                                 this.update();
                                 gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
@@ -660,7 +660,7 @@ public class GameMap {
                             Player player = Bukkit.getPlayer(party.getMembers().get(i));
                             PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
                             if (ps != null && ps.isInitialized()) {
-                                if (player.getVehicle() != null) player.getVehicle().removePassenger(player);
+                                Util.get().ejectPassengers(player);
                                 TeamCard reserve = tCard.sendReservation(player, ps);
                                 if (reserve != null) {
                                     players.computeIfAbsent(reserve, k -> new ArrayList<>()).add(player);
@@ -681,7 +681,7 @@ public class GameMap {
                         Player player = Bukkit.getPlayer(party.getMembers().get(i));
                         PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
                         if (ps != null && ps.isInitialized()) {
-                            if (player.getVehicle() != null) player.getVehicle().removePassenger(player);
+                            Util.get().ejectPassengers(player);
                             TeamCard reserve = teamToTry.sendReservation(player, ps);
                             if (reserve != null) {
                                 players.computeIfAbsent(reserve, k -> new ArrayList<>()).add(player);
