@@ -1,3 +1,6 @@
+# version 5.4.3
+Fixed NoMuchMethodException when joining a game on 1.8.
+
 # version 5.4.2
 Removed ELO from the plugin. Make sure to remove occurrences from the messages.yml, holograms.yml and other files.
 Recoded kit lores! They are no longer in format of "line1, line2" but are now in a list: "lores.unlocked"! [IMPORTANT!]
