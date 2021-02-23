@@ -19,10 +19,7 @@ import com.walrusone.skywarsreloaded.menus.playeroptions.KillSoundOption;
 import com.walrusone.skywarsreloaded.menus.playeroptions.ParticleEffectOption;
 import com.walrusone.skywarsreloaded.menus.playeroptions.WinSoundOption;
 import com.walrusone.skywarsreloaded.menus.playeroptions.objects.ParticleEffect;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.Party;
-import com.walrusone.skywarsreloaded.utilities.Util;
-import com.walrusone.skywarsreloaded.utilities.VaultUtils;
+import com.walrusone.skywarsreloaded.utilities.*;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -736,19 +733,19 @@ public class MatchManager {
         }
     }
 
-    public void removeAlivePlayer(final Player player, PlayerRemoveReason reason, @Nullable DamageCause deathCause, boolean announceToOthers) {
+    public void removeAlivePlayer(final Player playerRemoving, PlayerRemoveReason removeReason, @Nullable DamageCause deathCause, boolean announceToOthers) {
         // General consts
-        final UUID pUuid = player.getUniqueId();
-        final GameMap gMap = this.getPlayerMap(player);
+        final UUID pUuid = playerRemoving.getUniqueId();
+        final GameMap gMap = this.getPlayerMap(playerRemoving);
         // Check player is in game
         if (gMap == null) {
             return;
         }
         final PlayerData pData = PlayerData.getPlayerData(pUuid);
-        final PlayerCard pCard = gMap.getPlayerCard(player);
+        final PlayerCard pCard = gMap.getPlayerCard(playerRemoving);
         final TeamCard teamCard = pCard.getTeamCard();
 
-        // Remove player options no matter if in game
+        // Remove player options no matter if in game or not
         SkyWarsReloaded.getOM().removePlayer(pUuid);
 
         if (gMap.getMatchState() == MatchState.PLAYING) {
@@ -756,13 +753,52 @@ public class MatchManager {
             teamCard.getDead().add(pUuid);
             pCard.getTeamCard().setPlace(gMap.getTeamsLeft() + 1); // + 1 because we are counting from 1
 
+            // Process Player data
+            Tagged tagger = pData.getTaggedBy();
+            Player taggerPlayer;
+            boolean isRecentTag;
+            if (tagger != null) {
+                taggerPlayer = tagger.getPlayer();
+                isRecentTag = System.currentTimeMillis() - tagger.getTime() < 10000;
+            } else {
+                taggerPlayer = null;
+                isRecentTag = false;
+            }
+            // Player died or quit the game while playing
+            if (!removeReason.equals(PlayerRemoveReason.OTHER)) {
+                // Process loser
+
+                // Process killer (if exists)
+
+            }
+
             // Process Player Bukkit
-            player.setNoDamageTicks(1);
+            playerRemoving.setNoDamageTicks(1);
+
+            // Messages
+            if (removeReason.equals(PlayerRemoveReason.DEATH)) {
+                if (taggerPlayer != null) {
+                    this.message(
+                            gMap,
+                            Util.get().getDeathMessage(deathCause, true, playerRemoving, taggerPlayer),
+                            null
+                    );
+                }
+            } else if (removeReason.equals(PlayerRemoveReason.PLAYER_QUIT)) {
+                if (taggerPlayer != null) {
+                    this.message(gMap, new Messaging.MessageFormatter()
+                            .withPrefix()
+                            .setVariable("player", playerRemoving.getName())
+                            .setVariable("killer", taggerPlayer.getName())
+                            .format("game.death.quit-while-tagged"), null
+                    );
+                }
+            }
         }
     }
 
     @Deprecated
-    public void removeAlivePlayer(final Player player, DamageCause dCause, final boolean died, boolean sendMessages, boolean playerQuit) {
+    public void removeAlivePlayer(final Player player, DamageCause dCause, final boolean isPlayerLeft, boolean sendMessages, boolean playerLeaveServer) {
         // TODO: DEBUG ====== THIS MUST BE REMOVED ONCE Triple Deaths cause is found
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
             try {
@@ -787,7 +823,7 @@ public class MatchManager {
             player.setNoDamageTicks(1);
             final PlayerData playerData = PlayerData.getPlayerData(player.getUniqueId());
             if (playerData != null) {
-                if (died) {
+                if (isPlayerLeft) {
                     if (playerData.getTaggedBy() != null && playerData.getTaggedBy().getPlayer() != null && playerData.getTaggedBy().getPlayer() != player && System.currentTimeMillis() - playerData.getTaggedBy().getTime() < 10000) {
                         if (sendMessages) {
                             this.message(gameMap, new Messaging.MessageFormatter()
@@ -806,7 +842,7 @@ public class MatchManager {
                         Bukkit.getPluginManager().callEvent(new SkyWarsLeaveEvent(player, gameMap));
                     }
 
-                    playerData.restore(playerQuit);
+                    playerData.restore(playerLeaveServer);
                     gameMap.removePlayer(player.getUniqueId());
                     PlayerData.getPlayerData().remove(playerData);
                     PlayerStat.resetScoreboard(player);
@@ -882,7 +918,7 @@ public class MatchManager {
         } else {
             if (gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY) {
                 PlayerStat ps = PlayerStat.getPlayerStats(player);
-                if (ps != null && died) {
+                if (ps != null && isPlayerLeft) {
                     String cageName = ps.getGlassColor();
                     if (gameMap.getTeamSize() == 1 || SkyWarsReloaded.getCfg().isUseSeparateCages()) {
                         if (cageName.startsWith("custom-")) {
@@ -926,7 +962,7 @@ public class MatchManager {
 
             final PlayerData playerData = PlayerData.getPlayerData(player.getUniqueId());
             if (playerData != null) {
-                playerData.restore(playerQuit);
+                playerData.restore(playerLeaveServer);
                 PlayerData.getPlayerData().remove(playerData);
             }
 
