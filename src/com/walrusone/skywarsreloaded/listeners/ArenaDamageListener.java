@@ -70,7 +70,7 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
     }
 
 
-    private void doProjectile(GameMap gMap, Entity damager, EntityDamageByEntityEvent event, Player target) {
+    private void doProjectile(GameMap gMap, Entity damager, EntityDamageByEntityEvent event, Player victim) {
         Projectile proj = (Projectile) damager;
         if ((damager instanceof org.bukkit.entity.Snowball)) {
             event.setDamage(com.walrusone.skywarsreloaded.SkyWarsReloaded.getCfg().getSnowDamage());
@@ -82,24 +82,24 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
             event.setDamage(event.getDamage() * 2.0D);
         }
         if ((proj.getShooter() instanceof Player)) {
-            Player hitter = (Player) proj.getShooter();
-            if ((hitter != null) && (hitter != target)) {
-                PlayerData pd = PlayerData.getPlayerData(target.getUniqueId());
+            Player attacker = (Player) proj.getShooter();
+            if ((attacker != null) && (attacker != victim)) {
+                PlayerData pd = PlayerData.getPlayerData(victim.getUniqueId());
                 if (pd != null) {
-                    pd.setTaggedBy(hitter);
+                    pd.setTaggedBy(attacker);
                 }
             }
         }
     }
 
-    private void doPVP(Entity damager, Player target, EntityDamageByEntityEvent event, GameMap gMap) {
-        Player hitter = (Player) damager;
-        PlayerData pd = PlayerData.getPlayerData(target.getUniqueId());
+    private void doPVP(Entity damager, Player victim, EntityDamageByEntityEvent event, GameMap gMap) {
+        Player attacker = (Player) damager;
+        PlayerData playerData = PlayerData.getPlayerData(victim.getUniqueId());
         if (gMap.isDoubleDamageEnabled()) {
             event.setDamage(event.getDamage() * 2.0D);
         }
-        if (pd != null) {
-            pd.setTaggedBy(hitter);
+        if (playerData != null && victim != damager) {
+            playerData.setTaggedBy(attacker);
         }
     }
 
