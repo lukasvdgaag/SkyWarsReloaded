@@ -42,7 +42,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         EntityDamageEvent.DamageCause dCause = damageCause;
         v2.setDeathMessage("");
 
-        MatchManager.get().removeAlivePlayer(player, dCause, false, true, true);
+        MatchManager.get().removeAlivePlayer(player, dCause, false, true);
         gameMap.getGameBoard().updateScoreboard();
     }
 
@@ -70,7 +70,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
                         if (e.getPlayer().getLastDamageCause() != null) {
                             damageCause = e.getPlayer().getLastDamageCause().getCause();
                         }
-                        MatchManager.get().removeAlivePlayer(e.getPlayer(), damageCause, false, true, true);
+                        MatchManager.get().removeAlivePlayer(e.getPlayer(), damageCause, false, true);
                     }
                 }
             }
@@ -90,7 +90,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
                     a1.setRespawnLocation(respawn);
                     new BukkitRunnable() {
                         public void run() {
-                            MatchManager.get().addSpectator(gMap, a1.getPlayer());
+                            SkyWarsReloaded.get().getPlayerManager().addSpectator(gMap, a1.getPlayer());
                         }
                     }.runTaskLater(SkyWarsReloaded.get(), 1L);
                 }
@@ -103,7 +103,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
                     a1.setRespawnLocation(respawn);
                     new BukkitRunnable() {
                         public void run() {
-                            pData.restore(false);
+                            pData.restoreToBeforeGameState(false);
                         }
                     }.runTaskLater(SkyWarsReloaded.get(), 1L);
                 }

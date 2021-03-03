@@ -15,8 +15,6 @@ public class PlayerCard {
 
     private CoordLoc spawn;
 
-    private int kills;
-
     private GameKit kitVote;
     private Vote gameTime;
     private Vote weather;
@@ -119,13 +117,5 @@ public class PlayerCard {
 
     public TeamCard getTeamCard() {
         return tCard;
-    }
-
-    public int getKills() {
-        return kills;
-    }
-
-    public void addKill() {
-        kills++;
     }
 }

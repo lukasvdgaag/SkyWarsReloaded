@@ -641,8 +641,6 @@ public class GameMap {
                             if (tCard.getFullCount() > 0) {
                                 Util.get().ejectPassengers(player);
                                 TeamCard reserve = tCard.sendReservation(player, ps);
-                                this.update();
-                                gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
                                 if (reserve != null) {
                                     players.computeIfAbsent(reserve, k -> new ArrayList<>());
                                     players.get(reserve).add(player);
@@ -670,8 +668,6 @@ public class GameMap {
                                 team = reserve;
                             }
                         }
-                        this.update();
-                        gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
                     }
                     if (team != null && players.get(team).size() == party.getSize()) {
                         break;
@@ -691,8 +687,6 @@ public class GameMap {
                             team = reserve;
                         }
                     }
-                    this.update();
-                    gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
                 }
             }
         }
@@ -702,16 +696,10 @@ public class GameMap {
             for (TeamCard tCard : players.keySet()) {
                 result = tCard.joinGame(players.get(tCard).get(0));
             }
-            this.update();
-            gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
-            return result;
         } else if (teamSize > 1 && team != null && players.get(team).size() == party.getSize()) {
             for (int i = 0; i < players.get(team).size(); i++) {
                 result = team.joinGame(players.get(team).get(i));
             }
-            this.update();
-            gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
-            return result;
         } else {
             for (ArrayList<Player> play : players.values()) {
                 for (Player player : play) {
@@ -721,24 +709,18 @@ public class GameMap {
             }
         }
         this.update();
-        gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
-        return false;
+        gameboard.updateScoreboard();
+        return result;
     }
 
     public void removePlayer(final UUID uuid) {
-        boolean result;
         for (TeamCard tCard : teamCards) {
-            result = tCard.removePlayer(uuid);
-            if (result) {
-                this.update();
-                gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
-                break;
-            }
+            if (tCard.removePlayer(uuid)) break;
         }
         spectators.remove(uuid);
         waitingPlayers.remove(uuid);
         this.update();
-        gameboard.updateScoreboardVar(ScoreVar.PLAYERS);
+        gameboard.updateScoreboard();
     }
 
     public ArrayList<Player> getAlivePlayers() {
@@ -1168,7 +1150,7 @@ public class GameMap {
         }
         for (final Player player : this.getAlivePlayers()) {
             if (player != null) {
-                MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, false, true);
+                MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, false);
             }
         }
         SkyWarsReloaded.getWM().deleteWorld(this.getName(), false);
@@ -2283,7 +2265,7 @@ public class GameMap {
         return playerKills.getOrDefault(p, 0);
     }
 
-    public void addPlayerKill(Player p) {
+    public void increaseDisplayedKillsVar(Player p) {
         int newKills = getPlayerKills(p) + 1;
         playerKills.remove(p);
         playerKills.put(p, newKills);

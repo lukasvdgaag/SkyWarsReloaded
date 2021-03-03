@@ -27,7 +27,7 @@ public class PlayerStat {
 
     private static ArrayList<PlayerStat> players;
     //private static HashMap<Player, Scoreboard> scoreboards = new HashMap<>();
-    private static HashMap<Player, AdditionsBoard> scoreboards = new HashMap<>();
+    private static HashMap<Player, SkywarsBoard> scoreboards = new HashMap<>();
 
     static {
         PlayerStat.players = new ArrayList<>();
@@ -158,8 +158,9 @@ public class PlayerStat {
     }
 
     public static void updateScoreboard(Player player, String identifier) {
-        if (identifier == null || identifier.isEmpty()) identifier = "lobbyboard";
-        AdditionsBoard scoreboard = scoreboards.get(player);
+        if (identifier == null || identifier.isEmpty())
+            identifier = "lobbyboard";
+        SkywarsBoard scoreboard = scoreboards.get(player);
 
         List<String> lines = SkyWarsReloaded.getMessaging().getFile().getStringList("scoreboards."+identifier+".lines");
 
@@ -173,16 +174,16 @@ public class PlayerStat {
 
         if (scoreboard == null || scoreboard.getLinecount() != scores.size()) {
             resetScoreboard(player);
-            scoreboard=null;
+            scoreboard = null;
         }
 
         if (scoreboard == null) {
-            scoreboard =  new AdditionsBoard(player, scores.size());
+            scoreboard =  new SkywarsBoard(player, scores.size());
             scoreboards.put(player, scoreboard);
         }
         scoreboard.setTitle(ChatColor.translateAlternateColorCodes('&', lines.get(0)));
         for (int i=0; i< scores.size();i++) {
-            String line =scores.get(i);
+            String line = scores.get(i);
             if (!scoreboard.getLine(i).equals(line)) {
                 scoreboard.setLine(i, line);
             }
@@ -285,7 +286,7 @@ public class PlayerStat {
     }
 
     public static void resetScoreboard(Player player) {
-        AdditionsBoard scoreboard = scoreboards.get(player);
+        SkywarsBoard scoreboard = scoreboards.get(player);
         if (scoreboard != null && !SkyWarsReloaded.getNMS().removeFromScoreboardCollection(scoreboard.board)) {
             scoreboards.remove(player);
             for (Objective objective : scoreboard.board.getObjectives()) {
@@ -300,7 +301,7 @@ public class PlayerStat {
         scoreboards.remove(player);
     }
 
-    private static AdditionsBoard getPlayerScoreboard(Player player) {
+    private static SkywarsBoard getPlayerScoreboard(Player player) {
         return scoreboards.get(player);
     }
 
@@ -445,6 +446,10 @@ public class PlayerStat {
 
     public String getPlayerName() {
         return playername;
+    }
+
+    public void setPlayerName(String nameIn) {
+        this.playername = nameIn;
     }
 
     public String getTaunt() {

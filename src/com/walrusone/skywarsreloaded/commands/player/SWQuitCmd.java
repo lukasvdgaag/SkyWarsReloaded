@@ -24,7 +24,7 @@ public class SWQuitCmd extends BaseCmd {
             MatchManager.get().removeSpectator(player);
         }
         else {
-            MatchManager.get().removeAlivePlayer(player, EntityDamageEvent.DamageCause.CUSTOM, true, true, true);
+            MatchManager.get().removeAlivePlayer(player, EntityDamageEvent.DamageCause.CUSTOM, true, true);
         }
         return true;
     }

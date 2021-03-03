@@ -13,7 +13,7 @@ import org.bukkit.scoreboard.Team;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AdditionsBoard {
+public class SkywarsBoard {
 
     private final Player player;
     private final Objective objective;
@@ -21,7 +21,7 @@ public class AdditionsBoard {
     private final HashMap<Integer, String> cache = new HashMap<>();
     public Scoreboard board;
 
-    public AdditionsBoard(Player player, int lineCount) {
+    public SkywarsBoard(Player player, int lineCount) {
         this.player = player;
         this.lineCount = lineCount;
         this.board = SkyWarsReloaded.get().getServer().getScoreboardManager().getNewScoreboard();

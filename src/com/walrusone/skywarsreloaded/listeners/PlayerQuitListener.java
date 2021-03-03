@@ -33,7 +33,7 @@ public class PlayerQuitListener implements org.bukkit.event.Listener {
             return;
         }
 
-        MatchManager.get().removeAlivePlayer(a1.getPlayer(), EntityDamageEvent.DamageCause.CUSTOM, true, true, true);
+        MatchManager.get().removeAlivePlayer(a1.getPlayer(), EntityDamageEvent.DamageCause.CUSTOM, true, true);
 
         if (PlayerStat.getPlayerStats(id) != null) {
             new BukkitRunnable() {

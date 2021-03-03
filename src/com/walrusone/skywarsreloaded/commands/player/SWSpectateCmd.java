@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands.player;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
@@ -49,7 +50,7 @@ public class SWSpectateCmd extends BaseCmd {
     private void sendSpectator(GameMap gMap) {
         if (gMap != null) {
             if ((gMap.getMatchState() == MatchState.WAITINGSTART) || (gMap.getMatchState() == MatchState.WAITINGLOBBY) ||(gMap.getMatchState() == MatchState.PLAYING)) {
-                MatchManager.get().addSpectator(gMap, player);
+                SkyWarsReloaded.get().getPlayerManager().addSpectator(gMap, player);
             } else {
                 player.sendMessage(new Messaging.MessageFormatter().format("error.spectate-notatthistime"));
             }

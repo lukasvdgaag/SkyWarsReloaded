@@ -42,16 +42,16 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
                 if ((gameMap.getMatchState() == MatchState.ENDING || gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY) ||
                         gameMap.isDisableDamage()) {
                     event.setCancelled(true);
-                }
-                else if (!gameMap.allowFriendlyFire() && damager instanceof Player && gameMap.getMatchState() == MatchState.PLAYING && gameMap.getTeamCard(target).equals(gameMap.getTeamCard((Player)damager))) {
+                // Friendly fire attack
+                } else if (!gameMap.allowFriendlyFire() && damager instanceof Player && gameMap.getMatchState() == MatchState.PLAYING && gameMap.getTeamCard(target).equals(gameMap.getTeamCard((Player)damager))) {
                     event.setCancelled(true);
-                }
-                else if (!gameMap.allowFriendlyFire() && event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE && gameMap.getMatchState() == MatchState.PLAYING && ((Projectile)damager).getShooter() != null
+                // Friendly fire shoot
+                } else if (!gameMap.allowFriendlyFire() && event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE && gameMap.getMatchState() == MatchState.PLAYING && ((Projectile)damager).getShooter() != null
                         && ((Projectile)damager).getShooter() instanceof Player
                         && gameMap.getTeamCard(target).equals(gameMap.getTeamCard((Player) ((Projectile)damager).getShooter()))) {
                     event.setCancelled(true);
-                }
-                else {
+                // Process pvp events
+                } else {
                     event.setCancelled(false);
                     if (gameMap.getProjectilesOnly()) {
                         if ((damager instanceof Projectile)) {
