@@ -51,6 +51,7 @@ public class DataStorage {
                 copyDefaults(playerFile);
                 FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
                 fc.set("uuid", pData.getId());
+                fc.set("player_name", pData.getPlayerName());
                 fc.set("wins", pData.getWins());
                 fc.set("losses", pData.getLosses());
                 fc.set("kills", pData.getKills());
@@ -144,7 +145,7 @@ public class DataStorage {
                         ResultSet resultSet = null;
 
                         try {
-                            String query = "SELECT `wins`, `losses`, `kills`, `deaths`, `xp`, `pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`, `taunt` " +
+                            String query = "SELECT `player_name`, `wins`, `losses`, `kills`, `deaths`, `xp`, `pareffect`, `proeffect`, `glasscolor`, `killsound`, `winsound`, `taunt` " +
                                     "FROM `sw_player` WHERE `uuid` = ? LIMIT 1;";
 
                             preparedStatement = connection.prepareStatement(query);
@@ -152,6 +153,10 @@ public class DataStorage {
                             resultSet = preparedStatement.executeQuery();
 
                             if (resultSet != null && resultSet.next()) {
+                                String name = Bukkit.getPlayer(UUID.fromString(pData.getId())).getName();
+                                if (name == null) name = pData.getPlayerName();
+                                if (name == null) name = resultSet.getString("player_name");
+                                pData.setPlayerName(name);
                                 pData.setWins(resultSet.getInt("wins"));
                                 pData.setLosts(resultSet.getInt("losses"));
                                 pData.setKills(resultSet.getInt("kills"));
@@ -201,6 +206,10 @@ public class DataStorage {
 
                         copyDefaults(playerFile);
                         FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
+                        String name = Bukkit.getPlayer(UUID.fromString(pData.getId())).getName();
+                        if (name == null) name = pData.getPlayerName();
+                        if (name == null) name = fc.getString("player_name", "null");
+                        pData.setPlayerName(name);
                         pData.setWins(fc.getInt("wins", 0));
                         pData.setLosts(fc.getInt("losses", 0));
                         pData.setKills(fc.getInt("kills", 0));
@@ -239,21 +248,17 @@ public class DataStorage {
     public void removePlayerData(String uuid) {
         boolean sqlEnabled = SkyWarsReloaded.get().getConfig().getBoolean("sqldatabase.enabled");
         if (!sqlEnabled) {
-            try {
-                File dataDirectory = SkyWarsReloaded.get().getDataFolder();
-                File playerDataDirectory = new File(dataDirectory, "player_data");
+            File dataDirectory = SkyWarsReloaded.get().getDataFolder();
+            File playerDataDirectory = new File(dataDirectory, "player_data");
 
-                if (!playerDataDirectory.exists() && !playerDataDirectory.mkdirs()) {
-                    SkyWarsReloaded.get().getLogger().info("Failed to create data directory");
-                }
+            if (!playerDataDirectory.exists() && !playerDataDirectory.mkdirs()) {
+                SkyWarsReloaded.get().getLogger().info("Failed to create data directory");
+            }
 
-                File playerFile = new File(playerDataDirectory, uuid + ".yml");
-                if (!playerFile.exists() && !playerFile.createNewFile()) {
-                    SkyWarsReloaded.get().getLogger().info("Failed to create playerfile for: " + uuid);
-                }
-                playerFile.delete();
-            } catch (IOException ioException) {
-                System.out.println("Failed to load faction " + uuid + ": " + ioException.getMessage());
+            File playerFile = new File(playerDataDirectory, uuid + ".yml");
+            if (playerFile.exists()) {
+                if (!playerFile.delete())
+                    SkyWarsReloaded.get().getLogger().info("Failed to delete playerfile for: " + uuid);
             }
         } else {
             Database database = SkyWarsReloaded.getDb();
@@ -304,14 +309,22 @@ public class DataStorage {
                     ResultSet resultSet;
 
                     try {
-                        String query = "SELECT `uuid`, `wins`, `losses`, `kills`, `deaths`, `xp` FROM `sw_player` GROUP BY `uuid` " +
+                        String query = "SELECT `uuid`, `player_name`, `wins`, `losses`, `kills`, `deaths`, `xp` FROM `sw_player` GROUP BY `uuid` " +
                                 "ORDER BY `" + type.toString().toLowerCase() + "` DESC LIMIT " + size + ";";
 
                         preparedStatement = connection.prepareStatement(query);
                         resultSet = preparedStatement.executeQuery();
                         SkyWarsReloaded.getLB().resetLeader(type);
                         while (resultSet.next()) {
-                            SkyWarsReloaded.getLB().addLeader(type, resultSet.getString(1), Bukkit.getOfflinePlayer(UUID.fromString(resultSet.getString(1))).getName(), resultSet.getInt(2), resultSet.getInt(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getInt(6));
+                            String uuid = resultSet.getString("uuid");
+                            String name = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
+                            if (name == null) name = resultSet.getString("player_name");
+                            int wins = resultSet.getInt("wins");
+                            int losses = resultSet.getInt("losses");
+                            int kills = resultSet.getInt("kills");
+                            int deaths = resultSet.getInt( "deaths");
+                            int xp = resultSet.getInt("xp");
+                            SkyWarsReloaded.getLB().addLeader(type, uuid, name, wins, losses, kills, deaths, xp);
                         }
 
                     } catch (final SQLException sqlException) {
@@ -340,8 +353,16 @@ public class DataStorage {
                         }
 
                         FileConfiguration fc = YamlConfiguration.loadConfiguration(playerFile);
+
                         String uuid = playerFile.getName().replace(".yml", "");
-                        SkyWarsReloaded.getLB().addLeader(type, uuid, Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName(), fc.getInt("wins"), fc.getInt("losses"), fc.getInt("kills"), fc.getInt("deaths"), fc.getInt("xp"));
+                        String name = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
+                        if (name == null) name = fc.getString("player_name", "null");
+                        int wins = fc.getInt("wins", 0);
+                        int losses = fc.getInt("losses", 0);
+                        int kills = fc.getInt("kills", 0);
+                        int deaths = fc.getInt("deaths", 0);
+                        int xp = fc.getInt("xp", 0);
+                        SkyWarsReloaded.getLB().addLeader(type, uuid, name, wins, losses, kills, deaths, xp);
                     }
                 }
                 SkyWarsReloaded.getLB().finishedLoading(type);
