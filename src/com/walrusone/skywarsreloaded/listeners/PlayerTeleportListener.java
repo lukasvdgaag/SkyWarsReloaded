@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.listeners;
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.Bukkit;
@@ -90,7 +91,8 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
                     if (player.getLastDamageCause() != null) {
                         damageCause = player.getLastDamageCause().getCause();
                     }
-                    MatchManager.get().removeAlivePlayer(player, damageCause, true, true);
+                    SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
+                    // MatchManager.get().removeAlivePlayer(player, damageCause, true, true);
                 } else {
                     e.setCancelled(true);
                 }

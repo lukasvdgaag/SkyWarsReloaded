@@ -4,6 +4,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
 import com.walrusone.skywarsreloaded.events.SkyWarsDeathEvent;
 import com.walrusone.skywarsreloaded.events.SkyWarsKillEvent;
@@ -89,7 +90,7 @@ public class MatchManager {
                 Bukkit.getLogger().log(Level.WARNING, "#joinGame: --map = null:");
             }
             // Allow joining as spec if you have permission
-            if (player.hasPermission("sw.admin.joinBypass")) { // TODO: Not fully tested, scoreboard doesn't appear
+            if (player.hasPermission("sw.admin.joinBypass")) { // TODO: Not fully tested, issues may arise
                 if (games.size() > 0) {
                     SkyWarsReloaded.get().getPlayerManager().addSpectator(games.get(0), player);
                     wasJoined = true;
@@ -694,7 +695,8 @@ public class MatchManager {
                                     pd.setTaggedBy(null);
                                 }
                             }
-                            MatchManager.this.removeAlivePlayer(player, DamageCause.CUSTOM, true, true);
+                            SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, false);
+                            // MatchManager.this.removeAlivePlayer(player, DamageCause.CUSTOM, true, true);
                         }
                     }
                 }
@@ -733,7 +735,7 @@ public class MatchManager {
         }
     }
 
-    @Deprecated
+    /*@Deprecated
     public void removeAlivePlayer(final Player player, DamageCause dCause, final boolean isPlayerLeft, boolean sendMessages) {
         // TODO: DEBUG ====== THIS MUST BE REMOVED ONCE Triple Deaths cause is found
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
@@ -767,7 +769,7 @@ public class MatchManager {
                                     .setVariable("player", player.getName())
                                     .setVariable("killer", playerData.getTaggedBy().getPlayer().getName())
                                     .format("game.death.quit-while-tagged"), null);
-                            SkyWarsReloaded.get().getPlayerManager().updateStatsForLoser(player, pCard, playerData);
+                            SkyWarsReloaded.get().getPlayerManager().updateStatsForLoser(player);
                             SkyWarsReloaded.get().getPlayerManager().updateStatsForKiller(playerData.getTaggedBy().getPlayer());
                         }
                         Bukkit.getPluginManager().callEvent(new SkyWarsKillEvent(playerData.getTaggedBy().getPlayer(), player, gameMap));
@@ -790,7 +792,7 @@ public class MatchManager {
                             this.message(gameMap, Util.get().getDeathMessage(dCause, true, player, playerData.getTaggedBy().getPlayer()), null);
                             Bukkit.getPluginManager().callEvent(new SkyWarsKillEvent(playerData.getTaggedBy().getPlayer(), player, gameMap));
                             gameMap.increaseDisplayedKillsVar(playerData.getTaggedBy().getPlayer());
-                            SkyWarsReloaded.get().getPlayerManager().updateStatsForLoser(player, pCard, playerData);
+                            SkyWarsReloaded.get().getPlayerManager().updateStatsForLoser(player);
                             SkyWarsReloaded.get().getPlayerManager().updateStatsForKiller(playerData.getTaggedBy().getPlayer());
                         } else {
                             this.message(gameMap, Util.get().getDeathMessage(dCause, false, player, player), null);
@@ -892,6 +894,16 @@ public class MatchManager {
         }
         if (debug) {
             Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + player.getName() + " Has Left The SkyWars Match on map" + gameMap.getName());
+        }
+    }*/
+
+    public void checkForWin(GameMap gameMap) {
+        if (gameMap.getTeamsLeft() <= 1) {
+            if (gameMap.getTeamsLeft() == 1) {
+                this.won(gameMap, gameMap.getWinningTeam());
+            } else {
+                this.won(gameMap, null);
+            }
         }
     }
 

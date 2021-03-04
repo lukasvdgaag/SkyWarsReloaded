@@ -11,6 +11,7 @@ import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.HashMap;
@@ -85,18 +86,23 @@ public class SchematicCage {
     public void removeSpawnPlatform(GameMap map, Player player) {
         if (player==null || map == null) { return; }
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
-            Util.get().logToFile("SWR[" + map.getName() + "] Now removing the cage of player " + player.getName());
+            Util.get().logToFile("SWR[" + map.getName() + "] Removing the cage of player in 5 ticks" + player.getName());
         }
-        if (pastedSessions != null && pastedSessions.containsKey(map)) {
-            if (pastedSessions.get(map) != null && pastedSessions.get(map).containsKey(player.getUniqueId())) {
-                EditSession session = pastedSessions.get(map).get(player.getUniqueId());
-                session.undo(session);
-                pastedSessions.get(map).remove(player.getUniqueId());
-                if (SkyWarsReloaded.getCfg().debugEnabled()) {
-                    Util.get().logToFile("SWR[" + map.getName() + "] Cage of " + player.getName() + " has successfully been removed");
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (pastedSessions != null && pastedSessions.containsKey(map)) {
+                    if (pastedSessions.get(map) != null && pastedSessions.get(map).containsKey(player.getUniqueId())) {
+                        EditSession session = pastedSessions.get(map).get(player.getUniqueId());
+                        session.undo(session);
+                        pastedSessions.get(map).remove(player.getUniqueId());
+                        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                            Util.get().logToFile("SWR[" + map.getName() + "] Cage of " + player.getName() + " has successfully been removed");
+                        }
+                    }
                 }
             }
-        }
+        }.runTaskLater(SkyWarsReloaded.get(), 5);
     }
 
 }

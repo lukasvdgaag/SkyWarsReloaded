@@ -5,6 +5,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.game.Crate;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.TeamCard;
@@ -308,7 +309,8 @@ public class PlayerInteractListener implements Listener {
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, true);
+                                SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
+                                // MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, true);
                             }
                         }.runTaskLater(SkyWarsReloaded.get(), 1);
                     }

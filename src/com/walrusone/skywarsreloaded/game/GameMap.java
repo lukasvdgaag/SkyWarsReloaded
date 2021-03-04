@@ -55,7 +55,11 @@ public class GameMap {
         GameMap.arenas = new ArrayList<>();
     }
 
-    public HashMap<Integer, List<CoordLoc>> spawnLocations = new HashMap<>(); // first int is team number, list is spawn locations
+    // In single mode:
+    //      All team spawn locations are in team index 0 (aka spawnLocations.get(0))
+    // In teams mode:
+    //      Key Integer is team index, List is the spawn locations of such team
+    public HashMap<Integer, List<CoordLoc>> spawnLocations = new HashMap<>();
     private final ArrayList<Crate> crates = new ArrayList<>();
     private boolean forceStart;
     private boolean disableDamage = false;
@@ -67,19 +71,26 @@ public class GameMap {
     private boolean thunder;
     private boolean allowFriendlyFire;
     private boolean allowScanvenger;
+    // Player data
+    private final ArrayList<TeamCard> teamCards;
+    private ArrayList<UUID> waitingPlayers = Lists.newArrayList();
+    private final ArrayList<UUID> spectators = new ArrayList<>();
     private final List<String> winners = new ArrayList<>();
+    private final HashMap<Player, Integer> playerKills = new HashMap<>();
+    private final ArrayList<String> deathMatchWaiters = new ArrayList<>();
+    // ..
     private int strikeCounter;
     private int nextStrike;
     private MatchState matchState;
-    private final ArrayList<TeamCard> teamCards;
     private int teamSize;
+    // Edit mode settings
     private ChestPlacementType chestPlacementType;
-    private final ArrayList<UUID> spectators = new ArrayList<>();
     private final String name;
     private int timer;
     private int minPlayers;
     private GameKit kit;
     private Cage cage;
+    // Map settings
     private String currentTime;
     private String currentHealth;
     private String currentChest;
@@ -99,6 +110,7 @@ public class GameMap {
     private Vote defaultTime;
     private Vote defaultWeather;
     private Vote defaultModifier;
+    // Map descriptions
     private String displayName;
     private String designedBy;
     private final ArrayList<SWRSign> signs;
@@ -112,13 +124,10 @@ public class GameMap {
     private final ArrayList<CoordLoc> deathMatchSpawns;
     private boolean legacy = false;
     private final ArrayList<MatchEvent> events = new ArrayList<>();
-    private final ArrayList<String> deathMatchWaiters = new ArrayList<>();
     private final ArrayList<String> anvils = new ArrayList<>();
     private boolean customJoinMenuIcon = false;
     private ItemStack customJoinMenuItem = null;
     private CoordLoc waitingLobbySpawn;
-    private ArrayList<UUID> waitingPlayers = Lists.newArrayList();
-    private final HashMap<Player, Integer> playerKills = new HashMap<>();
 
     public GameMap(final String name) {
         this.name = name;
@@ -727,9 +736,10 @@ public class GameMap {
         ArrayList<Player> alivePlayers = new ArrayList<>();
         for (TeamCard tCard : teamCards) {
             for (PlayerCard pCard : tCard.getPlayerCards()) {
-                if (pCard.getPlayer() != null) {
-                    if (!mapContainsDead(pCard.getPlayer().getUniqueId()) && pCard.getPlayer().getGameMode() != GameMode.SPECTATOR) {
-                        alivePlayers.add(pCard.getPlayer());
+                Player cardPlayer = pCard.getPlayer();
+                if (cardPlayer != null) {
+                    if (!mapContainsDead(cardPlayer.getUniqueId()) && cardPlayer.getGameMode() != GameMode.SPECTATOR) {
+                        alivePlayers.add(cardPlayer);
                     }
                 }
             }
@@ -771,13 +781,13 @@ public class GameMap {
     }
 
     public ArrayList<Player> getMessageAblePlayers(boolean isSpectator) {
-        ArrayList<Player> recievers = new ArrayList<>();
+        ArrayList<Player> receivers = new ArrayList<>();
         if (!isSpectator) {
             for (TeamCard tCard : teamCards) {
                 for (PlayerCard pCard : tCard.getPlayerCards()) {
                     if (pCard.getPlayer() != null) {
                         if (!mapContainsDead(pCard.getPlayer().getUniqueId())) {
-                            recievers.add(pCard.getPlayer());
+                            receivers.add(pCard.getPlayer());
                         }
                     }
                 }
@@ -785,8 +795,8 @@ public class GameMap {
             for (UUID pUid : waitingPlayers) {
                 if (!mapContainsDead(pUid)) {
                     Player p = Bukkit.getPlayer(pUid);
-                    if (p != null && !recievers.contains(p)) {
-                        recievers.add(p);
+                    if (p != null && !receivers.contains(p)) {
+                        receivers.add(p);
                     }
                 }
             }
@@ -794,10 +804,10 @@ public class GameMap {
         for (UUID uuid : spectators) {
             Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
             if (player != null) {
-                recievers.add(player);
+                receivers.add(player);
             }
         }
-        return recievers;
+        return receivers;
     }
 
     public boolean canAddPlayer() {
@@ -1150,7 +1160,8 @@ public class GameMap {
         }
         for (final Player player : this.getAlivePlayers()) {
             if (player != null) {
-                MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, false);
+                SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.OTHER, null, false);
+                // MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, false);
             }
         }
         SkyWarsReloaded.getWM().deleteWorld(this.getName(), false);
@@ -1375,7 +1386,7 @@ public class GameMap {
         }
     }
 
-    private void updateSigns() {
+    public void updateSigns() {
         for (SWRSign s : signs) {
             s.update();
         }

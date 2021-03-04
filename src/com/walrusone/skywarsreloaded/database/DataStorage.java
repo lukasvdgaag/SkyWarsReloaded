@@ -113,7 +113,7 @@ public class DataStorage {
     }
 
 
-    public void loadStats(final PlayerStat pData) {
+    public void loadStats(final PlayerStat pData, Runnable postLoadStatsTask) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -225,8 +225,7 @@ public class DataStorage {
                         System.out.println("Failed to load player " + pData.getId() + ": " + ioException.getMessage());
                     }
                 }
-                pData.setInitialized(true);
-                pData.saveStats();
+                postLoadStatsTask.run();
             }
         }.runTaskAsynchronously(SkyWarsReloaded.get());
     }

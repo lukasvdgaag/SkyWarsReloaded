@@ -20,6 +20,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -276,7 +277,7 @@ public class Util {
         SkyWarsReloaded.getNMS().respawnPlayer(player);
     }
 
-    public String getDeathMessage(DamageCause dCause, boolean withHelp, Player target, Player killer) {
+    public String getDeathMessage(@Nullable DamageCause dCause, boolean withHelp, Player target, Player killer) {
         String first;
         String second = new Messaging.MessageFormatter()
                 .setVariable("killer", killer.getName())

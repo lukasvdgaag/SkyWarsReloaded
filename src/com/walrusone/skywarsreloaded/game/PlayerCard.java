@@ -31,7 +31,6 @@ public class PlayerCard {
         this.chestVote = null;
         this.modifier = null;
         this.health = null;
-        this.kills = 0;
         this.spawn = spawn;
     }
 
@@ -42,7 +41,6 @@ public class PlayerCard {
         this.chestVote = null;
         this.modifier = null;
         this.uuid = null;
-        this.kills = 0;
     }
 
     public Player getPlayer() {

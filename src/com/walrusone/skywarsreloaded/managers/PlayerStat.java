@@ -26,7 +26,6 @@ import java.util.logging.Level;
 public class PlayerStat {
 
     private static ArrayList<PlayerStat> players;
-    //private static HashMap<Player, Scoreboard> scoreboards = new HashMap<>();
     private static HashMap<Player, SkywarsBoard> scoreboards = new HashMap<>();
 
     static {
@@ -62,7 +61,13 @@ public class PlayerStat {
                 updatePlayer(uuid);
             }
         }
-        DataStorage.get().loadStats(this);
+    }
+
+    public void loadStats(Runnable postLoadStatsTask) {
+        DataStorage.get().loadStats(this, () -> {
+            this.setInitialized(true);
+            this.saveStats(postLoadStatsTask);
+        });
     }
 
     public static void updatePlayer(final String uuid) {
@@ -312,34 +317,30 @@ public class PlayerStat {
         }
     }
 
+    /**
+     * Save player data without callback task
+     */
     public void saveStats() {
+        this.saveStats(null);
+    }
+
+    /**
+     * Save player data and call runnable when done
+     * @param postSaveStatsTask Runnable to run when saving is done
+     */
+    public void saveStats(Runnable postSaveStatsTask) {
         Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
         Bukkit.getLogger().log(Level.WARNING, "Now saving stats of player " + player.getName());
         new BukkitRunnable() {
             @Override
             public void run() {
-                saveStatsSync(PlayerStat.this, player);
+                saveStatsSync(PlayerStat.this);
+                if (postSaveStatsTask != null) postSaveStatsTask.run();
             }
         }.runTask(SkyWarsReloaded.get());
     }
 
-    public void saveStatsSync(PlayerStat ps, Player player) {
-        if (SkyWarsReloaded.getCfg().bungeeMode()) {
-            if (player != null) {
-                if (!SkyWarsReloaded.getCfg().isLobbyServer()) {
-                    Bukkit.getLogger().log(Level.WARNING, "Trying to let " + player.getName() + " join a game");
-
-                    boolean joined = MatchManager.get().joinGame(player, GameType.ALL);
-                    if (!joined) {
-                        Bukkit.getLogger().log(Level.WARNING, "Failed to put " + player.getName() + " in a game");
-                        if (SkyWarsReloaded.getCfg().debugEnabled()) {
-                            Util.get().logToFile(ChatColor.YELLOW + "Couldn't find an arena for player " + player.getName() + ". Sending the player back to the skywars lobby.");
-                        }
-                        SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
-                    }
-                }
-            }
-        }
+    private void saveStatsSync(PlayerStat ps) {
         DataStorage.get().saveStats(ps);
     }
 

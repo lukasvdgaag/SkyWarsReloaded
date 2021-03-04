@@ -6,10 +6,8 @@ import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.events.SkyWarsDeathEvent;
 import com.walrusone.skywarsreloaded.events.SkyWarsKillEvent;
 import com.walrusone.skywarsreloaded.events.SkyWarsLeaveEvent;
-import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.game.PlayerCard;
-import com.walrusone.skywarsreloaded.game.PlayerData;
-import com.walrusone.skywarsreloaded.game.TeamCard;
+import com.walrusone.skywarsreloaded.game.*;
+import com.walrusone.skywarsreloaded.game.cages.schematics.SchematicCage;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.playeroptions.KillSoundOption;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -32,11 +30,11 @@ import java.util.UUID;
 
 public class PlayerManager {
 
-    private SkyWarsReloaded swr;
+    private final SkyWarsReloaded swr;
 
-    private boolean debug;
+    private final boolean debug;
 
-    private MatchManager matchManager;
+    private final MatchManager matchManager;
 
     public PlayerManager(SkyWarsReloaded swrIn) {
         this.swr = swrIn;
@@ -44,17 +42,14 @@ public class PlayerManager {
         this.matchManager = swr.getMatchManager();
     }
 
-    public void removePlayerInGame(final Player playerRemoved, PlayerRemoveReason removeReason, @Nullable EntityDamageEvent.DamageCause deathCause, boolean announceToOthers) {
+    public void removePlayer(final Player playerRemoved, PlayerRemoveReason removeReason, @Nullable EntityDamageEvent.DamageCause deathCause, boolean announceToOthers) {
         // General constants
         final UUID pUuid = playerRemoved.getUniqueId();
         final GameMap gameMap = matchManager.getPlayerMap(playerRemoved);
-        // Check player is in game
-        if (gameMap == null) {
-            return;
-        }
         final PlayerData playerData;
-        final PlayerCard playerCard = gameMap.getPlayerCard(playerRemoved);
-        final TeamCard teamCard = playerCard.getTeamCard();
+
+        // Remove player options (no matter if in game or not)
+        SkyWarsReloaded.getOM().removePlayer(pUuid);
 
         // Process extra constants
         PlayerData tmpPData = PlayerData.getPlayerData(pUuid);
@@ -64,95 +59,250 @@ public class PlayerManager {
         } else {
             playerData = tmpPData;
         }
-        tmpPData = null;
 
-        // Remove player options no matter if in game or not
-        SkyWarsReloaded.getOM().removePlayer(pUuid);
-
-        if (gameMap.getMatchState() == MatchState.PLAYING) {
-
-            // ---------------- TEAM & PLAYER DATA ------------------
-            // Process Team data
-            teamCard.getDead().add(pUuid);
-            playerCard.getTeamCard().setPlace(gameMap.getTeamsLeft() + 1); // + 1 because we are counting from 1
-
-            // Process Player tagging
-            Tagged tagger = playerData.getTaggedBy();
-            Player taggerPlayer;
-            boolean isRecentTag;
-            if (tagger != null) {
-                taggerPlayer = tagger.getPlayer();
-                isRecentTag = System.currentTimeMillis() - tagger.getTime() < 10000; // 10 seconds
-            } else {
-                taggerPlayer = null;
-                isRecentTag = false;
+        // Filter which type of remove we should perform
+        // Player is in an arena - else we don't handle removes
+        if (gameMap != null) {
+            MatchState mState = gameMap.getMatchState();
+            boolean shouldRestorePlayerToLobby = true;
+            // Player is waiting before game start
+            if (mState.equals(MatchState.WAITINGSTART) ||
+                    mState.equals(MatchState.WAITINGLOBBY) ||
+                    mState.equals(MatchState.ENDING)
+            ) {
+                // Process main remove
+                this.removeWaitingPlayer(
+                        playerRemoved,
+                        pUuid,
+                        gameMap,
+                        playerData,
+                        removeReason,
+                        announceToOthers
+                );
+            // Player is in game and died, quit or was removed
+            } else if (mState.equals(MatchState.PLAYING)) {
+                shouldRestorePlayerToLobby =
+                        this.removePlayerInGame(
+                                playerRemoved,
+                                pUuid, gameMap,
+                                playerData,
+                                removeReason,
+                                deathCause,
+                                announceToOthers
+                        );
             }
-            boolean wasKilledByTagger = taggerPlayer != null && isRecentTag;
-
-            // ------------------ KILL HANDLING & EVENTS -----------------------
-            // Player was removed by other plugin reason - ex: server restart or map unload
-            // In this case no death should be recorded since this action was forced
-            if (removeReason.equals(PlayerRemoveReason.OTHER)) {
-                // TODO ------------
-            // Player died or quit the game while playing
-            } else {
-                // Process loser
-                this.updateStatsForLoser(playerRemoved, playerCard, playerData);
-                Bukkit.getPluginManager().callEvent(new SkyWarsDeathEvent(playerRemoved, deathCause, gameMap));
-                // Process killer (if exists)
-                if (wasKilledByTagger) {
-                    this.updateStatsForKiller(taggerPlayer);
-                    gameMap.increaseDisplayedKillsVar(taggerPlayer);
-                    Bukkit.getPluginManager().callEvent(new SkyWarsKillEvent(taggerPlayer, playerRemoved, gameMap));
-                }
+            // Should player be restored back to how they were before entering the game
+            if (shouldRestorePlayerToLobby) {
+                // Restore and delete data
+                playerData.restoreToBeforeGameState(removeReason != PlayerRemoveReason.DEATH);
+                // Remove scoreboard from saved data
+                PlayerStat.resetScoreboard(playerRemoved);
             }
-            Bukkit.getPluginManager().callEvent(new SkyWarsLeaveEvent(playerRemoved, gameMap));
+        } else {
+            SkyWarsReloaded.get().getLogger().warning("PlayerManager::removePlayer Attempted to remove player but player is not in a game map!");
+        }
+    }
 
-            // ----------------- END PROCESSING ------------------
-            gameMap.removePlayer(playerRemoved.getUniqueId());
-            // TODO: SPEC MODE
-            //  not send to lobby if spec enabled
-            playerData.restoreToBeforeGameState(removeReason != PlayerRemoveReason.DEATH);
-            // Remove dead / quit player from spectator inventory
-            for (UUID uuid : gameMap.getSpectators()) {
-                if (!uuid.equals(playerRemoved.getUniqueId())) {
-                    Player spec = SkyWarsReloaded.get().getServer().getPlayer(uuid);
-                    SkyWarsReloaded.get().getPlayerManager().prepareSpectateInv(spec, gameMap);
-                }
-            }
+    private void removeWaitingPlayer(
+            final Player playerRemoved,
+            UUID pUuid, GameMap gameMap,
+            PlayerData playerData,
+            PlayerRemoveReason removeReason,
+            boolean announceToOthers
+    ) {
+        // Check player is in a game map
+        if (gameMap == null) {
+            return;
+        }
+        // General vars
+        boolean isWaitingForGameStart =
+                gameMap.getMatchState() == MatchState.WAITINGSTART ||
+                gameMap.getMatchState() == MatchState.WAITINGLOBBY;
+        boolean isGameEnding =
+                gameMap.getMatchState() == MatchState.ENDING;
 
-            // --------------------- MESSAGES ---------------------
-            if (removeReason.equals(PlayerRemoveReason.DEATH)) {
-                if (taggerPlayer != null) {
-                    this.matchManager.message(
-                            gameMap,
-                            Util.get().getDeathMessage(deathCause, true, playerRemoved, taggerPlayer),
-                            null
-                    );
-                }
-            } else if (removeReason.equals(PlayerRemoveReason.PLAYER_QUIT_GAME)) {
-                if (wasKilledByTagger) {
-                    this.matchManager.message(gameMap, new Messaging.MessageFormatter()
-                            .withPrefix()
-                            .setVariable("player", playerRemoved.getName())
-                            .setVariable("killer", taggerPlayer.getName())
-                            .format("game.death.quit-while-tagged"), null
-                    );
-                } else {
-                    matchManager.message(gameMap, new Messaging.MessageFormatter()
-                            .setVariable("player", playerRemoved.getName())
-                            .format("game.left-the-game"), playerRemoved);
-                }
-            }
-            new BukkitRunnable() {
-                public void run() {
-                    if (playerRemoved.isOnline()) {
-                        playerRemoved.sendMessage(new Messaging.MessageFormatter()
-                                .setVariable("arena", gameMap.getDisplayName())
-                                .setVariable("map", gameMap.getName()).format("game.lost"));
+        // ------------- LEAVE HANDLING & EVENTS -------------
+        // If player is waiting before game
+        if (isWaitingForGameStart) {
+            // Remove cage for player
+            PlayerStat ps = PlayerStat.getPlayerStats(playerRemoved);
+            if (ps != null && !removeReason.equals(PlayerRemoveReason.DEATH)) {
+                String cageName = ps.getGlassColor();
+                if (gameMap.getTeamSize() == 1 || SkyWarsReloaded.getCfg().isUseSeparateCages()) {
+                    // If is custom cage, use WorldEdit to undo that operation.
+                    if (cageName.startsWith("custom-")) {
+                        new SchematicCage().removeSpawnPlatform(gameMap, playerRemoved);
+                    } else {
+                        gameMap.getCage().removeSpawnHousing(gameMap, gameMap.getTeamCard(playerRemoved), false);
                     }
                 }
-            }.runTaskLater(SkyWarsReloaded.get(), 10L);
+            }
+            // Play leave sound for players still present
+            for (final Player p : gameMap.getAlivePlayers()) {
+                Util.get().playSound(p, p.getLocation(), SkyWarsReloaded.getCfg().getLeaveSound(), 1, 1);
+            }
+        } else if (isGameEnding) {
+            // nothing to do right now, all general data is handled in parent method
+        }
+        Bukkit.getPluginManager().callEvent(new SkyWarsLeaveEvent(playerRemoved, gameMap));
+
+        // ---------------- GAME MAP UPDATES ----------------
+        gameMap.removePlayer(pUuid);
+        // Update lobby signs with new amount of players waiting
+        gameMap.updateSigns();
+
+        // ---------------- MESSAGES ------------------
+        // Removed while waiting is cages
+        if (announceToOthers) {
+            if (isWaitingForGameStart) {
+                if (SkyWarsReloaded.getCfg().titlesEnabled()) {
+                    // Get all players to send leave title to
+                    List<Player> alivePlayers = gameMap.getAlivePlayers();
+                    // Don't include the leaving player
+                    alivePlayers.remove(playerRemoved);
+                    // Send titles
+                    for (final Player p : alivePlayers) {
+                        Util.get().sendTitle(p, 2, 20, 2, "",
+                                new Messaging.MessageFormatter().setVariable("player", playerRemoved.getDisplayName())
+                                        .setVariable("players", "" + gameMap.getPlayerCount())
+                                        .setVariable("playercount", "" + gameMap.getPlayerCount())
+                                        .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.left-the-game"));
+                    }
+                }
+            }
+            // Send leave message to all players (waiting before start or during ending state)
+            matchManager.message(gameMap, new Messaging.MessageFormatter().setVariable("player", playerRemoved.getDisplayName())
+                    .setVariable("players", "" + gameMap.getPlayerCount())
+                    .setVariable("playercount", "" + gameMap.getPlayerCount())
+                    .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-left-the-game"), playerRemoved);
+        }
+    }
+
+    /**
+     * Remove a player which is currently in a game map and alive
+     * @param playerRemoved Player that died or was removed
+     * @param pUuid UUID of player
+     * @param gameMap GameMap from which this was triggered
+     * @param playerData PlayerData of the removed player
+     * @param removeReason PlayerRemoveReason - why the player was removed
+     * @param deathCause If the player died, the cause of death. Else, null.
+     * @param announceToOthers If the messages should be sent to other players from the map
+     * @return If the player should be instantly/completely removed from the map (false: spectator mode is enabled)
+     */
+    private boolean removePlayerInGame(
+            final Player playerRemoved,
+            UUID pUuid, GameMap gameMap,
+            PlayerData playerData,
+            PlayerRemoveReason removeReason,
+            @Nullable EntityDamageEvent.DamageCause deathCause,
+            boolean announceToOthers
+    ) {
+        // Check player is in game
+        if (gameMap == null) {
+            return true;
+        }
+        // Return data
+        boolean shouldSendToLobby = true;
+        // General vars
+        final PlayerCard playerCard = gameMap.getPlayerCard(playerRemoved);
+        final TeamCard teamCard = playerCard.getTeamCard();
+
+        // ---------------- TEAM & PLAYER DATA ------------------
+        // Process Team data
+        teamCard.getDead().add(pUuid);
+        // Place the first team to die, last. So we use players left (missing the current one, so +1)
+        // + 1 because we are counting from 1
+        playerCard.getTeamCard().setPlace(gameMap.getTeamsLeft() + 1);
+
+        // Process Player tagging
+        Tagged tagger = playerData.getTaggedBy();
+        Player taggerPlayer;
+        boolean isRecentTag;
+        if (tagger != null) {
+            taggerPlayer = tagger.getPlayer();
+            isRecentTag = System.currentTimeMillis() - tagger.getTime() < 10000; // 10 seconds
+        } else {
+            taggerPlayer = null;
+            isRecentTag = false;
+        }
+        boolean wasKilledByTagger = taggerPlayer != null && isRecentTag;
+
+        // ------------------ KILL HANDLING & EVENTS -----------------------
+        // Player was removed by other plugin reason - ex: server restart or map unload
+        // In this case no death should be recorded since this action was forced
+        if (removeReason.equals(PlayerRemoveReason.OTHER)) {
+            // Don't count in player stats since this is caused by plugin force removal
+        // Player died or quit the game while playing
+        } else {
+            // Process loser
+            this.updateStatsForLoser(playerRemoved);
+            Bukkit.getPluginManager().callEvent(new SkyWarsDeathEvent(playerRemoved, deathCause, gameMap));
+            // Process killer (if exists)
+            if (wasKilledByTagger) {
+                this.updateStatsForKiller(taggerPlayer);
+                gameMap.increaseDisplayedKillsVar(taggerPlayer);
+                Bukkit.getPluginManager().callEvent(new SkyWarsKillEvent(taggerPlayer, playerRemoved, gameMap));
+            }
+        }
+        Bukkit.getPluginManager().callEvent(new SkyWarsLeaveEvent(playerRemoved, gameMap));
+
+        // ---------------- GAME MAP UPDATES -----------------
+        gameMap.removePlayer(playerRemoved.getUniqueId());
+        if (SkyWarsReloaded.getCfg().spectateEnable() && removeReason.equals(PlayerRemoveReason.DEATH)) {
+            this.addSpectator(gameMap, playerRemoved);
+            shouldSendToLobby = false;
+        }
+
+        // ----------------- POST PROCESSING ------------------
+        // Remove dead / quit player from other spectator inventories
+        this.updateAllSpectatorInventories(gameMap, playerRemoved);
+        // Check map win
+        matchManager.checkForWin(gameMap);
+
+        // --------------------- MESSAGES ---------------------
+        if (!announceToOthers) {
+            // block all announcements
+        } else if (removeReason.equals(PlayerRemoveReason.DEATH)) {
+            if (taggerPlayer != null) {
+                this.matchManager.message(gameMap,
+                        Util.get().getDeathMessage(deathCause, true, playerRemoved, taggerPlayer),
+                        null
+                );
+            }
+        } else if (removeReason.equals(PlayerRemoveReason.PLAYER_QUIT_GAME)) {
+            if (wasKilledByTagger) {
+                this.matchManager.message(gameMap, new Messaging.MessageFormatter()
+                        .withPrefix()
+                        .setVariable("player", playerRemoved.getName())
+                        .setVariable("killer", taggerPlayer.getName())
+                        .format("game.death.quit-while-tagged"), null
+                );
+            } else {
+                matchManager.message(gameMap, new Messaging.MessageFormatter()
+                        .setVariable("player", playerRemoved.getName())
+                        .format("game.left-the-game"), playerRemoved);
+            }
+        }
+        // Tell the player they lost the game
+        new BukkitRunnable() {
+            public void run() {
+                if (playerRemoved.isOnline()) {
+                    playerRemoved.sendMessage(new Messaging.MessageFormatter()
+                            .setVariable("arena", gameMap.getDisplayName())
+                            .setVariable("map", gameMap.getName()).format("game.lost"));
+                }
+            }
+        }.runTaskLater(SkyWarsReloaded.get(), 10L);
+        // Return whether the player was completely removed (false: spec mode)
+        return shouldSendToLobby;
+    }
+
+    public void updateAllSpectatorInventories(GameMap gameMap, @Nullable Player playerToNotUpdate) {
+        for (UUID uuid : gameMap.getSpectators()) {
+            if (playerToNotUpdate != null && !uuid.equals(playerToNotUpdate.getUniqueId())) {
+                Player spec = SkyWarsReloaded.get().getServer().getPlayer(uuid);
+                this.prepareSpectateInv(spec, gameMap);
+            }
         }
     }
 
@@ -162,6 +312,8 @@ public class PlayerManager {
             CoordLoc ss = gameMap.getSpectateSpawn();
             Location spectateSpawn = new Location(world, ss.getX(), ss.getY(), ss.getZ());
             player.teleport(spectateSpawn, PlayerTeleportEvent.TeleportCause.END_PORTAL);
+
+            gameMap.getSpectators().add(player.getUniqueId());
 
             new BukkitRunnable() {
                 @Override
@@ -176,7 +328,7 @@ public class PlayerManager {
                     player.setGameMode(GameMode.SPECTATOR);
                     gameMap.getGameBoard().updateScoreboard(player);
 
-                    prepareSpectateInv(player, gameMap);
+                    PlayerManager.this.prepareSpectateInv(player, gameMap);
 
                     ItemStack exitItem = new ItemStack(Material.IRON_DOOR, 1);
                     ItemMeta exit = exitItem.getItemMeta();
@@ -193,42 +345,39 @@ public class PlayerManager {
                     }
                 }
 
-            }.runTaskLater(SkyWarsReloaded.get(), 3);
-            gameMap.getSpectators().add(player.getUniqueId());
+            }.runTaskLater(SkyWarsReloaded.get(), 10);
         }
     }
 
-    public void prepareSpectateInv(Player player, GameMap gameMap) {
+    public void prepareSpectateInv(Player spectatorPlayer, GameMap gameMap) {
         int slot = 9;
-        if (player != null) {
-            for (int i = 9; i < player.getInventory().getSize() - 1; i++) {
-                player.getInventory().setItem(i, null);
-            }
-        } else {
-            return;
+        if (spectatorPlayer == null) return;
+
+        // Clear inventory starting at slot 9 (stop before last slot since that's for the leave item)
+        for (int i = 9; i < spectatorPlayer.getInventory().getSize() - 1; i++) {
+            spectatorPlayer.getInventory().setItem(i, null);
         }
 
-        for (Player player1 : gameMap.getAlivePlayers()) {
-            if (player1 != null) {
+        for (Player alivePlayer : gameMap.getAlivePlayers()) {
+            if (alivePlayer != null) {
+                // Prepare player skull as clickable item in spec inventory
                 ItemStack playerhead1 = SkyWarsReloaded.getNMS().getBlankPlayerHead();
                 SkullMeta meta1 = (SkullMeta) playerhead1.getItemMeta();
-                SkyWarsReloaded.getNMS().updateSkull(meta1, player1);
-                meta1.setDisplayName(ChatColor.YELLOW + player1.getName());
+                SkyWarsReloaded.getNMS().updateSkull(meta1, alivePlayer);
+                meta1.setDisplayName(ChatColor.YELLOW + alivePlayer.getName());
                 List<String> lore = new ArrayList<>();
-                lore.add(new Messaging.MessageFormatter().setVariable("player", player1.getName()).format("spectate.playeritemlore"));
+                lore.add(new Messaging.MessageFormatter().setVariable("player", alivePlayer.getName()).format("spectate.playeritemlore"));
                 meta1.setLore(lore);
                 playerhead1.setItemMeta(meta1);
-                if (player != null) {
-                    player.getInventory().setItem(slot, playerhead1);
-                } else {
-                    break;
-                }
+                // Add item to spectator
+                spectatorPlayer.getInventory().setItem(slot, playerhead1);
+                // Next slot
                 slot++;
             }
         }
     }
 
-    public void updateStatsForLoser(Player player, PlayerCard pCard, PlayerData playerData) {
+    public void updateStatsForLoser(Player player) {
         PlayerStat loserData = PlayerStat.getPlayerStats(player.getUniqueId().toString());
         if (loserData != null) {
             loserData.setDeaths(loserData.getDeaths() + 1);

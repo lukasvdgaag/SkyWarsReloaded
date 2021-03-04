@@ -1,6 +1,8 @@
 package com.walrusone.skywarsreloaded.commands.player;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
+import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -24,7 +26,8 @@ public class SWQuitCmd extends BaseCmd {
             MatchManager.get().removeSpectator(player);
         }
         else {
-            MatchManager.get().removeAlivePlayer(player, EntityDamageEvent.DamageCause.CUSTOM, true, true);
+            SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
+            //MatchManager.get().removeAlivePlayer(player, EntityDamageEvent.DamageCause.CUSTOM, true, true);
         }
         return true;
     }
