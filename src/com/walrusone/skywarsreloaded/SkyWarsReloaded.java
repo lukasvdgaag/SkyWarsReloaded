@@ -185,7 +185,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     }
                 }
             }
-            // Load config for 1.12
+        // Load config for 1.12
         } else if (nmsHandler.getVersion() < 13 && nmsHandler.getVersion() > 8) {
             File config = new File(SkyWarsReloaded.get().getDataFolder(), "config.yml");
             if (!config.exists()) {
@@ -411,7 +411,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             for (final Player player : gameMap.getAlivePlayers()) {
                 if (player != null) {
                     this.getPlayerManager().removePlayer(player, PlayerRemoveReason.OTHER, null, false);
-                    //MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, false);
                 }
             }
             getWM().deleteWorld(gameMap.getName(), false);
