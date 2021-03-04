@@ -374,4 +374,17 @@ public class SWRServer {
         return players + 1 < getMaxPlayers();
     }
 
+    public static void updateServerSigns() {
+        for (SWRServer server : getServersCopy()) {
+            server.clearSigns();
+            List<String> signLocs = SkyWarsReloaded.get().getConfig().getStringList("signs." + server.getServerName());
+            if (signLocs != null) {
+                for (String sign : signLocs) {
+                    Location loc = Util.get().stringToLocation(sign);
+                    server.addSign(loc);
+                }
+            }
+        }
+    }
+
 }

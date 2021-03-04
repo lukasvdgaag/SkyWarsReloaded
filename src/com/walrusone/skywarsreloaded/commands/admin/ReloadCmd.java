@@ -4,16 +4,12 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.events.SkyWarsReloadEvent;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
-import com.walrusone.skywarsreloaded.utilities.Util;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class ReloadCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public ReloadCmd(String t) {
@@ -31,16 +27,7 @@ public class ReloadCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         if (SkyWarsReloaded.getCfg().bungeeMode()) {
             SkyWarsReloaded.get().prepareServers();
 
-            for (SWRServer server : SWRServer.getServersCopy()) {
-                server.clearSigns();
-                List<String> signLocs = SkyWarsReloaded.get().getConfig().getStringList("signs." + server.getServerName());
-                if (signLocs != null) {
-                    for (String sign : signLocs) {
-                        Location loc = Util.get().stringToLocation(sign);
-                        server.addSign(loc);
-                    }
-                }
-            }
+            SWRServer.updateServerSigns();
         }
 
         sender.sendMessage(new Messaging.MessageFormatter().format("command.reload"));
