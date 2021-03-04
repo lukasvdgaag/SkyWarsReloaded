@@ -1,6 +1,5 @@
 package com.walrusone.skywarsreloaded;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -13,7 +12,6 @@ import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.database.Database;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
-import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.listeners.*;
@@ -57,40 +55,28 @@ import java.util.UUID;
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 
     private static SkyWarsReloaded instance;
-    private String servername;
     private static Database db;
-    private NMS nmsHandler;
-    private SkywarsReloadedAPI swrAPI = null;
-
-    // Managers
-    private MatchManager matchManager = null;
-    private PlayerManager playerManager = null;
+    private final ArrayList<String> usable = new ArrayList<>();
     private MainCmdManager mainCmdManager = null;
     private KitCmdManager kitCmdManager = null;
     private MapCmdManager mapCmdManager = null;
     private PartyCmdManager partyCmdManager = null;
     private SWTabCompleter swTabCompleter = null;
-    private ChestManager cm = null;
-    private WorldManager wm = null;
-
-    private ArrayList<String> useable = new ArrayList<>();
-
+    private SkywarsReloadedAPI swrAPI = null;
     private Messaging messaging;
-
     private Leaderboard leaderboard = null;
     private final Object leaderboardLock = new Object();
-
     private IconMenuController ic;
     private ItemsManager im;
-
     private PlayerOptionsManager pom;
-
     private Config config;
-
+    private ChestManager cm;
+    private WorldManager wm;
+    private String servername;
+    private NMS nmsHandler;
     private HologramsUtil hu;
     private boolean loaded;
     private BukkitTask specObserver;
-
     private GCNTUpdater updater;
 
     public static SkyWarsReloaded get() {
@@ -98,7 +84,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     }
 
     public static SkywarsReloadedAPI getAPI() {
-        return get().swrAPI;
+        return instance.swrAPI;
     }
 
     public static Messaging getMessaging() {
@@ -180,6 +166,14 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
         servername = "none";
 
+        // Cages
+        File cagesFolder = new File(getDataFolder(), "cages");
+        if (!cagesFolder.exists()) {
+            if (!cagesFolder.mkdir()) {
+                Bukkit.getLogger().severe("Something went wrong whilst creating the cages folder.");
+            }
+        }
+
         // Load config for 1.8
         if (nmsHandler.getVersion() < 9) {
             File config = new File(SkyWarsReloaded.get().getDataFolder(), "config.yml");
@@ -215,16 +209,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
         // Load config data
         config = new Config();
-
-        // Managers
-        matchManager = MatchManager.get();
-        playerManager = new PlayerManager(this);
-
-        // Cages
-        File cagesFolder = new File(getDataFolder(), "cages");
-        if (!cagesFolder.exists()) {
-            cagesFolder.mkdir();
-        }
 
         // ------ All external integrations --------
         // PAPI
@@ -335,7 +319,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
         checkUpdates();
         // TODO: SWR API - Not finished
-        swrAPI = new SkywarsReloadedImpl(this);
+        swrAPI = new SkywarsReloadedImpl();
     }
 
     public void prepareServers() {
@@ -424,17 +408,15 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             }
             for (final Player player : gameMap.getAlivePlayers()) {
                 if (player != null) {
-                    this.getPlayerManager().removePlayer(player, PlayerRemoveReason.OTHER, null, false);
-                    //MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, false);
+                    MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, false, true);
                 }
             }
             getWM().deleteWorld(gameMap.getName(), false);
         }
-        ImmutableList<PlayerData> pDataSnapshot = ImmutableList.copyOf(PlayerData.getAllPlayerData());
-        for (final PlayerData playerData : pDataSnapshot) {
-            playerData.restoreToBeforeGameState(true);
+        for (final PlayerData playerData : PlayerData.getPlayerData()) {
+            playerData.restore(false);
         }
-        PlayerData.getAllPlayerData().clear();
+        PlayerData.getPlayerData().clear();
         for (final PlayerStat fData : PlayerStat.getPlayers()) {
             DataStorage.get().saveStats(fData);
         }
@@ -455,11 +437,11 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         if (sqlEnabled) {
             getFWDatabase();
         }
-        useable.clear();
+        usable.clear();
 
         for (LeaderType type : LeaderType.values()) {
             if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
-                useable.add(type.toString());
+                usable.add(type.toString());
             }
         }
 
@@ -467,9 +449,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             public void run() {
                 for (final Player v : getServer().getOnlinePlayers()) {
                     if (PlayerStat.getPlayerStats(v.getUniqueId().toString()) == null) {
-                        PlayerStat pStats = new PlayerStat(v);
-                        pStats.loadStats(null);
-                        PlayerStat.getPlayers().add(pStats);
+                        PlayerStat.getPlayers().add(new PlayerStat(v));
                     }
                 }
                 synchronized (leaderboardLock) {
@@ -677,13 +657,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
     // GETTERS AND SETTERS
 
-    public MatchManager getMatchManager() {
-        return this.matchManager;
-    }
-
-    public PlayerManager getPlayerManager() {
-        return this.playerManager;
-    }
 
     public MainCmdManager getMainCmdManager() {
         return this.mainCmdManager;
@@ -709,8 +682,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         return servername;
     }
 
-    public ArrayList<String> getUseable() {
-        return useable;
+    public ArrayList<String> getUsable() {
+        return usable;
     }
 
     public PlayerStat getPlayerStat(Player player) {

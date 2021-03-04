@@ -5,12 +5,10 @@ import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -27,7 +25,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.*;
+import java.util.UUID;
 
 public class LobbyListener implements org.bukkit.event.Listener {
     public LobbyListener() {
@@ -113,7 +111,7 @@ public class LobbyListener implements org.bukkit.event.Listener {
                 Block b = w.getBlockAt(signLocation);
                 if (b.getState() instanceof Sign) {
                     event.setCancelled(true);
-                    if (SkyWarsReloaded.get().getUseable().contains(lines[1].toUpperCase())) {
+                    if (SkyWarsReloaded.get().getUsable().contains(lines[1].toUpperCase())) {
                         LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
                         if (Util.get().isInteger(lines[2])) {
                             if (Integer.parseInt(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {

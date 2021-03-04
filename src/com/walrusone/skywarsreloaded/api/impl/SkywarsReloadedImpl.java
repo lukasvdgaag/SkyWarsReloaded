@@ -8,19 +8,20 @@ import com.walrusone.skywarsreloaded.api.SkywarsReloadedAPI;
 
 public class SkywarsReloadedImpl implements SkywarsReloadedAPI {
 
-    private SkyWarsReloaded swrInstance;
 
+    private final SkyWarsReloaded plugin;
     private SWRCommandAPI swrCmdAPI;
     private SWREventAPI swrEventAPI;
     private SWRGameAPI swrGameAPI;
 
-    public SkywarsReloadedImpl(SkyWarsReloaded swrIn) {
-        this.swrInstance = swrIn;
+    public SkywarsReloadedImpl() {
+        this.plugin = SkyWarsReloaded.get();
+        this.swrGameAPI = new SWRGameImpl(this);
     }
 
     @Override
-    public SkyWarsReloaded getSkywarsReloaded() {
-        return swrInstance;
+    public SkyWarsReloaded getPlugin() {
+        return this.plugin;
     }
 
     @Override
@@ -35,9 +36,7 @@ public class SkywarsReloadedImpl implements SkywarsReloadedAPI {
 
     @Override
     public SWRGameAPI getGameAPI() {
-        return null;
+        return this.swrGameAPI;
     }
-
-    // public
 
 }

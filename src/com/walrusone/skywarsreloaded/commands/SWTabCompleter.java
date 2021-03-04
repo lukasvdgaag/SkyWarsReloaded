@@ -87,7 +87,7 @@ public class SWTabCompleter implements TabCompleter {
                         possibilities.add(p.getName());
                     }
                 } else if ((args[0].equalsIgnoreCase("top") || args[0].equalsIgnoreCase("hologram")) && Util.get().hp("sw", commandSender, args[0].toLowerCase())) {
-                    for (String a : SkyWarsReloaded.get().getUseable()) {
+                    for (String a : SkyWarsReloaded.get().getUsable()) {
                         possibilities.add(a.toLowerCase());
                     }
                 }

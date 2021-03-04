@@ -4,7 +4,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 
 public interface SkywarsReloadedAPI {
 
-    SkyWarsReloaded getSkywarsReloaded();
+    SkyWarsReloaded getPlugin();
 
     SWRCommandAPI getCommandAPI();
 
