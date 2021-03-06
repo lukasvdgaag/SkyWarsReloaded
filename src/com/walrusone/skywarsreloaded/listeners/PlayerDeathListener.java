@@ -69,7 +69,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
             if (SkyWarsReloaded.getCfg().getEnableQuickDeath()) {
                 if (e.getTo().getY() <= SkyWarsReloaded.getCfg().getQuickDeathY()) {
                     if (gameMap.getMatchState() == MatchState.PLAYING) {
-                        EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.CUSTOM;
+                        EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.VOID;
                         if (player.getLastDamageCause() != null) {
                             damageCause = player.getLastDamageCause().getCause();
                         }
@@ -92,11 +92,11 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
                     CoordLoc cLoc = gMap.getSpectateSpawn();
                     Location respawn = new Location(world, cLoc.getX(), cLoc.getY(), cLoc.getZ());
                     a1.setRespawnLocation(respawn);
-                    new BukkitRunnable() {
-                        public void run() {
-                            SkyWarsReloaded.get().getPlayerManager().addSpectator(gMap, a1.getPlayer());
-                        }
-                    }.runTaskLater(SkyWarsReloaded.get(), 1L);
+//                    new BukkitRunnable() {
+//                        public void run() {
+//                            SkyWarsReloaded.get().getPlayerManager().addSpectator(gMap, a1.getPlayer());
+//                        }
+//                    }.runTaskLater(SkyWarsReloaded.get(), 1L);
                 }
             } else {
                 GameMap gMap = MatchManager.get().getDeadPlayerMap(a1.getPlayer());

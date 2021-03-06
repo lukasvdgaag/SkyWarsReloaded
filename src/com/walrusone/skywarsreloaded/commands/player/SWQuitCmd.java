@@ -22,12 +22,14 @@ public class SWQuitCmd extends BaseCmd {
             return true;
         }
         if (map.getTeamCard(player) == null && map.getSpectators().contains(player.getUniqueId())) {
-            map.getSpectators().remove(player.getUniqueId());
-            MatchManager.get().removeSpectator(player);
+            SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                    player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, false
+            );
         }
         else {
-            SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
-            //MatchManager.get().removeAlivePlayer(player, EntityDamageEvent.DamageCause.CUSTOM, true, true);
+            SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                    player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true
+            );
         }
         return true;
     }

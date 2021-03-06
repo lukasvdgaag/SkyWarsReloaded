@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.listeners;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -55,23 +56,26 @@ public class SpectateListener implements org.bukkit.event.Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent e) {
-        Player player = e.getPlayer();
-        GameMap gameMap = MatchManager.get().getSpectatorMap(player);
-        if (gameMap == null) {
-            return;
-        }
-        gameMap.getSpectators().remove(player.getUniqueId());
-        gameMap.getAlivePlayers().remove(player);
-        gameMap.getAllPlayers().remove(player);
-        MatchManager.get().removeSpectator(player);
-
-    }
+    // TODO: REMOVE IF NO PROBLEMS PRESENTED
+//    @EventHandler
+//    public void onPlayerQuit(PlayerQuitEvent e) {
+//        Player player = e.getPlayer();
+//        GameMap gameMap = MatchManager.get().getSpectatorMap(player);
+//        if (gameMap == null) {
+//            return;
+//        }
+//        gameMap.getSpectators().remove(player.getUniqueId());
+//        gameMap.getAlivePlayers().remove(player);
+//        gameMap.getAllPlayers().remove(player);
+//        MatchManager.get().removeSpectator(player);
+//
+//    }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onInventoryClick(InventoryClickEvent e) {
         Player player = (Player) e.getWhoClicked();
+        if (player == null)
+            return;
         GameMap gameMap = MatchManager.get().getSpectatorMap(player);
         if (gameMap == null) {
             return;
@@ -79,17 +83,22 @@ public class SpectateListener implements org.bukkit.event.Listener {
         int slot = e.getSlot();
         if (slot == 8) {
             player.closeInventory();
-            gameMap.getSpectators().remove(player.getUniqueId());
-            MatchManager.get().removeSpectator(player);
+            SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                    player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, false
+            );
         } else if ((slot >= 9) && (slot <= 35)) {
             player.closeInventory();
             ItemStack item = e.getCurrentItem();
-            if ((item != null) && (!item.getType().equals(Material.AIR))) {
+            if (item != null && !item.getType().equals(Material.AIR)) {
+                // Get name to TP to & sanity check
                 String name = org.bukkit.ChatColor.stripColor(item.getItemMeta().getDisplayName());
+                if (name == null)
+                    return;
                 Player toSpec = SkyWarsReloaded.get().getServer().getPlayer(name);
-                if ((toSpec != null) &&
-                        (!gameMap.mapContainsDead(toSpec.getUniqueId())) && (player != null)) {
+                if (toSpec != null && !gameMap.mapContainsDead(toSpec.getUniqueId())) {
                     player.teleport(toSpec.getLocation(), TeleportCause.END_PORTAL);
+                } else {
+                    SkyWarsReloaded.get().getLogger().warning("Spectator attempted to TP to " + name + " but that player is dead or not online!");
                 }
             }
         }

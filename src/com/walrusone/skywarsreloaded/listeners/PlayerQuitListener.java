@@ -27,7 +27,11 @@ public class PlayerQuitListener implements org.bukkit.event.Listener {
             party.removeMember(player);
         }
 
-        SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
+        if (SkyWarsReloaded.get().getMatchManager().getPlayerMap(player) != null) {
+            SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                    player, PlayerRemoveReason.PLAYER_QUIT_SERVER, null, true
+            );
+        }
 
         PlayerStat pStats = PlayerStat.getPlayerStats(uuid);
         if (pStats != null) {

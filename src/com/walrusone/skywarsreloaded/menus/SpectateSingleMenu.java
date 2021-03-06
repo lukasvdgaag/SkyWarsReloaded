@@ -8,6 +8,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
@@ -46,7 +47,13 @@ public class SpectateSingleMenu {
             if (player.hasPermission("sw.spectate")) {
                 player.closeInventory();
                 if (gMap.getMatchState() != MatchState.OFFLINE && gMap.getMatchState() != MatchState.ENDING) {
-                    SkyWarsReloaded.get().getPlayerManager().addSpectator(gMap, player);
+                    GameMap finalGMap = gMap;
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            SkyWarsReloaded.get().getPlayerManager().addSpectator(finalGMap, player);
+                        }
+                    }.runTaskLater(SkyWarsReloaded.get(), 5);
                 }
             }
         });

@@ -54,7 +54,7 @@ public class PlayerManager {
         // Process extra constants
         PlayerData tmpPData = PlayerData.getPlayerData(pUuid);
         if (tmpPData == null) {
-            this.swr.getLogger().warning("Player data was null when leaving game! Please report this.");
+            this.swr.getLogger().warning("Player data was null when leaving game!");
             playerData = new PlayerData(playerRemoved);
         } else {
             playerData = tmpPData;
@@ -81,15 +81,30 @@ public class PlayerManager {
                 );
             // Player is in game and died, quit or was removed
             } else if (mState.equals(MatchState.PLAYING)) {
-                shouldRestorePlayerToLobby =
-                        this.removePlayerInGame(
-                                playerRemoved,
-                                pUuid, gameMap,
-                                playerData,
-                                removeReason,
-                                deathCause,
-                                announceToOthers
-                        );
+                if (gameMap.getSpectators().contains(pUuid)) {
+                    this.removeSpectatorPlayer(
+                            playerRemoved,
+                            pUuid,
+                            gameMap,
+                            playerData,
+                            removeReason,
+                            announceToOthers
+                    );
+                } else if (gameMap.getAlivePlayers().contains(playerRemoved)) {
+                    shouldRestorePlayerToLobby =
+                            this.removePlayerInGame(
+                                    playerRemoved,
+                                    pUuid,
+                                    gameMap,
+                                    playerData,
+                                    removeReason,
+                                    deathCause,
+                                    announceToOthers
+                            );
+                } else {
+                    this.swr.getLogger().warning(
+                            "Tried to remove a player from a playing game that was neither a spectator nor an alive player!");
+                }
             }
             // Should player be restored back to how they were before entering the game
             if (shouldRestorePlayerToLobby) {
@@ -103,6 +118,15 @@ public class PlayerManager {
         }
     }
 
+    /**
+     * Remove player waiting or player waiting for game end.
+     * @param playerRemoved The player to be removed
+     * @param pUuid The UUID of the player to remvoe
+     * @param gameMap The game map object from which this was fired
+     * @param playerData The player data of the leaving player
+     * @param removeReason The reason the player was removed
+     * @param announceToOthers Whther this leave should be announced to others
+     */
     private void removeWaitingPlayer(
             final Player playerRemoved,
             UUID pUuid, GameMap gameMap,
@@ -147,6 +171,7 @@ public class PlayerManager {
         Bukkit.getPluginManager().callEvent(new SkyWarsLeaveEvent(playerRemoved, gameMap));
 
         // ---------------- GAME MAP UPDATES ----------------
+        // Remove waiting player
         gameMap.removePlayer(pUuid);
         // Update lobby signs with new amount of players waiting
         gameMap.updateSigns();
@@ -179,6 +204,42 @@ public class PlayerManager {
     }
 
     /**
+     * Remove player spectating the game
+     * @param playerRemoved
+     * @param pUuid
+     * @param gameMap
+     * @param playerData
+     * @param removeReason
+     * @param announceToOthers
+     */
+    public void removeSpectatorPlayer(
+            final Player playerRemoved,
+            UUID pUuid,
+            GameMap gameMap,
+            PlayerData playerData,
+            PlayerRemoveReason removeReason,
+            boolean announceToOthers
+    ) {
+        // Check player is in game
+        if (gameMap == null) {
+            return;
+        }
+        // Verify safety
+        if (!playerRemoved.getGameMode().equals(GameMode.SPECTATOR)) {
+            swr.getLogger().warning("Spectator " + playerRemoved.getName() + " is not in spectator mode! If this is not expected, please report this.");
+        }
+        // ---------------- GAME MAP UPDATES -----------------
+        // Remove from spectators
+        gameMap.removePlayer(pUuid);
+
+        // ------------------- MESSAGES --------------------
+        if (debug) {
+            Util.get().logToFile(this.matchManager.getDebugName(gameMap) + ChatColor.YELLOW +
+                    playerRemoved.getName() + " has been removed from spectators");
+        }
+    }
+
+    /**
      * Remove a player which is currently in a game map and alive
      * @param playerRemoved Player that died or was removed
      * @param pUuid UUID of player
@@ -191,7 +252,8 @@ public class PlayerManager {
      */
     private boolean removePlayerInGame(
             final Player playerRemoved,
-            UUID pUuid, GameMap gameMap,
+            UUID pUuid,
+            GameMap gameMap,
             PlayerData playerData,
             PlayerRemoveReason removeReason,
             @Nullable EntityDamageEvent.DamageCause deathCause,
@@ -210,9 +272,11 @@ public class PlayerManager {
         // ---------------- TEAM & PLAYER DATA ------------------
         // Process Team data
         teamCard.getDead().add(pUuid);
+        teamCard.removePlayer(pUuid);
         // Place the first team to die, last. So we use players left (missing the current one, so +1)
         // + 1 because we are counting from 1
-        playerCard.getTeamCard().setPlace(gameMap.getTeamsLeft() + 1);
+        if (teamCard.isElmininated())
+            teamCard.setPlace(gameMap.getTeamsLeft() + 1);
 
         // Process Player tagging
         Tagged tagger = playerData.getTaggedBy();
@@ -247,40 +311,41 @@ public class PlayerManager {
         Bukkit.getPluginManager().callEvent(new SkyWarsLeaveEvent(playerRemoved, gameMap));
 
         // ---------------- GAME MAP UPDATES -----------------
-        gameMap.removePlayer(playerRemoved.getUniqueId());
+        gameMap.removePlayer(pUuid);
         if (SkyWarsReloaded.getCfg().spectateEnable() && removeReason.equals(PlayerRemoveReason.DEATH)) {
             this.addSpectator(gameMap, playerRemoved);
             shouldSendToLobby = false;
         }
-
-        // ----------------- POST PROCESSING ------------------
         // Remove dead / quit player from other spectator inventories
         this.updateAllSpectatorInventories(gameMap, playerRemoved);
-        // Check map win
-        matchManager.checkForWin(gameMap);
 
         // --------------------- MESSAGES ---------------------
-        if (!announceToOthers) {
-            // block all announcements
-        } else if (removeReason.equals(PlayerRemoveReason.DEATH)) {
-            if (taggerPlayer != null) {
-                this.matchManager.message(gameMap,
-                        Util.get().getDeathMessage(deathCause, true, playerRemoved, taggerPlayer),
-                        null
-                );
-            }
-        } else if (removeReason.equals(PlayerRemoveReason.PLAYER_QUIT_GAME)) {
-            if (wasKilledByTagger) {
-                this.matchManager.message(gameMap, new Messaging.MessageFormatter()
-                        .withPrefix()
-                        .setVariable("player", playerRemoved.getName())
-                        .setVariable("killer", taggerPlayer.getName())
-                        .format("game.death.quit-while-tagged"), null
-                );
-            } else {
-                matchManager.message(gameMap, new Messaging.MessageFormatter()
-                        .setVariable("player", playerRemoved.getName())
-                        .format("game.left-the-game"), playerRemoved);
+        if (announceToOthers) {
+            // Killed by player or environment
+            if (removeReason.equals(PlayerRemoveReason.DEATH)) {
+                String message;
+                if (taggerPlayer == null) {
+                    message = Util.get().getDeathMessage(deathCause, false, playerRemoved, null);
+                } else {
+                    message = Util.get().getDeathMessage(deathCause, true, playerRemoved, taggerPlayer);
+                }
+                this.matchManager.message(gameMap, message, null);
+            // Leaving game or server
+            } else if (removeReason.equals(PlayerRemoveReason.PLAYER_QUIT_GAME) ||
+                    removeReason.equals(PlayerRemoveReason.PLAYER_QUIT_SERVER)
+            ) {
+                if (wasKilledByTagger) {
+                    this.matchManager.message(gameMap, new Messaging.MessageFormatter()
+                            .withPrefix()
+                            .setVariable("player", playerRemoved.getName())
+                            .setVariable("killer", taggerPlayer.getName())
+                            .format("game.death.quit-while-tagged"), null
+                    );
+                } else {
+                    matchManager.message(gameMap, new Messaging.MessageFormatter()
+                            .setVariable("player", playerRemoved.getName())
+                            .format("game.left-the-game"), playerRemoved);
+                }
             }
         }
         // Tell the player they lost the game
@@ -293,6 +358,11 @@ public class PlayerManager {
                 }
             }
         }.runTaskLater(SkyWarsReloaded.get(), 10L);
+
+        // ----------------- POST PROCESSING ------------------
+        // Check map win
+        matchManager.checkForWin(gameMap);
+
         // Return whether the player was completely removed (false: spec mode)
         return shouldSendToLobby;
     }
@@ -315,37 +385,31 @@ public class PlayerManager {
 
             gameMap.getSpectators().add(player.getUniqueId());
 
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    PlayerData pd = PlayerData.getPlayerData(player.getUniqueId());
-                    if (pd == null) {
-                        PlayerData.getAllPlayerData().add(new PlayerData(player));
-                    }
-                    Util.get().clear(player);
-                    // Armor was individually set, moved to null array because it's more concise
-                    player.getInventory().setArmorContents(new ItemStack[] {null, null, null, null});
-                    player.setGameMode(GameMode.SPECTATOR);
-                    gameMap.getGameBoard().updateScoreboard(player);
+            PlayerData pd = PlayerData.getPlayerData(player.getUniqueId());
+            if (pd == null) {
+                PlayerData.getAllPlayerData().add(new PlayerData(player));
+            }
+            Util.get().clear(player);
+            // Armor was individually set, moved to null array because it's more concise
+            player.getInventory().setArmorContents(new ItemStack[] {null, null, null, null});
+            player.setGameMode(GameMode.SPECTATOR);
+            gameMap.getGameBoard().updateScoreboard(player);
 
-                    PlayerManager.this.prepareSpectateInv(player, gameMap);
+            PlayerManager.this.prepareSpectateInv(player, gameMap);
 
-                    ItemStack exitItem = new ItemStack(Material.IRON_DOOR, 1);
-                    ItemMeta exit = exitItem.getItemMeta();
-                    exit.setDisplayName(new Messaging.MessageFormatter().format("spectate.exititemname"));
-                    List<String> lore = new ArrayList<>();
-                    lore.add(new Messaging.MessageFormatter().format("spectate.exititemlore"));
-                    exit.setLore(lore);
-                    exitItem.setItemMeta(exit);
-                    player.getInventory().setItem(8, exitItem);
-                    player.sendMessage(new Messaging.MessageFormatter().format("spectate.startmessage"));
-                    player.sendMessage(new Messaging.MessageFormatter().format("spectate.startmessage2"));
-                    if (debug) {
-                        Util.get().logToFile(matchManager.getDebugName(gameMap) + ChatColor.YELLOW + player.getName() + " has been added to spectators");
-                    }
-                }
-
-            }.runTaskLater(SkyWarsReloaded.get(), 10);
+            ItemStack exitItem = new ItemStack(Material.IRON_DOOR, 1);
+            ItemMeta exit = exitItem.getItemMeta();
+            exit.setDisplayName(new Messaging.MessageFormatter().format("spectate.exititemname"));
+            List<String> lore = new ArrayList<>();
+            lore.add(new Messaging.MessageFormatter().format("spectate.exititemlore"));
+            exit.setLore(lore);
+            exitItem.setItemMeta(exit);
+            player.getInventory().setItem(8, exitItem);
+            player.sendMessage(new Messaging.MessageFormatter().format("spectate.startmessage"));
+            player.sendMessage(new Messaging.MessageFormatter().format("spectate.startmessage2"));
+            if (debug) {
+                Util.get().logToFile(matchManager.getDebugName(gameMap) + ChatColor.YELLOW + player.getName() + " has been added to spectators");
+            }
         }
     }
 

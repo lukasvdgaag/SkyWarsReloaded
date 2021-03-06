@@ -402,15 +402,21 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             if (gameMap.isEditing()) {
                 gameMap.saveMap(null);
             }
-            for (final UUID uuid : gameMap.getSpectators()) {
+            ImmutableList<UUID> specUUIDs = ImmutableList.copyOf(gameMap.getSpectators());
+            for (final UUID uuid : specUUIDs) {
                 final Player player = getServer().getPlayer(uuid);
                 if (player != null) {
-                    MatchManager.get().removeSpectator(player);
+                    SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                            player, PlayerRemoveReason.OTHER, null, false
+                    );
                 }
             }
-            for (final Player player : gameMap.getAlivePlayers()) {
+            ImmutableList<Player> players = ImmutableList.copyOf(gameMap.getAlivePlayers());
+            for (final Player player : players) {
                 if (player != null) {
-                    this.getPlayerManager().removePlayer(player, PlayerRemoveReason.OTHER, null, false);
+                    this.getPlayerManager().removePlayer(
+                            player, PlayerRemoveReason.OTHER, null, false
+                    );
                 }
             }
             getWM().deleteWorld(gameMap.getName(), false);

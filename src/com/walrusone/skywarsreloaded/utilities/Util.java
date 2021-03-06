@@ -279,9 +279,14 @@ public class Util {
 
     public String getDeathMessage(@Nullable DamageCause dCause, boolean withHelp, Player target, Player killer) {
         String first;
-        String second = new Messaging.MessageFormatter()
-                .setVariable("killer", killer.getName())
-                .format("game.death.killer-section");
+        String second = null;
+        if (withHelp) {
+            second = new Messaging.MessageFormatter()
+                    .setVariable("killer", killer.getName())
+                    .format("game.death.killer-section");
+        }
+
+        if (dCause == null) dCause = DamageCause.CUSTOM;
 
         if (dCause.equals(DamageCause.BLOCK_EXPLOSION) || dCause.equals(DamageCause.ENTITY_EXPLOSION)) {
             first = new Messaging.MessageFormatter()

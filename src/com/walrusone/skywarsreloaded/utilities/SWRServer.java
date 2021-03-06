@@ -212,7 +212,10 @@ public class SWRServer {
     }
 
     public void setMatchState(MatchState serverState) {
-        Bukkit.getPluginManager().callEvent(new SkyWarsMatchStateChangeEvent(this, serverState));
+        Bukkit.getScheduler().callSyncMethod(SkyWarsReloaded.get(), () -> {
+            Bukkit.getPluginManager().callEvent(new SkyWarsMatchStateChangeEvent(this, serverState));
+            return null;
+        });
         synchronized (stateLock) {
             this.state = serverState;
         }

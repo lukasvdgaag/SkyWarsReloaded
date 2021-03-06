@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.managers;
 
+import com.google.common.collect.ImmutableList;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.enums.GameType;
@@ -161,8 +162,12 @@ public class MatchManager {
     }
 
     public void message(@NotNull final GameMap gameMap, final String message, @Nullable Player skip) {
-        List<Player> worldPlayers = gameMap.getCurrentWorld().getPlayers();
+        World w = gameMap.getCurrentWorld();
+        List<Player> worldPlayers = w.getPlayers();
         if (worldPlayers != null && !worldPlayers.isEmpty()) {
+            if (debug) {
+                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Message from [" + gameMap.getName() + "]: " + message);
+            }
             for (Player player : worldPlayers) {
                 if (player != null && player != skip) {
                     player.sendMessage(message);
@@ -495,12 +500,14 @@ public class MatchManager {
         }
         selectKit(gameMap);
         gameMap.getCage().removeSpawnHousing(gameMap);
-
+        gameMap.getWaitingPlayers().clear();
 
         if (SkyWarsReloaded.getCfg().getEnablePVPTimer() && SkyWarsReloaded.getCfg().getPVPTimerTime() >= 1) {
             gameMap.setDisableDamage(true);
+
             Bukkit.getScheduler().scheduleSyncDelayedTask(SkyWarsReloaded.get(), () -> {
                 gameMap.setDisableDamage(false);
+                gameMap.getWaitingPlayers().clear();
                 for (Player player : gameMap.getAlivePlayers()) {
                     if (!SkyWarsReloaded.getMessaging().getFile().getString("game.pvp-timer-disabled-message").isEmpty()) {
                         player.sendMessage(new Messaging.MessageFormatter().setVariable("player", player.getName()).setVariable("arena", gameMap.getName()).format("game.pvp-timer-disabled-message"));
@@ -682,8 +689,15 @@ public class MatchManager {
             new BukkitRunnable() {
                 public void run() {
                     // Clear Spectators
-                    for (final UUID uuid : gameMap.getSpectators()) {
-                        MatchManager.this.removeSpectatorByUuid(uuid);
+                    ImmutableList<UUID> spectatorUUIDs = ImmutableList.copyOf(gameMap.getSpectators());
+                    for (final UUID uuid : spectatorUUIDs) {
+                        Player player = Bukkit.getServer().getPlayer(uuid);
+                        if (player != null)
+                            SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                                    player,
+                                    PlayerRemoveReason.OTHER,
+                                    null,
+                                    false);
                     }
                     gameMap.getSpectators().clear();
                     // Clear Alive players
@@ -713,25 +727,6 @@ public class MatchManager {
                     }
                 }
             }.runTaskLater(SkyWarsReloaded.get(), (SkyWarsReloaded.getCfg().getTimeAfterMatch() + 5) * 20L);
-        }
-    }
-
-    public void removeSpectatorByUuid(UUID uuid) {
-        final Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
-        if (player != null) {
-            removeSpectator(player);
-        }
-    }
-
-    public void removeSpectator(Player player) {
-        PlayerData pData = PlayerData.getPlayerData(player.getUniqueId());
-        GameMap gameMap = getPlayerMap(player);
-        if (debug) {
-            Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + player.getName() + " has been removed from spectators");
-        }
-        if (pData != null) {
-            pData.restoreToBeforeGameState(false);
-            PlayerData.getAllPlayerData().remove(pData);
         }
     }
 
@@ -907,12 +902,12 @@ public class MatchManager {
         }
     }
 
-    public GameMap getPlayerMap(final Player v0) {
-        if (v0 != null) {
+    public GameMap getPlayerMap(final Player player) {
+        if (player != null) {
             for (final GameMap gameMap : GameMap.getMaps()) {
-                if (gameMap.getAllPlayers().contains(v0)) return gameMap;
-                else if (gameMap.getWaitingPlayers().contains(v0.getUniqueId())) return gameMap;
-                else if (gameMap.getSpectators().contains(v0.getUniqueId())) return gameMap;
+                if (gameMap.getAllPlayers().contains(player)) return gameMap;
+                else if (gameMap.getWaitingPlayers().contains(player.getUniqueId())) return gameMap;
+                else if (gameMap.getSpectators().contains(player.getUniqueId())) return gameMap;
             }
         }
         return null;

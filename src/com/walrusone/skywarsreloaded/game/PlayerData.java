@@ -38,7 +38,7 @@ public class PlayerData {
 
     public PlayerData(final Player p) {
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
-            Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Creating " + p.getName() + "'s Datafile");
+            Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Creating " + p.getName() + "'s data");
         }
         this.beingRestored = false;
         this.uuid = p.getUniqueId();
@@ -52,7 +52,7 @@ public class PlayerData {
         inv = Bukkit.createInventory(null, InventoryType.PLAYER, p.getName());
         inv.setContents(p.getInventory().getContents());
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
-            Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + p.getName() + "'s Datafile has been created");
+            Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + p.getName() + "'s data has been saved");
         }
     }
 
@@ -84,22 +84,29 @@ public class PlayerData {
             // Reset player
             PlayerStat pStats = PlayerStat.getPlayerStats(player);
             player.closeInventory();
+            // Gamemode reset
             player.setGameMode(GameMode.SURVIVAL);
             if (SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
                 if (pStats != null) {
                     Util.get().setPlayerExperience(player, pStats.getXp());
                 }
             }
+            // Reset inventory
             Util.get().clear(player);
             player.getInventory().clear();
             player.getInventory().setContents(inv.getContents());
             SkyWarsReloaded.getNMS().setMaxHealth(player, 20);
+            // Remove death screen for player - this will send them to spawn so we undo that by TP back
+            Location currLocation = player.getLocation();
             Util.get().respawnPlayer(player);
+            player.teleport(currLocation);
+            // Set health
             if (healthBeforeGame <= 0 || healthBeforeGame > 20) {
                 player.setHealth(20);
             } else {
                 player.setHealth(healthBeforeGame);
             }
+            // Other data to reset
             player.setFoodLevel(foodBeforeGame);
             player.setSaturation(saturationBeforeGame);
             player.resetPlayerTime();

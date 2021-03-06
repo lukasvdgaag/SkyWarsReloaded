@@ -24,6 +24,7 @@ public class GameBoard {
 
     public void updateScoreboard() {
         for (Player player : gMap.getAllPlayers()) {
+            if (player == null) continue;
             updateScoreboard(player);
         }
     }

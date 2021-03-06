@@ -87,6 +87,7 @@ public class PlayerJoinListener implements Listener {
                                 Util.get().logToFile(ChatColor.YELLOW + "Couldn't find an arena for player " + player.getName() + ". Sending the player back to the skywars lobby.");
                             }
                             SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
+                            player.kickPlayer("");
                         }
                     }
                 }

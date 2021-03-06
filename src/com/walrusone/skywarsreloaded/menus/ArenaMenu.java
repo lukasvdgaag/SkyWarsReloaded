@@ -257,7 +257,12 @@ public class ArenaMenu {
                     if (gMap.isRegistered()) {
                         player.closeInventory();
                         if (gMap.getMatchState() != MatchState.OFFLINE && gMap.getMatchState() != MatchState.ENDING) {
-                            SkyWarsReloaded.get().getPlayerManager().addSpectator(gMap, player);
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    SkyWarsReloaded.get().getPlayerManager().addSpectator(gMap, player);
+                                }
+                            }.runTaskLater(SkyWarsReloaded.get(), 5);
                         }
                     }
                 } else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 12) {

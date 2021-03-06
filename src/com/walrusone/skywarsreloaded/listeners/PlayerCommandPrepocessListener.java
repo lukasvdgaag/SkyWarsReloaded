@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.listeners;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -16,8 +17,9 @@ public class PlayerCommandPrepocessListener implements org.bukkit.event.Listener
         if (gMap != null) {
             if (splited[0].equalsIgnoreCase("/spawn")) {
                 e.setCancelled(true);
-                gMap.getSpectators().remove(e.getPlayer().getUniqueId());
-                MatchManager.get().removeSpectator(e.getPlayer());
+                SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                        e.getPlayer(), PlayerRemoveReason.PLAYER_QUIT_GAME, null, false
+                );
                 return;
             }
             if (SkyWarsReloaded.getCfg().disableCommandsSpectate()) {

@@ -132,7 +132,7 @@ public abstract class Cage {
             }
         }.runTaskLater(SkyWarsReloaded.get(), 100L);
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
-            Util.get().logToFile("SWR[" + gMap.getName() + "] Now removing all player cage");
+            Util.get().logToFile("SWR[" + gMap.getName() + "] Now removing all player cages");
         }
         for (TeamCard tCard : gMap.getTeamCards()) {
             Bukkit.getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {

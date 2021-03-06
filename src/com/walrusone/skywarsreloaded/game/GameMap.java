@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.game;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
@@ -499,6 +500,7 @@ public class GameMap {
         if (!spectators.isEmpty()) {
             for (UUID uuid : spectators) {
                 Player spec = SkyWarsReloaded.get().getServer().getPlayer(uuid);
+                if (spec == null) continue;
                 if (isOutsideBorder(spec)) {
                     CoordLoc ss = getSpectateSpawn();
                     Location spectateSpawn = new Location(getCurrentWorld(), ss.getX(), ss.getY(), ss.getZ());
@@ -767,12 +769,14 @@ public class GameMap {
         }
         for (UUID player : waitingPlayers) {
             Player pl = Bukkit.getPlayer(player);
+            if (pl == null) continue;
             if (!allPlayers.contains(pl)) {
                 allPlayers.add(pl);
             }
         }
         for (UUID player : spectators) {
             Player pl = Bukkit.getPlayer(player);
+            if (pl == null) continue;
             if (!allPlayers.contains(pl)) {
                 allPlayers.add(pl);
             }
@@ -1152,16 +1156,20 @@ public class GameMap {
 
     public void stopGameInProgress() {
         this.setMatchState(MatchState.OFFLINE);
-        for (final UUID uuid : this.getSpectators()) {
+        ImmutableList<UUID> specUUIDs = ImmutableList.copyOf(this.getSpectators());
+        for (final UUID uuid : specUUIDs) {
             final Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
             if (player != null) {
-                MatchManager.get().removeSpectator(player);
+                SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                        player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, false
+                );
             }
         }
         for (final Player player : this.getAlivePlayers()) {
             if (player != null) {
-                SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.OTHER, null, false);
-                // MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, false);
+                SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                        player, PlayerRemoveReason.OTHER, null, false
+                );
             }
         }
         SkyWarsReloaded.getWM().deleteWorld(this.getName(), false);

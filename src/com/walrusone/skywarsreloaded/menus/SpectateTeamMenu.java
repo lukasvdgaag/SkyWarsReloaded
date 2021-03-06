@@ -61,7 +61,13 @@ public class SpectateTeamMenu {
                 if (player.hasPermission("sw.spectate")) {
                     player.closeInventory();
                     if (gMap.getMatchState() != MatchState.OFFLINE && gMap.getMatchState() != MatchState.ENDING) {
-                        SkyWarsReloaded.get().getPlayerManager().addSpectator(gMap, player);
+                        GameMap finalGMap = gMap;
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                SkyWarsReloaded.get().getPlayerManager().addSpectator(finalGMap, player);
+                            }
+                        }.runTaskLater(SkyWarsReloaded.get(), 5);
                     }
                 }
             }

@@ -148,7 +148,7 @@ public class TeamCard {
         return false;
     }
 
-    boolean removePlayer(UUID uuid) {
+    public boolean removePlayer(UUID uuid) {
         PlayerCard pCard = containsPlayer(uuid);
         if ((pCard != null) /*&& (team != null)*/) {
             //team.removeEntry(SkyWarsReloaded.get().getServer().getOfflinePlayer(uuid).getName());
