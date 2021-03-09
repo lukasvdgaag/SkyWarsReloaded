@@ -50,6 +50,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 
@@ -544,93 +545,103 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         ByteArrayDataInput in = ByteStreams.newDataInput(message);
         String subchannel = in.readUTF();
 
-        if (subchannel.equals("GetServer")) {
-            servername = in.readUTF();
-        }
+        try {
+            if (subchannel.equals("GetServer")) {
+                servername = in.readUTF();
+            }
 
-        if (subchannel.equals("PlayerCount")) {
-            String server = in.readUTF();
-            int playercount = in.readInt();
+            if (subchannel.equals("PlayerCount")) {
+                String server = in.readUTF();
+                int playercount = in.readInt();
 
-            final SWRServer swrServer = SWRServer.getServer(server);
+                final SWRServer swrServer = SWRServer.getServer(server);
 
-            if (swrServer != null) {
-                if (playercount == 0) {
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                String hostname = swrServer.getHostname() == null ? "127.0.0.1" : swrServer.getHostname();
+                if (swrServer != null) {
+                    if (playercount == 0) {
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    String hostname = swrServer.getHostname() == null ? "127.0.0.1" : swrServer.getHostname();
 
-                                MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname(hostname).setPort(swrServer.getPort()));
-                                final String[] serverInfo = data.getDescription().getText().split(":");
-                                swrServer.setMatchState(serverInfo[0]);
-                                /*if (Util.get().isInteger(serverInfo[1])) {
-                                    swrServer.setPlayerCount(Integer.parseInt(serverInfo[1]));
+                                    MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname(hostname).setPort(swrServer.getPort()));
+                                    final String[] serverInfo = data.getDescription().getText().split(":");
+                                    swrServer.setMatchState(serverInfo[0]);
+                                    /*if (Util.get().isInteger(serverInfo[1])) {
+                                        swrServer.setPlayerCount(Integer.parseInt(serverInfo[1]));
+                                    }
+                                    if (Util.get().isInteger(serverInfo[2])) {
+                                        swrServer.setMaxPlayers(Integer.parseInt(serverInfo[2]));
+                                    }
+                                    swrServer.setDisplayName(serverInfo[3]);*/
+                                    swrServer.updateSigns();
+
+                                } catch (IOException e) {
+                                    swrServer.setMatchState(MatchState.OFFLINE);
+                                    swrServer.updateSigns();
                                 }
-                                if (Util.get().isInteger(serverInfo[2])) {
-                                    swrServer.setMaxPlayers(Integer.parseInt(serverInfo[2]));
-                                }
-                                swrServer.setDisplayName(serverInfo[3]);*/
-                                swrServer.updateSigns();
-
-                            } catch (IOException e) {
-                                swrServer.setMatchState(MatchState.OFFLINE);
-                                swrServer.updateSigns();
                             }
+                        }.runTask(this);
+                    } else {
+                        if (player != null) {
+                            ArrayList<String> messages = new ArrayList<String>();
+                            messages.add("RequestUpdate");
+                            messages.add(servername);
+                            sendSWRMessage(player, server, messages);
                         }
-                    }.runTask(this);
-                } else {
-                    if (player != null) {
-                        ArrayList<String> messages = new ArrayList<String>();
-                        messages.add("RequestUpdate");
-                        messages.add(servername);
-                        sendSWRMessage(player, server, messages);
                     }
                 }
             }
-        }
 
-        if (subchannel.equals("SWRMessaging")) {
-            short len = in.readShort();
-            byte[] msgbytes = new byte[len];
-            in.readFully(msgbytes);
+            if (subchannel.equals("SWRMessaging")) {
+                short len = in.readShort();
+                byte[] msgbytes = new byte[len];
+                in.readFully(msgbytes);
 
-            DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
-            try {
-                String header = msgin.readUTF();
-                if (header.equalsIgnoreCase("ServerUpdate")) {
-                    String server = msgin.readUTF();
-                    String playerCount = msgin.readUTF();
-                    String maxPlayers = msgin.readUTF();
-                    String gameStarted = msgin.readUTF();
-                    SWRServer swrServer = SWRServer.getServer(server);
-                    if (swrServer != null) {
-                        if (Util.get().isInteger(playerCount)) {
-                            swrServer.setPlayerCount(Integer.parseInt(playerCount));
+                DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+                try {
+                    String header = msgin.readUTF();
+                    if (header.equalsIgnoreCase("ServerUpdate")) {
+                        String server = msgin.readUTF();
+                        String playerCount = msgin.readUTF();
+                        String maxPlayers = msgin.readUTF();
+                        String gameStarted = msgin.readUTF();
+                        SWRServer swrServer = SWRServer.getServer(server);
+                        if (swrServer != null) {
+                            if (Util.get().isInteger(playerCount)) {
+                                swrServer.setPlayerCount(Integer.parseInt(playerCount));
+                            }
+                            if (Util.get().isInteger(maxPlayers)) {
+                                swrServer.setMaxPlayers(Integer.parseInt(maxPlayers));
+                            }
+                            swrServer.setMatchState(gameStarted);
+                            swrServer.updateSigns();
                         }
-                        if (Util.get().isInteger(maxPlayers)) {
-                            swrServer.setMaxPlayers(Integer.parseInt(maxPlayers));
-                        }
-                        swrServer.setMatchState(gameStarted);
-                        swrServer.updateSigns();
                     }
+                    if (header.equalsIgnoreCase("RequestUpdate")) {
+                        String sendToServer = msgin.readUTF();
+                        String playerCount = "" + GameMap.getMaps().get(0).getAlivePlayers().size();
+                        String maxPlayers = "" + GameMap.getMaps().get(0).getMaxPlayers();
+                        String gameStarted = "" + GameMap.getMaps().get(0).getMatchState().toString();
+                        ArrayList<String> messages = new ArrayList<>();
+                        messages.add("ServerUpdate");
+                        messages.add(servername);
+                        messages.add(playerCount);
+                        messages.add(maxPlayers);
+                        messages.add(gameStarted);
+                        sendSWRMessage(player, sendToServer, messages);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                if (header.equalsIgnoreCase("RequestUpdate")) {
-                    String sendToServer = msgin.readUTF();
-                    String playerCount = "" + GameMap.getMaps().get(0).getAlivePlayers().size();
-                    String maxPlayers = "" + GameMap.getMaps().get(0).getMaxPlayers();
-                    String gameStarted = "" + GameMap.getMaps().get(0).getMatchState().toString();
-                    ArrayList<String> messages = new ArrayList<>();
-                    messages.add("ServerUpdate");
-                    messages.add(servername);
-                    messages.add(playerCount);
-                    messages.add(maxPlayers);
-                    messages.add(gameStarted);
-                    sendSWRMessage(player, sendToServer, messages);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            }
+        } catch (Exception ex) {
+            Logger logger = instance.getLogger();
+            logger.warning("Invalid plugin message was received! Enable debug mode before reporting this! (in config.yml)");
+            if (config.debugEnabled()) {
+                String pName = player == null ? "null" : player.getName();
+                logger.info("SkywarsReloaded::onPluginMessageReceived subchannel=" + subchannel + ", playerName=" + pName);
+                ex.printStackTrace();
             }
         }
     }
