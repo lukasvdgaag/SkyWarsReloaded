@@ -156,13 +156,13 @@ public class SWMWorldManager implements WorldManager {
     }
 
     @Override
-    public void unloadWorld(String world, boolean save) {
-        World w = Bukkit.getWorld(world);
-        Bukkit.getServer().unloadWorld(world, save);
+    public void unloadWorld(String worldName, boolean save) {
+        World world = Bukkit.getWorld(worldName);
+        Bukkit.getServer().unloadWorld(worldName, save);
 
         if (save) {
             try {
-                plugin.importWorld(w.getWorldFolder(), world, loader);
+                plugin.importWorld(world.getWorldFolder(), worldName, loader);
             } catch (WorldAlreadyExistsException | InvalidWorldException | WorldLoadedException | WorldTooBigException | IOException e) {
                 e.printStackTrace();
             }
