@@ -31,6 +31,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
 
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
         if (gameMap == null) return;
+        if (!gameMap.allowFallDamage() && e.getCause() == EntityDamageEvent.DamageCause.FALL) return;
         if (player.getHealth() - e.getFinalDamage() > 0) return;
 
         e.setCancelled(true);
