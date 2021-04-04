@@ -10,8 +10,9 @@ import java.util.UUID;
 
 public class PlayerCard {
 
-    private UUID uuid;
     private TeamCard tCard;
+    private UUID uuid;
+    private int joinOrder;
 
     private CoordLoc spawn;
 
