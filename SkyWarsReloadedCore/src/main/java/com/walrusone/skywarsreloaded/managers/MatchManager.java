@@ -259,10 +259,11 @@ public class MatchManager {
         }
         Util.get().clear(player);
         if (!gameMap.getAlivePlayers().contains(player) || gameMap.getTeamSize() == 1) {
+            String playerCount = String.valueOf(gameMap.getAllPlayers().size());
             for (final Player p : gameMap.getAllPlayers()) {
                 p.sendMessage(new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
-                        .setVariable("players", "" + gameMap.getAllPlayers().size())
-                        .setVariable("playercount", gameMap.getAllPlayers().size() + "")
+                        .setVariable("players", playerCount)
+                        .setVariable("playercount", playerCount)
                         .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-joined-the-game"));
             }
         }
@@ -413,8 +414,8 @@ public class MatchManager {
                                         - build a ordered list of teams ranked from smallest to biggest
                                         - iterate once over to find the lowest number of players in a team,
                                         - then iterate over the teams again and take the last player in the list..
-                                            (to avoid shifting many players in memory)
-                                        - place each player into a team, then start back at the beginning when
+                                            (to avoid shifting many players in memory or use a queue object)
+                                        - place each player into a team: then start back at the beginning when
                                             the existing players in a team is higher than previously recorded lowest
                                             and increase previous lowest to += 1
                             */
