@@ -25,11 +25,14 @@ public class FileWorldManager implements WorldManager {
     }
 
     public boolean loadWorld(String worldName, Environment environment) {
+
         WorldCreator worldCreator = new WorldCreator(worldName);
         worldCreator.environment(environment);
         worldCreator.generateStructures(false);
         worldCreator.generator(SkyWarsReloaded.getNMS().getChunkGenerator());
+
         World world = worldCreator.createWorld();
+
         world.setDifficulty(org.bukkit.Difficulty.NORMAL);
         world.setSpawnFlags(true, true);
         world.setPVP(true);
@@ -46,6 +49,7 @@ public class FileWorldManager implements WorldManager {
         SkyWarsReloaded.getNMS().setGameRule(world, "doFireTick", "true");
         SkyWarsReloaded.getNMS().setGameRule(world, "showDeathMessages", "false");
         SkyWarsReloaded.getNMS().setGameRule(world, "announceAdvancements", "false");
+        SkyWarsReloaded.getNMS().setGameRule(world, "doDaylightCycle", "false");
 
         boolean loaded = false;
         for (World w : SkyWarsReloaded.get().getServer().getWorlds()) {
