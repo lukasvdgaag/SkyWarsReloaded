@@ -4,12 +4,11 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 public class GameQueue {
-    private List<PlayerCard> queue = new ArrayList<>();
+    private ConcurrentLinkedQueue<PlayerCard> queue = new ConcurrentLinkedQueue<>();
     private GameMap map;
     private BukkitRunnable runnableQueue;
 
@@ -23,15 +22,12 @@ public class GameQueue {
 
     private void sendToGame() {
         if (SkyWarsReloaded.get().isEnabled()) {
-            final PlayerCard pCard = queue.get(0);
+            final PlayerCard pCard = queue.poll();
+            if (pCard == null) return;
             if (SkyWarsReloaded.getCfg().debugEnabled()) {
-                if (pCard != null) {
-                    SkyWarsReloaded.get().getLogger().info(
-                            "#GameQueue:sendToGame: pCard uuid " + pCard.getUUID());
-                }
+                SkyWarsReloaded.get().getLogger().info("#GameQueue:sendToGame: pCard uuid " + pCard.getUUID());
             }
             MatchManager.get().teleportToArena(map, pCard);
-            queue.remove(0);
         }
     }
 
@@ -48,7 +44,10 @@ public class GameQueue {
     }
 
     public void kill() {
-        if (runnableQueue != null)
+        if (runnableQueue != null) {
             runnableQueue.cancel();
+            runnableQueue = null;
+            queue.clear();
+        }
     }
 }
