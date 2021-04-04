@@ -63,6 +63,7 @@ public class GameMap {
     public HashMap<Integer, List<CoordLoc>> spawnLocations = new HashMap<>();
     private final ArrayList<Crate> crates = new ArrayList<>();
     private boolean forceStart;
+    // TODO: Move all of these into WorldOptions
     private boolean disableDamage = false;
     private boolean allowFallDamage;
     private boolean allowRegen;
@@ -584,8 +585,8 @@ public class GameMap {
             Bukkit.getLogger().log(Level.WARNING, "#addPlayers: " + player.getName() + "'s PlayerStats are initialized");
             Bukkit.getLogger().log(Level.WARNING, "#addPlayers: MatchState: " + getMatchState().name());
         }
-        // If in any mode & WAITING while countdown
-        if (getMatchState() == MatchState.WAITINGSTART ) {
+        // If in any mode & WAITING while countdown & lobby mode is not enabled
+        if (getMatchState() == MatchState.WAITINGSTART) {
             TeamCard reservedTeamCard = null;
             if (teamToTry == null) { // If not in party mode
                 for (TeamCard tCard : teamCards) {
@@ -614,7 +615,7 @@ public class GameMap {
             } else { // Warn console that setup failed
                 SkyWarsReloaded.get().getLogger().warning("Failed to send reservation for " + player.getName());
             }
-            // else if in lobby waiting mode
+        // else if in lobby waiting mode
         } else if (getMatchState() == MatchState.WAITINGLOBBY) {
             Util.get().ejectPassengers(player);
             PlayerStat.resetScoreboard(player);
