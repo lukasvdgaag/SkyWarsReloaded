@@ -233,22 +233,35 @@ public class NMSHandler implements NMS {
         //return scoreboard.registerNewObjective(DisplayName, criteria, DisplayName);
     }
 
-    public void setGameRule(World world, String rule, String bool) {
-        if (rule.equalsIgnoreCase("doMobSpawning")) {
-            world.setGameRuleValue("doMobSpawning", bool);
-            //world.setGameRule(GameRule.DO_MOB_SPAWNING, Boolean.valueOf(bool.toUpperCase()));
-        } else if (rule.equalsIgnoreCase("mobGriefing")) {
-            world.setGameRuleValue("mobGriefing", bool);
-            //world.setGameRule(GameRule.MOB_GRIEFING, Boolean.valueOf(bool.toUpperCase()));
-        } else if (rule.equalsIgnoreCase("doFireTick")) {
-            world.setGameRuleValue("doFireTick", bool);
-            //world.setGameRule(GameRule.DO_FIRE_TICK, Boolean.valueOf(bool.toUpperCase()));
-        } else if (rule.equalsIgnoreCase("showDeathMessages")) {
-            world.setGameRuleValue("showDeathMessages", bool);
-            //world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, Boolean.valueOf(bool.toUpperCase()));
-        } else if (rule.equalsIgnoreCase("announceAdvancements")) {
-            world.setGameRuleValue("announceAdvancedments", bool);
-            //world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, Boolean.valueOf(bool.toUpperCase()));
+    public void setGameRule(World world, String ruleName, String value) {
+        // Handle bools
+        Boolean valueBool = null;
+        if (value.equalsIgnoreCase("true")) valueBool = true;
+        else if (value.equalsIgnoreCase("false")) valueBool = false;
+        // Handle ints
+        Integer valueInt = null;
+        if (valueBool == null) {
+            try {
+                valueInt = Integer.parseInt(value);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        // Apply
+        try {
+            if (valueBool == null) {
+                GameRule<Integer> gameRule = (GameRule<Integer>) GameRule.getByName(ruleName);
+                if (gameRule == null || valueInt == null)
+                    throw new Exception("Invalid GameRule or value provided: " + ruleName + " -> " + value);
+                world.setGameRule(gameRule, valueInt);
+            } else {
+                GameRule<Boolean> gameRule = (GameRule<Boolean>) GameRule.getByName(ruleName);
+                if (gameRule == null)
+                    throw new Exception("Invalid GameRule: " + ruleName);
+                world.setGameRule(gameRule, valueBool);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
