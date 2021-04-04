@@ -565,7 +565,7 @@ public class GameMap {
     }
 
     public boolean addPlayers(@Nullable TeamCard teamToTry, final Player player) {
-        // IF busy return false
+        // If busy return false
         if (Util.get().isBusy(player.getUniqueId())) {
             if (SkyWarsReloaded.getCfg().debugEnabled()) {
                 Bukkit.getLogger().log(Level.WARNING, "#addPlayers: " + player.getName() + " is busy, cannot join " + this.getName());
@@ -573,6 +573,8 @@ public class GameMap {
             return false;
         }
         boolean result = false;
+
+        // Check that player stats have been loaded
         PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
         if (ps == null || !ps.isInitialized()) return false;
 
@@ -581,10 +583,16 @@ public class GameMap {
         } else {
             Collections.shuffle(teamCards);
         }
+
+        // Debug logging if enabled in config
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
             Bukkit.getLogger().log(Level.WARNING, "#addPlayers: " + player.getName() + "'s PlayerStats are initialized");
             Bukkit.getLogger().log(Level.WARNING, "#addPlayers: MatchState: " + getMatchState().name());
         }
+
+        // Verify player does not attempt to join while mounted
+        Util.get().ejectPassengers(player);
+
         // If in any mode & WAITING while countdown & lobby mode is not enabled
         if (getMatchState() == MatchState.WAITINGSTART) {
             TeamCard reservedTeamCard = null;
@@ -595,19 +603,18 @@ public class GameMap {
                         Bukkit.getLogger().log(Level.WARNING, "#addPlayers: (" + (tCard.getPlace() + 1) + ") fullCount: " + tCard.getFullCount());
                     }
                     if (tCard.getFullCount() > 0) { // If space available
-                        Util.get().ejectPassengers(player);
                         reservedTeamCard = tCard.sendReservation(player, ps);
                         break;
                     }
                 }
             } else { // In party mode
                 if (teamToTry.getFullCount() > 0) {
-                    Util.get().ejectPassengers(player);
                     reservedTeamCard = teamToTry.sendReservation(player, ps);
+                } else {
+                    SkyWarsReloaded.get().getLogger().warning("Player attempted to join party team but the team referenced is empty (" + player.getName() + ", " + teamToTry.getTeamName() + ")");
                 }
             }
             if (reservedTeamCard != null) { // If setup for player success
-                Util.get().ejectPassengers(player);
                 result = reservedTeamCard.joinGame(player); // tp to arena
                 if (result) {
                     PlayerStat.resetScoreboard(player);
@@ -617,7 +624,6 @@ public class GameMap {
             }
         // else if in lobby waiting mode
         } else if (getMatchState() == MatchState.WAITINGLOBBY) {
-            Util.get().ejectPassengers(player);
             PlayerStat.resetScoreboard(player);
             addWaitingPlayer(player);
             getJoinQueue().add(new PlayerCard(null, player.getUniqueId(), null));
