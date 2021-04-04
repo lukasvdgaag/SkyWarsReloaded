@@ -38,38 +38,40 @@ public class SWMWorldManager implements WorldManager {
         propertyMap.setString(SlimeProperties.DIFFICULTY, "normal");
 
         try {
-            SlimeWorld world = plugin.createEmptyWorld(loader, name, false, propertyMap);
+            SlimeWorld slimeWorld = plugin.createEmptyWorld(loader, name, false, propertyMap);
 
-            plugin.generateWorld(world);
+            plugin.generateWorld(slimeWorld);
 
-            Location location = new Location(Bukkit.getWorld(name), 0, 61, 0);
+            World bukkitWorld = Bukkit.getWorld(name);
+
+            Location location = new Location(bukkitWorld, 0, 61, 0);
             location.getBlock().setType(Material.BEDROCK);
 
             WorldsConfig config = ConfigManager.getWorldConfig();
             config.getWorlds().put(name, worldData);
             config.save();
 
-            World world1 = (Bukkit.getWorld(name));
             //if (world == null) return null;
 
-            world1.setDifficulty(org.bukkit.Difficulty.NORMAL);
-            world1.setSpawnFlags(true, true);
-            world1.setPVP(true);
-            world1.setStorm(false);
-            world1.setThundering(false);
-            world1.setWeatherDuration(Integer.MAX_VALUE);
-            world1.setKeepSpawnInMemory(false);
-            world1.setTicksPerAnimalSpawns(1);
-            world1.setTicksPerMonsterSpawns(1);
-            world1.setAutoSave(false);
+            bukkitWorld.setDifficulty(org.bukkit.Difficulty.NORMAL);
+            bukkitWorld.setSpawnFlags(true, true);
+            bukkitWorld.setPVP(true);
+            bukkitWorld.setStorm(false);
+            bukkitWorld.setThundering(false);
+            bukkitWorld.setWeatherDuration(Integer.MAX_VALUE);
+            bukkitWorld.setKeepSpawnInMemory(false);
+            bukkitWorld.setTicksPerAnimalSpawns(1);
+            bukkitWorld.setTicksPerMonsterSpawns(1);
+            bukkitWorld.setAutoSave(false);
 
-            SkyWarsReloaded.getNMS().setGameRule(world1, "doMobSpawning", "false");
-            SkyWarsReloaded.getNMS().setGameRule(world1, "mobGriefing", "false");
-            SkyWarsReloaded.getNMS().setGameRule(world1, "doFireTick", "false");
-            SkyWarsReloaded.getNMS().setGameRule(world1, "showDeathMessages", "false");
-            SkyWarsReloaded.getNMS().setGameRule(world1, "announceAdvancements", "false");
+            SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "doMobSpawning", "false");
+            SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "mobGriefing", "false");
+            SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "doFireTick", "false");
+            SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "showDeathMessages", "false");
+            SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "announceAdvancements", "false");
+            SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "doDaylightCycle", "false");
 
-            return world1;
+            return bukkitWorld;
         } catch (WorldAlreadyExistsException | IOException e) {
             e.printStackTrace();
         }
@@ -115,6 +117,7 @@ public class SWMWorldManager implements WorldManager {
             SkyWarsReloaded.getNMS().setGameRule(world, "doFireTick", "false");
             SkyWarsReloaded.getNMS().setGameRule(world, "showDeathMessages", "false");
             SkyWarsReloaded.getNMS().setGameRule(world, "announceAdvancements", "false");
+            SkyWarsReloaded.getNMS().setGameRule(world, "doDaylightCycle", "false");
             return true;
         }
 

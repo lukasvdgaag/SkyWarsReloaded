@@ -57,7 +57,7 @@ public class PlayerInteractListener implements Listener {
     Object navigationWand = "";
     Object wandItem = "";
 
-    private final String legacyWEItemsErrorMessage = "An error occurred while detecting player interaction! " +
+    private static final String legacyWEItemsErrorMessage = "An error occurred while detecting player interaction! " +
             "You are using an legacy item ID in the WorldEdit configuration on a non-legacy server (1.13+)! " +
             "Multiple functions of this plugin will fail to work properly until the WorldEdit configuration is re-created or the errors are corrected.";
 
