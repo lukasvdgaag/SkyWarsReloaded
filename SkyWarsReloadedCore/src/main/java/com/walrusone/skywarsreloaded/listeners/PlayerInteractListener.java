@@ -57,6 +57,10 @@ public class PlayerInteractListener implements Listener {
     Object navigationWand = "";
     Object wandItem = "";
 
+    private final String legacyWEItemsErrorMessage = "An error occurred while detecting player interaction! " +
+            "You are using an legacy item ID in the WorldEdit configuration on a non-legacy server (1.13+)! " +
+            "Multiple functions of this plugin will fail to work properly until the WorldEdit configuration is re-created or the errors are corrected.";
+
     public PlayerInteractListener() {
         File f = new File(SkyWarsReloaded.get().getDataFolder().getAbsolutePath().replace("Skywars", "WorldEdit"), "config.yml");
         if (f.exists()) {
@@ -71,30 +75,22 @@ public class PlayerInteractListener implements Listener {
         Player player = e.getPlayer();
         if (MatchManager.get().getPlayerMap(player) != null) {
 
-            if (Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
+            if (e.getItem() != null && Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
 
-                if (e.getItem() == null) {
-                    return;
-                }
+                try {
+                    if (navigationWand instanceof Integer && e.getItem().getType().getId() == (int) navigationWand) {
+                        e.setCancelled(true);
+                    } else if (e.getItem().getType().name().equalsIgnoreCase((String) navigationWand)) {
+                        e.setCancelled(true);
+                    }
 
-                if (navigationWand instanceof Integer) {
-                    if (e.getItem().getType().getId() == (int) navigationWand) {
+                    if (wandItem instanceof Integer && e.getItem().getType().getId() == (int) wandItem) {
+                        e.setCancelled(true);
+                    } else if (e.getItem().getType().name().equalsIgnoreCase((String) wandItem)) {
                         e.setCancelled(true);
                     }
-                } else {
-                    if (e.getItem().getType().name().equalsIgnoreCase((String) navigationWand)) {
-                        e.setCancelled(true);
-                    }
-                }
-
-                if (wandItem instanceof Integer) {
-                    if (e.getItem().getType().getId() == (int) wandItem) {
-                        e.setCancelled(true);
-                    }
-                } else {
-                    if (e.getItem().getType().name().equalsIgnoreCase((String) wandItem)) {
-                        e.setCancelled(true);
-                    }
+                } catch (IllegalArgumentException ex) {
+                    SkyWarsReloaded.get().getLogger().severe(legacyWEItemsErrorMessage);
                 }
             }
         }
