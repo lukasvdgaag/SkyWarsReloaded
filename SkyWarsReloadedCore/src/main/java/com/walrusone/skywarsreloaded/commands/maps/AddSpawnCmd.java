@@ -1,7 +1,10 @@
 package com.walrusone.skywarsreloaded.commands.maps;
 
+import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.game.TeamCard;
+import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.ChatColor;
@@ -32,26 +35,51 @@ public class AddSpawnCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd 
 
                 if ((type.equalsIgnoreCase("player")) || (type.equalsIgnoreCase("p"))) {
                     if (gMap.getTeamSize() == 1 || !SkyWarsReloaded.getCfg().isUseSeparateCages()) {
-                        int newTeamNumber = gMap.getTeamSize() == 1 ? 0 : gMap.getTeamCards().size();
-                        gMap.addTeamCard(player.getLocation(), newTeamNumber);
+
+                        // Get index to add by getting current size (size = maxIndex + 1)
+                        int newTeamNumber = gMap.getTeamCards().size();
+                        TeamCard team = gMap.getTeamCardByIndex(newTeamNumber);
+
+                        // Save location to referenced team or create new team with this location
+                        if (team == null) gMap.addTeamCard(Lists.newArrayList(new CoordLoc(player.getLocation())));
+                        else gMap.addSpawnLocationForTeam(team, player.getLocation());
+
+                        // Display feedback to player
                         player.getLocation().getBlock().setType(Material.DIAMOND_BLOCK);
-                        player.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + gMap.getMaxPlayers()).setVariable("mapname", gMap.getDisplayName()).format("maps.addSpawn"));
+                        player.sendMessage(new Messaging.MessageFormatter()
+                                .setVariable("num", "" + gMap.getMaxPlayers())
+                                .setVariable("mapname", gMap.getDisplayName())
+                                .format("maps.addSpawn"));
                     } else {
                         player.sendMessage(ChatColor.RED + "You have team mode enabled! You must specify a team to add this spawn to.");
                     }
+
                 } else if ((type.equalsIgnoreCase("spec")) || (type.equalsIgnoreCase("s"))) {
                     gMap.setSpectateSpawn(player.getLocation());
-                    player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName()).format("maps.specSpawn"));
+                    player.sendMessage(new Messaging.MessageFormatter()
+                            .setVariable("mapname", gMap.getDisplayName())
+                            .format("maps.specSpawn"));
+
                 } else if ((type.equalsIgnoreCase("deathmatch")) || (type.equalsIgnoreCase("dm")) || (type.equalsIgnoreCase("d"))) {
                     gMap.addDeathMatchSpawn(player.getLocation());
                     player.getLocation().getBlock().setType(Material.EMERALD_BLOCK);
-                    player.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + gMap.getDeathMatchSpawns().size()).setVariable("mapname", gMap.getDisplayName()).format("maps.addDeathSpawn"));
+                    player.sendMessage(new Messaging.MessageFormatter()
+                            .setVariable("num", "" + gMap.getDeathMatchSpawns().size())
+                            .setVariable("mapname", gMap.getDisplayName())
+                            .format("maps.addDeathSpawn"));
+
                 } else if ((type.equalsIgnoreCase("look")) || type.equals("eye")) {
                     gMap.setLookDirection(player.getLocation());
-                    player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName()).format("maps.setLookDirection"));
+                    player.sendMessage(new Messaging.MessageFormatter()
+                            .setVariable("mapname", gMap.getDisplayName())
+                            .format("maps.setLookDirection"));
+
                 } else if (type.equalsIgnoreCase("lobby") || type.equalsIgnoreCase("waiting")) {
                     gMap.setWaitingLobbySpawn(player.getLocation());
-                    player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName()).format("maps.waitingLobbySpawn"));
+                    player.sendMessage(new Messaging.MessageFormatter()
+                            .setVariable("mapname", gMap.getDisplayName())
+                            .format("maps.waitingLobbySpawn"));
+
                 } else {
                     player.sendMessage(net.md_5.bungee.api.ChatColor.RED + "Type must be: player, spec, eye, deathmatch or lobby");
                 }
@@ -65,9 +93,18 @@ public class AddSpawnCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd 
                     }
                     if (gMap.getTeamSize() > 1 && SkyWarsReloaded.getCfg().isUseSeparateCages()) {
                         // Convert user input to index
-                        gMap.addTeamCard(player.getLocation(), Integer.parseInt(args[2]) - 1);
+                        int newTeamNumber = Integer.parseInt(args[2]) - 1;
+                        TeamCard team = gMap.getTeamCardByIndex(newTeamNumber);
+                        if (team == null) gMap.addTeamCard(Lists.newArrayList(new CoordLoc(player.getLocation())));
+                        else gMap.addSpawnLocationForTeam(team, player.getLocation());
+
+                        // Display feedback to player
                         player.getLocation().getBlock().setType(Material.DIAMOND_BLOCK);
-                        player.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + gMap.getMaxPlayers()).setVariable("mapname", gMap.getDisplayName()).format("maps.addSpawn"));
+                        player.sendMessage(new Messaging.MessageFormatter()
+                                .setVariable("num", "" + gMap.getMaxPlayers())
+                                .setVariable("mapname", gMap.getDisplayName())
+                                .format("maps.addSpawn"));
+
                     } else {
                         if (gMap.getTeamSize() == 1) {
                             player.sendMessage(ChatColor.RED + "You have solo mode enabled! There are no teams to add a spawn to. Use: /swm spawn player");
