@@ -7,9 +7,6 @@ import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.enums.ScoreVar;
-import com.walrusone.skywarsreloaded.events.SkyWarsDeathEvent;
-import com.walrusone.skywarsreloaded.events.SkyWarsKillEvent;
-import com.walrusone.skywarsreloaded.events.SkyWarsLeaveEvent;
 import com.walrusone.skywarsreloaded.events.SkyWarsWinEvent;
 import com.walrusone.skywarsreloaded.game.*;
 import com.walrusone.skywarsreloaded.game.cages.schematics.SchematicCage;
@@ -25,7 +22,6 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -222,15 +218,17 @@ public class MatchManager {
 
         if (SkyWarsReloaded.getCfg().getLookDirectionEnabled() && gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
             if (gameMap.getCurrentWorld() == player.getWorld()) {
-                CoordLoc a = gameMap.getLookDirection();
-                Location b = new Location(gameMap.getCurrentWorld(), a.getX(), a.getY(), a.getZ());
-                Vector v = b.clone().subtract(player.getEyeLocation()).toVector();
-                Location l = player.getLocation().setDirection(v);
-                player.teleport(l, TeleportCause.END_PORTAL);
+                CoordLoc coordLoc = gameMap.getLookDirection();
+                Location location = new Location(gameMap.getCurrentWorld(), coordLoc.getX(), coordLoc.getY(), coordLoc.getZ());
+                Vector vec = location.clone().subtract(player.getEyeLocation()).toVector();
+                Location locationFinal = player.getLocation().setDirection(vec);
+                player.teleport(locationFinal, TeleportCause.END_PORTAL);
             }
         }
 
+        Util.get().clear(player);
         player.setGameMode(GameMode.ADVENTURE);
+        player.setVelocity(new Vector(0, 0, 0));
         player.setAllowFlight(true);
         player.setFlying(true);
         player.setFlySpeed(0f);
@@ -248,6 +246,8 @@ public class MatchManager {
                 player.setFlySpeed(0.1f);
             }
         }.runTaskLater(SkyWarsReloaded.get(), 40);
+
+        // Load player stats & options
         PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
         if (ps != null) {
             String key = ps.getParticleEffect();
@@ -257,9 +257,11 @@ public class MatchManager {
                 SkyWarsReloaded.getOM().addPlayer(player.getUniqueId(), effects);
             }
         }
-        Util.get().clear(player);
+
         if (!gameMap.getAlivePlayers().contains(player) || gameMap.getTeamSize() == 1) {
-            String playerCount = String.valueOf(gameMap.getAllPlayers().size());
+            // Add 1 to join index since we want 1-max and not 0-maxIndex
+            String playerCount = String.valueOf(pCard.getJoinIndex() + 1); // String.valueOf(gameMap.getAllPlayers().size());
+            // Send join message to all
             for (final Player p : gameMap.getAllPlayers()) {
                 p.sendMessage(new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
                         .setVariable("players", playerCount)
@@ -345,6 +347,9 @@ public class MatchManager {
     }
 
     private void waitStart(final GameMap gameMap) {
+        if (debug) {
+            Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Waiting to start Skywars match... (countdown)");
+        }
         gameMap.setTimer(this.getWaitTime());
         new BukkitRunnable() {
             public void run() {
@@ -360,6 +365,7 @@ public class MatchManager {
                     if (gameMap.getAllPlayers().size() >= gameMap.getMinTeams() || (gameMap.getForceStart() && gameMap.getAllPlayers().size() > 0)) {
                         if (gameMap.getTimer() <= 0) {
                             this.cancel();
+                            gameMap.setTimer(0);
                             for (final Player player : gameMap.getAlivePlayers()) {
                                 Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getCountdownSound(), 1, 1F);
                             }
@@ -540,6 +546,9 @@ public class MatchManager {
     }
 
     private void matchCountdown(final GameMap gameMap) {
+        if (debug) {
+            Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "SkyWars Match started countdown");
+        }
         if (gameMap.getMatchState() == MatchState.ENDING) {
             return;
         }
@@ -591,6 +600,9 @@ public class MatchManager {
     }
 
     private void won(final GameMap gameMap, final TeamCard winners) {
+        if (debug) {
+            Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "SkyWars Match has been won");
+        }
         if (winners != null) {
             if (debug) {
                 Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + winners.getTeamName() + "Won the Match");
@@ -688,7 +700,16 @@ public class MatchManager {
             }
             // Clear all players
             new BukkitRunnable() {
+                private int i = 0;
+                private int maxI = SkyWarsReloaded.getCfg().getTimeAfterMatch();
+
                 public void run() {
+                    if (i < maxI && gameMap.getCurrentWorld().getPlayers().size() > 0) {
+                        i++;
+                        return;
+                    }
+                    // Clear timer if done countdown or no players are online
+                    this.cancel();
                     // Clear Spectators
                     ImmutableList<UUID> spectatorUUIDs = ImmutableList.copyOf(gameMap.getSpectators());
                     for (final UUID uuid : spectatorUUIDs) {
@@ -714,184 +735,22 @@ public class MatchManager {
                             // MatchManager.this.removeAlivePlayer(player, DamageCause.CUSTOM, true, true);
                         }
                     }
-                }
-            }.runTaskLater(SkyWarsReloaded.get(), SkyWarsReloaded.getCfg().getTimeAfterMatch() * 20L);
-            // Refresh map 5s after clearing all players in case some plugins do bad things
-            new BukkitRunnable() {
-                public void run() {
-                    if (SkyWarsReloaded.getCfg().bungeeMode()) {
-                        Util.get().doCommands(SkyWarsReloaded.getCfg().getGameEndCommands(), null);
-                    }
-                    gameMap.refreshMap();
-                    if (debug) {
-                        Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "SkyWars Match Has Ended - Anena has been refreshed");
-                    }
-                }
-            }.runTaskLater(SkyWarsReloaded.get(), (SkyWarsReloaded.getCfg().getTimeAfterMatch() + 5) * 20L);
-        }
-    }
-
-    /*@Deprecated
-    public void removeAlivePlayer(final Player player, DamageCause dCause, final boolean isPlayerLeft, boolean sendMessages) {
-        // TODO: DEBUG ====== THIS MUST BE REMOVED ONCE Triple Deaths cause is found
-        if (SkyWarsReloaded.getCfg().debugEnabled()) {
-            try {
-                throw new Exception("This is NORMAL!! This is useful data to know from where the death is being called if you are having triple death issues.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        SkyWarsReloaded.getOM().removePlayer(player.getUniqueId());
-        UUID playerUuid = player.getUniqueId();
-
-        final GameMap gameMap = this.getPlayerMap(player);
-        if (gameMap == null) {
-            return;
-        }
-        if (gameMap.getMatchState() == MatchState.PLAYING) {
-            gameMap.getTeamCard(player).getDead().add(player.getUniqueId());
-
-            PlayerCard pCard = gameMap.getPlayerCard(player);
-            pCard.getTeamCard().setPlace(gameMap.getTeamCards().size() + 1 - gameMap.getNumTeamsOut());
-            player.setNoDamageTicks(1);
-            final PlayerData playerData = PlayerData.getPlayerData(player.getUniqueId());
-            if (playerData != null) {
-                if (isPlayerLeft) {
-                    if (playerData.getTaggedBy() != null && playerData.getTaggedBy().getPlayer() != null && playerData.getTaggedBy().getPlayer() != player && System.currentTimeMillis() - playerData.getTaggedBy().getTime() < 10000) {
-                        if (sendMessages) {
-                            this.message(gameMap, new Messaging.MessageFormatter()
-                                    .withPrefix()
-                                    .setVariable("player", player.getName())
-                                    .setVariable("killer", playerData.getTaggedBy().getPlayer().getName())
-                                    .format("game.death.quit-while-tagged"), null);
-                            SkyWarsReloaded.get().getPlayerManager().updateStatsForLoser(player);
-                            SkyWarsReloaded.get().getPlayerManager().updateStatsForKiller(playerData.getTaggedBy().getPlayer());
-                        }
-                        Bukkit.getPluginManager().callEvent(new SkyWarsKillEvent(playerData.getTaggedBy().getPlayer(), player, gameMap));
-                        gameMap.increaseDisplayedKillsVar(playerData.getTaggedBy().getPlayer());
-                    } else {
-                        if (sendMessages) {
-                            this.message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getName()).format("game.left-the-game"), player);
-                        }
-                        Bukkit.getPluginManager().callEvent(new SkyWarsLeaveEvent(player, gameMap));
-                    }
-
-                    playerData.restoreToBeforeGameState(true);
-                    gameMap.removePlayer(player.getUniqueId());
-                } else {
-                    if (debug) {
-                        Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + player.getName() + " died. Respawning.");
-                    }
-                    if (sendMessages) {
-                        if (playerData.getTaggedBy() != null && System.currentTimeMillis() - playerData.getTaggedBy().getTime() < 10000) {
-                            this.message(gameMap, Util.get().getDeathMessage(dCause, true, player, playerData.getTaggedBy().getPlayer()), null);
-                            Bukkit.getPluginManager().callEvent(new SkyWarsKillEvent(playerData.getTaggedBy().getPlayer(), player, gameMap));
-                            gameMap.increaseDisplayedKillsVar(playerData.getTaggedBy().getPlayer());
-                            SkyWarsReloaded.get().getPlayerManager().updateStatsForLoser(player);
-                            SkyWarsReloaded.get().getPlayerManager().updateStatsForKiller(playerData.getTaggedBy().getPlayer());
-                        } else {
-                            this.message(gameMap, Util.get().getDeathMessage(dCause, false, player, player), null);
-                            PlayerStat loserData = PlayerStat.getPlayerStats(player.getUniqueId().toString());
-                            if (loserData != null) {
-                                loserData.setDeaths(loserData.getDeaths() + 1);
-                            }
-                        }
-                    }
-                    Bukkit.getPluginManager().callEvent(new SkyWarsDeathEvent(player, dCause, gameMap));
-
+                    // Refresh map 5s after clearing all players in case some plugins do bad things
                     new BukkitRunnable() {
                         public void run() {
-                            player.sendMessage(new Messaging.MessageFormatter()
-                                    .setVariable("arena", gameMap.getDisplayName())
-                                    .setVariable("map", gameMap.getName()).format("game.lost"));
-                        }
-                    }.runTaskLater(SkyWarsReloaded.get(), 10L);
-                }
-
-                if (sendMessages) {
-                    if (pCard.getTeamCard().isElmininated()) {
-                        for (PlayerCard card : pCard.getTeamCard().getPlayerCards()) {
-                            if (card.getPlayer() != null) {
-                                PlayerStat loserData = PlayerStat.getPlayerStats(card.getPlayer().getUniqueId().toString());
-                                if (loserData != null) {
-                                    loserData.setLosts(loserData.getLosses() + 1);
-                                }
+                            if (SkyWarsReloaded.getCfg().bungeeMode()) {
+                                Util.get().doCommands(SkyWarsReloaded.getCfg().getGameEndCommands(), null);
+                            }
+                            gameMap.refreshMap();
+                            if (debug) {
+                                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "SkyWars Match Has Ended - Anena has been refreshed");
                             }
                         }
-                    }
-
-                    if (gameMap.getTeamsLeft() <= 1) {
-                        if (gameMap.getTeamsLeft() == 1) {
-                            this.won(gameMap, gameMap.getWinningTeam());
-                        } else {
-                            this.won(gameMap, null);
-                        }
-                    }
+                    }.runTaskLater(SkyWarsReloaded.get(), 5 * 20L);
                 }
-            }
-            for (UUID uuid : gameMap.getSpectators()) {
-                if (!uuid.equals(player.getUniqueId())) {
-                    Player spec = SkyWarsReloaded.get().getServer().getPlayer(uuid);
-                    SkyWarsReloaded.get().getPlayerManager().prepareSpectateInv(spec, gameMap);
-                }
-            }
-        } else {
-            if (gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY) {
-                PlayerStat ps = PlayerStat.getPlayerStats(player);
-                if (ps != null && isPlayerLeft) {
-                    String cageName = ps.getGlassColor();
-                    if (gameMap.getTeamSize() == 1 || SkyWarsReloaded.getCfg().isUseSeparateCages()) {
-                        if (cageName.startsWith("custom-")) {
-                            new SchematicCage().removeSpawnPlatform(gameMap, player);
-                        } else {
-                            gameMap.getCage().removeSpawnHousing(gameMap, gameMap.getTeamCard(player), false);
-                        }
-                    }
-                }
-            }
-
-            PlayerStat.resetScoreboard(player);
-            gameMap.removePlayer(playerUuid);
-            gameMap.removeWaitingPlayer(playerUuid);
-            Bukkit.getPluginManager().callEvent(new SkyWarsLeaveEvent(player, gameMap));
-            for (SWRSign sign : gameMap.getSigns()) {
-                sign.update();
-            }
-
-            if (gameMap.getMatchState() != MatchState.ENDING) {
-                if (SkyWarsReloaded.getCfg().titlesEnabled()) {
-                    for (final Player p : gameMap.getAlivePlayers()) {
-                        if (!p.equals(player)) {
-                            Util.get().sendTitle(p, 2, 20, 2, "",
-                                    new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
-                                            .setVariable("players", "" + gameMap.getPlayerCount())
-                                            .setVariable("playercount", "" + gameMap.getPlayerCount())
-                                            .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.left-the-game"));
-                        }
-                    }
-                }
-                message(gameMap, new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
-                        .setVariable("players", "" + gameMap.getPlayerCount())
-                        .setVariable("playercount", "" + gameMap.getPlayerCount())
-                        .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-left-the-game"), player);
-            }
-
-            for (final Player p : gameMap.getAlivePlayers()) {
-                Util.get().playSound(p, p.getLocation(), SkyWarsReloaded.getCfg().getLeaveSound(), 1, 1);
-            }
-
-            final PlayerData playerData = PlayerData.getPlayerData(player.getUniqueId());
-            if (playerData != null) {
-                playerData.restoreToBeforeGameState(true);
-                PlayerData.getAllPlayerData().remove(playerData);
-            }
-
+            }.runTaskTimer(SkyWarsReloaded.get(), 0, 20L);
         }
-        if (debug) {
-            Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + player.getName() + " Has Left The SkyWars Match on map" + gameMap.getName());
-        }
-    }*/
+    }
 
     public void checkForWin(GameMap gameMap) {
         if (gameMap.getTeamsLeft() <= 1) {
