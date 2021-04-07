@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public abstract class Cage {
@@ -28,8 +29,8 @@ public abstract class Cage {
 
     public void createSpawnPlatforms(GameMap gMap) {
         World world = gMap.getCurrentWorld();
-        for (int teamNumber : gMap.spawnLocations.keySet()) {
-            for (CoordLoc loc1 : gMap.spawnLocations.get(teamNumber)) {
+        for (List<CoordLoc> coords : gMap.spawnLocations.values()) {
+            for (CoordLoc loc1 : coords) {
                 int x = loc1.getX();
                 int y = loc1.getY();
                 int z = loc1.getZ();
