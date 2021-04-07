@@ -375,7 +375,7 @@ public class Config {
             usePartyAndFriends =        SkyWarsReloaded.get().getConfig().getBoolean("parties.enablePartyAndFriendsSupport");
             lobbyWorlds =               SkyWarsReloaded.get().getConfig().getStringList("parties.lobbyWorlds");
 
-            loadTrappedChestsAsCenter = SkyWarsReloaded.get().getConfig().getBoolean("chests.loadTrappedChestsAsCenter");
+            loadTrappedChestsAsCenter = SkyWarsReloaded.get().getConfig().getBoolean("chests.loadTrappedChestsAsCenter", true);
             maxChest =                  SkyWarsReloaded.get().getConfig().getInt("chests.maxItemsChest");
             maxDoubleChest =            SkyWarsReloaded.get().getConfig().getInt("chests.maxItemsDoubleChest");
 
