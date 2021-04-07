@@ -205,12 +205,12 @@ public class PlayerManager {
 
     /**
      * Remove player spectating the game
-     * @param playerRemoved
-     * @param pUuid
-     * @param gameMap
-     * @param playerData
-     * @param removeReason
-     * @param announceToOthers
+     * @param playerRemoved The player to be removed
+     * @param pUuid The UUID of the player
+     * @param gameMap The game map to remove from
+     * @param playerData The PlayerData obj of the player
+     * @param removeReason The reason the player was removed
+     * @param announceToOthers Should this removal be announced to others in the same map?
      */
     public void removeSpectatorPlayer(
             final Player playerRemoved,
@@ -233,6 +233,7 @@ public class PlayerManager {
         gameMap.removePlayer(pUuid);
 
         // ------------------- MESSAGES --------------------
+        // TODO: Tell other spectators that a spectator has left?
         if (debug) {
             Util.get().logToFile(this.matchManager.getDebugName(gameMap) + ChatColor.YELLOW +
                     playerRemoved.getName() + " has been removed from spectators");
@@ -275,7 +276,7 @@ public class PlayerManager {
         teamCard.removePlayer(pUuid);
         // Place the first team to die, last. So we use players left (missing the current one, so +1)
         // + 1 because we are counting from 1
-        if (teamCard.isElmininated())
+        if (teamCard.isEliminated())
             teamCard.setPlace(gameMap.getTeamsLeft() + 1);
 
         // Process Player tagging
