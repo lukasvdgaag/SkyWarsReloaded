@@ -12,7 +12,7 @@ public class PlayerCard {
 
     private TeamCard tCard;
     private UUID uuid;
-    private int joinOrder;
+    private int joinIndex;
 
     private CoordLoc spawn;
 
@@ -25,6 +25,7 @@ public class PlayerCard {
 
     public PlayerCard(TeamCard tCard, UUID uuid, CoordLoc spawn) {
         this.uuid = uuid;
+        this.joinIndex = -1;
         this.tCard = tCard;
         this.kitVote = null;
         this.gameTime = null;
@@ -51,9 +52,15 @@ public class PlayerCard {
         return Bukkit.getPlayer(uuid);
     }
 
+    @Deprecated
     public void setPlayer(Player player) {
+        this.setPlayer(player, -1);
+    }
+
+    public void setPlayer(Player player, int joinIndexIn) {
         if (player != null) {
             this.uuid = player.getUniqueId();
+            this.joinIndex = joinIndexIn;
             return;
         }
         this.uuid = null;
@@ -116,5 +123,9 @@ public class PlayerCard {
 
     public TeamCard getTeamCard() {
         return tCard;
+    }
+
+    public int getJoinIndex() {
+        return this.joinIndex;
     }
 }
