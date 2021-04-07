@@ -18,74 +18,75 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.util.List;
 import java.util.UUID;
 
-public abstract interface NMS {
-    public abstract boolean removeFromScoreboardCollection(Scoreboard scoreboard);
+public interface NMS {
 
-    public abstract void respawnPlayer(Player paramPlayer);
+    boolean removeFromScoreboardCollection(Scoreboard scoreboard);
 
-    public abstract void sendParticles(World paramWorld, String paramString, float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4, float paramFloat5, float paramFloat6, float paramFloat7, int paramInt);
+    void respawnPlayer(Player paramPlayer);
 
-    public abstract FireworkEffect getFireworkEffect(Color paramColor1, Color paramColor2, Color paramColor3, Color paramColor4, Color paramColor5, Type paramType);
+    void sendParticles(World paramWorld, String paramString, float paramFloat1, float paramFloat2, float paramFloat3, float paramFloat4, float paramFloat5, float paramFloat6, float paramFloat7, int paramInt);
 
-    public abstract void sendTitle(Player paramPlayer, int paramInt1, int paramInt2, int paramInt3, String paramString1, String paramString2);
+    FireworkEffect getFireworkEffect(Color paramColor1, Color paramColor2, Color paramColor3, Color paramColor4, Color paramColor5, Type paramType);
 
-    public abstract void sendActionBar(Player paramPlayer, String paramString);
+    void sendTitle(Player paramPlayer, int paramInt1, int paramInt2, int paramInt3, String paramString1, String paramString2);
 
-    public abstract String getItemName(ItemStack paramItemStack);
+    void sendActionBar(Player paramPlayer, String paramString);
 
-    public abstract void playGameSound(Location paramLocation, String paramString, float paramFloat1, float paramFloat2, boolean paramBoolean);
+    String getItemName(ItemStack paramItemStack);
 
-    public abstract ItemStack getMainHandItem(Player paramPlayer);
+    void playGameSound(Location paramLocation, String paramString, float paramFloat1, float paramFloat2, boolean paramBoolean);
 
-    public abstract ItemStack getOffHandItem(Player paramPlayer);
+    ItemStack getMainHandItem(Player paramPlayer);
 
-    public abstract ItemStack getItemStack(Material paramMaterial, List<String> paramList, String paramString);
+    ItemStack getOffHandItem(Player paramPlayer);
 
-    public abstract ItemStack getItemStack(ItemStack paramItemStack, List<String> paramList, String paramString);
+    ItemStack getItemStack(Material paramMaterial, List<String> paramList, String paramString);
 
-    public abstract boolean isValueParticle(String paramString);
+    ItemStack getItemStack(ItemStack paramItemStack, List<String> paramList, String paramString);
 
-    public abstract void updateSkull(Skull paramSkull, UUID paramUUID);
+    boolean isValueParticle(String paramString);
 
-    public abstract void setMaxHealth(Player paramPlayer, int paramInt);
+    void updateSkull(Skull paramSkull, UUID paramUUID);
 
-    public abstract void spawnDragon(World paramWorld, Location paramLocation);
+    void setMaxHealth(Player paramPlayer, int paramInt);
 
-    public abstract Entity spawnFallingBlock(Location paramLocation, Material paramMaterial, boolean paramBoolean);
+    void spawnDragon(World paramWorld, Location paramLocation);
 
-    public abstract void playEnderChestAction(Block paramBlock, boolean paramBoolean);
+    Entity spawnFallingBlock(Location paramLocation, Material paramMaterial, boolean paramBoolean);
 
-    public abstract void setEntityTarget(Entity paramEntity, Player paramPlayer);
+    void playEnderChestAction(Block paramBlock, boolean paramBoolean);
 
-    public abstract void updateSkull(SkullMeta paramSkullMeta, Player paramPlayer);
+    void setEntityTarget(Entity paramEntity, Player paramPlayer);
 
-    public abstract ChunkGenerator getChunkGenerator();
+    void updateSkull(SkullMeta paramSkullMeta, Player paramPlayer);
 
-    public abstract boolean checkMaterial(FallingBlock paramFallingBlock, Material paramMaterial);
+    ChunkGenerator getChunkGenerator();
 
-    public abstract Objective getNewObjective(Scoreboard paramScoreboard, String paramString1, String paramString2);
+    boolean checkMaterial(FallingBlock paramFallingBlock, Material paramMaterial);
 
-    public abstract void setGameRule(World paramWorld, String paramString1, String paramString2);
+    Objective getNewObjective(Scoreboard paramScoreboard, String paramString1, String paramString2);
 
-    public abstract boolean headCheck(Block paramBlock);
+    void setGameRule(World paramWorld, String paramString1, String paramString2);
 
-    public abstract ItemStack getBlankPlayerHead();
+    boolean headCheck(Block paramBlock);
 
-    public abstract int getVersion();
+    ItemStack getBlankPlayerHead();
 
-    public abstract ItemStack getMaterial(String paramString);
+    int getVersion();
 
-    public abstract ItemStack getColorItem(String paramString, byte paramByte);
+    ItemStack getMaterial(String paramString);
 
-    public abstract void setBlockWithColor(World paramWorld, int paramInt1, int paramInt2, int paramInt3, Material paramMaterial, byte paramByte);
+    ItemStack getColorItem(String paramString, byte paramByte);
 
-    public abstract void deleteCache();
+    void setBlockWithColor(World paramWorld, int paramInt1, int paramInt2, int paramInt3, Material paramMaterial, byte paramByte);
 
-    public abstract Block getHitBlock(ProjectileHitEvent paramProjectileHitEvent);
+    void deleteCache();
 
-    public abstract void sendJSON(Player sender, String json);
+    Block getHitBlock(ProjectileHitEvent paramProjectileHitEvent);
 
-    public abstract SWRSign createSWRSign(String name, Location location);
+    void sendJSON(Player sender, String json);
+
+    SWRSign createSWRSign(String name, Location location);
 
 
 }
