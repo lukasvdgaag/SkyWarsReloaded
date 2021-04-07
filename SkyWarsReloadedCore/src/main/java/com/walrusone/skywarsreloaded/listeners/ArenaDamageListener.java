@@ -111,7 +111,7 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
             if (gameMap != null) {
                 if (gameMap.getMatchState() == MatchState.ENDING || gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState() == MatchState.WAITINGLOBBY) {
                     event.setCancelled(true);
-                } else if (!gameMap.allowFallDamage() && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+                } else if (!gameMap.getAllowFallDamage() && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
                     event.setCancelled(true);
                 } else if (gameMap.isDisableDamage() && event.getCause() != EntityDamageEvent.DamageCause.VOID) {
                     event.setCancelled(true);
