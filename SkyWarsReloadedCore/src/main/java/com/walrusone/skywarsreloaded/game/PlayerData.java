@@ -26,15 +26,17 @@ public class PlayerData {
         PlayerData.playerData = new ArrayList<>();
     }
 
-    private UUID uuid;
-    private Scoreboard sbBeforeGame;
+    private final UUID uuid;
+    private final Scoreboard sbBeforeGame;
     private Tagged taggedBy;
-    private Inventory inv;
-    private double healthBeforeGame;
-    private int foodBeforeGame;
-    private float saturationBeforeGame;
+    private final Inventory inv;
+    private final double healthBeforeGame;
+    private final int foodBeforeGame;
+    private final float saturationBeforeGame;
     private float experienceBeforeGame;
+
     private boolean beingRestored;
+    private Location locationBeforeRespawn = null;
 
     public PlayerData(final Player p) {
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
@@ -78,7 +80,7 @@ public class PlayerData {
             }
 
             if (SkyWarsReloaded.getCfg().debugEnabled()) {
-                Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Restoring " + player.getName());
+                Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + "Restoring player to before game state: " + player.getName());
             }
 
             // Reset player
@@ -97,9 +99,8 @@ public class PlayerData {
             player.getInventory().setContents(inv.getContents());
             SkyWarsReloaded.getNMS().setMaxHealth(player, 20);
             // Remove death screen for player - this will send them to spawn so we undo that by TP back
-            Location currLocation = player.getLocation();
+            this.locationBeforeRespawn = player.getLocation();
             Util.get().respawnPlayer(player);
-            player.teleport(currLocation);
             // Set health
             if (healthBeforeGame <= 0 || healthBeforeGame > 20) {
                 player.setHealth(20);
@@ -111,8 +112,9 @@ public class PlayerData {
             player.setSaturation(saturationBeforeGame);
             player.resetPlayerTime();
             player.resetPlayerWeather();
-            player.setAllowFlight(false);
-            player.setFlying(false);
+            // We set flying to false later when moving back to lobby
+            player.setAllowFlight(true);
+            player.setFlying(true);
             player.setFireTicks(0);
             player.setVelocity(new Vector(0,0,0));
             player.setFallDistance(0.0f);
@@ -122,7 +124,7 @@ public class PlayerData {
             }
 
             // Send back to lobby
-            sendToLobby(player, restoreInstantly);
+            sendToLobby(restoreInstantly);
 
             // Reset scoreboard
             PlayerStat.resetScoreboard(player);
@@ -169,45 +171,54 @@ public class PlayerData {
 
     // UTILS
 
-    public static void sendToLobby(Player player, boolean instantRemove) {
+    public void sendToLobby(boolean instantRemove) {
         // General vars
         boolean isBungee = SkyWarsReloaded.getCfg().bungeeMode();
         boolean isPluginEnabled = SkyWarsReloaded.get().isEnabled();
 
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
             SkyWarsReloaded.get().getLogger().info(
-                    "#debug PlayerData::sendToLobby: Now sending player to lobby (bungee: " + isBungee + ", quit: " + instantRemove + ", isEnabled: " + isPluginEnabled + ")");
+                    "#debug PlayerData::sendToLobby: Now sending player to lobby (bungee: " + isBungee +
+                            ", quit: " + instantRemove + ", isEnabled: " + isPluginEnabled + ")");
         }
 
         // If needs instant removal of game
         if (instantRemove || !isPluginEnabled) {
-            sendToLobbyNow(player);
+            sendToLobbyNow();
             // If removal can be done later
         } else {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    sendToLobbyNow(player);
+                    sendToLobbyNow();
                 }
             }.runTaskLater(SkyWarsReloaded.get(), 2);
         }
     }
 
-    public static void sendToLobbyNow(Player player) {
+    public void sendToLobbyNow() {
+        Player player = getPlayer();
+        player.setAllowFlight(false);
+        player.setFlying(false);
+        beingRestored = false;
         if (SkyWarsReloaded.getCfg().bungeeMode())
             connectToBungeeLobby(player);
         else
             teleportToBukkitLobby(player);
     }
 
-    public static void connectToBungeeLobby(Player player) {
+    public void connectToBungeeLobby(Player player) {
+        player.teleport(locationBeforeRespawn);
         Bukkit.getConsoleSender().sendMessage("Now connecting player to lobby (1)");
         SkyWarsReloaded.get().sendBungeeMsg(player, "Connect", SkyWarsReloaded.getCfg().getBungeeLobby());
-
     }
 
     public static void teleportToBukkitLobby(Player player) {
         final Location respawn = SkyWarsReloaded.getCfg().getSpawn();
+        if (respawn == null) {
+            SkyWarsReloaded.get().getLogger().severe("Skywars lobby spawn is not set!");
+            return;
+        }
         player.teleport(respawn, TeleportCause.END_PORTAL);
     }
 
