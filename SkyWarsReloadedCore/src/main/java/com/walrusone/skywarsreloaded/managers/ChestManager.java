@@ -124,7 +124,7 @@ public class ChestManager {
                 }
                 storage.save(chestFile);
             } catch (IOException ioException) {
-                System.out.println("Failed to save chestfile " + fileName + ": " + ioException.getMessage());
+                SkyWarsReloaded.get().getLogger().severe("Failed to save chestfile " + fileName + ": " + ioException.getMessage());
             }
         }
     }
