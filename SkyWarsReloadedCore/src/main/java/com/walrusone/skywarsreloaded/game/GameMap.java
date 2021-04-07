@@ -1030,7 +1030,7 @@ public class GameMap {
         this.teamCards.clear();
 
         boolean spawnsIsList = fc.get("spawns") instanceof List;
-        if (spawnsIsList) {
+        if (spawnsIsList || this.teamSize == 1) {
             List<String> spawns = fc.getStringList("spawns");
             for (String spawn : spawns) {
                 CoordLoc spawnLocation = Util.get().getCoordLocFromString(spawn);
