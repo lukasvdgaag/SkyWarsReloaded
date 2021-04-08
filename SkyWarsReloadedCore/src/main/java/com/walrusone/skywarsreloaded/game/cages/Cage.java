@@ -29,7 +29,7 @@ public abstract class Cage {
 
     public void createSpawnPlatforms(GameMap gMap) {
         World world = gMap.getCurrentWorld();
-        for (List<CoordLoc> coords : gMap.spawnLocations.values()) {
+        for (List<CoordLoc> coords : gMap.getSpawnLocations().values()) {
             for (CoordLoc loc1 : coords) {
                 int x = loc1.getX();
                 int y = loc1.getY();

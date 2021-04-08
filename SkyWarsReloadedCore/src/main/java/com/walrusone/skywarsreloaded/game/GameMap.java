@@ -27,6 +27,7 @@ import com.walrusone.skywarsreloaded.utilities.Party;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.*;
 import org.bukkit.block.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -60,7 +61,7 @@ public class GameMap {
     //      All team spawn locations are in team index 0 (aka spawnLocations.get(0))
     // In teams mode:
     //      Key Integer is team index, List is the spawn locations of such team
-    public HashMap<TeamCard, List<CoordLoc>> spawnLocations = new HashMap<>();
+    private final HashMap<TeamCard, List<CoordLoc>> spawnLocations = new HashMap<>();
     private final ArrayList<Crate> crates = new ArrayList<>();
     private boolean forceStart;
     // TODO: Move all of these into WorldOptions
@@ -190,7 +191,7 @@ public class GameMap {
         return null;
     }
 
-    private static GameMap addMap(String name) {
+    public static GameMap addMap(String name) {
         GameMap gMap = new GameMap(name);
         arenas.add(gMap);
         return gMap;
@@ -866,7 +867,7 @@ public class GameMap {
         return result;
     }
 
-    private void saveArenaData() {
+    public void saveArenaData() {
         File dataDirectory = SkyWarsReloaded.get().getDataFolder();
         File mapDataDirectory = new File(dataDirectory, "mapsData");
 
@@ -1224,7 +1225,7 @@ public class GameMap {
         }
     }
 
-    private void scanChunksForSkywarsFeatures(Player sender, boolean message) {
+    private void scanChunksForSkywarsFeatures(CommandSender sender, boolean message) {
         World chunkWorld;
         chunkWorld = SkyWarsReloaded.get().getServer().getWorld(name);
         int mapSize = SkyWarsReloaded.getCfg().getMaxMapSize();
@@ -2031,6 +2032,10 @@ public class GameMap {
 
     public ArrayList<CoordLoc> getDeathMatchSpawns() {
         return deathMatchSpawns;
+    }
+
+    public HashMap<TeamCard, List<CoordLoc>> getSpawnLocations() {
+        return this.spawnLocations;
     }
 
     public void removeDMSpawnBlocks() {

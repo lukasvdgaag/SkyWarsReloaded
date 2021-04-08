@@ -48,9 +48,9 @@ public class DebugCmd extends BaseCmd {
         }
         sender.sendMessage(" ");
 
-        sender.sendMessage("Spawn teams: " + gMap.spawnLocations.size());
-        for (TeamCard key : gMap.spawnLocations.keySet()) {
-            for (CoordLoc loc : gMap.spawnLocations.get(key)) {
+        sender.sendMessage("Spawn teams: " + gMap.getSpawnLocations().size());
+        for (TeamCard key : gMap.getSpawnLocations().keySet()) {
+            for (CoordLoc loc : gMap.getSpawnLocations().get(key)) {
                 sender.sendMessage("T-" + key.getTeamName() + ": " + loc.getLocationString());
             }
         }
