@@ -1,3 +1,19 @@
+# version 5.5.1 - BETA #2
+Recoded how teams are handled internally.
+Added ability to refresh maps quickly without waiting for countdown to finish if all players have left that world.
+Fixed scoreboard, title, experience, and chat countdown not synced.
+Fixed only a single player being able to join on first setup.
+Potentially fixed: issue with all players joining in the same cage is as well (we could not reproduce that).
+Fixed signs in the lobby causing errors.
+Fixed players dying due to fall damage before pvp.
+Fixed daylightCycle being enabled in slime worlds.
+Fixed existing chests not removed before scanning for all chests (creating duplicates).
+Fixed issue where players joining within the same tick would cause the join message to show the total amount of players, not the amount of players they joined at (aka: with 2 people waiting and 2 people joining at the same time it would show (4/4) twice).
+
+# version 5.5.0
+Recoded player leave handling
+Fixed triple deaths bug
+
 # version 5.4.3
 Fixed NoMuchMethodException when joining a game on 1.8.
 
