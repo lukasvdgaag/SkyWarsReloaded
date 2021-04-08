@@ -84,7 +84,7 @@ public class Util {
     public void playSound(Player player, Location location, String sound, float volume, float pitch) {
         if (SkyWarsReloaded.getCfg().soundsEnabled()) {
             try {
-                if (player != null) {
+                if (player != null && !sound.equalsIgnoreCase("none")) {
                     player.playSound(location, Sound.valueOf(sound), volume, pitch);
                 }
             } catch (IllegalArgumentException e) {

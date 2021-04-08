@@ -1,5 +1,6 @@
-# version 5.5.1 - BETA #2
+# version 5.5.1 - BETA #3
 Recoded how teams are handled internally.
+Added ability to disable sounds
 Added ability to refresh maps quickly without waiting for countdown to finish if all players have left that world.
 Fixed scoreboard, title, experience, and chat countdown not synced.
 Fixed only a single player being able to join on first setup.
