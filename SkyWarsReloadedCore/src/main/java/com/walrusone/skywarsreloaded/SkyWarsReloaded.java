@@ -354,6 +354,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                                 String hostname = swrServer.getHostname() == null ? "127.0.0.1" : swrServer.getHostname();
 
                                 MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname(hostname).setPort(swrServer.getPort()));
+                                if (data == null) return;
                                 final String[] serverInfo = data.getDescription().getText().split(":");
                                 if (serverInfo.length < 3) {
                                     SkyWarsReloaded.get().getLogger().warning("Skywars Server Ping failed! " +
@@ -565,15 +566,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                                     String hostname = swrServer.getHostname() == null ? "127.0.0.1" : swrServer.getHostname();
 
                                     MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname(hostname).setPort(swrServer.getPort()));
+                                    if (data == null) return;
                                     final String[] serverInfo = data.getDescription().getText().split(":");
                                     swrServer.setMatchState(serverInfo[0]);
-                                    /*if (Util.get().isInteger(serverInfo[1])) {
-                                        swrServer.setPlayerCount(Integer.parseInt(serverInfo[1]));
-                                    }
-                                    if (Util.get().isInteger(serverInfo[2])) {
-                                        swrServer.setMaxPlayers(Integer.parseInt(serverInfo[2]));
-                                    }
-                                    swrServer.setDisplayName(serverInfo[3]);*/
                                     swrServer.updateSigns();
 
                                 } catch (IOException e) {
