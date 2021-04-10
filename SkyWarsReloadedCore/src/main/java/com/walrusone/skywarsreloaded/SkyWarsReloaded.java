@@ -736,7 +736,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 Bukkit.getLogger().info(updater.getUpdateURL());
                 Bukkit.getLogger().info("----------------------------------");
             }
-
+        // Once every hour
         }, 0, 20 * 60 * 60);
     }
 

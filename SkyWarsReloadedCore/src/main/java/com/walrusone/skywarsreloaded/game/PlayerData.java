@@ -201,6 +201,7 @@ public class PlayerData {
         player.setAllowFlight(false);
         player.setFlying(false);
         beingRestored = false;
+        if (!player.isOnline()) return;
         if (SkyWarsReloaded.getCfg().bungeeMode())
             connectToBungeeLobby(player);
         else
