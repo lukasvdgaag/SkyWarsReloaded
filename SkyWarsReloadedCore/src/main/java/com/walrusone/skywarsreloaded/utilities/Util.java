@@ -176,7 +176,9 @@ public class Util {
 
         PlayerStat ps = PlayerStat.getPlayerStats(player);
         if (ps == null) {
-            PlayerStat.getPlayers().add(new PlayerStat(player));
+            ps = new PlayerStat(player);
+            PlayerStat.getPlayers().add(ps);
+            ps.updatePlayerIfInLobby(player);
             return true;
         } else return !ps.isInitialized();
     }

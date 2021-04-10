@@ -56,11 +56,12 @@ public class PlayerJoinListener implements Listener {
             }
         }
 
-        PlayerStat pStats = new PlayerStat(event.getPlayer());
+        PlayerStat pStats = new PlayerStat(player);
+        PlayerStat.getPlayers().add(pStats);
+        pStats.updatePlayerIfInLobby(player);
         // Load player data
         pStats.loadStats(() -> {
             if (!postLoadStats(player)) return;
-            PlayerStat.getPlayers().add(pStats);
 
             SkyWarsReloaded.get().getUpdater().handleJoiningPlayer(player);
         });

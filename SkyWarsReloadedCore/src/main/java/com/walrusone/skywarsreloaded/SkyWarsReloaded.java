@@ -458,11 +458,12 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
         new BukkitRunnable() {
             public void run() {
-                for (final Player v : getServer().getOnlinePlayers()) {
-                    if (PlayerStat.getPlayerStats(v.getUniqueId().toString()) == null) {
-                        PlayerStat pStats = new PlayerStat(v);
-                        pStats.loadStats(null);
+                for (final Player player : getServer().getOnlinePlayers()) {
+                    if (PlayerStat.getPlayerStats(player.getUniqueId().toString()) == null) {
+                        PlayerStat pStats = new PlayerStat(player);
                         PlayerStat.getPlayers().add(pStats);
+                        pStats.updatePlayerIfInLobby(player);
+                        pStats.loadStats(null);
                     }
                 }
                 synchronized (leaderboardLock) {

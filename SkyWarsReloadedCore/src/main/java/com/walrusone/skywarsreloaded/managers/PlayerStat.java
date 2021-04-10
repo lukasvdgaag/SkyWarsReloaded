@@ -56,6 +56,9 @@ public class PlayerStat {
         if (SkyWarsReloaded.getCfg().economyEnabled()) {
             DataStorage.get().loadperms(this);
         }
+    }
+
+    public void updatePlayerIfInLobby(Player player) {
         if (SkyWarsReloaded.getCfg().getSpawn() != null) {
             if (player.getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
                 updatePlayer(uuid);
