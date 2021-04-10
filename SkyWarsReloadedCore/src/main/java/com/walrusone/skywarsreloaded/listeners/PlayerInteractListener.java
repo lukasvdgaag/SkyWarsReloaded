@@ -72,14 +72,14 @@ public class PlayerInteractListener implements Listener {
             if (e.getItem() != null && Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
 
                 try {
-                    if (navigationWand instanceof Integer && e.getItem().getType().getId() == (int) navigationWand) {
-                        e.setCancelled(true);
+                    if (navigationWand instanceof Integer) {
+                        if (e.getItem().getType().getId() == (int) navigationWand) e.setCancelled(true);
                     } else if (e.getItem().getType().name().equalsIgnoreCase((String) navigationWand)) {
                         e.setCancelled(true);
                     }
 
-                    if (wandItem instanceof Integer && e.getItem().getType().getId() == (int) wandItem) {
-                        e.setCancelled(true);
+                    if (wandItem instanceof Integer) {
+                        if (e.getItem().getType().getId() == (int) wandItem) e.setCancelled(true);
                     } else if (e.getItem().getType().name().equalsIgnoreCase((String) wandItem)) {
                         e.setCancelled(true);
                     }
