@@ -176,11 +176,14 @@ public class Util {
 
         PlayerStat ps = PlayerStat.getPlayerStats(player);
         if (ps == null) {
+            if (SkyWarsReloaded.getCfg().debugEnabled()) SkyWarsReloaded.get().getLogger().info("#isBusy pStats " + player.getName() + ": null");
             ps = new PlayerStat(player);
             PlayerStat.getPlayers().add(ps);
             ps.updatePlayerIfInLobby(player);
             return true;
-        } else return !ps.isInitialized();
+        } else {
+            return !ps.isInitialized();
+        }
     }
 
     public void fireworks(final Player player, final int length, final int fireworksPer5Tick) {
