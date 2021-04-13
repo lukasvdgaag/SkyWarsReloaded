@@ -766,8 +766,6 @@ public class MatchManager {
         if (player != null) {
             for (final GameMap gameMap : GameMap.getMaps()) {
                 if (gameMap.getAllPlayers().contains(player)) return gameMap;
-                else if (gameMap.getWaitingPlayers().contains(player.getUniqueId())) return gameMap;
-                else if (gameMap.getSpectators().contains(player.getUniqueId())) return gameMap;
             }
         }
         return null;
