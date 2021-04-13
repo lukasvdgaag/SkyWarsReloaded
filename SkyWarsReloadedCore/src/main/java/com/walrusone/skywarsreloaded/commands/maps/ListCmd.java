@@ -15,7 +15,7 @@ public class ListCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
 
     public boolean run() {
         sender.sendMessage(new Messaging.MessageFormatter().format("maps.listHeader"));
-        for (GameMap map : GameMap.getMaps()) {
+        for (GameMap map : GameMap.getMapsCopy()) {
             if (map.isRegistered()) {
                 sender.sendMessage(new Messaging.MessageFormatter().setVariable("filename", map.getName()).setVariable("displayname", map.getDisplayName()).setVariable("status", ChatColor.GREEN + "REGISTERED").format("maps.listResult"));
             } else {

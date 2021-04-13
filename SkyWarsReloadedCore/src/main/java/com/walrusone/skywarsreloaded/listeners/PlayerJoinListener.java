@@ -47,7 +47,7 @@ public class PlayerJoinListener implements Listener {
         }
 
         if (!SkyWarsReloaded.getCfg().bungeeMode()) {
-            for (GameMap gMap : GameMap.getMaps()) {
+            for (GameMap gMap : GameMap.getMapsCopy()) {
                 if (gMap.getCurrentWorld() != null && gMap.getCurrentWorld().equals(player.getWorld())) {
                     if (SkyWarsReloaded.getCfg().getSpawn() != null) {
                         player.teleport(SkyWarsReloaded.getCfg().getSpawn());

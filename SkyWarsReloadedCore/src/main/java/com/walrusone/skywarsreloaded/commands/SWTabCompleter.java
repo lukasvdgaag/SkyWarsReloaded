@@ -36,7 +36,7 @@ public class SWTabCompleter implements TabCompleter {
                         args[0].equalsIgnoreCase("min") || args[0].equalsIgnoreCase("creator") ||
                         args[0].equalsIgnoreCase("debug") || args[0].equalsIgnoreCase("legacyload")) {
                     if (Util.get().hp("map", commandSender, args[0].toLowerCase())) {
-                        for (GameMap map : GameMap.getMaps()) possibilities.add(map.getName());
+                        for (GameMap map : GameMap.getMapsCopy()) possibilities.add(map.getName());
                     }
                 } else if (args[0].equalsIgnoreCase("spawn") && Util.get().hp("map", commandSender, "spawn")) {
                     possibilities = Lists.newArrayList("player", "spec", "look", "lobby", "deathmatch");

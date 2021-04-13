@@ -147,7 +147,7 @@ public class LobbyListener implements org.bukkit.event.Listener {
                 boolean removed = false;
 
                 if (!SkyWarsReloaded.getCfg().bungeeMode()) {
-                    for (GameMap map : GameMap.getMaps()) {
+                    for (GameMap map : GameMap.getMapsCopy()) {
                         if (map.hasSign(loc)) {
                             if (event.getPlayer().isSneaking()) {
                                 if (!removed) {

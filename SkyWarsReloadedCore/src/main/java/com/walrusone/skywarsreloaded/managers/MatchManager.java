@@ -764,7 +764,7 @@ public class MatchManager {
 
     public GameMap getPlayerMap(final Player player) {
         if (player != null) {
-            for (final GameMap gameMap : GameMap.getMaps()) {
+            for (final GameMap gameMap : GameMap.getMapsCopy()) {
                 if (gameMap.getAllPlayers().contains(player)) return gameMap;
             }
         }
@@ -773,7 +773,7 @@ public class MatchManager {
 
     public GameMap getDeadPlayerMap(final Player v0) {
         if (v0 != null) {
-            for (final GameMap gameMap : GameMap.getMaps()) {
+            for (final GameMap gameMap : GameMap.getMapsCopy()) {
                 if (gameMap.mapContainsDead(v0.getUniqueId())) {
                     return gameMap;
                 }
@@ -789,7 +789,7 @@ public class MatchManager {
         }
 
         if (uuid != null) {
-            for (final GameMap gameMap : GameMap.getMaps()) {
+            for (final GameMap gameMap : GameMap.getMapsCopy()) {
                 for (final UUID id : gameMap.getSpectators()) {
                     if (uuid.equals(id)) {
                         return gameMap;

@@ -13,8 +13,8 @@ public class PingListener implements org.bukkit.event.Listener {
     @org.bukkit.event.EventHandler
     public void onPing(ServerListPingEvent serverListPingEvent) {
         if (SkyWarsReloaded.get().serverLoaded()) {
-            if (GameMap.getMaps().size() > 0) {
-                GameMap game = (GameMap) GameMap.getMaps().get(0);
+            if (GameMap.getMapsCopy().size() > 0) {
+                GameMap game = GameMap.getMapsCopy().get(0);
                 serverListPingEvent.setMotd(new Messaging.MessageFormatter().setVariable("matchstate", game.getMatchState().toString())
                         .setVariable("playercount", "" + game.getPlayerCount()).setVariable("maxplayers", "" + game.getMaxPlayers())
                         .setVariable("displayname", game.getDisplayName()).format("bungee.motd"));

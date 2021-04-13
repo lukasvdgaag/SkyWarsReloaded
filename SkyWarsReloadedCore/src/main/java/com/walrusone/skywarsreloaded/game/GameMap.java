@@ -332,8 +332,8 @@ public class GameMap {
         return loaded[0];
     }
 
-    public static ArrayList<GameMap> getMaps() {
-        return new ArrayList<>(arenas);
+    public static ImmutableList<GameMap> getMapsCopy() {
+        return ImmutableList.copyOf(arenas);
     }
 
     public static ArrayList<GameMap> getPlayableArenas(GameType type) {

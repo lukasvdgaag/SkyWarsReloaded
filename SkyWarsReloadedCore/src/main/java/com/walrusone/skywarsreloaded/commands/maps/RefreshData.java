@@ -15,7 +15,7 @@ public class RefreshData extends com.walrusone.skywarsreloaded.commands.BaseCmd 
     public boolean run() {
         String name = args[1];
         if (args[1].equalsIgnoreCase("all")) {
-            for (GameMap gMap : GameMap.getMaps()) {
+            for (GameMap gMap : GameMap.getMapsCopy()) {
                 refreshMap(gMap);
             }
         } else {

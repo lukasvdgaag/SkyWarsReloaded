@@ -126,7 +126,7 @@ public class PlayerInteractListener implements Listener {
                                         new SingleJoinMenu().openMenu(event.getPlayer(), 1);
                                     } else if (action == NoArenaAction.JOIN_RANDOM) {
                                         List<GameMap> maps = Lists.newArrayList();
-                                        for (GameMap map : GameMap.getMaps()) {
+                                        for (GameMap map : GameMap.getMapsCopy()) {
                                             if ((map.getMatchState() == MatchState.WAITINGSTART || map.getMatchState() == MatchState.WAITINGLOBBY) && map.canAddPlayer()) {
                                                 maps.add(map);
                                             }
@@ -235,7 +235,7 @@ public class PlayerInteractListener implements Listener {
                 Location loc = event.getClickedBlock().getLocation();
                 boolean joined;
                 if (!SkyWarsReloaded.getCfg().bungeeMode()) {
-                    for (GameMap gMap : GameMap.getMaps()) {
+                    for (GameMap gMap : GameMap.getMapsCopy()) {
                         if ((gMap.hasSign(loc) || (!event.getClickedBlock().getType().name().contains("WALL") && gMap.hasSign(loc.add(0, -1, 0)))) && (gMap.getMatchState().equals(MatchState.WAITINGSTART) || gMap.getMatchState().equals(MatchState.WAITINGLOBBY))) {
                             if (player.hasPermission("sw.signs") && player.isSneaking()) {
                                 return;

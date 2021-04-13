@@ -400,7 +400,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     public void onDisable() {
         loaded = false;
         this.getServer().getScheduler().cancelTasks(this);
-        for (final GameMap gameMap : GameMap.getMaps()) {
+        for (final GameMap gameMap : GameMap.getMapsCopy()) {
             if (gameMap.isEditing()) {
                 gameMap.saveMap(null);
             }
@@ -518,7 +518,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             specObserver = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    for (GameMap gMap : GameMap.getMaps()) {
+                    for (GameMap gMap : GameMap.getMapsCopy()) {
                         gMap.checkSpectators();
                     }
                 }
@@ -616,9 +616,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     }
                     if (header.equalsIgnoreCase("RequestUpdate")) {
                         String sendToServer = msgin.readUTF();
-                        String playerCount = "" + GameMap.getMaps().get(0).getAlivePlayers().size();
-                        String maxPlayers = "" + GameMap.getMaps().get(0).getMaxPlayers();
-                        String gameStarted = "" + GameMap.getMaps().get(0).getMatchState().toString();
+                        GameMap gMap = GameMap.getMapsCopy().get(0);
+                        String playerCount = "" + gMap.getAlivePlayers().size();
+                        String maxPlayers = "" + gMap.getMaxPlayers();
+                        String gameStarted = "" + gMap.getMatchState().toString();
                         ArrayList<String> messages = new ArrayList<>();
                         messages.add("ServerUpdate");
                         messages.add(servername);
