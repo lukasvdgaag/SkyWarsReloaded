@@ -380,9 +380,13 @@ public class PlayerManager {
     public void addSpectator(final GameMap gameMap, final Player player) {
         if (player != null) {
             World world = gameMap.getCurrentWorld();
-            CoordLoc ss = gameMap.getSpectateSpawn();
-            Location spectateSpawn = new Location(world, ss.getX(), ss.getY(), ss.getZ());
-            player.teleport(spectateSpawn, PlayerTeleportEvent.TeleportCause.END_PORTAL);
+            if (world != null) {
+                CoordLoc ss = gameMap.getSpectateSpawn();
+                Location spectateSpawn = new Location(world, ss.getX(), ss.getY(), ss.getZ());
+                player.teleport(spectateSpawn, PlayerTeleportEvent.TeleportCause.END_PORTAL);
+            } else {
+                this.swr.getLogger().severe("Attempted to add spectator to a game with an un-loaded world! (PlayerManager::addSpectator)");
+            }
 
             gameMap.getSpectators().add(player.getUniqueId());
 

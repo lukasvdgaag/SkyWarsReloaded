@@ -8,8 +8,8 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +20,8 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
     public PlayerTeleportListener() {
     }
 
-    public static List<Player> cooldowns = Lists.newArrayList();
+    private static final List<Player> cooldowns = Lists.newArrayList();
+    private static final Object cooldownsLock = new Object();
 
     @org.bukkit.event.EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onPlayerTeleport(PlayerTeleportEvent a1) {
@@ -29,9 +30,15 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
 
         if (gameMap == null) {
             if (SkyWarsReloaded.getCfg().getSpawn() != null) {
-                if ((!a1.getFrom().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) && (a1.getTo().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld()))) {
-                    cooldowns.add(player);
-                    Bukkit.getScheduler().runTaskLaterAsynchronously(SkyWarsReloaded.get(), () -> cooldowns.remove(player), 5);
+                // Pre vars
+                World spawnWorld = SkyWarsReloaded.getCfg().getSpawn().getWorld();
+                boolean wasInSpawnWorld = a1.getFrom().getWorld().equals(spawnWorld);
+                boolean isGoingToSpawnWorld = a1.getTo().getWorld().equals(spawnWorld);
+
+                // Going to spawn world
+                if ((!a1.getFrom().getWorld().equals(spawnWorld)) && (a1.getTo().getWorld().equals(spawnWorld))) {
+                    setPlayerOnCooldown(player, true);
+                    Bukkit.getScheduler().runTaskLaterAsynchronously(SkyWarsReloaded.get(), () -> setPlayerOnCooldown(player, false), 5);
                     com.walrusone.skywarsreloaded.managers.PlayerStat.updatePlayer(a1.getPlayer().getUniqueId().toString());
                     if (SkyWarsReloaded.get().getUpdater().getUpdateStatus() == 1 && (a1.getPlayer().isOp() || a1.getPlayer().hasPermission("sw.admin"))) {
                         //player.spigot().sendMessage(base);
@@ -39,7 +46,9 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
                     }
                     return;
                 }
-                if ((a1.getFrom().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) && (!a1.getTo().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld()))) {
+
+                // Leaving spawn world
+                if (wasInSpawnWorld && !isGoingToSpawnWorld) {
                     if (SkyWarsReloaded.getCfg().lobbyBoardEnabled()) {
                         SkyWarsReloaded.getNMS().removeFromScoreboardCollection(player.getScoreboard());//for 1.13+
                         player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
@@ -71,11 +80,20 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
         else if (a1.getCause().equals(TeleportCause.SPECTATE)) {
             a1.setCancelled(true);
         }
-        else if ((a1.getCause().equals(TeleportCause.END_PORTAL)) || (player.hasPermission("sw.opteleport")) || (a1.getTo().getWorld().equals(a1.getFrom().getWorld()))) {
+        else if (a1.getCause().equals(TeleportCause.END_PORTAL) ||
+                player.hasPermission("sw.opteleport") ||
+                a1.getTo().getWorld().equals(a1.getFrom().getWorld()))
+        {
             a1.setCancelled(false);
-        } else if ((a1.getCause().equals(TeleportCause.ENDER_PEARL)) && (gameMap.getMatchState() != MatchState.ENDING) && (gameMap.getMatchState() != MatchState.WAITINGSTART && gameMap.getMatchState() != MatchState.WAITINGLOBBY)) {
+        }
+        else if (a1.getCause().equals(TeleportCause.ENDER_PEARL) &&
+                gameMap.getMatchState() != MatchState.ENDING &&
+                gameMap.getMatchState() != MatchState.WAITINGSTART &&
+                gameMap.getMatchState() != MatchState.WAITINGLOBBY)
+        {
             a1.setCancelled(false);
-        } else {
+        }
+        else {
             a1.setCancelled(true);
         }
     }
@@ -87,16 +105,32 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
             if (!e.getTo().getWorld().getName().equals(g.getCurrentWorld().getName())) {
                 if (SkyWarsReloaded.getCfg().getKickOnWorldTeleport()) {
                     Player player = e.getPlayer();
-                    EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.CUSTOM;
-                    if (player.getLastDamageCause() != null) {
-                        damageCause = player.getLastDamageCause().getCause();
-                    }
+//                    EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.CUSTOM;
+//                    if (player.getLastDamageCause() != null) {
+//                        damageCause = player.getLastDamageCause().getCause();
+//                    }
                     SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
                     // MatchManager.get().removeAlivePlayer(player, damageCause, true, true);
                 } else {
                     e.setCancelled(true);
                 }
             }
+        }
+    }
+
+    // UTILS
+
+    public static void setPlayerOnCooldown(Player p, boolean cooldown) {
+        synchronized (cooldownsLock) {
+            boolean contains = cooldowns.contains(p);
+            if (cooldown && !contains) cooldowns.add(p);
+            else if (!cooldown && contains) cooldowns.remove(p);
+        }
+    }
+
+    public static boolean isPlayerOnCooldown(Player p) {
+        synchronized (cooldownsLock) {
+            return cooldowns.contains(p);
         }
     }
 }

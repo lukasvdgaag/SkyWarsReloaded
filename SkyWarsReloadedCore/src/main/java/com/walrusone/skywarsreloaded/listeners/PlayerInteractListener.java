@@ -93,37 +93,38 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onClick(PlayerInteractEvent event) {
-        InventoryView v = event.getPlayer().getOpenInventory();
+        Player player = event.getPlayer();
+        InventoryView v = player.getOpenInventory();
         if (v != null && v.getTopInventory() != null && v.getTopInventory().getType() != InventoryType.CRAFTING) return;
 
-        final GameMap gameMap = MatchManager.get().getPlayerMap(event.getPlayer());
+        final GameMap gameMap = MatchManager.get().getPlayerMap(player);
         if (gameMap == null) {
-            if (Util.get().isSpawnWorld(event.getPlayer().getWorld())) {
+            if (Util.get().isSpawnWorld(player.getWorld())) {
                 if (SkyWarsReloaded.getCfg().protectLobby()) {
                     event.setCancelled(true);
-                    if (event.getPlayer().hasPermission("sw.alterlobby")) {
+                    if (player.hasPermission("sw.alterlobby")) {
                         event.setCancelled(false);
                     }
                 }
                 if (event.hasItem()) {
-                    if (PlayerTeleportListener.cooldowns.contains(event.getPlayer())) {
+                    if (PlayerTeleportListener.isPlayerOnCooldown(player)) {
                         event.setCancelled(true);
                         return;
                     }
 
                     if (event.getItem().equals(SkyWarsReloaded.getIM().getItem("optionselect"))) {
                         event.setCancelled(true);
-                        Util.get().playSound(event.getPlayer(), event.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenOptionsMenuSound(), 0.5F, 1);
-                        new OptionsSelectionMenu(event.getPlayer());
+                        Util.get().playSound(player, event.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenOptionsMenuSound(), 0.5F, 1);
+                        new OptionsSelectionMenu(player);
                     } else if (event.getItem().equals(SkyWarsReloaded.getIM().getItem("joinselect"))) {
                         event.setCancelled(true);
                         if (SkyWarsReloaded.getIC().has("joinmenu")) {
-                            Util.get().playSound(event.getPlayer(), event.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenJoinMenuSound(), 1, 1);
+                            Util.get().playSound(player, event.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenJoinMenuSound(), 1, 1);
                             if (Bukkit.getPluginManager().isPluginEnabled("Skywars-Extension")) {
                                 if (SWExtension.get().getConfig().getBoolean("override_item_join_actions")) {
                                     NoArenaAction action = NoArenaAction.valueOf(SWExtension.get().getConfig().getString("no_arena_specified_action"));
                                     if (action == NoArenaAction.OPEN_CUSTOM_JOIN_MENU) {
-                                        new SingleJoinMenu().openMenu(event.getPlayer(), 1);
+                                        new SingleJoinMenu().openMenu(player, 1);
                                     } else if (action == NoArenaAction.JOIN_RANDOM) {
                                         List<GameMap> maps = Lists.newArrayList();
                                         for (GameMap map : GameMap.getMapsCopy()) {
@@ -133,19 +134,19 @@ public class PlayerInteractListener implements Listener {
                                         }
 
                                         if (maps.isEmpty()) {
-                                            event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', SWExtension.get().getConfig().getString("no_solo_arenas")));
+                                            player.sendMessage(ChatColor.translateAlternateColorCodes('&', SWExtension.get().getConfig().getString("no_solo_arenas")));
                                             return;
                                         } else {
-                                            event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', SWExtension.get().getConfig().getString("solo_join")));
+                                            player.sendMessage(ChatColor.translateAlternateColorCodes('&', SWExtension.get().getConfig().getString("solo_join")));
                                             GameMap map;
                                             Random r = new Random();
                                             map = maps.get(r.nextInt(maps.size()));
 
-                                            boolean b = map.addPlayers(null, event.getPlayer());
+                                            boolean b = map.addPlayers(null, player);
                                             if (b) {
-                                                event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
+                                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', SWExtension.get().getConfig().getString("joined_arena").replace("%name%", map.getName())));
                                             } else {
-                                                event.getPlayer().sendMessage((new Messaging.MessageFormatter()).format("error.could-not-join2"));
+                                                player.sendMessage((new Messaging.MessageFormatter()).format("error.could-not-join2"));
                                             }
                                         }
                                     }
@@ -160,7 +161,7 @@ public class PlayerInteractListener implements Listener {
                                         }
                                     }.runTaskLater(SkyWarsReloaded.get(), 5);
                                 }
-                                SkyWarsReloaded.getIC().show(event.getPlayer(), "joinsinglemenu");
+                                SkyWarsReloaded.getIC().show(player, "joinsinglemenu");
                             } else if (GameMap.getPlayableArenas(GameType.SINGLE).size() == 0) {
                                 if (!SkyWarsReloaded.getIC().hasViewers("jointeammenu")) {
                                     new BukkitRunnable() {
@@ -170,14 +171,14 @@ public class PlayerInteractListener implements Listener {
                                         }
                                     }.runTaskLater(SkyWarsReloaded.get(), 5);
                                 }
-                                SkyWarsReloaded.getIC().show(event.getPlayer(), "jointeammenu");
+                                SkyWarsReloaded.getIC().show(player, "jointeammenu");
                             } else {
-                                SkyWarsReloaded.getIC().show(event.getPlayer(), "joinmenu");
+                                SkyWarsReloaded.getIC().show(player, "joinmenu");
                             }
                         }
                     } else if (event.getItem().equals(SkyWarsReloaded.getIM().getItem("spectateselect"))) {
                         event.setCancelled(true);
-                        Util.get().playSound(event.getPlayer(), event.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenSpectateMenuSound(), 1, 1);
+                        Util.get().playSound(player, event.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenSpectateMenuSound(), 1, 1);
                         if (GameMap.getPlayableArenas(GameType.TEAM).size() == 0) {
                             if (!SkyWarsReloaded.getIC().hasViewers("spectatesinglemenu")) {
                                 new BukkitRunnable() {
@@ -187,7 +188,7 @@ public class PlayerInteractListener implements Listener {
                                     }
                                 }.runTaskLater(SkyWarsReloaded.get(), 5);
                             }
-                            SkyWarsReloaded.getIC().show(event.getPlayer(), "spectatesinglemenu");
+                            SkyWarsReloaded.getIC().show(player, "spectatesinglemenu");
                         } else if (GameMap.getPlayableArenas(GameType.SINGLE).size() == 0) {
                             if (!SkyWarsReloaded.getIC().hasViewers("spectateteammenu")) {
                                 new BukkitRunnable() {
@@ -197,9 +198,9 @@ public class PlayerInteractListener implements Listener {
                                     }
                                 }.runTaskLater(SkyWarsReloaded.get(), 5);
                             }
-                            SkyWarsReloaded.getIC().show(event.getPlayer(), "spectateteammenu");
+                            SkyWarsReloaded.getIC().show(player, "spectateteammenu");
                         } else {
-                            SkyWarsReloaded.getIC().show(event.getPlayer(), "spectatemenu");
+                            SkyWarsReloaded.getIC().show(player, "spectatemenu");
                         }
                     }
 
@@ -207,7 +208,7 @@ public class PlayerInteractListener implements Listener {
                     /*// Fix helmet appearing equipped
                     if (event.isCancelled()) {
 
-                        final PlayerInventory pInv = event.getPlayer().getInventory();
+                        final PlayerInventory pInv = player.getInventory();
                         final ItemStack[] armorOriginal = pInv.getArmorContents();
                         final ItemStack[] armor = pInv.getArmorContents();
                         final ItemStack clickedItemClone = event.getItem().clone();
@@ -220,7 +221,7 @@ public class PlayerInteractListener implements Listener {
                                 // Apply for each
                                 //replaceAllEmptyArmorByItem(pInv, armorOriginal, null);
                                 // Update
-                                //event.getPlayer().updateInventory();
+                                //player.updateInventory();
                             }
                         }.runTaskLater(SkyWarsReloaded.get(), 1);
                     }*/
@@ -230,7 +231,6 @@ public class PlayerInteractListener implements Listener {
 
             }
 
-            Player player = event.getPlayer();
             if (event.getClickedBlock() != null && event.getClickedBlock().getType().toString().toUpperCase().contains("SIGN")) {
                 Location loc = event.getClickedBlock().getLocation();
                 boolean joined;
@@ -274,9 +274,8 @@ public class PlayerInteractListener implements Listener {
             if (gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
                 event.setCancelled(true);
                 if (event.getItem() != null) {
-                    Player player = event.getPlayer();
                     if (event.getItem().isSimilar(SkyWarsReloaded.getIM().getItem("kitvote"))) {
-                        if (MatchManager.get().getPlayerMap(event.getPlayer()).getPlayerCard(event.getPlayer()) == null) {
+                        if (MatchManager.get().getPlayerMap(player).getPlayerCard(player) == null) {
                             String sound = SkyWarsReloaded.getNMS().getVersion() < 9 ? "VILLAGER_NO" : "ENTITY_VILLAGER_NO";
                             Util.get().playSound(player, player.getLocation(), sound, 1, 1);
                             SkyWarsReloaded.getNMS().sendActionBar(player, new Messaging.MessageFormatter().format("game.select-team-before-kit"));
@@ -286,20 +285,20 @@ public class PlayerInteractListener implements Listener {
                         if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
                             SkyWarsReloaded.getIC().show(player, gameMap.getKitVoteOption().getKey());
                         } else {
-                            new KitSelectionMenu(event.getPlayer());
+                            new KitSelectionMenu(player);
                         }
                         Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenKitMenuSound(), 1, 1);
                         return;
                     } else if (event.getItem().isSimilar(SkyWarsReloaded.getIM().getItem("votingItem"))) {
-                        if (event.getPlayer().hasPermission("sw.votemenu")) {
-                            if (MatchManager.get().getPlayerMap(event.getPlayer()).getPlayerCard(event.getPlayer()) == null) {
+                        if (player.hasPermission("sw.votemenu")) {
+                            if (MatchManager.get().getPlayerMap(player).getPlayerCard(player) == null) {
                                 String sound = SkyWarsReloaded.getNMS().getVersion() < 9 ? "VILLAGER_NO" : "ENTITY_VILLAGER_NO";
                                 Util.get().playSound(player, player.getLocation(), sound, 1, 1);
                                 SkyWarsReloaded.getNMS().sendActionBar(player, new Messaging.MessageFormatter().format("game.select-team-before-voting"));
                                 return;
                             }
 
-                            new VotingMenu(event.getPlayer());
+                            new VotingMenu(player);
                             Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenChestMenuSound(), 1, 1);
                         } else {
                             player.sendMessage(new Messaging.MessageFormatter().format("error.nopermission"));
@@ -333,11 +332,11 @@ public class PlayerInteractListener implements Listener {
                                 if (crate.getLocation().equals(block.getLocation())) {
                                     event.setCancelled(true);
                                     if (SkyWarsReloaded.getNMS().getVersion() < 9) {
-                                        event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.valueOf("CHEST_OPEN"), 1, 1);
+                                        player.getWorld().playSound(player.getLocation(), Sound.valueOf("CHEST_OPEN"), 1, 1);
                                     } else {
-                                        event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.valueOf("BLOCK_CHEST_OPEN"), 1, 1);
+                                        player.getWorld().playSound(player.getLocation(), Sound.valueOf("BLOCK_CHEST_OPEN"), 1, 1);
                                     }
-                                    event.getPlayer().openInventory(crate.getInventory());
+                                    player.openInventory(crate.getInventory());
                                     SkyWarsReloaded.getNMS().playEnderChestAction(block, true);
                                     return;
                                 }
