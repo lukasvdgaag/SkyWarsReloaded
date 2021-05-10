@@ -31,7 +31,7 @@ public class RefreshData extends com.walrusone.skywarsreloaded.commands.BaseCmd 
             if (reregister) {
                 gMap.unregister(false);
                 gMap.loadArenaData();
-                gMap.registerMap();
+                gMap.registerMap(sender);
             } else {
                 gMap.loadArenaData();
             }

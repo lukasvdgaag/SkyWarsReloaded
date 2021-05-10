@@ -186,7 +186,7 @@ public class ArenaMenu {
                         gMap.unregister(true);
                     } else {
                         gMap.setRegistered(true);
-                        gMap.registerMap();
+                        gMap.registerMap(player);
                     }
                     gMap.update();
                 } else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 2) {

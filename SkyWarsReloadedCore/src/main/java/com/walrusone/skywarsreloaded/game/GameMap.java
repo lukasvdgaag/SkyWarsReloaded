@@ -35,8 +35,8 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -169,7 +169,7 @@ public class GameMap {
             }
         }
         if (registered) {
-            registerMap();
+            registerMap(null);
         }
 
         new ArenaMenu(arenakey, this);
@@ -1105,9 +1105,9 @@ public class GameMap {
      *
      * @return int status of registering
      */
-    public int registerMap() {
+    public int registerMap(@Nullable CommandSender sender) {
         if (inEditing) {
-            saveMap(null);
+            saveMap(sender);
         }
         if (spawnLocations.size() > 1) {
             int maxPlayers = getMaxPlayers();
@@ -1997,7 +1997,7 @@ public class GameMap {
         saveArenaData();
     }
 
-    public void saveMap(Player mess) {
+    public void saveMap(CommandSender toMsg) {
         boolean success = false;
         Location respawn = SkyWarsReloaded.getCfg().getSpawn();
         World editWorld = SkyWarsReloaded.get().getServer().getWorld(name);
@@ -2011,9 +2011,9 @@ public class GameMap {
             SkyWarsReloaded.getWM().deleteWorld(target);
             File source = new File(SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), name);
             SkyWarsReloaded.getWM().copyWorld(source, target);
-            if (mess != null) {
-                mess.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", name).format("maps.saved"));
-                mess.sendMessage(new Messaging.MessageFormatter().format("maps.register-reminder"));
+            if (toMsg != null) {
+                toMsg.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", name).format("maps.saved"));
+                toMsg.sendMessage(new Messaging.MessageFormatter().format("maps.register-reminder"));
             }
             SkyWarsReloaded.getWM().deleteWorld(source);
             saveArenaData();
@@ -2021,8 +2021,8 @@ public class GameMap {
             success = true;
         }
 
-        if (mess != null && !success) {
-            mess.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", name).format("error.map-not-in-edit"));
+        if (toMsg != null && !success) {
+            toMsg.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", name).format("error.map-not-in-edit"));
         }
     }
 

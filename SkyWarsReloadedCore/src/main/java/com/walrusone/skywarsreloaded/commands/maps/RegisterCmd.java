@@ -18,7 +18,7 @@ public class RegisterCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd 
         GameMap gMap = GameMap.getMap(worldName);
         if (gMap != null) {
             gMap.setRegistered(true);
-            int registeredStatus = gMap.registerMap();
+            int registeredStatus = gMap.registerMap(sender);
             if (registeredStatus == 0) {
                 sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName()).format("maps.registered"));
             } else {
