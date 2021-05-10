@@ -272,9 +272,15 @@ public class PlayerInteractListener implements Listener {
             }
         } else {
             if (gameMap.getMatchState() == MatchState.WAITINGSTART || gameMap.getMatchState().equals(MatchState.WAITINGLOBBY)) {
+                if (SkyWarsReloaded.getCfg().debugEnabled())
+                    SkyWarsReloaded.get().getLogger().info("PlayerInteractEvent::onClick isWaiting true");
                 event.setCancelled(true);
                 if (event.getItem() != null) {
+                    if (SkyWarsReloaded.getCfg().debugEnabled())
+                        SkyWarsReloaded.get().getLogger().info("PlayerInteractEvent::onClick item != null");
                     if (event.getItem().isSimilar(SkyWarsReloaded.getIM().getItem("kitvote"))) {
+                        if (SkyWarsReloaded.getCfg().debugEnabled())
+                            SkyWarsReloaded.get().getLogger().info("PlayerInteractEvent::onClick kitvote");
                         if (MatchManager.get().getPlayerMap(player).getPlayerCard(player) == null) {
                             String sound = SkyWarsReloaded.getNMS().getVersion() < 9 ? "VILLAGER_NO" : "ENTITY_VILLAGER_NO";
                             Util.get().playSound(player, player.getLocation(), sound, 1, 1);
@@ -290,6 +296,8 @@ public class PlayerInteractListener implements Listener {
                         Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getOpenKitMenuSound(), 1, 1);
                         return;
                     } else if (event.getItem().isSimilar(SkyWarsReloaded.getIM().getItem("votingItem"))) {
+                        if (SkyWarsReloaded.getCfg().debugEnabled())
+                            SkyWarsReloaded.get().getLogger().info("PlayerInteractEvent::onClick votingItem");
                         if (player.hasPermission("sw.votemenu")) {
                             if (MatchManager.get().getPlayerMap(player).getPlayerCard(player) == null) {
                                 String sound = SkyWarsReloaded.getNMS().getVersion() < 9 ? "VILLAGER_NO" : "ENTITY_VILLAGER_NO";
@@ -305,6 +313,8 @@ public class PlayerInteractListener implements Listener {
                         }
                         return;
                     } else if (event.getItem().isSimilar(SkyWarsReloaded.getIM().getItem("teamSelectItem"))) {
+                        if (SkyWarsReloaded.getCfg().debugEnabled())
+                            SkyWarsReloaded.get().getLogger().info("PlayerInteractEvent::onClick teamSelectItem");
                         SkyWarsReloaded.getIC().show(player, gameMap.getName() + "teamselect");
                         if (SkyWarsReloaded.getIC().has(gameMap.getName() + "teamselect")) {
                             SkyWarsReloaded.getIC().getMenu(gameMap.getName() + "teamselect").update();
@@ -312,6 +322,8 @@ public class PlayerInteractListener implements Listener {
                         // TODO ADD TEAM SELECTION MENU + ADD SOUND
                         return;
                     } else if (event.getItem().isSimilar(SkyWarsReloaded.getIM().getItem("exitGameItem"))) {
+                        if (SkyWarsReloaded.getCfg().debugEnabled())
+                            SkyWarsReloaded.get().getLogger().info("PlayerInteractEvent::onClick exitGameItem");
                         new BukkitRunnable() {
                             @Override
                             public void run() {
