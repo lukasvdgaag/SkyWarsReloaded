@@ -154,6 +154,7 @@ error:
   nospawn: '&cThe SkyWars lobby spawn has to be set before you can do this! Set it
     using &o/sw setspawn'
   nopermission: '&cYou don''t have the permission to vote!'
+  using-paf-hook: '&cSkywars party commands are disabled when using PartyAndFriends support!'
 game:
   select-team-before-voting: '&c&lYou must select a team before voting!'
   select-team-before-kit: '&c&lYou must select a team before choosing a kit!'

@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.commands;
 
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.api.command.SWRCmdManagerAPI;
 import com.walrusone.skywarsreloaded.commands.party.*;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -28,16 +29,19 @@ public class PartyCmdManager implements CommandExecutor, SWRCmdManagerAPI {
     }
 
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
+        if (SkyWarsReloaded.getCfg().isUsePartyAndFriends()) {
+            s.sendMessage(new Messaging.MessageFormatter().format("error.using-paf-hook"));
+            return true;
+        }
         if (args.length == 0 || getCommand(args[0]) == null) {
-            s.sendMessage(new Messaging.MessageFormatter().format("helpList.header"));
             sendHelp(partycmds, s);
-            s.sendMessage(new Messaging.MessageFormatter().format("helpList.footer"));
         } else getCommand(args[0]).processCmd(s, args);
         return true;
     }
 
     private void sendHelp(List<BaseCmd> cmds, CommandSender s) {
         int count = 0;
+        s.sendMessage(new Messaging.MessageFormatter().format("helpList.header"));
         for (BaseCmd cmd : cmds) {
             if (Util.get().hp(cmd.getType(), s, cmd.cmdName)) {
                 count++;
@@ -48,6 +52,7 @@ public class PartyCmdManager implements CommandExecutor, SWRCmdManagerAPI {
                 s.sendMessage(new Messaging.MessageFormatter().format("helpList.swparty." + cmd.cmdName));
             }
         }
+        s.sendMessage(new Messaging.MessageFormatter().format("helpList.footer"));
     }
 
     public BaseCmd getCommand(String s) {

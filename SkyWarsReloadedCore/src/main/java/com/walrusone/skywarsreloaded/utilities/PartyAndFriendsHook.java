@@ -11,10 +11,12 @@ import de.simonsator.partyandfriends.spigot.api.party.PartyManager;
 import de.simonsator.partyandfriends.spigot.api.party.PlayerParty;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class PartyAndFriendsHook implements Listener {
 
+    @EventHandler
     public void SkyWarsJoinEvent(SkyWarsJoinEvent e) {
         if (e.getGame().getTeamSize() == 1) return;
         Player target = e.getPlayer();
