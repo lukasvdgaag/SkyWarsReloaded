@@ -38,20 +38,31 @@ public class KitSelectionMenu {
                     }
                 }
                 List<String> loreList = Lists.newLinkedList();
-                ItemStack item = kit.getLIcon();
+                ItemStack item;
                 boolean hasPermission = true;
-                if (kit.needPermission()) {
-                    if (!player.hasPermission("sw.kit." + kit.getFilename())) {
-                        loreList.add(kit.getColoredLockedLore());
-                        hasPermission = false;
-                    }
+
+                // If permission is required but player doesn't have the permission for that kit
+                if (kit.needPermission() && !player.hasPermission("sw.kit." + kit.getFilename())) {
+                    hasPermission = false;
                 }
+
+                // Select icon based on player allowed to use the kit or not
                 if (hasPermission) {
-                    loreList.addAll(kit.getColorLores());
                     item = kit.getIcon();
+                    loreList.addAll(kit.getColorLores());
+                } else {
+                    item = kit.getLIcon();
+                    loreList.add(kit.getColoredLockedLore());
                 }
-                invs.get(page).setItem(pos, SkyWarsReloaded.getNMS().getItemStack(item, loreList, ChatColor.translateAlternateColorCodes('&', kit.getName())));
+
+                // Apply in gui
+                ItemStack itemFinal = SkyWarsReloaded.getNMS().getItemStack(
+                        item,
+                        loreList,
+                        ChatColor.translateAlternateColorCodes('&', kit.getName()));
+                invs.get(page).setItem(pos, itemFinal);
             }
+
             if (gMap != null) {
                 SkyWarsReloaded.getIC().create(player, invs, event -> {
                     String name = event.getName();
