@@ -753,8 +753,11 @@ public class MatchManager {
     }
 
     public void checkForWin(GameMap gameMap) {
-        if (gameMap.getTeamsLeft() <= 1) {
-            if (gameMap.getTeamsLeft() == 1) {
+        int teamsLeft = gameMap.getTeamsLeft();
+        if (SkyWarsReloaded.getCfg().debugEnabled())
+            SkyWarsReloaded.get().getLogger().info("MatchManager::checkForWin teamsLeft: " + teamsLeft);
+        if (teamsLeft <= 1) {
+            if (teamsLeft == 1) {
                 this.won(gameMap, gameMap.getWinningTeam());
             } else {
                 this.won(gameMap, null);

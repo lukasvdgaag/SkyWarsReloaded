@@ -12,6 +12,7 @@ public class PlayerCard {
 
     private TeamCard tCard;
     private UUID uuid;
+    // The index at which the player used for this PlayerCard joined the game
     private int joinIndex;
 
     private CoordLoc spawn;
@@ -43,6 +44,7 @@ public class PlayerCard {
         this.chestVote = null;
         this.modifier = null;
         this.uuid = null;
+        this.joinIndex = -1;
     }
 
     public Player getPlayer() {

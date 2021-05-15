@@ -183,7 +183,7 @@ effects:
     position: 36
     page: 1
   none:
-    displayname: '&bNo Particles'
+    displayname: '&bNo Projectiles'
     icon: NETHER_STAR
     level: 0
     cost: 0

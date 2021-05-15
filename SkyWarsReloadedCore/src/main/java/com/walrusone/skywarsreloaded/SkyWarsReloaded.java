@@ -209,6 +209,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         // Load config data
         config = new Config();
 
+        // State using debug mode or not
+        if (getCfg().debugEnabled()) this.getLogger().info("Debug mode enabled");
+
         // Managers
         matchManager = MatchManager.get();
         playerManager = new PlayerManager(this);
@@ -236,7 +239,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
         // PAF
         if (getCfg().bungeeMode() && getCfg().isUsePartyAndFriends()) {
-            this.getServer().getPluginManager().registerEvents(new PartyAndFriendsHook(), this);
+            // Currently disabled due to inability to access bungeecord PAF from spigot
+            // this.getServer().getPluginManager().registerEvents(new PartyAndFriendsHook(), this);
         }
         // SLIME WORLD MANAGER
         if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldManager") && getCfg().isUseSlimeWorldManager()) {

@@ -39,8 +39,8 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
                 if ((!a1.getFrom().getWorld().equals(spawnWorld)) && (a1.getTo().getWorld().equals(spawnWorld))) {
                     setPlayerOnCooldown(player, true);
                     Bukkit.getScheduler().runTaskLaterAsynchronously(SkyWarsReloaded.get(), () -> setPlayerOnCooldown(player, false), 5);
-                    com.walrusone.skywarsreloaded.managers.PlayerStat.updatePlayer(a1.getPlayer().getUniqueId().toString());
-                    if (SkyWarsReloaded.get().getUpdater().getUpdateStatus() == 1 && (a1.getPlayer().isOp() || a1.getPlayer().hasPermission("sw.admin"))) {
+                    com.walrusone.skywarsreloaded.managers.PlayerStat.updatePlayer(player.getUniqueId().toString());
+                    if (SkyWarsReloaded.get().getUpdater().getUpdateStatus() == 1 && (player.isOp() || player.hasPermission("sw.admin"))) {
                         //player.spigot().sendMessage(base);
                         SkyWarsReloaded.getNMS().sendJSON(player, "[\"\",{\"text\":\"§d§l[SkyWarsReloaded] §aA new update has been found: §b" + SkyWarsReloaded.get().getUpdater().getLatestVersion() + "§a. Click here to update!\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"" + SkyWarsReloaded.get().getUpdater().getUpdateURL() + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"§7Click here to update to the latest version!\"}]}}}]");
                     }

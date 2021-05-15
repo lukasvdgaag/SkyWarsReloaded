@@ -383,7 +383,15 @@ public class PlayerManager {
             if (world != null) {
                 CoordLoc ss = gameMap.getSpectateSpawn();
                 Location spectateSpawn = new Location(world, ss.getX(), ss.getY(), ss.getZ());
-                player.teleport(spectateSpawn, PlayerTeleportEvent.TeleportCause.END_PORTAL);
+                // Sanity check for spec spawn
+                if (spectateSpawn == null) {
+                    SkyWarsReloaded.get().getLogger().severe(
+                            "The spectator spawn was not set in the map " + gameMap.getName() +
+                                    "! Players will not be teleported correctly.");
+                }
+                else {
+                    player.teleport(spectateSpawn, PlayerTeleportEvent.TeleportCause.END_PORTAL);
+                }
             } else {
                 this.swr.getLogger().severe("Attempted to add spectator to a game with an un-loaded world! (PlayerManager::addSpectator)");
             }
