@@ -22,7 +22,7 @@ public class NameCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         String displayName = b.toString();
 
         if (displayName.length() == 0) {
-            sender.sendMessage(new Messaging.MessageFormatter().format("error.map-name"));
+            sender.sendMessage(new Messaging.MessageFormatter().format("error.map-name-too-short"));
             return true;
         }
 

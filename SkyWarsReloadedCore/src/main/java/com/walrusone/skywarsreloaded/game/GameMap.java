@@ -181,10 +181,10 @@ public class GameMap {
         }
     }
 
-    public static GameMap getMap(final String mapName) {
-        shuffle();
+    public static GameMap getMap(final String mapNameIn) {
+        String mapName = ChatColor.stripColor(mapNameIn).toLowerCase();
         for (final GameMap map : GameMap.arenas) {
-            if (map.name.equalsIgnoreCase(ChatColor.stripColor(mapName))) {
+            if (map.getName().toLowerCase().equals(mapName)) {
                 return map;
             }
         }
@@ -281,10 +281,15 @@ public class GameMap {
 
     /*Player Handling Methods*/
 
-    public static World createNewMap(String mapName, World.Environment environment) {
+    public static GameMapCreationResult createNewMap(String mapName, World.Environment environment) {
+        // Sanity check for world name
+        if (!mapName.matches("^[a-zA-Z0-9_]+$")) {
+            return new GameMapCreationResult(false, null);
+        }
+        // Attempt world creation
         World newWorld = SkyWarsReloaded.getWM().createEmptyWorld(mapName, environment);
         if (newWorld == null) {
-            return null;
+            return new GameMapCreationResult(true, null);
         }
         addMap(mapName);
         GameMap map = GameMap.getMap(mapName);
@@ -292,7 +297,7 @@ public class GameMap {
             map.environment = environment.toString();
             map.saveArenaData();
         }
-        return newWorld;
+        return new GameMapCreationResult(true, newWorld);
     }
 
     private static boolean loadWorldForScanning(String name) {
@@ -2327,6 +2332,25 @@ public class GameMap {
         @Override
         public int compare(TeamCard f1, TeamCard f2) {
             return Integer.compare(f1.getFullCount(), f2.getFullCount());
+        }
+    }
+
+    public static class GameMapCreationResult {
+
+        private boolean validName;
+        private World world;
+
+        public GameMapCreationResult(boolean validNameIn, @Nullable World worldIn) {
+            this.validName = validNameIn;
+            this.world = worldIn;
+        }
+
+        public boolean isValidName() {
+            return this.validName;
+        }
+        @Nullable
+        public World getWorld() {
+            return this.world;
         }
     }
 

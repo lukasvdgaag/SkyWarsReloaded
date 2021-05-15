@@ -35,8 +35,15 @@ public class CreateCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
                 player.sendMessage(new Messaging.MessageFormatter().format("error.map-exists"));
                 return true;
             }
-            World result = GameMap.createNewMap(worldName, environment);
-            if (result == null) {
+            GameMap.GameMapCreationResult result = GameMap.createNewMap(worldName, environment);
+            // Sanity check for the map name
+            if (!result.isValidName()) {
+                player.sendMessage(new Messaging.MessageFormatter().format("error.map-id-invalid"));
+                return true;
+            }
+            // Sanity check for the world creation
+            World resultWorld = result.getWorld();
+            if (resultWorld == null) {
                 player.sendMessage(new Messaging.MessageFormatter().format("error.map-world-exists"));
                 return true;
             }
@@ -44,11 +51,10 @@ public class CreateCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
             gMap = GameMap.getMap(worldName);
             if (gMap != null) {
                 gMap.setEditing(true);
-                World editWorld = SkyWarsReloaded.get().getServer().getWorld(worldName);
-                editWorld.setAutoSave(true);
+                resultWorld.setAutoSave(true);
+                resultWorld.getBlockAt(0, 75, 0).setType(Material.STONE);
                 player.setGameMode(GameMode.CREATIVE);
-                result.getBlockAt(0, 75, 0).setType(Material.STONE);
-                player.teleport(new org.bukkit.Location(result, 0.0D, 76.0D, 0.0D), PlayerTeleportEvent.TeleportCause.PLUGIN);
+                player.teleport(new org.bukkit.Location(resultWorld, 0.0D, 76.0D, 0.0D), PlayerTeleportEvent.TeleportCause.PLUGIN);
                 player.setAllowFlight(true);
                 player.setFlying(true);
             }
