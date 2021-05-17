@@ -743,7 +743,7 @@ public class MatchManager {
                             }
                             gameMap.refreshMap();
                             if (debug) {
-                                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "SkyWars Match Has Ended - Anena has been refreshed");
+                                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "SkyWars Match Has Ended - Arena has been refreshed");
                             }
                         }
                     }.runTaskLater(SkyWarsReloaded.get(), 5 * 20L);
