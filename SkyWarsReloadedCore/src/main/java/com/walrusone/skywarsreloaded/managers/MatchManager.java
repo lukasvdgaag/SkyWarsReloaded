@@ -200,7 +200,7 @@ public class MatchManager {
         } else {
             CoordLoc sspawn = pCard.getSpawn();
             if (debug) {
-                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Teleporting " + player.getName() + " to Skywars on map" + gameMap.getName());
+                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Teleporting " + player.getName() + " to Skywars on map " + gameMap.getName());
             }
             spawn = new Location(world, sspawn.getX() + 0.5, sspawn.getY() + 1, sspawn.getZ() + 0.5);
             PlayerStat pStat = PlayerStat.getPlayerStats(player);
