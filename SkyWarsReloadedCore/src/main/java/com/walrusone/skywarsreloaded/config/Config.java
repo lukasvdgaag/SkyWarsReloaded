@@ -267,6 +267,7 @@ public class Config {
     private boolean useSlimeWorldManager = false;
     private String slimeWorldManagerSource = "file";
     private boolean usePartyAndFriends = false;
+    private boolean usePartiesAlessioDP = false;
     private boolean useTeamChat = true;
     private String timeFormat = "mm:ss";
     private boolean checkForBetaVersion = true;
@@ -373,6 +374,7 @@ public class Config {
             maxPartySize =              SkyWarsReloaded.get().getConfig().getInt("parties.maxPartySize");
             partyEnabled =              SkyWarsReloaded.get().getConfig().getBoolean("parties.enabled");
             usePartyAndFriends =        SkyWarsReloaded.get().getConfig().getBoolean("parties.enablePartyAndFriendsSupport");
+            usePartiesAlessioDP =       SkyWarsReloaded.get().getConfig().getBoolean("parties.enablePartiesAlessioDPSupport");
             lobbyWorlds =               SkyWarsReloaded.get().getConfig().getStringList("parties.lobbyWorlds");
 
             loadTrappedChestsAsCenter = SkyWarsReloaded.get().getConfig().getBoolean("chests.loadTrappedChestsAsCenter", true);
@@ -646,6 +648,7 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("parties.maxPartySize", maxPartySize);
         SkyWarsReloaded.get().getConfig().set("parties.enabled", partyEnabled);
         SkyWarsReloaded.get().getConfig().set("parties.enablePartyAndFriendsSupport", usePartyAndFriends);
+        SkyWarsReloaded.get().getConfig().set("parties.enablePartiesAlessioDPSupport", usePartiesAlessioDP);
         SkyWarsReloaded.get().getConfig().set("parties.lobbyWorlds", lobbyWorlds);
 
         SkyWarsReloaded.get().getConfig().set("chests.loadTrappedChestsAsCenter", loadTrappedChestsAsCenter);
@@ -1369,6 +1372,7 @@ public class Config {
     public boolean isUseSlimeWorldManager() { return useSlimeWorldManager; }
     public String getSlimeWorldManagerSource() { return slimeWorldManagerSource; }
     public boolean isUsePartyAndFriends() { return usePartyAndFriends; }
+    public boolean isUsePartiesAlessioDP() { return usePartiesAlessioDP; }
 
     public boolean isUseTeamChat() { return useTeamChat; }
     public String getTimeFormat() { return timeFormat; }
