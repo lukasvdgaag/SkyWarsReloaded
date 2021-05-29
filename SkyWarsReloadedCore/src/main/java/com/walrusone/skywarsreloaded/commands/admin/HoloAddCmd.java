@@ -24,9 +24,9 @@ public class HoloAddCmd extends BaseCmd {
         if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
             if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
                 LeaderType type = LeaderType.matchType(args[1].toUpperCase());
-                if (type == null || !SkyWarsReloaded.get().getUsable().contains(type.toString())) {
+                if (type == null || !SkyWarsReloaded.get().getLeaderTypes().contains(type.toString())) {
                     StringJoiner types = new StringJoiner(", ");
-                    for (String add : SkyWarsReloaded.get().getUsable()) {
+                    for (String add : SkyWarsReloaded.get().getLeaderTypes()) {
                         types.add(add);
                     }
                     player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", types.toString()).format("leaderboard.invalidtype"));

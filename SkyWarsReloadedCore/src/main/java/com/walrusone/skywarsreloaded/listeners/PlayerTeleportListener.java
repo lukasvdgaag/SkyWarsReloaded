@@ -2,11 +2,13 @@ package com.walrusone.skywarsreloaded.listeners;
 
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.config.Config;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -100,16 +102,37 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
 
     @org.bukkit.event.EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
     public void onTP(PlayerTeleportEvent e) {
-        GameMap g = MatchManager.get().getPlayerMap(e.getPlayer());
-        if (g != null) {
-            if (!e.getTo().getWorld().getName().equals(g.getCurrentWorld().getName())) {
-                if (SkyWarsReloaded.getCfg().getKickOnWorldTeleport()) {
+        GameMap gameMap = MatchManager.get().getPlayerMap(e.getPlayer());
+        if (gameMap != null) {
+            String toWorldName = e.getTo().getWorld().getName();
+            if (gameMap.getCurrentWorld() == null) {
+                SkyWarsReloaded.get().getLogger().severe("Skywars could not find a world by the name of " + gameMap.getName());
+                return;
+            }
+            String mapWorldName = gameMap.getCurrentWorld().getName();
+            if (!toWorldName.equals(mapWorldName)) {
+                Config config = SkyWarsReloaded.getCfg();
+                if (config.getKickOnWorldTeleport()) {
                     Player player = e.getPlayer();
 //                    EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.CUSTOM;
 //                    if (player.getLastDamageCause() != null) {
 //                        damageCause = player.getLastDamageCause().getCause();
 //                    }
-                    SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
+                    Location spawnLoc = config.getSpawn();
+                    if (spawnLoc == null) {
+                        SkyWarsReloaded.get().getLogger().severe("Spawn location is not set! Cannot perform auto return to lobby on world change!");
+                        return;
+                    }
+                    String lobbyWorldName = spawnLoc.getWorld().getName();
+                    boolean shouldSendToLobby = config.bungeeMode() || !lobbyWorldName.equals(toWorldName);
+                    System.out.println("0 " + shouldSendToLobby + " " + lobbyWorldName);
+                    SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                           player,
+                           PlayerRemoveReason.PLAYER_QUIT_GAME,
+                           null,
+                            shouldSendToLobby,
+                           true
+                   );
                     // MatchManager.get().removeAlivePlayer(player, damageCause, true, true);
                 } else {
                     e.setCancelled(true);

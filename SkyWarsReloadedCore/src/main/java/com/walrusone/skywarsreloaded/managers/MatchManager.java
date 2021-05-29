@@ -228,6 +228,7 @@ public class MatchManager {
 
         Util.get().clear(player);
         player.setGameMode(GameMode.ADVENTURE);
+        if (SkyWarsReloaded.getCfg().debugEnabled()) SkyWarsReloaded.get().getLogger().info("MatchManager::teleportToArena allowing flight for " + player.getName() + " to prevent falling... (will be removed in 2s)");
         player.setVelocity(new Vector(0, 0, 0));
         player.setAllowFlight(true);
         player.setFlying(true);
@@ -241,6 +242,7 @@ public class MatchManager {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (SkyWarsReloaded.getCfg().debugEnabled()) SkyWarsReloaded.get().getLogger().info("MatchManager::teleportToArena removing flight for " + player.getName());
                 player.setFlying(false);
                 player.setAllowFlight(false);
                 player.setFlySpeed(0.1f);

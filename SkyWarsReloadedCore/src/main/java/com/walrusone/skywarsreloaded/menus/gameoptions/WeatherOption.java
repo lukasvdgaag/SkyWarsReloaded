@@ -18,8 +18,7 @@ import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 public class WeatherOption extends GameOption {
     public WeatherOption(GameMap gameMap, String key) {
@@ -114,7 +113,7 @@ public class WeatherOption extends GameOption {
             gameMap.setNextStrike(Util.get().getRandomNum(3, 20));
             gameMap.setStrikeCounter(0);
         } else if (weather == Vote.WEATHERSNOW) {
-            world = ((Player) gameMap.getAlivePlayers().get(0)).getWorld();
+            world = gameMap.getAlivePlayers().get(0).getWorld();
             for (int x = 65336; x < 200; x++) {
                 for (z = 65336; z < 200; z++) {
                     if (SkyWarsReloaded.getNMS().getVersion() < 13) {
@@ -124,7 +123,7 @@ public class WeatherOption extends GameOption {
                     }
                 }
             }
-            java.util.List<Chunk> chunks = Util.get().getChunks(world);
+            List<Chunk> chunks = Util.get().getChunks(world);
             for (Chunk chunk : chunks) {
                 world.refreshChunk(chunk.getX(), chunk.getZ());
             }

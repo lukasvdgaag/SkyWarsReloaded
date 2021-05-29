@@ -25,7 +25,6 @@ import com.walrusone.skywarsreloaded.menus.*;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.nms.NMS;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.PartyAndFriendsHook;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.holograms.HoloDisUtil;
@@ -55,7 +54,7 @@ import java.util.logging.Logger;
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 
     private static SkyWarsReloaded instance;
-    private final ArrayList<String> usable = new ArrayList<>();
+    private final ArrayList<String> leaderTypes = new ArrayList<>();
     private final Object leaderboardLock = new Object();
     private String servername;
     private Database db;
@@ -413,16 +412,14 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 final Player player = getServer().getPlayer(uuid);
                 if (player != null) {
                     SkyWarsReloaded.get().getPlayerManager().removePlayer(
-                            player, PlayerRemoveReason.OTHER, null, false
-                    );
+                            player, PlayerRemoveReason.OTHER, null, false);
                 }
             }
             ImmutableList<Player> players = ImmutableList.copyOf(gameMap.getAlivePlayers());
             for (final Player player : players) {
                 if (player != null) {
                     this.getPlayerManager().removePlayer(
-                            player, PlayerRemoveReason.OTHER, null, false
-                    );
+                            player, PlayerRemoveReason.OTHER, null, false);
                 }
             }
             getWM().deleteWorld(gameMap.getName(), false);
@@ -452,11 +449,11 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         if (sqlEnabled) {
             getFWDatabase();
         }
-        usable.clear();
+        leaderTypes.clear();
 
         for (LeaderType type : LeaderType.values()) {
             if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
-                usable.add(type.toString());
+                leaderTypes.add(type.toString());
             }
         }
 
@@ -712,8 +709,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         return servername;
     }
 
-    public ArrayList<String> getUsable() {
-        return usable;
+    public ArrayList<String> getLeaderTypes() {
+        return leaderTypes;
     }
 
     public PlayerStat getPlayerStat(Player player) {

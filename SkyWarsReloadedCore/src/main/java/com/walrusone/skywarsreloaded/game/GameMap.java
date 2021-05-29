@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.config.Config;
 import com.walrusone.skywarsreloaded.enums.*;
 import com.walrusone.skywarsreloaded.events.SkyWarsJoinEvent;
 import com.walrusone.skywarsreloaded.events.SkyWarsMatchStateChangeEvent;
@@ -283,7 +284,7 @@ public class GameMap {
 
     public static GameMapCreationResult createNewMap(String mapName, World.Environment environment) {
         // Sanity check for world name
-        if (!mapName.matches("^[a-zA-Z0-9_]+$")) {
+        if (!mapName.matches("^[a-zA-Z0-9_\\-]+$")) {
             return new GameMapCreationResult(false, null);
         }
         // Attempt world creation
@@ -1168,15 +1169,13 @@ public class GameMap {
             final Player player = SkyWarsReloaded.get().getServer().getPlayer(uuid);
             if (player != null) {
                 SkyWarsReloaded.get().getPlayerManager().removePlayer(
-                        player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, false
-                );
+                        player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, false);
             }
         }
         for (final Player player : this.getAlivePlayers()) {
             if (player != null) {
                 SkyWarsReloaded.get().getPlayerManager().removePlayer(
-                        player, PlayerRemoveReason.OTHER, null, false
-                );
+                        player, PlayerRemoveReason.OTHER, null, false);
             }
         }
         SkyWarsReloaded.getWM().deleteWorld(this.getName(), false);
@@ -1205,19 +1204,49 @@ public class GameMap {
             wm.copyWorld(source, target);
         }
 
+        // Make sure no players are in this world before loading it
+        // Vars
+        SkyWarsReloaded swr = SkyWarsReloaded.get();
+        Config config = SkyWarsReloaded.getCfg();
+        Location spawnLoc = config.getSpawn();
+        Server server = swr.getServer();
+        World world = server.getWorld(mapName);
+        // Remove all
+        if (world != null) {
+            for (Player player : server.getOnlinePlayers()) {
+                if (player.getLocation().getWorld() == world) {
+                    PlayerData pData = PlayerData.getPlayerData(player.getUniqueId());
+                    if (pData == null) pData = new PlayerData(player);
+                    pData.restoreToBeforeGameState(true);
+                    // BungeeCord does not move players instantly, so we force them out
+                    // of the world or kick them if spawn location isn't set
+                    if (config.bungeeMode()) {
+                        if (spawnLoc != null) player.teleport(spawnLoc);
+                        else player.kickPlayer("");
+                    }
+                }
+            }
+        }
 
         boolean loaded = SkyWarsReloaded.getWM().loadWorld(mapName, World.Environment.valueOf(environment));
 
         if (loaded) {
-            World world = SkyWarsReloaded.get().getServer().getWorld(mapName);
-            world.setSpawnLocation(2000, 0, 2000);
+            World worldLoaded = SkyWarsReloaded.get().getServer().getWorld(mapName);
+            // Debug
+            if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#loadMap: world null ? " + (worldLoaded == null));
+            }
+            // Avoid vanilla spawn protection
+            worldLoaded.setSpawnLocation(5000, 0, 5000);
+            // Setup border if enabled
             if (SkyWarsReloaded.getCfg().borderEnabled()) {
-                WorldBorder wb = world.getWorldBorder();
-                wb.setCenter(teamCards.get(0).getSpawns().get(0).getX(), teamCards.get(0).getSpawns().get(0).getZ());
+                WorldBorder wb = worldLoaded.getWorldBorder();
+                CoordLoc firstSpawnLoc = teamCards.get(0).getSpawns().get(0);
+                wb.setCenter(firstSpawnLoc.getX(), firstSpawnLoc.getZ());
                 wb.setSize(SkyWarsReloaded.getCfg().getBorderSize());
             }
 
-
+            // Remove diamond blocks (representing spawn locations) from the map
             for (List<CoordLoc> coords : spawnLocations.values()) {
                 for (CoordLoc loc : coords) {
                     getCurrentWorld().getBlockAt(loc.getX(), loc.getY(), loc.getZ()).setType(Material.AIR);

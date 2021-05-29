@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PartyCmdManager implements CommandExecutor, SWRCmdManagerAPI {
-    private List<BaseCmd> partycmds = new ArrayList<>();
+    private final List<BaseCmd> partycmds = new ArrayList<>();
 
     //Add New Commands Here
     public PartyCmdManager() {

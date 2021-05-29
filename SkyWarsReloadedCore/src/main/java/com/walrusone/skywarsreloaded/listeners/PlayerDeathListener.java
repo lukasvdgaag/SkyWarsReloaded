@@ -18,6 +18,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerDeathListener implements org.bukkit.event.Listener {
@@ -34,6 +35,15 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         if (!gameMap.getAllowFallDamage() && e.getCause() == EntityDamageEvent.DamageCause.FALL) return;
         if (player.getHealth() - e.getFinalDamage() > 0) return;
 
+        // Drop player items
+        boolean canPickup = player.getCanPickupItems();
+        player.setCanPickupItems(false);
+        Location playerDeathLoc = player.getLocation().clone();
+        World deathWorld = playerDeathLoc.getWorld();
+        for (ItemStack item : player.getInventory().getContents()) {
+            deathWorld.dropItemNaturally(playerDeathLoc, item);
+        }
+
         e.setCancelled(true);
         player.setHealthScale(20);
         player.setMaxHealth(20);
@@ -47,7 +57,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         }
 
         SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.DEATH, damageCause, true);
-        // MatchManager.get().removeAlivePlayer(player, dCause, false, true);
+        player.setCanPickupItems(canPickup);
         gameMap.getGameBoard().updateScoreboard();
     }
 
@@ -55,7 +65,22 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
     public void onDeath2(PlayerDeathEvent event) {
         GameMap gameMap = MatchManager.get().getPlayerMap(event.getEntity());
         if (gameMap == null) return;
-        event.setDeathMessage("");
+        /*event.setDeathMessage("");
+
+        Player player = event.getEntity();
+        player.setHealthScale(20);
+        player.setMaxHealth(20);
+        player.setHealth(20);
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(null);
+
+        EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.CUSTOM;
+        if (player.getLastDamageCause() != null) {
+            damageCause = player.getLastDamageCause().getCause();
+        }
+
+        SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.DEATH, damageCause, true);*/
+        gameMap.getGameBoard().updateScoreboard();
     }
 
     @EventHandler
@@ -83,7 +108,8 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
                         if (player.getLastDamageCause() != null) {
                             damageCause = player.getLastDamageCause().getCause();
                         }
-                        SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.DEATH, damageCause, true);
+                        SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.DEATH, damageCause,
+                                true);
                         // MatchManager.get().removeAlivePlayer(e.getPlayer(), damageCause, false, true);
                     }
                 }
