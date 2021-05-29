@@ -1,5 +1,6 @@
 debugMode: false
 bungeeMode: false
+bungeeRandomMapPickOnStart: false
 bungeeLobby: lobby
 isLobbyServer: false
 gameServers:

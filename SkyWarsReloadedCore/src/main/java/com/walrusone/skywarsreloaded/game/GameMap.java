@@ -226,8 +226,24 @@ public class GameMap {
             if (maps.exists() && maps.isDirectory()) {
                 File[] files = maps.listFiles();
                 if (files != null) {
-                    for (File file : files) {
-                        addMap(file.getName().replace(".yml", ""));
+                    List<File> filesList = Arrays.asList(files);
+                    // If in random map load + bungeemode -> only load one random map
+                    if (SkyWarsReloaded.getCfg().bungeeMode() &&
+                            SkyWarsReloaded.getCfg().getBungeeRandomMapPickOnStart()) {
+                        Collections.shuffle(filesList);
+                        File first = filesList.get(0);
+                        if (first != null) {
+                            GameMap gameMap = addMap(first.getName().replace(".yml", ""));
+                            int code = gameMap.registerMap(null);
+                            if (code != 0) {
+                                SkyWarsReloaded.get().getLogger().severe("Attempted to load a map in auto pick mode, " +
+                                        "but map failed to register! (Error Code: " + code + ")");
+                            }
+                        }
+                    } else {
+                        for (File file : files) {
+                            addMap(file.getName().replace(".yml", ""));
+                        }
                     }
                 }
             }

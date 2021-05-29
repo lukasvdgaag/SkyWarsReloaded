@@ -96,8 +96,9 @@ public class Config {
     private final List<String> signDef13 = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_HELMET", "GOLDEN_HELMET", "IRON_HELMET", "LEATHER_HELMET");
     private boolean debug;
     private boolean bungeeMode;
-    private boolean economyEnabled;
+    private boolean bungeeRandomMapPickOnStart;
     private String bungeeLobby;
+    private boolean economyEnabled;
     private List<String> gameEndCommands;
     private boolean resetTimerOnJoin;
     private String resourcePack;
@@ -286,9 +287,10 @@ public class Config {
             gameServers = SkyWarsReloaded.get().getConfig().getStringList("gameServers");
 
             bungeeMode = SkyWarsReloaded.get().getConfig().getBoolean("bungeeMode");
+            bungeeRandomMapPickOnStart = SkyWarsReloaded.get().getConfig().getBoolean("bungeeRandomMapPickOnStart");
+            bungeeLobby = SkyWarsReloaded.get().getConfig().getString("bungeeLobby");
             isLobbyServer = SkyWarsReloaded.get().getConfig().getBoolean("isLobbyServer");
             economyEnabled = SkyWarsReloaded.get().getConfig().getBoolean("economyEnabled");
-            bungeeLobby = SkyWarsReloaded.get().getConfig().getString("bungeeLobby");
             gameEndCommands = SkyWarsReloaded.get().getConfig().getStringList("gameEndCommands");
             resourcePack = SkyWarsReloaded.get().getConfig().getString("resourcepack");
             promptResource = SkyWarsReloaded.get().getConfig().getBoolean("promptForResourcePackOnJoin");
@@ -567,6 +569,7 @@ public class Config {
 
         SkyWarsReloaded.get().getConfig().set("economyEnabled", economyEnabled);
         SkyWarsReloaded.get().getConfig().set("bungeeMode", bungeeMode);
+        SkyWarsReloaded.get().getConfig().set("bungeeRandomMapPickOnStart", bungeeRandomMapPickOnStart);
         SkyWarsReloaded.get().getConfig().set("bungeeLobby", bungeeLobby);
         SkyWarsReloaded.get().getConfig().set("gameEndCommands", gameEndCommands);
 
@@ -827,6 +830,10 @@ public class Config {
 
     public boolean bungeeMode() {
         return (bungeeMode && SkyWarsReloaded.get().isEnabled());
+    }
+
+    public boolean getBungeeRandomMapPickOnStart() {
+        return bungeeRandomMapPickOnStart;
     }
 
     public String getBungeeLobby() {
