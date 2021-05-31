@@ -5,7 +5,6 @@ import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 public class SWQuitCmd extends BaseCmd {
     public SWQuitCmd(String t) {
@@ -23,13 +22,11 @@ public class SWQuitCmd extends BaseCmd {
         }
         if (map.getTeamCard(player) == null && map.getSpectators().contains(player.getUniqueId())) {
             SkyWarsReloaded.get().getPlayerManager().removePlayer(
-                    player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, false
-            );
+                    player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, false);
         }
         else {
             SkyWarsReloaded.get().getPlayerManager().removePlayer(
-                    player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true
-            );
+                    player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
         }
         return true;
     }

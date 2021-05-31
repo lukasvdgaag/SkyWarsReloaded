@@ -33,7 +33,7 @@ import java.util.Random;
 
 public class NMSHandler implements NMS {
 
-    private Collection<CraftScoreboard> scoreboardCollection = Lists.newArrayList();
+    private Collection<CraftScoreboard> scoreboardCollection;
 
     @Override
     public SWRSign createSWRSign(String name, Location location) {

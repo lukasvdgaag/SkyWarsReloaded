@@ -20,7 +20,7 @@ public class InviteCmd extends BaseCmd {
     public boolean run() {
         Party party = Party.getParty(player);
         if (party == null) {
-            player.sendMessage(new Messaging.MessageFormatter().format("party.mustcreate"));
+            player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
             return true;
         }
 

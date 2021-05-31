@@ -20,7 +20,7 @@ public class SWTopCmd extends BaseCmd {
 
     public boolean run() {
         int i;
-        if (SkyWarsReloaded.get().getUsable().contains(args[1].toUpperCase())) {
+        if (SkyWarsReloaded.get().getLeaderTypes().contains(args[1].toUpperCase())) {
             if (!SkyWarsReloaded.getLB().loaded(LeaderType.valueOf(args[1].toUpperCase()))) {
                 player.sendMessage(new Messaging.MessageFormatter().format("leaderboard.updating"));
                 return true;
@@ -46,7 +46,7 @@ public class SWTopCmd extends BaseCmd {
             return true;
         }
         StringJoiner types = new StringJoiner(", ");
-        for (String add : SkyWarsReloaded.get().getUsable()) {
+        for (String add : SkyWarsReloaded.get().getLeaderTypes()) {
             types.add(add);
         }
         player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", types.toString()).format("leaderboard.invalidtype"));

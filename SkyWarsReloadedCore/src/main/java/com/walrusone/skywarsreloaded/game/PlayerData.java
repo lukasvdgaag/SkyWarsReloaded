@@ -72,6 +72,10 @@ public class PlayerData {
     }
 
     public void restoreToBeforeGameState(boolean restoreInstantly) {
+        this.restoreToBeforeGameState(restoreInstantly, true);
+    }
+
+    public void restoreToBeforeGameState(boolean restoreInstantly, boolean sendToLobby) {
         if (!beingRestored) {
             beingRestored = true;
             final Player player = this.getPlayer();
@@ -124,7 +128,9 @@ public class PlayerData {
             }
 
             // Send back to lobby
-            sendToLobby(restoreInstantly);
+            if (sendToLobby) {
+                sendToLobby(restoreInstantly);
+            }
 
             // Reset scoreboard
             PlayerStat.resetScoreboard(player);
@@ -149,6 +155,7 @@ public class PlayerData {
                 }.runTaskLater(SkyWarsReloaded.get(), 5);
             }
 
+            // Clear cached data from self
             getAllPlayerData().remove(this);
         }
     }

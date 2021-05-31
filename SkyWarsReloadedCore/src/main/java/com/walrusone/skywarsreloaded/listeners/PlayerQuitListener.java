@@ -2,15 +2,11 @@ package com.walrusone.skywarsreloaded.listeners;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
-import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
@@ -29,8 +25,7 @@ public class PlayerQuitListener implements org.bukkit.event.Listener {
 
         if (SkyWarsReloaded.get().getMatchManager().getPlayerMap(player) != null) {
             SkyWarsReloaded.get().getPlayerManager().removePlayer(
-                    player, PlayerRemoveReason.PLAYER_QUIT_SERVER, null, true
-            );
+                    player, PlayerRemoveReason.PLAYER_QUIT_SERVER, null, true);
         }
 
         PlayerStat pStats = PlayerStat.getPlayerStats(uuid);

@@ -9,11 +9,17 @@ public class CreateCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         forcePlayer = true;
         cmdName = "create";
         alias = new String[]{"c"};
-        argLength = 2;
+        argLength = 1;
     }
 
     public boolean run() {
-        String partyName = args[1];
+        String partyName;
+        if (args.length > 1) {
+            partyName = args[1];
+        } else {
+            partyName = player.getName();
+        }
+
         Party party = Party.getParty(player);
         if (party != null) {
             player.sendMessage(new Messaging.MessageFormatter().format("party.alreadyinparty"));

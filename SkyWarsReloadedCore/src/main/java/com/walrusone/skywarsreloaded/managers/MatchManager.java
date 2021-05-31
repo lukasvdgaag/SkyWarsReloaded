@@ -200,7 +200,7 @@ public class MatchManager {
         } else {
             CoordLoc sspawn = pCard.getSpawn();
             if (debug) {
-                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Teleporting " + player.getName() + " to Skywars on map" + gameMap.getName());
+                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Teleporting " + player.getName() + " to Skywars on map " + gameMap.getName());
             }
             spawn = new Location(world, sspawn.getX() + 0.5, sspawn.getY() + 1, sspawn.getZ() + 0.5);
             PlayerStat pStat = PlayerStat.getPlayerStats(player);
@@ -228,6 +228,7 @@ public class MatchManager {
 
         Util.get().clear(player);
         player.setGameMode(GameMode.ADVENTURE);
+        if (SkyWarsReloaded.getCfg().debugEnabled()) SkyWarsReloaded.get().getLogger().info("MatchManager::teleportToArena allowing flight for " + player.getName() + " to prevent falling... (will be removed in 2s)");
         player.setVelocity(new Vector(0, 0, 0));
         player.setAllowFlight(true);
         player.setFlying(true);
@@ -241,6 +242,7 @@ public class MatchManager {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (SkyWarsReloaded.getCfg().debugEnabled()) SkyWarsReloaded.get().getLogger().info("MatchManager::teleportToArena removing flight for " + player.getName());
                 player.setFlying(false);
                 player.setAllowFlight(false);
                 player.setFlySpeed(0.1f);
@@ -743,7 +745,7 @@ public class MatchManager {
                             }
                             gameMap.refreshMap();
                             if (debug) {
-                                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "SkyWars Match Has Ended - Anena has been refreshed");
+                                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "SkyWars Match Has Ended - Arena has been refreshed");
                             }
                         }
                     }.runTaskLater(SkyWarsReloaded.get(), 5 * 20L);

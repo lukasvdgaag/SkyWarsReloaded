@@ -52,9 +52,16 @@ public class TeamCard {
     }
 
     void updateCard(int size) {
+        boolean useSeparateCages = SkyWarsReloaded.getCfg().isUseSeparateCages();
         if (size > playerCards.size()) {
             for (int i = playerCards.size(); i < size; i++) {
-                playerCards.add(new PlayerCard(this, null, spawns.get(i)));
+                CoordLoc playerSpawn = spawns.get(0);
+                if (useSeparateCages) {
+                    playerSpawn = new CoordLoc(playerSpawn.getX() + i, playerSpawn.getY(), playerSpawn.getZ() + i);
+                } else {
+                    playerSpawn = spawns.get(i);
+                }
+                playerCards.add(new PlayerCard(this, null, playerSpawn));
             }
         } else {
             while (size < playerCards.size()) {
@@ -183,7 +190,7 @@ public class TeamCard {
     }
 
     boolean isFull() {
-        return getFullCount() == 0;
+        return getFullCount() == getGameMap().getTeamSize();
     }
 
     public int getPlayersSize() {

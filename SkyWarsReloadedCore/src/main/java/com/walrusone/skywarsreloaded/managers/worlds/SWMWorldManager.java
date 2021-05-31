@@ -6,6 +6,8 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
+import com.grinderwolf.swm.nms.CraftSlimeWorld;
+import com.grinderwolf.swm.nms.SlimeNMS;
 import com.grinderwolf.swm.plugin.config.ConfigManager;
 import com.grinderwolf.swm.plugin.config.WorldData;
 import com.grinderwolf.swm.plugin.config.WorldsConfig;
@@ -17,16 +19,28 @@ import org.bukkit.World;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.logging.Level;
 
 public class SWMWorldManager implements WorldManager {
 
     SlimePlugin plugin;
     SlimeLoader loader;
+    SlimeNMS slimeNMS;
 
     public SWMWorldManager() {
         this.plugin = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
         this.loader = plugin.getLoader(SkyWarsReloaded.getCfg().getSlimeWorldManagerSource());
+        // Attempt to get slime nms
+        try {
+            Field field = this.plugin.getClass().getDeclaredField("nms");
+            field.setAccessible(true);
+            this.slimeNMS = (SlimeNMS) field.get(this.plugin);
+            field.setAccessible(false);
+        } catch (NoSuchFieldException | IllegalAccessException | ClassCastException e) {
+            slimeNMS = null;
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -100,31 +114,23 @@ public class SWMWorldManager implements WorldManager {
             return false;
         }
 
-        if (Bukkit.getWorld(worldName) != null) {
-            World world = Bukkit.getWorld(worldName);
-            world.setSpawnFlags(true, true);
-            world.setPVP(true);
-            world.setStorm(false);
-            world.setThundering(false);
-            world.setWeatherDuration(Integer.MAX_VALUE);
-            world.setKeepSpawnInMemory(false);
-            world.setTicksPerAnimalSpawns(1);
-            world.setTicksPerMonsterSpawns(1);
-            world.setAutoSave(false);
-
-            SkyWarsReloaded.getNMS().setGameRule(world, "doMobSpawning", "false");
-            SkyWarsReloaded.getNMS().setGameRule(world, "mobGriefing", "false");
-            SkyWarsReloaded.getNMS().setGameRule(world, "doFireTick", "false");
-            SkyWarsReloaded.getNMS().setGameRule(world, "showDeathMessages", "false");
-            SkyWarsReloaded.getNMS().setGameRule(world, "announceAdvancements", "false");
-            SkyWarsReloaded.getNMS().setGameRule(world, "doDaylightCycle", "false");
-            return true;
+        // Test if the world already exists in memory
+        World world = Bukkit.getWorld(worldName);
+        if (world != null) {
+            // Update settings for world
+            this.setWorldSettings(world);
+            // Unload world
+            SkyWarsReloaded.get().getServer().unloadWorld(world, false);
+            if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#loadWorld unloaded world");
+            }
         }
 
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
             SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#loadWorld worldData: " + worldData);
         }
 
+        // If world not already loaded, we fetch & load world from SWM
         try {
             SlimeWorld slimeWorld = plugin.loadWorld(loader, worldName, worldData.isReadOnly(), worldData.toPropertyMap());
             plugin.generateWorld(slimeWorld);
@@ -133,42 +139,75 @@ public class SWMWorldManager implements WorldManager {
             return false;
         }
 
-        World world = Bukkit.getWorld(worldName);
-
+        // Second attempt successful?
+        world = Bukkit.getWorld(worldName);
         if (world == null) {
             Bukkit.getLogger().log(Level.SEVERE, "Something went wrong whilst loading a world for the arena " + worldName + ". World is null.");
             return false;
         }
-        world.setSpawnFlags(true, true);
-        world.setPVP(true);
-        world.setStorm(false);
-        world.setThundering(false);
-        world.setWeatherDuration(Integer.MAX_VALUE);
-        world.setKeepSpawnInMemory(false);
-        world.setTicksPerAnimalSpawns(1);
-        world.setTicksPerMonsterSpawns(1);
-        world.setAutoSave(false);
 
-        SkyWarsReloaded.getNMS().setGameRule(world, "doMobSpawning", "false");
-        SkyWarsReloaded.getNMS().setGameRule(world, "mobGriefing", "false");
-        SkyWarsReloaded.getNMS().setGameRule(world, "doFireTick", "false");
-        SkyWarsReloaded.getNMS().setGameRule(world, "showDeathMessages", "false");
-        SkyWarsReloaded.getNMS().setGameRule(world, "announceAdvancements", "false");
-
+        // If all succeeds, set world settings and finish
+        this.setWorldSettings(world);
         return true;
     }
 
     @Override
-    public void unloadWorld(String worldName, boolean save) {
+    public void unloadWorld(String worldName, boolean shouldSaveIn) {
+        // Pre vars
+        WorldsConfig config = ConfigManager.getWorldConfig();
+        WorldData worldData = config.getWorlds().get(worldName);
         World world = Bukkit.getWorld(worldName);
-        Bukkit.getServer().unloadWorld(worldName, save);
 
-        if (save) {
-            try {
-                plugin.importWorld(world.getWorldFolder(), worldName, loader);
-            } catch (WorldAlreadyExistsException | InvalidWorldException | WorldLoadedException | WorldTooBigException | IOException e) {
-                e.printStackTrace();
+        // Pre check
+        if (world == null) {
+            SkyWarsReloaded.get().getLogger().severe("World " + worldName + " is not loaded but was attempted to be unloaded anyway!");
+            return;
+        }
+
+        // Execute unload
+        try {
+            // In the case the world already exits in SWM
+            if (loader.worldExists(worldName)) {
+                SlimeWorld slimeWorld = slimeNMS.getSlimeWorld(world);
+                if (slimeWorld == null) {
+                    SkyWarsReloaded.get().getLogger().severe(
+                            "Cannot save a world to SWM's storage if that world already exists in SWM's storage " +
+                                    "but wasn't loaded from SWM originally!");
+                    return;
+                }
+                // If we should save but it's not in write mode already
+                // (UNSAFE OPERATION! IGNORES LOCKS, DOES NOT RETRY IF IT FAILS)
+                if (shouldSaveIn && slimeWorld.isReadOnly()) {
+                    SkyWarsReloaded.get().getLogger().warning(
+                            "SWM has this world in read-only mode and skywars was instructed to save " +
+                                    "this world anyway. Changes should not be lost since skywars will save the " +
+                                    "world manually, however please disable read-only mode before making edits." +
+                                    "Force saving worlds is not safe! (Issues caused by not removing read-only " +
+                                    "mode are under your responsibility)");
+                    // Save current world data
+                    byte[] serializedWorld;
+                    try {
+                        serializedWorld = ((CraftSlimeWorld) slimeWorld).serialize();
+                    } catch (IndexOutOfBoundsException e) {
+                        throw new WorldTooBigException(worldName);
+                    }
+                    // Manually write to loader
+                    loader.saveWorld(worldName, serializedWorld, false);
+                    // Unload without saving, since we already forced that.
+                    Bukkit.unloadWorld(world, false);
+                } else {
+                    // Save if requested, otherwise just unload
+                    Bukkit.unloadWorld(world, shouldSaveIn);
+                }
+            } else {
+                // In the case the world doesn't already exist in the loader specified in SWM, import it.
+                Bukkit.unloadWorld(world, shouldSaveIn);
+                if (shouldSaveIn) {
+                    plugin.importWorld(world.getWorldFolder(), worldName, loader);
+                }
             }
+        } catch (WorldAlreadyExistsException | InvalidWorldException | WorldLoadedException | WorldTooBigException | IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -193,5 +232,26 @@ public class SWMWorldManager implements WorldManager {
     @Override
     public void deleteWorld(File file) {
 
+    }
+
+    // UTILS
+
+    public void setWorldSettings(World world) {
+        world.setSpawnFlags(true, true);
+        world.setPVP(true);
+        world.setStorm(false);
+        world.setThundering(false);
+        world.setWeatherDuration(Integer.MAX_VALUE);
+        world.setKeepSpawnInMemory(false);
+        world.setTicksPerAnimalSpawns(1);
+        world.setTicksPerMonsterSpawns(1);
+        world.setAutoSave(false);
+
+        SkyWarsReloaded.getNMS().setGameRule(world, "doMobSpawning", "false");
+        SkyWarsReloaded.getNMS().setGameRule(world, "mobGriefing", "false");
+        SkyWarsReloaded.getNMS().setGameRule(world, "doFireTick", "false");
+        SkyWarsReloaded.getNMS().setGameRule(world, "showDeathMessages", "false");
+        SkyWarsReloaded.getNMS().setGameRule(world, "announceAdvancements", "false");
+        SkyWarsReloaded.getNMS().setGameRule(world, "doDaylightCycle", "false");
     }
 }

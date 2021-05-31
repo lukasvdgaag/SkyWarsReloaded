@@ -295,8 +295,7 @@ public class PlayerStat {
 
     public static void resetScoreboard(Player player) {
         SkywarsBoard scoreboard = scoreboards.get(player);
-        if (scoreboard != null && !SkyWarsReloaded.getNMS().removeFromScoreboardCollection(scoreboard.board)) {
-            scoreboards.remove(player);
+        if (scoreboard != null) {
             for (Objective objective : scoreboard.board.getObjectives()) {
                 if (objective != null) {
                     objective.unregister();

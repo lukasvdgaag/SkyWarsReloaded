@@ -13,7 +13,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
@@ -84,8 +83,7 @@ public class SpectateListener implements org.bukkit.event.Listener {
         if (slot == 8) {
             player.closeInventory();
             SkyWarsReloaded.get().getPlayerManager().removePlayer(
-                    player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, false
-            );
+                    player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, false);
         } else if ((slot >= 9) && (slot <= 35)) {
             player.closeInventory();
             ItemStack item = e.getCurrentItem();
