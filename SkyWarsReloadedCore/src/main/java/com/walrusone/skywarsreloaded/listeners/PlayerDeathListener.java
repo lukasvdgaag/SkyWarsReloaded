@@ -30,9 +30,15 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         if (!(e.getEntity() instanceof Player)) return;
         Player player = (Player) e.getEntity();
 
+        // Make sure the player is in a game
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
         if (gameMap == null) return;
-        if (!gameMap.getAllowFallDamage() && e.getCause() == EntityDamageEvent.DamageCause.FALL) return;
+        // Handle fall damage
+        if (!gameMap.getAllowFallDamage() && e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            e.setCancelled(true);
+            return;
+        }
+        // If the player doesn't die from damage, ignore
         if (player.getHealth() - e.getFinalDamage() > 0) return;
 
         // Drop player items
@@ -41,6 +47,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         Location playerDeathLoc = player.getLocation().clone();
         World deathWorld = playerDeathLoc.getWorld();
         for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null) continue;
             deathWorld.dropItemNaturally(playerDeathLoc, item);
         }
 
