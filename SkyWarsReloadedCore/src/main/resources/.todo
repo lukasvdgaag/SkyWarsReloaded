@@ -1,3 +1,18 @@
+# version 5.5.1 - BETA #6
+Added async update checker on join
+Added many debug logs if debug mode is enabled
+Added ability to register map from console
+Added ability to create parties without specifying a name
+Added feature for maps auto-pick on server start for in bungee mode
+Fixed ClassCastException in 1.8.8 servers
+Fixed SocketException if server is restarted while receiving ping
+Fixed NullPointerException when executing eco actions
+Fixed holograms not loading data on start if sign leaderboards are disabled
+Fixed dropping null item on damage causing death event
+Fixed armor contents not being applied back to player on restore
+Fixed typos in the code and in console messages
+Fixed many other bugs
+
 # version 5.5.1 - BETA #3
 Recoded how teams are handled internally.
 Added ability to disable sounds
