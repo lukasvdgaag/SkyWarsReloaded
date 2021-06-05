@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
@@ -29,7 +30,8 @@ public class PlayerData {
     private final UUID uuid;
     private final Scoreboard sbBeforeGame;
     private Tagged taggedBy;
-    private final PlayerInventory savedInv;
+    private final ItemStack[] savedInv;
+    private final ItemStack[] savedArmor;
     private final double healthBeforeGame;
     private final int foodBeforeGame;
     private final float saturationBeforeGame;
@@ -53,9 +55,9 @@ public class PlayerData {
         }
         PlayerInventory pInv = p.getInventory();
 
-        this.savedInv = (PlayerInventory) Bukkit.createInventory(null, InventoryType.PLAYER, p.getName());
-        this.savedInv.setContents(pInv.getContents());
-        this.savedInv.setArmorContents(pInv.getArmorContents());
+        /*this.savedInv = (PlayerInventory) Bukkit.createInventory(null, InventoryType.PLAYER, p.getName());*/
+        this.savedInv = pInv.getContents();
+        this.savedArmor = pInv.getArmorContents();
 
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
             Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + p.getName() + "'s data has been saved");
@@ -104,8 +106,8 @@ public class PlayerData {
             // Reset inventory
             Util.get().clear(player);
             PlayerInventory pInv = player.getInventory();
-            pInv.setContents(savedInv.getContents());
-            pInv.setArmorContents(savedInv.getArmorContents());
+            pInv.setContents(savedInv);
+            pInv.setArmorContents(savedArmor);
             SkyWarsReloaded.getNMS().setMaxHealth(player, 20);
             // Remove death screen for player - this will send them to spawn so we undo that by TP back
             this.locationBeforeRespawn = player.getLocation();

@@ -1,3 +1,6 @@
+#version 5.5.1 - BETA #7
+Fixed inventory pre-game backup throwing ClassCastException,
+
 # version 5.5.1 - BETA #6
 Added async update checker on join
 Added many debug logs if debug mode is enabled
