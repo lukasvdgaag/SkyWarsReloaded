@@ -57,7 +57,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         player.setMaxHealth(20);
         player.setHealth(20);
         player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
+        player.getInventory().setArmorContents(new ItemStack[] {null, null, null, null});
 
         EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.CUSTOM;
         if (player.getLastDamageCause() != null) {

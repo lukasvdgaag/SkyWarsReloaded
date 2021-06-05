@@ -160,7 +160,7 @@ public class Util {
 
     public void clear(final Player player) {
         player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
+        player.getInventory().setArmorContents(new ItemStack[] {null, null, null, null});
         for (final PotionEffect a1 : player.getActivePotionEffects()) {
             player.removePotionEffect(a1.getType());
         }

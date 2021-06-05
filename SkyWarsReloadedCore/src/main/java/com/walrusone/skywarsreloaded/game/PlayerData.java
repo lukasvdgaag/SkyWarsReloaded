@@ -11,7 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
@@ -29,7 +29,7 @@ public class PlayerData {
     private final UUID uuid;
     private final Scoreboard sbBeforeGame;
     private Tagged taggedBy;
-    private final Inventory inv;
+    private final PlayerInventory savedInv;
     private final double healthBeforeGame;
     private final int foodBeforeGame;
     private final float saturationBeforeGame;
@@ -49,10 +49,14 @@ public class PlayerData {
         this.foodBeforeGame = p.getFoodLevel();
         this.saturationBeforeGame = p.getSaturation();
         if (!SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
-            experienceBeforeGame = p.getExp();
+            this.experienceBeforeGame = p.getExp();
         }
-        inv = Bukkit.createInventory(null, InventoryType.PLAYER, p.getName());
-        inv.setContents(p.getInventory().getContents());
+        PlayerInventory pInv = p.getInventory();
+
+        this.savedInv = (PlayerInventory) Bukkit.createInventory(null, InventoryType.PLAYER, p.getName());
+        this.savedInv.setContents(pInv.getContents());
+        this.savedInv.setArmorContents(pInv.getArmorContents());
+
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
             Util.get().logToFile(ChatColor.RED + "[skywars] " + ChatColor.YELLOW + p.getName() + "'s data has been saved");
         }
@@ -99,8 +103,9 @@ public class PlayerData {
             }
             // Reset inventory
             Util.get().clear(player);
-            player.getInventory().clear();
-            player.getInventory().setContents(inv.getContents());
+            PlayerInventory pInv = player.getInventory();
+            pInv.setContents(savedInv.getContents());
+            pInv.setArmorContents(savedInv.getArmorContents());
             SkyWarsReloaded.getNMS().setMaxHealth(player, 20);
             // Remove death screen for player - this will send them to spawn so we undo that by TP back
             this.locationBeforeRespawn = player.getLocation();
@@ -125,6 +130,9 @@ public class PlayerData {
             player.setNoDamageTicks(1);
             if (!SkyWarsReloaded.getCfg().displayPlayerExeperience()) {
                 player.setExp(experienceBeforeGame);
+            }
+            if (player.isOnline()) {
+                player.updateInventory();
             }
 
             // Send back to lobby
