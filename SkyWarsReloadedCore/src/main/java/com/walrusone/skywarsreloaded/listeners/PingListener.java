@@ -4,14 +4,18 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.ServerListPingEvent;
 
 public class PingListener implements org.bukkit.event.Listener {
     public PingListener() {
     }
 
-    @org.bukkit.event.EventHandler
+    @EventHandler
     public void onPing(ServerListPingEvent serverListPingEvent) {
+        if (SkyWarsReloaded.getCfg().bungeeMode()) {
+            SkyWarsReloaded.get().getLogger().info("Received server list ping from " + serverListPingEvent.getAddress());
+        }
         if (SkyWarsReloaded.get().serverLoaded()) {
             if (GameMap.getMapsCopy().size() > 0) {
                 GameMap game = GameMap.getMapsCopy().get(0);

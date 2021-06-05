@@ -25,8 +25,9 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
     public PlayerDeathListener() {
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onDeath3(EntityDamageEvent e) {
+        if (e.isCancelled()) return;
         if (!(e.getEntity() instanceof Player)) return;
         Player player = (Player) e.getEntity();
 
