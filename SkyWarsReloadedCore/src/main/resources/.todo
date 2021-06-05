@@ -4,6 +4,7 @@ Added many debug logs if debug mode is enabled
 Added ability to register map from console
 Added ability to create parties without specifying a name
 Added feature for maps auto-pick on server start for in bungee mode
+Added sanity check for map ids
 Fixed ClassCastException in 1.8.8 servers
 Fixed SocketException if server is restarted while receiving ping
 Fixed NullPointerException when executing eco actions
@@ -11,6 +12,13 @@ Fixed holograms not loading data on start if sign leaderboards are disabled
 Fixed dropping null item on damage causing death event
 Fixed armor contents not being applied back to player on restore
 Fixed typos in the code and in console messages
+Fixed not correctly resetting player join index on map reset
+Fixed projectile effect display name for key none showing No Particles
+Fixed players in bungeecord mode not being removed on cross-world teleport
+Fixed many issues related to saving maps when using SlimeWorldManager
+Fixed maps not refreshing correctly after game in SlimeWorldManager
+Fixed requiring multiple spawn locations per team even if useSeparateCages is disabled
+Fixed player being put in spectator even if damage event was cancelled
 Fixed many other bugs
 
 # version 5.5.1 - BETA #3
