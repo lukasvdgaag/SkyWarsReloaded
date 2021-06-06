@@ -273,4 +273,14 @@ public class NMSHandler implements NMS {
         ((CraftPlayer) sender).getHandle().playerConnection.sendPacket(chat);
     }
 
+    @Override
+    public boolean isHoldingTotem(Player player) {
+        return false;
+    }
+
+    @Override
+    public void applyTotemEffect(Player player) {
+
+    }
+
 }

@@ -88,5 +88,7 @@ public interface NMS {
 
     SWRSign createSWRSign(String name, Location location);
 
+    boolean isHoldingTotem(Player player);
 
+    void applyTotemEffect(Player player);
 }

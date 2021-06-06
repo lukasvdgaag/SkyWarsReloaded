@@ -281,4 +281,14 @@ public class NMSHandler implements NMS {
         final PacketPlayOutChat chat = new PacketPlayOutChat(icbc);
         ((CraftPlayer) sender).getHandle().playerConnection.sendPacket(chat);
     }
+
+    @Override
+    public boolean isHoldingTotem(Player player) {
+        return false;
+    }
+
+    @Override
+    public void applyTotemEffect(Player player) {
+
+    }
 }

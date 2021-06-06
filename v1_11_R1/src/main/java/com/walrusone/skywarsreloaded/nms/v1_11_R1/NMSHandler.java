@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.nms.v1_11_R1;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.signs.SWRSign;
 import com.walrusone.skywarsreloaded.nms.NMS;
 import net.minecraft.server.v1_11_R1.*;
@@ -19,8 +20,10 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.Arrays;
@@ -276,5 +279,40 @@ public class NMSHandler implements NMS {
         final IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a(json);
         final PacketPlayOutChat chat = new PacketPlayOutChat(icbc);
         ((CraftPlayer) sender).getHandle().playerConnection.sendPacket(chat);
+    }
+
+    @Override
+    public boolean isHoldingTotem(Player player) {
+        return player.getInventory().getItemInMainHand().getType().equals(Material.TOTEM) ||
+                player.getInventory().getItemInOffHand().getType().equals(Material.TOTEM);
+    }
+
+    @Override
+    public void applyTotemEffect(Player player) {
+        org.bukkit.inventory.PlayerInventory pInv = player.getInventory();
+        org.bukkit.inventory.ItemStack mainHand = pInv.getItemInMainHand();
+        org.bukkit.inventory.ItemStack offHand = pInv.getItemInOffHand();
+        // Consume item
+        if (mainHand.getType().equals(Material.TOTEM)) {
+            pInv.setItemInMainHand(new org.bukkit.inventory.ItemStack(Material.AIR));
+        } else if (offHand.getType().equals(Material.TOTEM)) {
+            pInv.setItemInOffHand(new ItemStack(Material.AIR));
+        }
+        // On screen effect - doesn't exist without packets in this version
+        // Particles
+        new BukkitRunnable() {
+            byte count = 0;
+
+            @Override
+            public void run() {
+                if (count > 30) {
+                    this.cancel();
+                    return;
+                } else {
+                    count++;
+                }
+                player.getWorld().spawnParticle(Particle.TOTEM, player.getLocation(), 10, 0.1, 0.1, 0.1, 0.5);
+            }
+        }.runTaskTimer(SkyWarsReloaded.get(), 0, 1);
     }
 }
