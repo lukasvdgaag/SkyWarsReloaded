@@ -87,8 +87,8 @@ public class SWTabCompleter implements TabCompleter {
                         possibilities.add(p.getName());
                     }
                 } else if ((args[0].equalsIgnoreCase("top") || args[0].equalsIgnoreCase("hologram")) && Util.get().hp("sw", commandSender, args[0].toLowerCase())) {
-                    for (String a : SkyWarsReloaded.get().getLeaderTypes()) {
-                        possibilities.add(a.toLowerCase());
+                    for (String leaderType : SkyWarsReloaded.get().getLeaderTypes()) {
+                        possibilities.add(leaderType.toLowerCase());
                     }
                 }
             } else if (args.length == 3) {
@@ -112,9 +112,13 @@ public class SWTabCompleter implements TabCompleter {
             return null;
         }
 
-        for (String str : possibilities) {
-            if (args[args.length - 1].equals("") || str.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
-                responses.add(str);
+        String currentUserInput = args[args.length - 1].toLowerCase();
+        if (currentUserInput.equals("")) {
+            responses = possibilities;
+        } else {
+            for (String possibility : possibilities) {
+                if (possibility.toLowerCase().startsWith(currentUserInput)) responses.add(possibility);
+            }
         }
         return responses;
     }
