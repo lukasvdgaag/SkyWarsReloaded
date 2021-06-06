@@ -6,6 +6,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
+/**
+ * This is not used at the moment, WIP
+ */
 public class WorldOptions {
 
     @Nullable
