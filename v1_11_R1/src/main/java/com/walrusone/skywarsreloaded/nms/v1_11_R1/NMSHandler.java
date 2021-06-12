@@ -299,6 +299,9 @@ public class NMSHandler implements NMS {
             pInv.setItemInOffHand(new ItemStack(Material.AIR));
         }
         // On screen effect - doesn't exist without packets in this version
+        EntityPlayer ep = ((CraftPlayer)player).getHandle();
+        PacketPlayOutEntityStatus status = new PacketPlayOutEntityStatus(ep, (byte) 35);
+        ep.playerConnection.sendPacket(status);
         // Particles
         new BukkitRunnable() {
             byte count = 0;
