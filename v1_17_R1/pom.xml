@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>v1_9_R1</artifactId>
+    <artifactId>v1_17_R1</artifactId>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.9.2</version>
+            <version>1.17</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
