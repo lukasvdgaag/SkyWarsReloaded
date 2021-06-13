@@ -17,6 +17,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerDeathListener implements org.bukkit.event.Listener {
@@ -41,7 +43,8 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         }
         // If the player doesn't die from damage, ignore
         if (player.getHealth() - e.getFinalDamage() > 0) return;
-        // Player fake damage sound
+
+        // Player fake damage sound if dying
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
 
         // Take into account if the player is holding a totem of undying (1.9+)
@@ -49,9 +52,17 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
                 e.getCause() != EntityDamageEvent.DamageCause.CUSTOM &&
                 SkyWarsReloaded.getNMS().isHoldingTotem(player))
         {
+            System.out.println("is holding: true");
+            e.setDamage(player.getHealth() - 1);
+            // Apply potion effects (global)
+            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 45, 1, false, true));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 5, 1, false, true));
+            // Show effect on screen, show particles and apply fire resistance in 1.16.2+
             SkyWarsReloaded.getNMS().applyTotemEffect(player);
+            System.out.println("effect applied");
             return;
         }
+        System.out.println("is holding test post");
 
         // Drop player items
         boolean canPickup = player.getCanPickupItems();

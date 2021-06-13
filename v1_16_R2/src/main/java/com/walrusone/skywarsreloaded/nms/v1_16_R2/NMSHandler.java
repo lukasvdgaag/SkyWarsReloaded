@@ -25,6 +25,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -375,6 +377,8 @@ public class NMSHandler implements NMS {
         } else if (offHand.getType().equals(Material.TOTEM_OF_UNDYING)) {
             pInv.setItemInOffHand(new ItemStack(Material.AIR));
         }
+        // Apply potion effects (version specific)
+        player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 20 * 40, 0, false, true));
         // On screen effect
         player.playEffect(EntityEffect.TOTEM_RESURRECT);
         // Particles
