@@ -2177,6 +2177,7 @@ public class GameMap {
         int count = 0;
         for (TeamCard tCard : teamCards) {
             if (tCard.isEliminated()) {
+
                 count++;
             }
         }

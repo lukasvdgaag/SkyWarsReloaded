@@ -16,26 +16,28 @@ import java.util.StringJoiner;
 import java.util.UUID;
 
 public class TeamCard {
+    // Static
+    private final GameMap gMap;
+    private final String prefix;
+    private final String name;
+    private final int teamSize;
+    private final byte bColor;
+    // Data
     private final ArrayList<PlayerCard> playerCards = new ArrayList<>();
     private final ArrayList<CoordLoc> spawns;
-    private final GameMap gMap;
     private int place;
-    private final String prefix;
-    //private Team team;
-    private final byte bColor;
-    private final String name;
-
     private final int positionAdded;
 
     TeamCard(int size, GameMap gameMap, String prefix, String color, int pos, ArrayList<CoordLoc> teamSpawns) {
-        this.spawns = teamSpawns;
-        gMap = gameMap;
-        place = 1;
+        this.gMap = gameMap;
         this.prefix = prefix;
-        name = (prefix + color);
+        this.name = (prefix + color);
+        this.teamSize = size;
         String col = color.replaceAll("\\s", "").toLowerCase();
-        bColor = Util.get().getByteFromColor(col);
-        positionAdded = pos;
+        this.bColor = Util.get().getByteFromColor(col);
+        this.spawns = teamSpawns;
+        this.place = 1;
+        this.positionAdded = pos;
         for (int i = 0; i < size; i++) {
             CoordLoc loc;
             if (teamSpawns == null) loc = null;
@@ -208,8 +210,8 @@ public class TeamCard {
 
 
     public boolean isEliminated() {
-        int teamSize = getPlayersSize();
-        return (teamSize == 0) || (teamSize == getDeadPlayerSize());
+        int playersLeft = this.getPlayersSize();
+        return (playersLeft == 0) || (this.teamSize == getDeadPlayerSize());
     }
 
     public String getPlayerNames() {
