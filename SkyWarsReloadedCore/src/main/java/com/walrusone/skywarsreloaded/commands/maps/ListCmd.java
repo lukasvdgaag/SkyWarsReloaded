@@ -4,6 +4,8 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.ChatColor;
 
+import java.util.List;
+
 public class ListCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public ListCmd(String t) {
         type = t;
@@ -15,7 +17,13 @@ public class ListCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
 
     public boolean run() {
         sender.sendMessage(new Messaging.MessageFormatter().format("maps.listHeader"));
-        for (GameMap map : GameMap.getMapsCopy()) {
+        List<GameMap> maps = GameMap.getMapsCopy();
+        if (maps.isEmpty()) {
+            sender.sendMessage(new Messaging.MessageFormatter().format("maps.noArenas"));
+            return true;
+        }
+
+        for (GameMap map : maps) {
             if (map.isRegistered()) {
                 sender.sendMessage(new Messaging.MessageFormatter().setVariable("filename", map.getName()).setVariable("displayname", map.getDisplayName()).setVariable("status", ChatColor.GREEN + "REGISTERED").format("maps.listResult"));
             } else {

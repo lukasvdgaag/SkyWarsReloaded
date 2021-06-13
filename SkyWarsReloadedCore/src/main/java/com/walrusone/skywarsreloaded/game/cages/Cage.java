@@ -145,6 +145,7 @@ public abstract class Cage {
 
 
     public void removeSpawnHousing(GameMap gMap, CoordLoc loc1) {
+        if (loc1 == null) return;
         World world = gMap.getCurrentWorld();
         int x = loc1.getX();
         int y = loc1.getY();

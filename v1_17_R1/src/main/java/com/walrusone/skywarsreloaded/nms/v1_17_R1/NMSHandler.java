@@ -48,7 +48,7 @@ public class NMSHandler implements NMS {
 
     @Override
     public SWRSign createSWRSign(String name, org.bukkit.Location location) {
-        return new SWRSign163(name, location);
+        return new SWRSign171(name, location);
     }
 
     public void respawnPlayer(Player player) {
@@ -110,12 +110,7 @@ public class NMSHandler implements NMS {
         assert addItemMeta != null;
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        addItemMeta.addItemFlags(ItemFlag.values());
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -126,12 +121,7 @@ public class NMSHandler implements NMS {
         assert addItemMeta != null;
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        addItemMeta.addItemFlags(ItemFlag.values());
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }

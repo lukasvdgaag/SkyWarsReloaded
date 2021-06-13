@@ -307,6 +307,7 @@ sounds:
   openModifierMenu: ENTITY_SPLASH_POTION_BREAK
   confirmSelectionSound: ENTITY_VILLAGER_YES
   errorSound: ENTITY_VILLAGER_NO
+  teamJoinSound: BLOCK_NOTE_PLING
 signs:
   enabled: true
   blockoffline: COAL_BLOCK

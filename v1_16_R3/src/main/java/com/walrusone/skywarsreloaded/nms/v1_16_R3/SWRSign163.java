@@ -72,7 +72,6 @@ public class SWRSign163 implements SWRSign {
         if (loc.getBlock().getType().name().contains("SIGN") || loc.add(0, 1, 0).getBlock().getType().name().contains("SIGN")) {
             Block attachedBlock;
             Sign sign = (Sign) loc.getBlock().getState();
-            if (sign == null) return;
 
             if (loc.getBlock().getType().name().contains("WALL")) {
                 BlockData blockdata = loc.getBlock().getBlockData();

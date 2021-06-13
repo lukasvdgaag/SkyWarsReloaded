@@ -262,7 +262,7 @@ public class MatchManager {
 
         if (!gameMap.getAlivePlayers().contains(player) || gameMap.getTeamSize() == 1) {
             // Add 1 to join index since we want 1-max and not 0-maxIndex
-            String playerCount = String.valueOf(pCard.getJoinIndex() + 1); // String.valueOf(gameMap.getAllPlayers().size());
+            String playerCount = gameMap.getMatchState() == MatchState.WAITINGLOBBY ? gameMap.getWaitingPlayers().size() + "" : String.valueOf(pCard.getJoinIndex() + 1); // String.valueOf(gameMap.getAllPlayers().size());
             // Send join message to all
             for (final Player p : gameMap.getAllPlayers()) {
                 p.sendMessage(new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())

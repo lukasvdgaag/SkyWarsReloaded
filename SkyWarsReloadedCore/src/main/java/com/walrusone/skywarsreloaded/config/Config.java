@@ -272,6 +272,7 @@ public class Config {
     private String timeFormat = "mm:ss";
     private boolean checkForBetaVersion = true;
     private boolean displayTimerOnLevelbar = true;
+    private String teamJoinSound;
 
     public Config() {
         load();
@@ -474,6 +475,7 @@ public class Config {
             openModifierMenu =      SkyWarsReloaded.get().getConfig().getString("sounds.openModifierMenu");
             confirmSelection =      SkyWarsReloaded.get().getConfig().getString("sounds.confirmSelectionSound");
             errorSound =            SkyWarsReloaded.get().getConfig().getString("sounds.errorSound");
+            teamJoinSound = SkyWarsReloaded.get().getConfig().getString("sounds.teamJoinSound");
 
             enabledCommands =       SkyWarsReloaded.get().getConfig().getStringList("disable-commands.exceptions");
             disableCommands =       SkyWarsReloaded.get().getConfig().getBoolean("disable-commands.enabled");
@@ -734,6 +736,7 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("sounds.openModifierMenu", openModifierMenu);
         SkyWarsReloaded.get().getConfig().set("sounds.confirmSelectionSound", confirmSelection);
         SkyWarsReloaded.get().getConfig().set("sounds.errorSound", errorSound);
+        SkyWarsReloaded.get().getConfig().set("sounds.teamJoinSound", teamJoinSound);
 
         SkyWarsReloaded.get().getConfig().set("disable-commands.exceptions", enabledCommands);
         SkyWarsReloaded.get().getConfig().set("disable-commands.enabled", disableCommands);
@@ -1384,5 +1387,8 @@ public class Config {
     public boolean isDisplayPlayerExeperience() {
         return displayPlayerExeperience;
     }
+
+    public String getTeamJoinSound() { return teamJoinSound; }
+
 }
 

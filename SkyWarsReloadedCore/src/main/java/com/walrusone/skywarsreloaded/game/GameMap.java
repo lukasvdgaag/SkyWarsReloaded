@@ -778,8 +778,8 @@ public class GameMap {
 
     public boolean mapContainsDead(UUID uuid) {
         for (TeamCard tCard : teamCards) {
-            if (tCard.getDead().contains(uuid)) {
-                return true;
+            for (PlayerCard p : tCard.getPlayerCards()) {
+                if (p.isDead()) return true;
             }
         }
         return false;

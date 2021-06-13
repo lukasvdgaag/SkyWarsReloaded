@@ -17,7 +17,6 @@ import java.util.UUID;
 
 public class TeamCard {
     private final ArrayList<PlayerCard> playerCards = new ArrayList<>();
-    private final ArrayList<UUID> dead = new ArrayList<>();
     private final ArrayList<CoordLoc> spawns;
     private final GameMap gMap;
     private int place;
@@ -172,11 +171,6 @@ public class TeamCard {
         for (PlayerCard pCard : playerCards) {
             pCard.reset();
         }
-        dead.clear();
-    }
-
-    public ArrayList<UUID> getDead() {
-        return dead;
     }
 
     PlayerCard containsPlayer(UUID uuid) {
@@ -203,9 +197,19 @@ public class TeamCard {
         return count;
     }
 
+    public int getDeadPlayerSize() {
+        int count = 0;
+        for (PlayerCard pCard : this.playerCards) {
+            if (pCard.getUUID() != null && pCard.isDead())
+               count++;
+        }
+        return count;
+    }
+
+
     public boolean isEliminated() {
         int teamSize = getPlayersSize();
-        return (teamSize == 0) || (teamSize == this.dead.size());
+        return (teamSize == 0) || (teamSize == getDeadPlayerSize());
     }
 
     public String getPlayerNames() {

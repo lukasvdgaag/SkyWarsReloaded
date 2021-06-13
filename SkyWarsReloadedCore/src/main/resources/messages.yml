@@ -56,6 +56,7 @@ event:
   announce: '&eThe &b{event}&e event is starting in &7{time}'
   crateInv: '&7SkyWars Crate'
 maps:
+  noArenas: '&cThere currently are no arenas. Create one using ''/swm create <name>'''
   waitingLobbySpawn: '&aThe waiting lobby spawn of map {mapname} has been set to your
     location!'
   setLookDirection: '&aThe look direction spawn of map {mapname} has been set to your

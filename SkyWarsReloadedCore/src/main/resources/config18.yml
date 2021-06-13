@@ -122,6 +122,7 @@ sounds:
   openModifierMenu: SPLASH2
   confirmSelectionSound: VILLAGER_YES
   errorSound: VILLAGER_NO
+  teamJoinSound: NOTE_PLING
 signs:
   enabled: true
   blockoffline: COAL_BLOCK

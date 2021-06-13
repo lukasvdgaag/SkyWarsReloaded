@@ -1,6 +1,7 @@
 package com.walrusone.skywarsreloaded.listeners;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
@@ -24,7 +25,7 @@ public class TauntListener implements org.bukkit.event.Listener {
     public void pressedTauntKey(PlayerToggleSneakEvent e) {
         Player player = e.getPlayer();
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
-        if (gameMap == null || MatchManager.get().getSpectatorMap(player) != null) {
+        if (gameMap == null || gameMap.getMatchState() != MatchState.PLAYING || MatchManager.get().getSpectatorMap(player) != null) {
             return;
         }
         String uuid = e.getPlayer().getUniqueId().toString();

@@ -1,5 +1,7 @@
 #version 5.5.1 - BETA #7
-Fixed inventory pre-game backup throwing ClassCastException,
+Added a new message for /swr list that displays if no maps were found.
+Fixed inventory pre-game backup throwing ClassCastException
+Fixed taunts still working when in the waiting room.
 
 # version 5.5.1 - BETA #6
 Added async update checker on join
@@ -8,7 +10,7 @@ Added ability to register map from console
 Added ability to create parties without specifying a name
 Added feature for maps auto-pick on server start for in bungee mode
 Added sanity check for map ids
-Fixed ClassCastException in 1.8.8 servers
+Fixed ClassCastException in 1.8.8 serverst
 Fixed SocketException if server is restarted while receiving ping
 Fixed NullPointerException when executing eco actions
 Fixed holograms not loading data on start if sign leaderboards are disabled

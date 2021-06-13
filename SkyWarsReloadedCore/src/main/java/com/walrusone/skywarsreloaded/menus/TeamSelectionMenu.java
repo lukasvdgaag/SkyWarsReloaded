@@ -14,6 +14,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -186,7 +187,6 @@ public class TeamSelectionMenu {
                         modifierVote = pc.getVote("modifier");
                         healthVote = pc.getVote("health");
                         pc.reset();
-                        tc.getDead().remove(player.getUniqueId());
                     }
 
                     tCard.sendReservation(player, PlayerStat.getPlayerStats(player));
@@ -210,6 +210,7 @@ public class TeamSelectionMenu {
                     Bukkit.getPluginManager().callEvent(new SkyWarsSelectTeamEvent(player, gMap, tCard));
                     // +1 position for index to be human readable
                     player.sendMessage(ChatColor.YELLOW + "You joined team " + (tCard.getPosition()+1));
+                    player.playSound(player.getLocation(), Sound.valueOf(SkyWarsReloaded.getCfg().getTeamJoinSound()), 1, 1);
                     player.closeInventory();
                     SkyWarsReloaded.getIC().getMenu(gMap.getName() + "teamselect").update();
 

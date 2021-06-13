@@ -15,12 +15,12 @@ import org.bukkit.block.data.type.WallSign;
 import org.bukkit.material.Directional;
 import org.bukkit.material.MaterialData;
 
-public class SWRSign163 implements SWRSign {
+public class SWRSign171 implements SWRSign {
 
     private String gameName;
     private Location location;
 
-    public SWRSign163(String name, Location location) {
+    public SWRSign171(String name, Location location) {
         this.gameName = name;
         this.location = location;
     }

@@ -14,6 +14,7 @@ public class PlayerCard {
     private UUID uuid;
     // The index at which the player used for this PlayerCard joined the game
     private int joinIndex;
+    private boolean dead;
 
     private CoordLoc spawn;
 
@@ -35,6 +36,7 @@ public class PlayerCard {
         this.modifier = null;
         this.health = null;
         this.spawn = spawn;
+        this.dead = false;
     }
 
     public void reset() {
@@ -45,6 +47,15 @@ public class PlayerCard {
         this.modifier = null;
         this.uuid = null;
         this.joinIndex = -1;
+        this.dead = false;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
 
     public Player getPlayer() {
