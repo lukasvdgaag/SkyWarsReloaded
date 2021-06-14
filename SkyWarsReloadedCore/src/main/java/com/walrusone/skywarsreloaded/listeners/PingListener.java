@@ -13,7 +13,7 @@ public class PingListener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void onPing(ServerListPingEvent serverListPingEvent) {
-        if (SkyWarsReloaded.getCfg().bungeeMode()) {
+        if (SkyWarsReloaded.getCfg().bungeeMode() && SkyWarsReloaded.getCfg().debugEnabled()) {
             SkyWarsReloaded.get().getLogger().info("Received server list ping from " + serverListPingEvent.getAddress());
         }
         if (SkyWarsReloaded.get().serverLoaded()) {
