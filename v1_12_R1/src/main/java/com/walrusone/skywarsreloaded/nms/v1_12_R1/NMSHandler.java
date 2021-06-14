@@ -7,6 +7,7 @@ import net.minecraft.server.v1_12_R1.*;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_12_R1.PacketPlayOutTitle.EnumTitleAction;
 import org.bukkit.Material;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -93,11 +94,13 @@ public class NMSHandler implements NMS {
         return org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(item).getName();
     }
 
-    public void playGameSound(Location loc, String sound, float volume, float pitch, boolean customSound) {
-        if (customSound) {
-            loc.getWorld().playSound(loc, sound, volume, pitch);
+    public void playGameSound(Location loc, String paramEnumName, String paramCategory, float paramVolume, float paramPitch, boolean paramIsCustom) {
+        if (loc.getWorld() == null) return;
+        SoundCategory soundCateg = paramCategory == null ? SoundCategory.MASTER : SoundCategory.valueOf(paramCategory);
+        if (paramIsCustom) {
+            loc.getWorld().playSound(loc, paramEnumName, soundCateg, paramVolume, paramPitch);
         } else {
-            loc.getWorld().playSound(loc, Sound.valueOf(sound), volume, pitch);
+            loc.getWorld().playSound(loc, Sound.valueOf(paramEnumName), soundCateg, paramVolume, paramPitch);
         }
     }
 

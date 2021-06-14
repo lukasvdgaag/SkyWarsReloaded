@@ -34,7 +34,7 @@ public interface NMS {
 
     String getItemName(ItemStack paramItemStack);
 
-    void playGameSound(Location paramLocation, String paramString, float paramFloat1, float paramFloat2, boolean paramBoolean);
+    void playGameSound(Location paramLocation, String paramEnumName, String paramCategory, float paramVolume, float paramPitch, boolean paramIsCustom);
 
     ItemStack getMainHandItem(Player paramPlayer);
 

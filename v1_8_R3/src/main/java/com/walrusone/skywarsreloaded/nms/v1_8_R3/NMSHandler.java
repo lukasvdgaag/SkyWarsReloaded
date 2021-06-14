@@ -81,9 +81,19 @@ public class NMSHandler implements NMS {
         }
     }
 
-    public void playGameSound(Location loc, String sound, float volume, float pitch, boolean customSound) {
-        if (!customSound) {
-            loc.getWorld().playSound(loc, Sound.valueOf(sound), volume, pitch);
+    public void playGameSound(Location loc, String paramEnumName, String paramCategory, float paramVolume, float paramPitch, boolean paramIsCustom) {
+        paramEnumName = this.getSoundTranslation(paramEnumName);
+        if (!paramIsCustom) {
+            loc.getWorld().playSound(loc, Sound.valueOf(paramEnumName), paramVolume, paramPitch);
+        }
+    }
+
+    private String getSoundTranslation(String paramEnumName) {
+        switch (paramEnumName) {
+            case "ENTITY_PLAYER_DEATH":
+                return "FLESH_HURT";
+            default:
+                return paramEnumName;
         }
     }
 

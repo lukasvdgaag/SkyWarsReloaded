@@ -57,7 +57,7 @@ public class NMSHandler implements NMS {
     }
 
     public FireworkEffect getFireworkEffect(Color one, Color two, Color three, Color four, Color five, FireworkEffect.Type type) {
-        return FireworkEffect.builder().flicker(false).withColor(new Color[]{one, two, three, four}).withFade(five).with(type).trail(true).build();
+        return FireworkEffect.builder().flicker(false).withColor(one, two, three, four).withFade(five).with(type).trail(true).build();
     }
 
     public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
@@ -80,9 +80,19 @@ public class NMSHandler implements NMS {
         }
     }
 
-    public void playGameSound(Location loc, String sound, float volume, float pitch, boolean customSound) {
-        if (!customSound) {
-            loc.getWorld().playSound(loc, Sound.valueOf(sound), volume, pitch);
+    public void playGameSound(Location loc, String paramEnumName, String paramCategory, float paramVolume, float paramPitch, boolean paramIsCustom) {
+        paramEnumName = this.getSoundTranslation(paramEnumName);
+        if (!paramIsCustom) {
+            loc.getWorld().playSound(loc, Sound.valueOf(paramEnumName), paramVolume, paramPitch);
+        }
+    }
+
+    private String getSoundTranslation(String paramEnumName) {
+        switch (paramEnumName) {
+            case "ENTITY_PLAYER_DEATH":
+                return "FLESH_HURT";
+            default:
+                return paramEnumName;
         }
     }
 

@@ -45,7 +45,13 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         if (player.getHealth() - e.getFinalDamage() > 0) return;
 
         // Player fake damage sound if dying
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PLAYER_DEATH, SoundCategory.PLAYERS, 1, 1);
+        SkyWarsReloaded.getNMS().playGameSound(
+                player.getLocation(),
+                "ENTITY_PLAYER_DEATH",
+                "PLAYERS",
+                1,
+                1,
+                false);
 
         // Take into account if the player is holding a totem of undying (1.9+)
         if (e.getCause() != EntityDamageEvent.DamageCause.VOID &&
@@ -55,8 +61,12 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
             System.out.println("is holding: true");
             e.setDamage(player.getHealth() - 1);
             // Apply potion effects (global)
-            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20 * 45, 1, false, true));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 20 * 5, 1, false, true));
+            player.addPotionEffect(
+                    new PotionEffect(
+                            PotionEffectType.REGENERATION, 20 * 45, 1, false, true));
+            player.addPotionEffect(
+                    new PotionEffect(
+                            PotionEffectType.ABSORPTION, 20 * 5, 1, false, true));
             // Show effect on screen, show particles and apply fire resistance in 1.16.2+
             SkyWarsReloaded.getNMS().applyTotemEffect(player);
             System.out.println("effect applied");
@@ -88,7 +98,8 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
             damageCause = e.getCause();
         }
 
-        SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.DEATH, damageCause, true);
+        SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                player, PlayerRemoveReason.DEATH, damageCause, true);
 
         // Reset pickup state as it was before now the the player is either in spectator mode or removed
         player.setCanPickupItems(canPickup);
@@ -144,8 +155,8 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
                         if (player.getLastDamageCause() != null) {
                             damageCause = player.getLastDamageCause().getCause();
                         }
-                        SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.DEATH, damageCause,
-                                true);
+                        SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                                player, PlayerRemoveReason.DEATH, damageCause, true);
                         // MatchManager.get().removeAlivePlayer(e.getPlayer(), damageCause, false, true);
                     }
                 }
