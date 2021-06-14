@@ -276,7 +276,6 @@ public class NMSHandler implements NMS {
 
     @Override
     public boolean isHoldingTotem(Player player) {
-        System.out.println("is holding test");
         return player.getInventory().getItemInMainHand().getType().equals(Material.TOTEM) ||
                 player.getInventory().getItemInOffHand().getType().equals(Material.TOTEM);
     }

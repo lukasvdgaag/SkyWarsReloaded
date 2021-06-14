@@ -70,7 +70,6 @@ public class PlayerManager {
             MatchState mState = gameMap.getMatchState();
             boolean shouldRestorePlayer = true;
             boolean shouldSendToLobby = shouldSendToLobbyIn;
-            System.out.println("1 " + shouldSendToLobby);
             // Player is waiting before game start
             if (mState.equals(MatchState.WAITINGSTART) ||
                     mState.equals(MatchState.WAITINGLOBBY) ||
@@ -113,7 +112,6 @@ public class PlayerManager {
                             "Tried to remove a player from a playing game that was neither a spectator nor an alive player!");
                 }
             }
-            System.out.println("2 " + shouldSendToLobby + " " + shouldRestorePlayer);
             // Should player be restored back to how they were before entering the game
             if (shouldRestorePlayer) {
                 // Restore and delete data (handles scoreboard and pData deletion)

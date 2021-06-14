@@ -125,7 +125,6 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
                     }
                     String lobbyWorldName = spawnLoc.getWorld().getName();
                     boolean shouldSendToLobby = config.bungeeMode() || !lobbyWorldName.equals(toWorldName);
-                    System.out.println("0 " + shouldSendToLobby + " " + lobbyWorldName);
                     SkyWarsReloaded.get().getPlayerManager().removePlayer(
                            player,
                            PlayerRemoveReason.PLAYER_QUIT_GAME,

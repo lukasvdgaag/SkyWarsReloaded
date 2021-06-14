@@ -91,7 +91,7 @@ public class NMSHandler implements NMS {
     private String getSoundTranslation(String paramEnumName) {
         switch (paramEnumName) {
             case "ENTITY_PLAYER_DEATH":
-                return "FLESH_HURT";
+                return "HURT_FLESH";
             default:
                 return paramEnumName;
         }

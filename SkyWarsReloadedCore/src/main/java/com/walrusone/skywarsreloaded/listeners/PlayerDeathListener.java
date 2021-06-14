@@ -58,7 +58,6 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
                 e.getCause() != EntityDamageEvent.DamageCause.CUSTOM &&
                 SkyWarsReloaded.getNMS().isHoldingTotem(player))
         {
-            System.out.println("is holding: true");
             e.setDamage(player.getHealth() - 1);
             // Apply potion effects (global)
             player.addPotionEffect(
@@ -69,10 +68,8 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
                             PotionEffectType.ABSORPTION, 20 * 5, 1, false, true));
             // Show effect on screen, show particles and apply fire resistance in 1.16.2+
             SkyWarsReloaded.getNMS().applyTotemEffect(player);
-            System.out.println("effect applied");
             return;
         }
-        System.out.println("is holding test post");
 
         // Drop player items
         boolean canPickup = player.getCanPickupItems();
