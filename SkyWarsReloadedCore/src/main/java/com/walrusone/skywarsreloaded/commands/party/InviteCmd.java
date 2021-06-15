@@ -6,6 +6,7 @@ import com.walrusone.skywarsreloaded.utilities.Party;
 import me.rayzr522.jsonmessage.JSONMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class InviteCmd extends BaseCmd {
@@ -17,7 +18,7 @@ public class InviteCmd extends BaseCmd {
         argLength = 2;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         Party party = Party.getParty(player);
         if (party == null) {
             player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));

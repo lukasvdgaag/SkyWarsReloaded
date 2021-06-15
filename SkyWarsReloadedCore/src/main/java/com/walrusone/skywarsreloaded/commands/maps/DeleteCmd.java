@@ -2,6 +2,8 @@ package com.walrusone.skywarsreloaded.commands.maps;
 
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class DeleteCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public DeleteCmd(String t) {
@@ -12,7 +14,7 @@ public class DeleteCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         argLength = 2;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
         GameMap map = GameMap.getMap(worldName);
         if (map != null) {

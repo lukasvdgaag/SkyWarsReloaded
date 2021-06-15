@@ -3,6 +3,8 @@ package com.walrusone.skywarsreloaded.commands.maps;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class ListCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         argLength = 1;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         sender.sendMessage(new Messaging.MessageFormatter().format("maps.listHeader"));
         List<GameMap> maps = GameMap.getMapsCopy();
         if (maps.isEmpty()) {

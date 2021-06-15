@@ -7,6 +7,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class CreateCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
@@ -18,7 +20,7 @@ public class CreateCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         argLength = 2;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         if (SkyWarsReloaded.getCfg().getSpawn() != null) {
             String worldName = args[1];
             Environment environment = Environment.NORMAL;

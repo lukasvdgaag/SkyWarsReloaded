@@ -8,6 +8,7 @@ import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class DebugCmd extends BaseCmd {
@@ -20,7 +21,7 @@ public class DebugCmd extends BaseCmd {
     }
 
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
         GameMap gMap = GameMap.getMap(worldName);
         if (worldName.equalsIgnoreCase("null")) {

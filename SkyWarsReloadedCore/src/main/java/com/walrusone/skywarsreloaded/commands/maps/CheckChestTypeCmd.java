@@ -5,6 +5,8 @@ import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class CheckChestTypeCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public CheckChestTypeCmd(String t) {
@@ -15,7 +17,7 @@ public class CheckChestTypeCmd extends com.walrusone.skywarsreloaded.commands.Ba
         argLength = 2;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
         GameMap map = GameMap.getMap(worldName);
 

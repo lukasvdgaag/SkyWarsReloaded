@@ -2,6 +2,8 @@ package com.walrusone.skywarsreloaded.commands.party;
 
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class CreateCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public CreateCmd(String t) {
@@ -12,7 +14,7 @@ public class CreateCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         argLength = 1;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String partyName;
         if (args.length > 1) {
             partyName = args[1];

@@ -5,6 +5,7 @@ import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SWStatsCmd extends BaseCmd {
@@ -16,7 +17,7 @@ public class SWStatsCmd extends BaseCmd {
         argLength = 1;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         Player statPlayer = player;
         if (args.length > 1) {
             for (Player playerMatch : Bukkit.getOnlinePlayers()) {

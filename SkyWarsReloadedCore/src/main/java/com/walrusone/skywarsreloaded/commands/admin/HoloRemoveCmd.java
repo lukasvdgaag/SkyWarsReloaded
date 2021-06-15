@@ -2,6 +2,8 @@ package com.walrusone.skywarsreloaded.commands.admin;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class HoloRemoveCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public HoloRemoveCmd(String t) {
@@ -12,7 +14,7 @@ public class HoloRemoveCmd extends com.walrusone.skywarsreloaded.commands.BaseCm
         argLength = 1;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
             boolean result = SkyWarsReloaded.getHoloManager().removeHologram(player.getLocation());
             if (result) {

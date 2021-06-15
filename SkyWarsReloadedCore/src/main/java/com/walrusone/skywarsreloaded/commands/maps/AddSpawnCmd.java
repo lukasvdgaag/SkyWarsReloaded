@@ -9,6 +9,8 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class AddSpawnCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public AddSpawnCmd(String t) {
@@ -20,7 +22,7 @@ public class AddSpawnCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd 
         maxArgs = 3;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         if (SkyWarsReloaded.getCfg().getSpawn() != null) {
             if (args.length < 2) { return false; }
 

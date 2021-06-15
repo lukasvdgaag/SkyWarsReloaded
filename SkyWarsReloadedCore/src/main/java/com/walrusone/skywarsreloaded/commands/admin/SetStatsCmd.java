@@ -9,6 +9,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SetStatsCmd extends BaseCmd {
@@ -20,7 +21,7 @@ public class SetStatsCmd extends BaseCmd {
         argLength = 5;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         Player swPlayer = null;
         for (Player playerMatch : org.bukkit.Bukkit.getOnlinePlayers()) {
             if (ChatColor.stripColor(playerMatch.getName()).equalsIgnoreCase(ChatColor.stripColor(args[1]))) {

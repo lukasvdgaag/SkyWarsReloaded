@@ -4,6 +4,8 @@ import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.StringJoiner;
 import java.util.UUID;
@@ -17,7 +19,7 @@ public class InfoCmd extends BaseCmd {
         argLength = 1;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         Party party = Party.getParty(player);
         if (party == null) {
             player.sendMessage(new Messaging.MessageFormatter().format("party.notinaparty"));

@@ -6,6 +6,8 @@ import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.StringJoiner;
 
@@ -20,7 +22,7 @@ public class HoloAddCmd extends BaseCmd {
     }
 
     @Override
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
             if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
                 LeaderType type = LeaderType.matchType(args[1].toUpperCase());
