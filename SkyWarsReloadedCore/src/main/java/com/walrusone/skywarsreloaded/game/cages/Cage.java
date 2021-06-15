@@ -137,6 +137,7 @@ public abstract class Cage {
         }
         for (TeamCard tCard : gMap.getTeamCards()) {
             Bukkit.getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {
+                if (!SkyWarsReloaded.get().isEnabled()) return;
                 removeSpawnHousing(gMap, tCard, true);
             }, 10L);
 
@@ -147,6 +148,11 @@ public abstract class Cage {
     public void removeSpawnHousing(GameMap gMap, CoordLoc loc1) {
         if (loc1 == null) return;
         World world = gMap.getCurrentWorld();
+        if (world == null) {
+            SkyWarsReloaded.get().getLogger().severe("The world " + gMap.getName() + " is not loaded! Failed to remove spawn housing.");
+            return;
+        }
+
         int x = loc1.getX();
         int y = loc1.getY();
         int z = loc1.getZ();
