@@ -81,6 +81,7 @@ chat:
 parties:
   enabled: true
   enablePartyAndFriendsSupport: false
+  enablePartiesAlessioDPSupport: false
   maxPartySize: 4
   lobbyWorlds: []
 holograms: 
