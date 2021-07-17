@@ -43,7 +43,7 @@ public class PartyCmdManager implements CommandExecutor, SWRCmdManagerAPI {
         int count = 0;
         s.sendMessage(new Messaging.MessageFormatter().format("helpList.header"));
         for (BaseCmd cmd : cmds) {
-            if (Util.get().hp(cmd.getType(), s, cmd.cmdName)) {
+            if (Util.get().hasPerm(cmd.getType(), s, cmd.cmdName)) {
                 count++;
                 if (count == 1) {
                     s.sendMessage(" ");

@@ -45,7 +45,7 @@ public class KitCmdManager implements CommandExecutor, SWRCmdManagerAPI {
     private void sendHelp(List<BaseCmd> cmds, CommandSender s) {
         int count = 0;
         for (BaseCmd cmd : cmds) {
-            if (Util.get().hp(cmd.getType(), s, cmd.cmdName)) {
+            if (Util.get().hasPerm(cmd.getType(), s, cmd.cmdName)) {
                 count++;
                 if (count == 1) {
                     s.sendMessage(" ");

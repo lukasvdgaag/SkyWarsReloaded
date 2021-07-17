@@ -25,7 +25,7 @@ public class ReloadCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         SkyWarsReloaded.get().onDisable();
         SkyWarsReloaded.get().load();
 
-        if (SkyWarsReloaded.getCfg().bungeeMode()) {
+        if (SkyWarsReloaded.getCfg().bungeeMode() && SkyWarsReloaded.getCfg().isLobbyServer()) {
             SkyWarsReloaded.get().prepareServers();
 
             SWRServer.updateServerSigns();

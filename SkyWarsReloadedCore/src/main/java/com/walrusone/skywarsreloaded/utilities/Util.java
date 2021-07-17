@@ -55,7 +55,7 @@ public class Util {
         return rand.nextInt((max - min) + 1) + min;
     }
 
-    public boolean hp(String t, CommandSender sender, String s) {
+    public boolean hasPerm(String t, CommandSender sender, String s) {
         if (t.equalsIgnoreCase("sw")) {
             return sender.hasPermission("sw." + s);
         } else if (t.equalsIgnoreCase("kit")) {

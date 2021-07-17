@@ -12,6 +12,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -293,7 +294,11 @@ public class SWRServer {
             }
             if (sign != null && sign.getBlock() != null) {
                 Block b = sign.getBlock();
-                org.bukkit.material.Sign metaSign = (org.bukkit.material.Sign) b.getState().getData();
+                MaterialData metaBlock = b.getState().getData();
+                if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                    SkyWarsReloaded.get().getLogger().info("Sign at: " + b.getX() + " " + b.getY() + " " + b.getZ() + ", class: " + metaBlock.getClass());
+                }
+                org.bukkit.material.Sign metaSign = (org.bukkit.material.Sign) metaBlock;
                 BlockFace attachedFace = metaSign.getAttachedFace();
                 if (attachedFace == null) {
                     if (metaSign.isWallSign()) attachedFace = BlockFace.SOUTH;

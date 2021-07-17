@@ -30,7 +30,7 @@ public abstract class BaseCmd {
         }
 
 
-        if (!Util.get().hp(type, sender, cmdName)) {
+        if (!Util.get().hasPerm(type, sender, cmdName)) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.cmd-no-perm"));
         } else if ((maxArgs == -1 && argLength > args.length) || (maxArgs!=-1 && args.length > maxArgs)) {
             sender.sendMessage(ChatColor.DARK_RED + "Wrong usage: " + new Messaging.MessageFormatter().format("helpList." + Util.get().getMessageKey(type) + "." + cmdName));
