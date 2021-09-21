@@ -1,11 +1,15 @@
-package net.gcnt.skywarsreloaded.data;
+package net.gcnt.skywarsreloaded.wrapper;
+
+import net.gcnt.skywarsreloaded.data.player.AbstractSWPlayerData;
 
 import java.util.UUID;
 
-public abstract class SWPlayer {
+public abstract class AbstractSWPlayer implements SWPlayer {
 
     private final UUID uuid;
     private boolean online;
+
+    // Stats
     private int soloWins;
     private int soloKills;
     private int soloGames;
@@ -13,6 +17,7 @@ public abstract class SWPlayer {
     private int teamKills;
     private int teamGames;
 
+    // Cosmetics
     private String selectedSoloCage;
     private String selectedTeamCage;
     private String selectedParticle;
@@ -20,7 +25,7 @@ public abstract class SWPlayer {
     private String selectedWinEffect;
     private String selectedProjectileEffect;
 
-    public SWPlayer(UUID uuid, boolean online) {
+    public AbstractSWPlayer(UUID uuid, boolean online) {
         this.uuid = uuid;
         this.online = online;
 
@@ -111,5 +116,10 @@ public abstract class SWPlayer {
 
     public String getSelectedProjectileEffect() {
         return selectedProjectileEffect;
+    }
+
+    @Override
+    public AbstractSWPlayerData getPlayerData() {
+        return null;
     }
 }

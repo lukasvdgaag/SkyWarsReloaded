@@ -1,5 +1,5 @@
 name: SkyWarsReloaded
-main: net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloadedMain
+main: net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloadedPlugin
 version: 1.0.0
 author: GaagjesCraft Network Team (GCNT)
 description: Bukkit's best Skywars plugin.

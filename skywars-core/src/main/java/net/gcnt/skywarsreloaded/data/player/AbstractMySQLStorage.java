@@ -1,33 +1,33 @@
-package net.gcnt.skywarsreloaded.bukkit.data;
+package net.gcnt.skywarsreloaded.data.player;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
-import net.gcnt.skywarsreloaded.data.SWPlayer;
-import net.gcnt.skywarsreloaded.data.Storage;
-import org.bukkit.Bukkit;
+import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
+import net.gcnt.skywarsreloaded.data.config.AbstractYAMLConfig;
+import net.gcnt.skywarsreloaded.wrapper.AbstractSWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class MySQLStorage implements Storage {
+public abstract class AbstractMySQLStorage implements MySQLStorage {
 
-    private final BukkitSkyWarsReloaded plugin;
+    private final AbstractSkyWarsReloaded plugin;
     private HikariDataSource ds;
 
-    public MySQLStorage(BukkitSkyWarsReloaded plugin) {
+    public AbstractMySQLStorage(AbstractSkyWarsReloaded plugin) {
         this.plugin = plugin;
     }
 
-    private Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         return ds.getConnection();
     }
 
     @Override
     public void setup() {
-        BukkitYAMLConfig yamlConfig = (BukkitYAMLConfig) plugin.getYAMLManager().getFile("config.yml");
+        AbstractYAMLConfig yamlConfig = (AbstractYAMLConfig) plugin.getYAMLManager().getConfig("config");
         if (yamlConfig == null)
             throw new NullPointerException("Cannot set up database connection because config file is null. Unable to retrieve database info from config.yml.");
 
@@ -74,18 +74,18 @@ public class MySQLStorage implements Storage {
             plugin.getLogger().severe("Here's the mysql URI we used: " + uri);
             plugin.getLogger().severe("Disabling the plugin to prevent further complications...");
             e.printStackTrace();
-            Bukkit.getPluginManager().disablePlugin(plugin);
+            plugin.disableSkyWars();
         }
     }
 
     @Override
-    public void loadData(SWPlayer player) {
+    public void loadData(AbstractSWPlayer player) {
         try (Connection conn = getConnection()) {
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM `sw_player_data` WHERE `uuid`=?");
             ps.setString(1, player.getUuid().toString());
             ResultSet res = ps.executeQuery();
 
-            player.insertData(
+            this.plugin.getPlayerDataManager().createSWPlayerDataInstance().initData(
                     res.getInt("solo_wins"),
                     res.getInt("solo_kills"),
                     res.getInt("solo_games"),
@@ -107,7 +107,12 @@ public class MySQLStorage implements Storage {
     }
 
     @Override
-    public void set(String property, Object value, SWPlayer player) {
+    public void saveData() {
+        // TODO
+    }
+
+    @Override
+    public void setProperty(String property, Object value, SWPlayer player) {
         try (Connection conn = getConnection()) {
             PreparedStatement ps = conn.prepareStatement("UPDATE `sw_player_data` SET ?=? WHERE `uuid`=?");
             ps.setString(1, property);

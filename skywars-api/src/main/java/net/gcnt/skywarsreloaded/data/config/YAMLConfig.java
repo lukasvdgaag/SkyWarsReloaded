@@ -1,14 +1,17 @@
-package net.gcnt.skywarsreloaded.data;
+package net.gcnt.skywarsreloaded.data.config;
 
 import java.io.File;
 import java.util.List;
 
 public interface YAMLConfig {
 
+    String getId();
 
-    String getName();
+    String getDirectoryName();
 
-    String getDirectory();
+    String getFileName();
+
+    File getDirectory();
 
     File getFile();
 

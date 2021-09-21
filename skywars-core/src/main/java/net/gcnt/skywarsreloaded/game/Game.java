@@ -1,9 +1,8 @@
 package net.gcnt.skywarsreloaded.game;
 
-import net.gcnt.skywarsreloaded.data.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.AbstractSWPlayer;
 import net.gcnt.skywarsreloaded.utils.Coord;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface Game {
@@ -19,7 +18,7 @@ public interface Game {
      *
      * @param players All players to add to the game.
      */
-    void addPlayers(SWPlayer... players);
+    void addPlayers(AbstractSWPlayer... players);
 
     /**
      * Remove a certain player from the game.
@@ -28,28 +27,28 @@ public interface Game {
      *
      * @param player Player to remove from the game.
      */
-    void removePlayer(SWPlayer player);
+    void removePlayer(AbstractSWPlayer player);
 
     /**
      * Get a list of all players.
      *
      * @return List of all players that joined the game.
      */
-    List<? extends SWPlayer> getPlayers();
+    List<? extends AbstractSWPlayer> getPlayers();
 
     /**
      * Get a list of alive players.
      *
      * @return List of alive players.
      */
-    List<SWPlayer> getAlivePlayers();
+    List<AbstractSWPlayer> getAlivePlayers();
 
     /**
      * Get a list of players that are spectating the game.
      *
      * @return List of spectators.
      */
-    List<SWPlayer> getSpectators();
+    List<AbstractSWPlayer> getSpectators();
 
     /**
      * Get the status of the game.

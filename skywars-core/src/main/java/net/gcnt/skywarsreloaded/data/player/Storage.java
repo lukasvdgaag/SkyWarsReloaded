@@ -1,4 +1,6 @@
-package net.gcnt.skywarsreloaded.data;
+package net.gcnt.skywarsreloaded.data.player;
+
+import net.gcnt.skywarsreloaded.wrapper.AbstractSWPlayer;
 
 public interface Storage { // this needs an interface?
 
@@ -13,7 +15,7 @@ public interface Storage { // this needs an interface?
      *
      * @param player Player to load the data of.
      */
-    void loadData(SWPlayer player);
+    void loadData(AbstractSWPlayer player);
 
     /**
      * Updates a specific property in the selected storage method.
@@ -21,7 +23,7 @@ public interface Storage { // this needs an interface?
      * @param property Name of the property.
      * @param value    Value of the property.
      */
-    void set(String property, Object value, SWPlayer player);
+    void set(String property, Object value, AbstractSWPlayer player);
 
 
 }

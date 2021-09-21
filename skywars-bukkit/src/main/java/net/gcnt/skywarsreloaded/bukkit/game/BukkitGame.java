@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.bukkit.game;
 
-import net.gcnt.skywarsreloaded.bukkit.data.BukkitPlayer;
-import net.gcnt.skywarsreloaded.data.SWPlayer;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.AbstractSWPlayer;
 import net.gcnt.skywarsreloaded.game.Game;
 import net.gcnt.skywarsreloaded.game.GameStatus;
 import net.gcnt.skywarsreloaded.utils.Coord;
@@ -13,7 +13,7 @@ public class BukkitGame implements Game {
     private final String name;
     private final int maxPlayers;
     private String creator;
-    private List<BukkitPlayer> players;
+    private List<BukkitSWPlayer> players;
     private GameStatus status;
     private int timer;
     private Coord spectateSpawn;
@@ -41,27 +41,27 @@ public class BukkitGame implements Game {
     }
 
     @Override
-    public void addPlayers(SWPlayer... players) {
+    public void addPlayers(AbstractSWPlayer... players) {
         // todo this
     }
 
     @Override
-    public void removePlayer(SWPlayer player) {
+    public void removePlayer(AbstractSWPlayer player) {
         // todo this
     }
 
     @Override
-    public List<? extends SWPlayer> getPlayers() {
+    public List<? extends AbstractSWPlayer> getPlayers() {
         return players;
     }
 
     @Override
-    public List<SWPlayer> getAlivePlayers() {
+    public List<AbstractSWPlayer> getAlivePlayers() {
         return null;
     }
 
     @Override
-    public List<SWPlayer> getSpectators() {
+    public List<AbstractSWPlayer> getSpectators() {
         return null;
     }
 

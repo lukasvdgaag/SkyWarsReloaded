@@ -1,32 +1,51 @@
 package net.gcnt.skywarsreloaded.bukkit;
 
-import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.bukkit.data.BukkitYAMLConfig;
-import net.gcnt.skywarsreloaded.data.Storage;
-import net.gcnt.skywarsreloaded.data.YAMLManager;
-import org.bukkit.plugin.java.JavaPlugin;
+import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.data.config.BukkitYAMLManager;
+import net.gcnt.skywarsreloaded.bukkit.data.player.BukkitSWPlayerDataManager;
+import net.gcnt.skywarsreloaded.data.player.SWPlayerDataManager;
 
-public class BukkitSkyWarsReloaded extends JavaPlugin implements SkyWarsReloaded {
+import java.io.File;
+import java.util.logging.Logger;
 
-    private YAMLManager yamlManager;
-    private Storage storage;
+public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
     @Override
     public void onEnable() {
         super.onEnable();
+    }
 
-        this.yamlManager = new YAMLManager(this);
-        getYAMLManager().loadFile("config.yml", new BukkitYAMLConfig(this, null, "config.yml"));
-        // todo storage based on config
+    // Internal Utils
+
+    @Override
+    public BukkitYAMLManager createYAMLManager() {
+        return new BukkitYAMLManager(this);
     }
 
     @Override
-    public YAMLManager getYAMLManager() {
-        return yamlManager;
+    public BukkitSWPlayerDataManager createPlayerDataManager() {
+        return new BukkitSWPlayerDataManager(this);
+    }
+
+    // Getters
+
+    @Override
+    public File getDataFolder() {
+        return null;
     }
 
     @Override
-    public Storage getStorage() {
-        return storage;
+    public SWPlayerDataManager getPlayerDataManager() {
+        return null;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return null;
+    }
+
+    @Override
+    public void disableSkyWars() {
+
     }
 }
