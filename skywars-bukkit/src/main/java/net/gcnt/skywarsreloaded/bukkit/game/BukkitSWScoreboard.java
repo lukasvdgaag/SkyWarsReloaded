@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.bukkit.game;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWPlayer;
-import net.gcnt.skywarsreloaded.game.AdditionsBoard;
+import net.gcnt.skywarsreloaded.game.AbstractSWScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -13,7 +13,7 @@ import org.bukkit.scoreboard.Team;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class BukkitAdditionsBoard implements AdditionsBoard {
+public class BukkitSWScoreboard extends AbstractSWScoreboard {
 
     private final BukkitSWPlayer player;
     private final Objective objective;
@@ -21,7 +21,7 @@ public class BukkitAdditionsBoard implements AdditionsBoard {
     private final HashMap<Integer, String> cache = new HashMap<>();
     public Scoreboard board;
 
-    public BukkitAdditionsBoard(BukkitSWPlayer player, int linecount) {
+    public BukkitSWScoreboard(BukkitSWPlayer player, int linecount) {
         this.player = player;
         this.linecount = linecount;
         this.board = Bukkit.getScoreboardManager().getNewScoreboard();

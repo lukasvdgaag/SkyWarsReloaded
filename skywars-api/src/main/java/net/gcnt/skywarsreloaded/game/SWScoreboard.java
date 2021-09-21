@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.game;
 
 import java.util.ArrayList;
 
-public interface AdditionsBoard {
+public interface SWScoreboard {
 
     void setTitle(String title);
 
