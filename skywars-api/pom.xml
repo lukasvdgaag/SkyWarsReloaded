@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>skywars-core</artifactId>
+    <artifactId>skywars-api</artifactId>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
@@ -17,11 +17,7 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>net.gcnt</groupId>
-            <artifactId>skywars-api</artifactId>
-            <version>${revision}</version>
-        </dependency>
+
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
