@@ -13,6 +13,7 @@ public class SkyWarsReloaded extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // test push
         inst = this;
     }
 }
