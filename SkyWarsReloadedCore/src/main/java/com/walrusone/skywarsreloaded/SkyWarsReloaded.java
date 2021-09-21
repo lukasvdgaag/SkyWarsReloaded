@@ -24,9 +24,7 @@ import com.walrusone.skywarsreloaded.managers.worlds.WorldManager;
 import com.walrusone.skywarsreloaded.menus.*;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.nms.NMS;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.SWRServer;
-import com.walrusone.skywarsreloaded.utilities.Util;
+import com.walrusone.skywarsreloaded.utilities.*;
 import com.walrusone.skywarsreloaded.utilities.holograms.HoloDisUtil;
 import com.walrusone.skywarsreloaded.utilities.holograms.HologramsUtil;
 import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPing;
@@ -240,6 +238,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         if (getCfg().bungeeMode() && getCfg().isUsePartyAndFriends()) {
             // Currently disabled due to inability to access bungeecord PAF from spigot
             // this.getServer().getPluginManager().registerEvents(new PartyAndFriendsHook(), this);
+        }
+        // PartiesAlessioDP
+        if(Bukkit.getPluginManager().isPluginEnabled("Parties") && getCfg().isUsePartiesAlessioDP()){
+            this.getServer().getPluginManager().registerEvents(new PartiesAlessioDPHook(), this);
         }
         // SLIME WORLD MANAGER
         if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldManager") && getCfg().isUseSlimeWorldManager()) {
