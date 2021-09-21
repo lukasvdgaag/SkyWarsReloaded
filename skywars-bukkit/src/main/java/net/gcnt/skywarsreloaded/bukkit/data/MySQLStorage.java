@@ -113,10 +113,10 @@ public class MySQLStorage implements Storage {
             ps.setString(1, property);
 
             if (value instanceof Integer) ps.setInt(2, (int) value);
-            else ps.setString(2, value.toString());
+            else ps.setString(2, value.toString());            // ?todo add possible other types of data.
+
 
             ps.setString(3, player.getUuid().toString());
-            // ?todo add possible other types of data.
 
             ps.executeUpdate();
             ps.close();
