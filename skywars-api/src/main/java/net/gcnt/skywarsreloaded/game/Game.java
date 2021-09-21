@@ -1,9 +1,8 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.data.SWPlayer;
-import net.gcnt.skywarsreloaded.utils.Coord;
+import net.gcnt.skywarsreloaded.utils.ICoord;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface Game {
@@ -78,13 +77,13 @@ public interface Game {
 
     int setTimer();
 
-    Coord getSpectateSpawn();
+    ICoord getSpectateSpawn();
 
-    void setSpectateSpawn(Coord loc);
+    void setSpectateSpawn(ICoord loc);
 
-    Coord getWaitingLobbySpawn();
+    ICoord getWaitingLobbySpawn();
 
-    void setWaitingLobbySpawn(Coord loc);
+    void setWaitingLobbySpawn(ICoord loc);
 
     void disable();
 
@@ -94,11 +93,11 @@ public interface Game {
 
     void reset();
 
-    void addChest(Coord loc);
+    void addChest(ICoord loc);
 
-    void removeChest(Coord loc);
+    void removeChest(ICoord loc);
 
-    List<Coord> getChests();
+    List<ICoord> getChests();
 
 
 }

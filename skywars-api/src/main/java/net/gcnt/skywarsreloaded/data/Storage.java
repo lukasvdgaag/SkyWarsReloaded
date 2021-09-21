@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.data;
 
-public interface Storage { // this needs an interface?
+public interface Storage {
 
     /**
      * Will set up the requirements for the storage to function properly.
