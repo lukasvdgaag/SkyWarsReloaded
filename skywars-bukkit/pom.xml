@@ -64,6 +64,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>net.gcnt</groupId>
+            <artifactId>skywars-core</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>1.12.2</version>

@@ -1,4 +1,18 @@
 package net.gcnt.skywarsreloaded.bukkit;
 
-public class SkyWarsReloaded {
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class SkyWarsReloaded extends JavaPlugin {
+
+    private static SkyWarsReloaded inst;
+
+    public static SkyWarsReloaded get() {
+        return inst;
+    }
+
+
+    @Override
+    public void onEnable() {
+        inst = this;
+    }
 }
