@@ -106,12 +106,10 @@ public abstract class AbstractMySQLStorage implements MySQLStorage {
         }
     }
 
-    @Override
     public void saveData() {
         // TODO
     }
 
-    @Override
     public void setProperty(String property, Object value, SWPlayer player) {
         try (Connection conn = getConnection()) {
             PreparedStatement ps = conn.prepareStatement("UPDATE `sw_player_data` SET ?=? WHERE `uuid`=?");

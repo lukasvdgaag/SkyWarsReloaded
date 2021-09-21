@@ -10,7 +10,7 @@ public class BukkitYAMLManager extends AbstractYAMLManager {
         super(plugin);
     }
 
-    public YAMLConfig createConfigInstance(String id, String directory, String fileName) {
+    public BukkitYAMLConfig createConfigInstance(String id, String directory, String fileName) {
         return new BukkitYAMLConfig(this.getSkyWars(), id, directory, fileName);
     }
 }

@@ -10,7 +10,7 @@ public abstract class AbstractYAMLManager implements YAMLManager {
 
     private final AbstractSkyWarsReloaded skyWars;
 
-    private final HashMap<String, YAMLConfig> files;
+    private final HashMap<String, AbstractYAMLConfig> files;
 
     public AbstractYAMLManager(AbstractSkyWarsReloaded skyWarsIn) {
         this.skyWars = skyWarsIn;
@@ -24,12 +24,12 @@ public abstract class AbstractYAMLManager implements YAMLManager {
     }
 
     public YAMLConfig loadConfig(String id, String directory, String fileName) {
-        YAMLConfig config = this.createConfigInstance(id, directory, fileName);
+        AbstractYAMLConfig config = this.createConfigInstance(id, directory, fileName);
         this.files.put(id, config);
         return config;
     }
 
-    public abstract YAMLConfig createConfigInstance(String id, String directory, String fileName);
+    public abstract AbstractYAMLConfig createConfigInstance(String id, String directory, String fileName);
 
     // Getters
 
