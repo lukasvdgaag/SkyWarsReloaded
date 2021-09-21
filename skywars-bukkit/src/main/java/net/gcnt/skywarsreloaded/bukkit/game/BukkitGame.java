@@ -3,7 +3,7 @@ package net.gcnt.skywarsreloaded.bukkit.game;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.AbstractSWPlayer;
 import net.gcnt.skywarsreloaded.game.Game;
-import net.gcnt.skywarsreloaded.game.GameStatus;
+import net.gcnt.skywarsreloaded.game.Game;
 import net.gcnt.skywarsreloaded.utils.Coord;
 
 import java.util.List;
