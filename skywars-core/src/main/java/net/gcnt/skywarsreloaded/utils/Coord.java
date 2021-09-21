@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.utils;
 
-public record Coord(int x, int y, int z) {
+public final record Coord(int x, int y, int z) {
 
     /**
      * Get a Coord loc from a formatted input string (format: x:y:z)

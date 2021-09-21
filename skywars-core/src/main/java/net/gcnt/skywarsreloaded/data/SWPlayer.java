@@ -4,9 +4,8 @@ import java.util.UUID;
 
 public abstract class SWPlayer {
 
-    private boolean online;
     private final UUID uuid;
-
+    private boolean online;
     private int soloWins;
     private int soloKills;
     private int soloGames;
@@ -34,16 +33,83 @@ public abstract class SWPlayer {
                 = null;
     }
 
+    public void insertData(int soloWins, int soloKills, int soloGames, int teamWins, int teamKills, int teamGames, String selectedSoloCage, String selectedTeamCage,
+                           String selectedParticle, String selectedKillEffect, String selectedWinEffect, String selectedProjectileEffect) {
+        this.soloWins = soloWins;
+        this.soloKills = soloKills;
+        this.soloGames = soloGames;
+        this.teamWins = teamWins;
+        this.teamKills = teamKills;
+        this.teamGames = teamGames;
+        this.selectedSoloCage = selectedSoloCage;
+        this.selectedTeamCage = selectedTeamCage;
+        this.selectedParticle = selectedParticle;
+        this.selectedKillEffect = selectedKillEffect;
+        this.selectedWinEffect = selectedWinEffect;
+        this.selectedProjectileEffect = selectedProjectileEffect;
+    }
+
+    /*
+    Get methods
+     */
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public boolean isOnline() {
+        return online;
     }
 
     public void setOnline(boolean online) {
         this.online = online;
     }
 
-    public boolean isOnline() {
-        return online;
+    public int getSoloWins() {
+        return soloWins;
+    }
+
+    public int getSoloKills() {
+        return soloKills;
+    }
+
+    public int getSoloGames() {
+        return soloGames;
+    }
+
+    public int getTeamWins() {
+        return teamWins;
+    }
+
+    public int getTeamKills() {
+        return teamKills;
+    }
+
+    public int getTeamGames() {
+        return teamGames;
+    }
+
+    public String getSelectedSoloCage() {
+        return selectedSoloCage;
+    }
+
+    public String getSelectedTeamCage() {
+        return selectedTeamCage;
+    }
+
+    public String getSelectedParticle() {
+        return selectedParticle;
+    }
+
+    public String getSelectedKillEffect() {
+        return selectedKillEffect;
+    }
+
+    public String getSelectedWinEffect() {
+        return selectedWinEffect;
+    }
+
+    public String getSelectedProjectileEffect() {
+        return selectedProjectileEffect;
     }
 }

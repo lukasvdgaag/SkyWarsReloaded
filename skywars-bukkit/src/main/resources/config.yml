@@ -1,0 +1,7 @@
+storage:
+  type: MySQL
+  hostname: localhost
+  username: user
+  password: pass
+  database: skywarsreloaded
+  use-ssl: true

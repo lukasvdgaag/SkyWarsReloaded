@@ -9,13 +9,19 @@ public interface Storage { // this needs an interface?
 
 
     /**
-     * Loads all data from storage (MySQL/MongoDB/YAML) into cache.
+     * Loads all data of a player from storage (MySQL/MongoDB/YAML) into cache.
+     *
+     * @param player Player to load the data of.
      */
     void loadData(SWPlayer player);
 
     /**
-     * Saves all cache data to storage (MySQL/MongoDB/YAML).
+     * Updates a specific property in the selected storage method.
+     *
+     * @param property Name of the property.
+     * @param value    Value of the property.
      */
-    void saveData();
+    void set(String property, Object value, SWPlayer player);
+
 
 }
