@@ -23,6 +23,11 @@
             <artifactId>HikariCP</artifactId>
             <version>4.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>net.gcnt</groupId>
+            <artifactId>skywars-core</artifactId>
+            <version>6.0.0</version>
+        </dependency>
     </dependencies>
 
 </project>
