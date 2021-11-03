@@ -1,7 +1,6 @@
 package net.gcnt.skywarsreloaded.bukkit.game;
 
 import net.gcnt.skywarsreloaded.game.Game;
-import net.gcnt.skywarsreloaded.game.Team;
 import net.gcnt.skywarsreloaded.utils.Coord;
 
 import java.util.List;
@@ -13,7 +12,6 @@ public class BukkitGame implements Game {
     private Coord spectateSpawn;
     private Coord lobbySpawn;
     private List<Coord> chests;
-    private List<Team> teams;
 
     public BukkitGame(String name) {
         this.name = name;
@@ -32,11 +30,6 @@ public class BukkitGame implements Game {
     @Override
     public int getTeamSize() {
         return 0;
-    }
-
-    @Override
-    public List<Team> getTeams() {
-        return teams;
     }
 
     @Override

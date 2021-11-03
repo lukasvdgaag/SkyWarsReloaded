@@ -11,10 +11,10 @@ default-weather: CLEAR
 default-modifier: NONE
 
 spawn-points:
-  team-1:
+  -
     - 'x:y:z'
     - 'x:y:z'
-  team-2:
+  -
     - 'x:y:z'
     - 'x:y:z'
 chests:

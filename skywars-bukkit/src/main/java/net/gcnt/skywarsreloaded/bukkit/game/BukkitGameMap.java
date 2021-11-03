@@ -1,9 +1,7 @@
 package net.gcnt.skywarsreloaded.bukkit.game;
 
 import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWPlayer;
-import net.gcnt.skywarsreloaded.game.Game;
-import net.gcnt.skywarsreloaded.game.GameMap;
-import net.gcnt.skywarsreloaded.game.GameStatus;
+import net.gcnt.skywarsreloaded.game.*;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
 import java.util.ArrayList;
@@ -16,6 +14,7 @@ public class BukkitGameMap implements GameMap {
     private final Game game;
     private final List<BukkitSWPlayer> players;
     private final List<BukkitSWPlayer> spectators;
+    private final List<Team> teams;
     private GameStatus status;
     private int timer;
 
@@ -25,6 +24,7 @@ public class BukkitGameMap implements GameMap {
 
         this.players = new ArrayList<>();
         this.spectators = new ArrayList<>();
+        this.teams = new ArrayList<>();
         this.status = GameStatus.DISABLED;
         this.timer = 0;
     }
@@ -40,6 +40,11 @@ public class BukkitGameMap implements GameMap {
     }
 
     @Override
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    @Override
     public void addPlayers(SWPlayer... players) {
 
     }
@@ -51,12 +56,25 @@ public class BukkitGameMap implements GameMap {
 
     @Override
     public List<? extends SWPlayer> getPlayers() {
-        return this.players;
+        List<SWPlayer> players = new ArrayList<>();
+        for (Team t : teams) {
+            for (TeamSpawn ts : t.getSpawns()) {
+                players.add(ts.getPlayer());
+            }
+        }
+        return players;
     }
 
     @Override
     public List<? extends SWPlayer> getAlivePlayers() {
         return null;
+    }
+
+    public List<? extends SWPlayer> getAllPlayers() {
+        ArrayList<SWPlayer> prs = new ArrayList<>();
+        prs.addAll(getPlayers());
+        prs.addAll(getSpectators());
+        return prs;
     }
 
     @Override

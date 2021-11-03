@@ -12,8 +12,6 @@ public interface Game {
 
     String getDisplayName();
 
-    List<Team> getTeams();
-
     int getTeamSize();
 
     Coord getWaitingLobbySpawn();

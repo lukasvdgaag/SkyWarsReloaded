@@ -10,6 +10,8 @@ public interface GameMap {
 
     Game getGame();
 
+    List<Team> getTeams();
+
     void addPlayers(SWPlayer... players);
 
     void removePlayer(SWPlayer player);
