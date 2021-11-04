@@ -4,7 +4,7 @@ import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
 import java.util.List;
 
-public interface GameMap {
+public interface GameWorld {
 
     String getId();
 

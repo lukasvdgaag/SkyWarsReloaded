@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class BukkitGameMap implements GameMap {
+public class BukkitGameWorld implements GameWorld {
 
     private final String gameId;
     private final GameData gameData;
@@ -17,7 +17,7 @@ public class BukkitGameMap implements GameMap {
     private GameStatus status;
     private int timer;
 
-    public BukkitGameMap(GameData gameData) {
+    public BukkitGameWorld(GameData gameData) {
         this.gameData = gameData;
         this.gameId = UUID.randomUUID().toString();
 
