@@ -1,60 +1,63 @@
 package net.gcnt.skywarsreloaded.bukkit.game;
 
-import net.gcnt.skywarsreloaded.game.Game;
+import net.gcnt.skywarsreloaded.game.GameData;
 import net.gcnt.skywarsreloaded.utils.Coord;
 
 import java.util.List;
 
-public class BukkitGame implements Game {
+public class BukkitGameData implements GameData {
 
     private final String name;
+    private String displayName;
     private String creator;
     private Coord spectateSpawn;
     private Coord lobbySpawn;
+    private int teamsize;
     private List<Coord> chests;
 
-    public BukkitGame(String name) {
+    public BukkitGameData(String name) {
         this.name = name;
+        // todo get info from mapdata file.
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
     public String getCreator() {
-        return creator;
+        return this.creator;
     }
 
     @Override
     public int getTeamSize() {
-        return 0;
+        return this.teamsize;
     }
 
     @Override
     public String getDisplayName() {
-        return null;
+        return this.displayName;
     }
 
     @Override
     public Coord getSpectateSpawn() {
-        return null;
+        return this.spectateSpawn;
     }
 
     @Override
     public void setSpectateSpawn(Coord loc) {
-
+        this.spectateSpawn = loc;
     }
 
     @Override
     public Coord getWaitingLobbySpawn() {
-        return null;
+        return this.lobbySpawn;
     }
 
     @Override
     public void setWaitingLobbySpawn(Coord loc) {
-
+        this.lobbySpawn = loc;
     }
 
     @Override
@@ -73,17 +76,27 @@ public class BukkitGame implements Game {
     }
 
     @Override
-    public void addChest(Coord loc) {
-
+    public synchronized boolean addChest(Coord loc) {
+        for (Coord chest : this.chests) {
+            if (chest.equals(loc)) return false;
+        }
+        this.chests.add(loc);
+        return true;
     }
 
     @Override
-    public void removeChest(Coord loc) {
-
+    public synchronized boolean removeChest(Coord loc) {
+        for (Coord chest : this.chests) {
+            if (chest.equals(loc)) {
+                this.chests.remove(loc);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public List<Coord> getChests() {
-        return null;
+        return this.chests;
     }
 }

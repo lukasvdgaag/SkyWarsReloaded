@@ -11,18 +11,16 @@ import java.util.UUID;
 public class BukkitGameMap implements GameMap {
 
     private final String gameId;
-    private final Game game;
-    private final List<BukkitSWPlayer> players;
+    private final GameData gameData;
     private final List<BukkitSWPlayer> spectators;
     private final List<Team> teams;
     private GameStatus status;
     private int timer;
 
-    public BukkitGameMap(Game game) {
-        this.game = game;
+    public BukkitGameMap(GameData gameData) {
+        this.gameData = gameData;
         this.gameId = UUID.randomUUID().toString();
 
-        this.players = new ArrayList<>();
         this.spectators = new ArrayList<>();
         this.teams = new ArrayList<>();
         this.status = GameStatus.DISABLED;
@@ -35,8 +33,8 @@ public class BukkitGameMap implements GameMap {
     }
 
     @Override
-    public Game getGame() {
-        return game;
+    public GameData getGame() {
+        return gameData;
     }
 
     @Override

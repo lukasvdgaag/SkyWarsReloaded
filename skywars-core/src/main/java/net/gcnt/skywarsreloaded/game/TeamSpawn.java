@@ -3,22 +3,26 @@ package net.gcnt.skywarsreloaded.game;
 import net.gcnt.skywarsreloaded.utils.Coord;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
-public class TeamSpawn {
+import java.util.List;
+
+public class TeamSpawn implements Spawn {
 
     private final Team team;
     private final Coord location;
-    private SWPlayer player;
+    private List<SWPlayer> players;
 
     public TeamSpawn(Team team, Coord location) {
         this.team = team;
         this.location = location;
-        this.player = null;
+        this.players = null;
     }
 
+    @Override
     public boolean isOccupied() {
-        return this.player != null;
+        return players.size() < this.team.getArena().getTeamSize();
     }
 
+    @Override
     public Coord getLocation() {
         return location;
     }
@@ -27,15 +31,33 @@ public class TeamSpawn {
     Get methods
      */
 
-    public SWPlayer getPlayer() {
-        return player;
+    @Override
+    public List<SWPlayer> getPlayers() {
+        return null;
     }
 
-    public void setPlayer(SWPlayer player) {
-        this.player = player;
+    @Override
+    public void addPlayer(SWPlayer player) {
+
     }
 
+    @Override
+    public void removePlayer(SWPlayer player) {
+
+    }
+
+    @Override
     public Team getTeam() {
         return team;
+    }
+
+    @Override
+    public void determineCageDesign() {
+
+    }
+
+    @Override
+    public void updateCage() {
+
     }
 }

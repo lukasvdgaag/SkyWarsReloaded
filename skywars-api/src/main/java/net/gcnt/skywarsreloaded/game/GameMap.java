@@ -8,7 +8,7 @@ public interface GameMap {
 
     String getId();
 
-    Game getGame();
+    GameData getGame();
 
     List<Team> getTeams();
 

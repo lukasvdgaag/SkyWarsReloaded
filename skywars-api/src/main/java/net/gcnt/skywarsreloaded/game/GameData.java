@@ -4,7 +4,7 @@ import net.gcnt.skywarsreloaded.utils.Coord;
 
 import java.util.List;
 
-public interface Game {
+public interface GameData {
 
     String getName();
 
@@ -28,9 +28,9 @@ public interface Game {
 
     void saveData();
 
-    void addChest(Coord loc);
+    boolean addChest(Coord loc);
 
-    void removeChest(Coord loc);
+    boolean removeChest(Coord loc);
 
     List<Coord> getChests();
 
