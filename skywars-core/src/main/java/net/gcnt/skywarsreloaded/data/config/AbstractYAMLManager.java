@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.data.config;
 
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 
+import java.io.File;
 import java.util.HashMap;
 
 public abstract class AbstractYAMLManager implements YAMLManager {
@@ -21,13 +22,13 @@ public abstract class AbstractYAMLManager implements YAMLManager {
         this.loadConfig("config", null, "config.yml");
     }
 
-    public YAMLConfig loadConfig(String id, String directory, String fileName) {
+    public YAMLConfig loadConfig(String id, File directory, String fileName) {
         AbstractYAMLConfig config = this.createConfigInstance(id, directory, fileName);
         this.files.put(id, config);
         return config;
     }
 
-    public abstract AbstractYAMLConfig createConfigInstance(String id, String directory, String fileName);
+    public abstract AbstractYAMLConfig createConfigInstance(String id, File directory, String fileName);
 
     // Getters
 

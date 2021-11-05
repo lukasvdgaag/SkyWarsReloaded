@@ -22,32 +22,15 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
         this.plugin = pluginIn;
     }
 
-    @Override
-    public void onEnable() {
-        setYAMLManager(new BukkitYAMLManager(this));
-        setConfig(getYAMLManager().loadConfig("config", getDataFolder().getAbsolutePath(), "config.yml"));
-
-
-        setPlayerDataManager(new BukkitSWPlayerDataManager(this));
-        setSchematicManager(new CoreSchematicManager());
-        setStorage(new SQLiteStorage(this));
-    }
-
     // Internal Utils
 
-    @Override
-    public void setPlayerDataManager(SWPlayerDataManager playerDataManager) {
-        super.setPlayerDataManager(playerDataManager);
+    public void initYAMLManager() {
+        setYAMLManager(new BukkitYAMLManager(this));
     }
 
     @Override
-    public void setStorage(Storage storage) {
-        super.setStorage(storage);
-    }
-
-    @Override
-    public void setYAMLManager(YAMLManager yamlManager) {
-        super.setYAMLManager(yamlManager);
+    public void initPlayerDataManager() {
+        setPlayerDataManager(new BukkitSWPlayerDataManager(this));
     }
 
     public BukkitSkyWarsReloadedPlugin getPlugin() {

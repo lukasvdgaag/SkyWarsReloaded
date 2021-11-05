@@ -1,19 +1,15 @@
 package net.gcnt.skywarsreloaded.bukkit.data.player;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
-import net.gcnt.skywarsreloaded.data.player.AbstractSWPlayerDataManager;
-import net.gcnt.skywarsreloaded.data.player.CoreSWPlayerData;
-import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
+import net.gcnt.skywarsreloaded.data.player.CoreSWPlayerDataManager;
 
-public class BukkitSWPlayerDataManager extends AbstractSWPlayerDataManager {
+/**
+ * Currently not used // TODO remove or use
+ */
+public class BukkitSWPlayerDataManager extends CoreSWPlayerDataManager {
 
     public BukkitSWPlayerDataManager(BukkitSkyWarsReloaded skyWarsIn) {
         super(skyWarsIn);
-    }
-
-    @Override
-    public SWPlayerData createSWPlayerDataInstance() {
-        return new CoreSWPlayerData();
     }
 
 }

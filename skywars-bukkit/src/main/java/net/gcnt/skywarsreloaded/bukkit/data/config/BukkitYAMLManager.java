@@ -2,7 +2,8 @@ package net.gcnt.skywarsreloaded.bukkit.data.config;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.AbstractYAMLManager;
-import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
+
+import java.io.File;
 
 public class BukkitYAMLManager extends AbstractYAMLManager {
 
@@ -10,7 +11,7 @@ public class BukkitYAMLManager extends AbstractYAMLManager {
         super(plugin);
     }
 
-    public BukkitYAMLConfig createConfigInstance(String id, String directory, String fileName) {
+    public BukkitYAMLConfig createConfigInstance(String id, File directory, String fileName) {
         return new BukkitYAMLConfig(this.getSkyWars(), id, directory, fileName);
     }
 }
