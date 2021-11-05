@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.bukkit.commands;
+package net.gcnt.skywarsreloaded.bukkit.command;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
