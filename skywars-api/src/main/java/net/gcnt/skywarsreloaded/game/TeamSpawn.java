@@ -1,11 +1,10 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.utils.Coord;
-import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
 import java.util.List;
 
-public interface Spawn {
+public interface TeamSpawn {
 
     boolean isOccupied();
 
@@ -17,7 +16,7 @@ public interface Spawn {
 
     void removePlayer(GamePlayer player);
 
-    Team getTeam();
+    GameTeam getTeam();
 
     void determineCageDesign();
 

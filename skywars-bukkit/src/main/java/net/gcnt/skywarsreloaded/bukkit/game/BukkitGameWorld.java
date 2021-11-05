@@ -13,8 +13,8 @@ public class BukkitGameWorld implements GameWorld {
     private final BukkitSkyWarsReloaded plugin;
     private final String gameId;
     private final GameData gameData;
-    private final List<BukkitSWPlayer> spectators;
-    private final List<Team> teams;
+    private final List<GamePlayer> spectators;
+    private final List<GameTeam> teams;
     private GameStatus status;
     private int timer;
     private String worldName;
@@ -42,8 +42,13 @@ public class BukkitGameWorld implements GameWorld {
     }
 
     @Override
-    public List<Team> getTeams() {
+    public List<GameTeam> getTeams() {
         return teams;
+    }
+
+    @Override
+    public String getWorldName() {
+        return this.worldName;
     }
 
     @Override

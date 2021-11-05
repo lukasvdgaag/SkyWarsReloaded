@@ -16,6 +16,12 @@ import java.util.logging.Logger;
 
 public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
+    private BukkitSkyWarsReloadedPlugin plugin;
+
+    public BukkitSkyWarsReloaded(BukkitSkyWarsReloadedPlugin pluginIn) {
+        this.plugin = pluginIn;
+    }
+
     @Override
     public void onEnable() {
         setYAMLManager(new BukkitYAMLManager(this));
@@ -62,7 +68,7 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
     @Override
     public Logger getLogger() {
-        return null;
+        return plugin.getLogger();
     }
 
     @Override

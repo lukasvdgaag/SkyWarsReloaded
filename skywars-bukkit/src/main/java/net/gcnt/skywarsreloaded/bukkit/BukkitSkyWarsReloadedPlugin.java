@@ -11,6 +11,6 @@ public class BukkitSkyWarsReloadedPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        new BukkitSkyWarsReloaded().onEnable();
+        new BukkitSkyWarsReloaded(this).onEnable();
     }
 }

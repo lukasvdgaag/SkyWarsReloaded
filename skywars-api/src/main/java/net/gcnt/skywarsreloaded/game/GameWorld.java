@@ -10,7 +10,7 @@ public interface GameWorld {
 
     GameData getGame();
 
-    List<Team> getTeams();
+    List<GameTeam> getTeams();
 
     String getWorldName();
 

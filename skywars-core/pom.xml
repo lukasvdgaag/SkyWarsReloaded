@@ -16,6 +16,13 @@
         <maven.compiler.target>16</maven.compiler.target>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>enginehub-maven</id>
+            <url>http://maven.enginehub.org/repo/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>net.gcnt</groupId>

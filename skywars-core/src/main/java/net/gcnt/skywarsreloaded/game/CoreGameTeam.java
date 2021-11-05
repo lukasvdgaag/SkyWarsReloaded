@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GameTeam implements Team {
+public class CoreGameTeam implements GameTeam {
 
     private final GameWorld game;
     private final String name;
@@ -23,7 +23,7 @@ public class GameTeam implements Team {
         this.players = new ArrayList<>();
 
         for (Coord coord : spawns) {
-            this.spawns.add(new TeamSpawn(this, coord));
+            this.spawns.add(new CoreTeamSpawn(this, coord));
         }
     }
 

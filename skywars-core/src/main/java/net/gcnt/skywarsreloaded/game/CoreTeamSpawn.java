@@ -4,13 +4,13 @@ import net.gcnt.skywarsreloaded.utils.Coord;
 
 import java.util.List;
 
-public class TeamSpawn implements Spawn {
+public class CoreTeamSpawn implements TeamSpawn {
 
-    private final Team team;
+    private final GameTeam team;
     private final Coord location;
     private List<GamePlayer> players;
 
-    public TeamSpawn(Team team, Coord location) {
+    public CoreTeamSpawn(GameTeam team, Coord location) {
         this.team = team;
         this.location = location;
         this.players = null;
@@ -46,7 +46,7 @@ public class TeamSpawn implements Spawn {
     }
 
     @Override
-    public Team getTeam() {
+    public GameTeam getTeam() {
         return team;
     }
 

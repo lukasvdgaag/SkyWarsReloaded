@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.bukkit.data.player;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.player.AbstractSWPlayerDataManager;
+import net.gcnt.skywarsreloaded.data.player.CoreSWPlayerData;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
 
 public class BukkitSWPlayerDataManager extends AbstractSWPlayerDataManager {
@@ -12,6 +13,7 @@ public class BukkitSWPlayerDataManager extends AbstractSWPlayerDataManager {
 
     @Override
     public SWPlayerData createSWPlayerDataInstance() {
-        return new BukkitSWPlayerData();
+        return new CoreSWPlayerData();
     }
+
 }
