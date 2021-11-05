@@ -1,7 +1,6 @@
 package net.gcnt.skywarsreloaded.data.config;
 
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
-import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -15,12 +14,13 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
     private final String fileName;
     private final File directory;
     private final String directoryName;
+    private String defaultFilePath;
 
-    public AbstractYAMLConfig(AbstractSkyWarsReloaded pluginIn, String idIn, @Nullable String directoryNameIn, String fileNameIn) {
-        this.id = idIn;
+    public AbstractYAMLConfig(AbstractSkyWarsReloaded pluginIn, String id, @Nullable String directoryName, String fileName) {
+        this.id = id;
         this.plugin = pluginIn;
-        this.fileName = fileNameIn;
-        this.directoryName = directoryNameIn;
+        this.fileName = fileName;
+        this.directoryName = directoryName;
 
         if (directoryName != null) {
             // We are using a file that is not in the main plugin directory
@@ -30,7 +30,62 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
             directory = pluginIn.getDataFolder();
         }
 
-        file = new File(directory, fileNameIn);
+        file = new File(directory, fileName);
+
+        if (!directory.exists() || !file.exists()) {
+            if (!this.copyDefaultFile()) {
+                return;
+            }
+        }
+    }
+
+    public AbstractYAMLConfig(AbstractSkyWarsReloaded pluginIn, String id, @Nullable String directoryName, String fileName, String defaultFilePath) {
+        this.id = id;
+        this.plugin = pluginIn;
+        this.fileName = fileName;
+        this.directoryName = directoryName;
+        this.defaultFilePath = defaultFilePath;
+
+        if (directoryName != null) {
+            // We are using a file that is not in the main plugin directory
+            directory = new File(pluginIn.getDataFolder() + File.separator + directoryName);
+        } else {
+            // Else, use default plugin dir
+            directory = pluginIn.getDataFolder();
+        }
+
+        file = new File(directory, fileName);
+
+        if (!directory.exists() || !file.exists()) {
+            if (!this.copyDefaultFile()) {
+                return;
+            }
+        }
+    }
+
+    public AbstractYAMLConfig(AbstractSkyWarsReloaded pluginIn, String id, File directory, String fileName) {
+        this.id = id;
+        this.plugin = pluginIn;
+        this.fileName = fileName;
+        this.directory = directory;
+        this.directoryName = directory.getName();
+        this.file = new File(directory, fileName);
+
+        if (!directory.exists() || !file.exists()) {
+            if (!this.copyDefaultFile()) {
+                return;
+            }
+        }
+    }
+
+    public AbstractYAMLConfig(AbstractSkyWarsReloaded pluginIn, String id, File directory, String fileName, String defaultFilePath) {
+        this.id = id;
+        this.plugin = pluginIn;
+        this.fileName = fileName;
+        this.directory = directory;
+        this.directoryName = directory.getName();
+        this.file = new File(directory, fileName);
+        this.defaultFilePath = defaultFilePath;
 
         if (!directory.exists() || !file.exists()) {
             if (!this.copyDefaultFile()) {
@@ -40,7 +95,7 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
     }
 
     public boolean copyDefaultFile() {
-        InputStream internalFileStream = getClass().getResourceAsStream("/" + directory + File.separator + fileName);
+        InputStream internalFileStream = getClass().getResourceAsStream(defaultFilePath == null ? "/" + directory + File.separator + fileName : defaultFilePath);
         if (internalFileStream == null) {
             return false;
         }

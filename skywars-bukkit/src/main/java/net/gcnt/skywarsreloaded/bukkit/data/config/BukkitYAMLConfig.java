@@ -14,8 +14,26 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     private final Object reloadLock = new Object();
     private FileConfiguration fileConfiguration;
 
-    public BukkitYAMLConfig(AbstractSkyWarsReloaded skyWars, String idIn, @Nullable String directory, String fileName) {
-        super(skyWars, idIn, directory, fileName);
+    public BukkitYAMLConfig(AbstractSkyWarsReloaded skyWars, String id, @Nullable String directory, String fileName) {
+        super(skyWars, id, directory, fileName);
+
+        this.onSetup(this.getFile());
+    }
+
+    public BukkitYAMLConfig(AbstractSkyWarsReloaded skyWars, String id, File directory, String fileName) {
+        super(skyWars, id, directory, fileName);
+
+        this.onSetup(this.getFile());
+    }
+
+    public BukkitYAMLConfig(AbstractSkyWarsReloaded skyWars, String id, @Nullable String directory, String fileName, String defaultFile) {
+        super(skyWars, id, directory, fileName, defaultFile);
+
+        this.onSetup(this.getFile());
+    }
+
+    public BukkitYAMLConfig(AbstractSkyWarsReloaded skyWars, String id, File directory, String fileName, String defaultFile) {
+        super(skyWars, id, directory, fileName, defaultFile);
 
         this.onSetup(this.getFile());
     }
@@ -46,17 +64,32 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public String getString(String property) {
-        return fileConfiguration.getString(property, "");
+        return getString(property, "");
+    }
+
+    @Override
+    public String getString(String property, String defaultValue) {
+        return fileConfiguration.getString(property, defaultValue);
     }
 
     @Override
     public int getInt(String property) {
-        return fileConfiguration.getInt(property, 0);
+        return getInt(property, 0);
+    }
+
+    @Override
+    public int getInt(String property, int defaultValue) {
+        return fileConfiguration.getInt(property, defaultValue);
     }
 
     @Override
     public double getDouble(String property) {
-        return fileConfiguration.getDouble(property, 0);
+        return getDouble(property, 0);
+    }
+
+    @Override
+    public double getDouble(String property, double defaultValue) {
+        return fileConfiguration.getDouble(property, defaultValue);
     }
 
     @Override
@@ -66,6 +99,21 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public boolean getBoolean(String property) {
-        return fileConfiguration.getBoolean(property, false);
+        return getBoolean(property, false);
+    }
+
+    @Override
+    public boolean getBoolean(String property, boolean defaultValue) {
+        return fileConfiguration.getBoolean(property, defaultValue);
+    }
+
+    @Override
+    public Object get(String property) {
+        return get(property, null);
+    }
+
+    @Override
+    public Object get(String property, Object defaultValue) {
+        return fileConfiguration.get(property, defaultValue);
     }
 }
