@@ -3,7 +3,13 @@ package net.gcnt.skywarsreloaded.bukkit;
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.data.config.BukkitYAMLManager;
 import net.gcnt.skywarsreloaded.bukkit.data.player.BukkitSWPlayerDataManager;
+import net.gcnt.skywarsreloaded.data.config.AbstractYAMLManager;
+import net.gcnt.skywarsreloaded.data.config.YAMLManager;
+import net.gcnt.skywarsreloaded.data.player.SQLiteStorage;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerDataManager;
+import net.gcnt.skywarsreloaded.data.player.Storage;
+import net.gcnt.skywarsreloaded.data.schematic.CoreSchematicManager;
+import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -12,31 +18,46 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
     @Override
     public void onEnable() {
-        super.onEnable();
+        setYAMLManager(new BukkitYAMLManager(this));
+        setConfig(getYAMLManager().loadConfig("config", getDataFolder().getAbsolutePath(), "config.yml"));
+
+
+        setPlayerDataManager(new BukkitSWPlayerDataManager(this));
+        setSchematicManager(new CoreSchematicManager());
+        setStorage(new SQLiteStorage(this));
     }
 
     // Internal Utils
 
     @Override
-    public BukkitYAMLManager createYAMLManager() {
-        return new BukkitYAMLManager(this);
+    public void setPlayerDataManager(SWPlayerDataManager playerDataManager) {
+        super.setPlayerDataManager(playerDataManager);
     }
 
     @Override
-    public BukkitSWPlayerDataManager createPlayerDataManager() {
-        return new BukkitSWPlayerDataManager(this);
+    public void setStorage(Storage storage) {
+        super.setStorage(storage);
+    }
+
+    @Override
+    public void setYAMLManager(YAMLManager yamlManager) {
+        super.setYAMLManager(yamlManager);
+    }
+
+    public BukkitSkyWarsReloadedPlugin getPlugin() {
+        return this.plugin;
     }
 
     // Getters
 
     @Override
     public File getDataFolder() {
-        return null;
+        return plugin.getDataFolder();
     }
 
     @Override
-    public SWPlayerDataManager getPlayerDataManager() {
-        return null;
+    public void setSchematicManager(SchematicManager schematicManager) {
+        super.setSchematicManager(schematicManager);
     }
 
     @Override

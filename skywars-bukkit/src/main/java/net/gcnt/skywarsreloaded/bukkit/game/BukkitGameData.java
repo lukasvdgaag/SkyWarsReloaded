@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.bukkit.game;
 
+import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.GameData;
 import net.gcnt.skywarsreloaded.utils.Coord;
 
@@ -7,6 +8,7 @@ import java.util.List;
 
 public class BukkitGameData implements GameData {
 
+    private final BukkitSkyWarsReloaded plugin;
     private final String name;
     private String displayName;
     private String creator;
@@ -15,7 +17,8 @@ public class BukkitGameData implements GameData {
     private int teamsize;
     private List<Coord> chests;
 
-    public BukkitGameData(String name) {
+    public BukkitGameData(BukkitSkyWarsReloaded plugin, String name) {
+        this.plugin = plugin;
         this.name = name;
         // todo get info from mapdata file.
     }

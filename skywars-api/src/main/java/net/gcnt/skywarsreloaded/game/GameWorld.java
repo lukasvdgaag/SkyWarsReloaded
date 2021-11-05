@@ -12,15 +12,17 @@ public interface GameWorld {
 
     List<Team> getTeams();
 
+    String getWorldName();
+
     void addPlayers(SWPlayer... players);
 
     void removePlayer(SWPlayer player);
 
-    List<? extends SWPlayer> getPlayers();
+    List<GamePlayer> getPlayers();
 
-    List<? extends SWPlayer> getAlivePlayers();
+    List<GamePlayer> getAlivePlayers();
 
-    List<? extends SWPlayer> getSpectators();
+    List<GamePlayer> getSpectators();
 
     GameStatus getStatus();
 

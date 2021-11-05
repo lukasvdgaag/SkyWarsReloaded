@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.bukkit.game;
 
-import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWPlayer;
+import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.*;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
@@ -10,14 +10,17 @@ import java.util.UUID;
 
 public class BukkitGameWorld implements GameWorld {
 
+    private final BukkitSkyWarsReloaded plugin;
     private final String gameId;
     private final GameData gameData;
     private final List<BukkitSWPlayer> spectators;
     private final List<Team> teams;
     private GameStatus status;
     private int timer;
+    private String worldName;
 
-    public BukkitGameWorld(GameData gameData) {
+    public BukkitGameWorld(BukkitSkyWarsReloaded plugin, GameData gameData) {
+        this.plugin = plugin;
         this.gameData = gameData;
         this.gameId = UUID.randomUUID().toString();
 
@@ -25,6 +28,7 @@ public class BukkitGameWorld implements GameWorld {
         this.teams = new ArrayList<>();
         this.status = GameStatus.DISABLED;
         this.timer = 0;
+        // todo create a world and edit this.worldName.
     }
 
     @Override
@@ -53,30 +57,32 @@ public class BukkitGameWorld implements GameWorld {
     }
 
     @Override
-    public List<? extends SWPlayer> getPlayers() {
-        List<SWPlayer> players = new ArrayList<>();
-        for (Team t : teams) {
-            for (TeamSpawn ts : t.getSpawns()) {
-                players.add(ts.getPlayer());
-            }
+    public List<GamePlayer> getPlayers() {
+        List<GamePlayer> players = new ArrayList<>();
+        for (GameTeam t : teams) {
+            players.addAll(t.getPlayers());
         }
         return players;
     }
 
     @Override
-    public List<? extends SWPlayer> getAlivePlayers() {
-        return null;
+    public List<GamePlayer> getAlivePlayers() {
+        List<GamePlayer> players = new ArrayList<>();
+        for (GameTeam t : teams) {
+            players.addAll(t.getAlivePlayers());
+        }
+        return players;
     }
 
-    public List<? extends SWPlayer> getAllPlayers() {
-        ArrayList<SWPlayer> prs = new ArrayList<>();
+    public List<GamePlayer> getAllPlayers() {
+        ArrayList<GamePlayer> prs = new ArrayList<>();
         prs.addAll(getPlayers());
         prs.addAll(getSpectators());
         return prs;
     }
 
     @Override
-    public List<? extends SWPlayer> getSpectators() {
+    public List<GamePlayer> getSpectators() {
         return this.spectators;
     }
 

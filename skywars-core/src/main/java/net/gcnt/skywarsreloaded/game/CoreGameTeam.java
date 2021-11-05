@@ -5,21 +5,23 @@ import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameTeam implements Team {
 
-    private final GameData game;
+    private final GameWorld game;
     private final String name;
     private final TeamColor color;
-    private final List<TeamSpawn> spawns;
-    private List<SWPlayer> aliveplayers;
-    private List<SWPlayer> players;
+    private final List<CoreTeamSpawn> spawns;
+    private List<GamePlayer> players;
 
-    public GameTeam(GameData game, String name, TeamColor color, List<Coord> spawns) {
+    public CoreGameTeam(GameWorld game, String name, TeamColor color, List<Coord> spawns) {
         this.game = game;
         this.name = name;
         this.color = color;
         this.spawns = new ArrayList<>();
+        this.players = new ArrayList<>();
+
         for (Coord coord : spawns) {
             this.spawns.add(new TeamSpawn(this, coord));
         }
@@ -37,22 +39,17 @@ public class GameTeam implements Team {
 
     @Override
     public boolean isMember(SWPlayer player) {
-        return this.players.contains(player);
+        for (GamePlayer gp : players) {
+            if (gp.getSWPlayer().equals(player)) return true;
+        }
+        return false;
     }
 
     @Override
     public void addPlayers(SWPlayer... players) {
         if (players == null) return;
 
-        playerLoop:
-        for (SWPlayer swp : players) {
-            for (TeamSpawn spawn : this.spawns) {
-                if (!spawn.isOccupied()) {
-                    spawn.addPlayer(swp);
-                    continue playerLoop;
-                }
-            }
-        }
+        // todo add the players.
         // todo add better support for multiple players fitting in the same team.
     }
 
@@ -67,12 +64,12 @@ public class GameTeam implements Team {
     }
 
     @Override
-    public List<SWPlayer> getMembers() {
+    public List<GamePlayer> getPlayers() {
         return this.players;
     }
 
     @Override
-    public GameData getArena() {
+    public GameWorld getGameWorld() {
         return this.game;
     }
 
@@ -83,22 +80,25 @@ public class GameTeam implements Team {
 
     @Override
     public int getAliveSize() {
-        return this.aliveplayers.size();
+        return this.getAlivePlayers().size();
+    }
+
+    public List<GamePlayer> getAlivePlayers() {
+        return players.stream().filter(GamePlayer::isAlive).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<? extends TeamSpawn> getSpawns() {
+        return this.spawns;
     }
 
     @Override
     public boolean isEliminated() {
-        return this.aliveplayers.isEmpty();
-    }
-
-    @Override
-    public List<TeamSpawn> getSpawns() {
-        return this.spawns;
+        return this.getAlivePlayers().isEmpty();
     }
 
     @Override
     public void resetData() {
         players = new ArrayList<>();
-        aliveplayers = new ArrayList<>();
     }
 }

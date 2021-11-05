@@ -11,11 +11,11 @@ public interface Spawn {
 
     Coord getLocation();
 
-    List<SWPlayer> getPlayers();
+    List<GamePlayer> getPlayers();
 
-    void addPlayer(SWPlayer player);
+    void addPlayer(GamePlayer player);
 
-    void removePlayer(SWPlayer player);
+    void removePlayer(GamePlayer player);
 
     Team getTeam();
 

@@ -4,7 +4,7 @@ import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
 import java.util.List;
 
-public interface Team {
+public interface GameTeam {
 
     /**
      * Get the color of the team.
@@ -56,14 +56,21 @@ public interface Team {
      *
      * @return Members of the team
      */
-    List<SWPlayer> getMembers();
+    List<GamePlayer> getPlayers();
+
+    /**
+     * Get a list of alive players in the team
+     *
+     * @return Alive players.
+     */
+    List<GamePlayer> getAlivePlayers();
 
     /**
      * Get the Game that this team belongs to.
      *
      * @return Parent Game.
      */
-    GameData getArena();
+    GameWorld getGameWorld();
 
     /**
      * Get the size of the team.
@@ -91,7 +98,7 @@ public interface Team {
      *
      * @return List of player spawns
      */
-    List<TeamSpawn> getSpawns();
+    List<? extends TeamSpawn> getSpawns();
 
     /**
      * Reset the data of this team for future games.

@@ -8,9 +8,11 @@ public interface SWPlayer {
 
     UUID getUuid();
 
-    void setOnline(boolean online);
-
     boolean isOnline();
 
+    void setOnline(boolean online);
+
     SWPlayerData getPlayerData();
+
+    void setPlayerData(SWPlayerData playerData);
 }

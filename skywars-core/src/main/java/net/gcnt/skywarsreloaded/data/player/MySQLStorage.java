@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.AbstractYAMLConfig;
-import net.gcnt.skywarsreloaded.wrapper.AbstractSWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
 import java.sql.Connection;
@@ -12,12 +11,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public abstract class AbstractMySQLStorage implements MySQLStorage {
+public class MySQLStorage implements Storage {
 
     private final AbstractSkyWarsReloaded plugin;
     private HikariDataSource ds;
 
-    public AbstractMySQLStorage(AbstractSkyWarsReloaded plugin) {
+    public MySQLStorage(AbstractSkyWarsReloaded plugin) {
         this.plugin = plugin;
     }
 
@@ -67,6 +66,7 @@ public abstract class AbstractMySQLStorage implements MySQLStorage {
                      `selected_kill_effect` VARCHAR(100) DEFAULT NULL,
                      `selected_win_effect` VARCHAR(100) DEFAULT NULL,
                      `selected_projectile_effect` VARCHAR(100) DEFAULT NULL,
+                     `selected_kill_messages_theme` VARCHAR(100) DEFAULT NULL,
                      KEY  (`uuid`)
                     )""");
         } catch (SQLException e) {
@@ -79,13 +79,14 @@ public abstract class AbstractMySQLStorage implements MySQLStorage {
     }
 
     @Override
-    public void loadData(AbstractSWPlayer player) {
+    public void loadData(SWPlayer player) {
         try (Connection conn = getConnection()) {
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM `sw_player_data` WHERE `uuid`=?");
             ps.setString(1, player.getUuid().toString());
             ResultSet res = ps.executeQuery();
 
-            this.plugin.getPlayerDataManager().createSWPlayerDataInstance().initData(
+            SWPlayerData swpd = this.plugin.getPlayerDataManager().createSWPlayerDataInstance();
+            swpd.initData(
                     res.getInt("solo_wins"),
                     res.getInt("solo_kills"),
                     res.getInt("solo_games"),
@@ -97,8 +98,10 @@ public abstract class AbstractMySQLStorage implements MySQLStorage {
                     res.getString("selected_particle"),
                     res.getString("selected_kill_effect"),
                     res.getString("selected_win_effect"),
-                    res.getString("selected_projectile_effect")
+                    res.getString("selected_projectile_effect"),
+                    res.getString("selected_kill_messages_theme")
             );
+            player.setPlayerData(swpd);
             res.close();
             ps.close();
         } catch (SQLException e) {
@@ -107,17 +110,20 @@ public abstract class AbstractMySQLStorage implements MySQLStorage {
     }
 
     public void saveData() {
-        // TODO
+        // We don't need this for SQL
     }
 
+    @Override
     public void setProperty(String property, Object value, SWPlayer player) {
         try (Connection conn = getConnection()) {
             PreparedStatement ps = conn.prepareStatement("UPDATE `sw_player_data` SET ?=? WHERE `uuid`=?");
             ps.setString(1, property);
 
-            if (value instanceof Integer) ps.setInt(2, (int) value);
-            else ps.setString(2, value.toString());            // ?todo add possible other types of data.
-
+            if (value instanceof Integer val) ps.setInt(2, val);
+            else if (value instanceof Double val) ps.setDouble(2, val);
+            else if (value instanceof Boolean val) ps.setBoolean(2, val);
+            else if (value instanceof Float val) ps.setFloat(2, val);
+            else ps.setString(2, value.toString());
 
             ps.setString(3, player.getUuid().toString());
 

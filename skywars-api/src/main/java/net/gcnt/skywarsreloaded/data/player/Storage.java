@@ -13,7 +13,7 @@ public interface Storage {
     /**
      * Loads all data from storage (MySQL/MongoDB/YAML) into cache.
      */
-    SWPlayerData loadData(SWPlayer player);
+    void loadData(SWPlayer player);
 
     /**
      * Saves all cache data to storage (MySQL/MongoDB/YAML).
@@ -22,6 +22,7 @@ public interface Storage {
 
     /**
      * Sets a property for a player
+     *
      * @param property
      * @param value
      * @param player

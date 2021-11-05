@@ -20,13 +20,19 @@
     <dependencies>
         <dependency>
             <groupId>net.gcnt</groupId>
-            <artifactId>skywars-core</artifactId>
+            <artifactId>skywars-api</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.gcnt</groupId>
             <artifactId>skywars-bukkit</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.gcnt</groupId>
+            <artifactId>skywars-core</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
