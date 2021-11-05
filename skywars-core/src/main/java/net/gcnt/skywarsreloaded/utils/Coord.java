@@ -11,6 +11,7 @@ public final record Coord(int x, int y, int z) {
      * @throws NumberFormatException     Thrown if one of the points seems to not be an integer.
      */
     public static Coord fromString(String input) throws IndexOutOfBoundsException, NumberFormatException {
+        if (input == null || input.isEmpty()) return null;
         String[] arg0 = input.split(":");
         if (arg0.length != 3) {
             throw new IndexOutOfBoundsException("The coord input string \"" + input + "\" has an invalid amount of arguments.");

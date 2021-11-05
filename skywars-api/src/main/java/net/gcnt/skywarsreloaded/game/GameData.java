@@ -10,9 +10,15 @@ public interface GameData {
 
     String getCreator();
 
+    void setCreator(String creator);
+
     String getDisplayName();
 
     int getTeamSize();
+
+    int getMinPlayers();
+
+    void setMinPlayers(int amount);
 
     Coord getWaitingLobbySpawn();
 
@@ -33,6 +39,12 @@ public interface GameData {
     boolean removeChest(Coord loc);
 
     List<Coord> getChests();
+
+    void addSpawn(int team, Coord loc);
+
+    void removeSpawn(Coord loc);
+
+    List<List<Coord>> getTeamSpawnpoints();
 
 
 }
