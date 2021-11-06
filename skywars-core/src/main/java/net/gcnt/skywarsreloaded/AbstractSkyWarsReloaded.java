@@ -1,5 +1,7 @@
 package net.gcnt.skywarsreloaded;
 
+import net.gcnt.skywarsreloaded.command.CoreSWCommandManager;
+import net.gcnt.skywarsreloaded.command.SWCommandManager;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.config.YAMLManager;
 import net.gcnt.skywarsreloaded.data.player.SQLiteStorage;
@@ -13,11 +15,15 @@ import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
  */
 public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
-    private YAMLManager yamlManager;
-    private SchematicManager schematicManager;
-    private SWPlayerDataManager playerDataManager;
+    // Data
     private Storage storage;
     private YAMLConfig config;
+
+    // Managers
+    private YAMLManager yamlManager;
+    private SWPlayerDataManager playerDataManager;
+    private SchematicManager schematicManager;
+    private SWCommandManager commandManager;
 
     // Initialization
 
@@ -34,9 +40,19 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         setConfig(getYAMLManager().loadConfig("config", getDataFolder(), "config.yml")); // requires yaml mgr
         setStorage(new SQLiteStorage(this)); // requires config
 
+        // Managers
+        initCommandManager();
+
         // Player data
         initPlayerDataManager();
         setSchematicManager(new CoreSchematicManager());
+
+        // Commands
+        getCommandManager().registerBaseCommands();
+
+        // Events
+
+        // Plugin messaging
 
         this.postEnable();
     }
@@ -54,6 +70,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public abstract void initYAMLManager();
 
     public abstract void initPlayerDataManager();
+
+    public abstract void initCommandManager();
 
 
     // Getters & Setters
@@ -108,5 +126,13 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         this.yamlManager = yamlManager;
     }
 
+    @Override
+    public SWCommandManager getCommandManager() {
+        return commandManager;
+    }
 
+    @Override
+    public void setCommandManager(SWCommandManager commandManager) {
+        this.commandManager = commandManager;
+    }
 }

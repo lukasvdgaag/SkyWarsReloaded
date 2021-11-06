@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded;
 
+import net.gcnt.skywarsreloaded.command.SWCommandManager;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.config.YAMLManager;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerDataManager;
@@ -24,31 +25,35 @@ public interface SkyWarsReloaded {
 
     YAMLManager getYAMLManager();
 
-    void setYAMLManager(YAMLManager yamlManager);
-
-    SchematicManager getSchematicManager();
-
-    void setSchematicManager(SchematicManager schematicManager);
-
     YAMLConfig getConfig();
+
+    void setYAMLManager(YAMLManager yamlManager);
 
     void setConfig(YAMLConfig config);
 
-    // Player Data
-    Storage getStorage();
+    // Other plugin managers
 
-    void setStorage(Storage storage);
+    SchematicManager getSchematicManager();
+
+    SWCommandManager getCommandManager();
+
+    void setSchematicManager(SchematicManager schematicManager);
+
+    void setCommandManager(SWCommandManager commandManager);
+
+    // Player Data
+
+    Storage getStorage();
 
     SWPlayerDataManager getPlayerDataManager();
 
-    void setPlayerDataManager(SWPlayerDataManager playerDataManager);
+    void setStorage(Storage storage);
 
+    void setPlayerDataManager(SWPlayerDataManager playerDataManager);
 
     // Plugin
 
     Logger getLogger();
-
-    // ---- Setters ----
 
     // ---- Util ----
 

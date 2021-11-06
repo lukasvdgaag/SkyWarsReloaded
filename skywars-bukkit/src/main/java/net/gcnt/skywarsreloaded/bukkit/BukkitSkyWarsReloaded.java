@@ -3,12 +3,7 @@ package net.gcnt.skywarsreloaded.bukkit;
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.data.config.BukkitYAMLManager;
 import net.gcnt.skywarsreloaded.bukkit.data.player.BukkitSWPlayerDataManager;
-import net.gcnt.skywarsreloaded.data.config.AbstractYAMLManager;
-import net.gcnt.skywarsreloaded.data.config.YAMLManager;
-import net.gcnt.skywarsreloaded.data.player.SQLiteStorage;
-import net.gcnt.skywarsreloaded.data.player.SWPlayerDataManager;
-import net.gcnt.skywarsreloaded.data.player.Storage;
-import net.gcnt.skywarsreloaded.data.schematic.CoreSchematicManager;
+import net.gcnt.skywarsreloaded.command.CoreSWCommandManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 
 import java.io.File;
@@ -31,6 +26,11 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     public void initPlayerDataManager() {
         setPlayerDataManager(new BukkitSWPlayerDataManager(this));
+    }
+
+    @Override
+    public void initCommandManager() {
+        setCommandManager(new CoreSWCommandManager());
     }
 
     public BukkitSkyWarsReloadedPlugin getPlugin() {
