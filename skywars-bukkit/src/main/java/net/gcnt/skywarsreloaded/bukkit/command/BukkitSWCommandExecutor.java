@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.bukkit.command;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.command.SWCommand;
 import net.gcnt.skywarsreloaded.command.SWCommandManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,7 +22,14 @@ public class BukkitSWCommandExecutor implements CommandExecutor, TabCompleter {
     }
 
     public boolean onCommand(CommandSender sender, Command command, String name, String[] args) {
-        // todo
+        SWCommandSender swSender;
+
+        if (sender instanceof Player player)
+            swSender = main.getPlayerManager().getPlayerByUUID(player.getUniqueId());
+        else if (sender instanceof ConsoleCommandSender)
+            swSender = main.getConsoleSender();
+
+        this.main.getCommandManager().runCommand(swSender, command.getName(), args.length > 0 ? args[0] : "", args);
         return true;
     }
 

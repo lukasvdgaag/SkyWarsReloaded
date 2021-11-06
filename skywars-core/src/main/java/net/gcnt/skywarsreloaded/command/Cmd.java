@@ -1,11 +1,16 @@
 package net.gcnt.skywarsreloaded.command;
 
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
-public abstract class AbstractSWCommand implements SWCommand {
+/**
+ * Extend this in all command handling classes. <3
+ */
+public abstract class Cmd implements SWCommand {
 
     // Parent info
+    public final SkyWarsReloaded plugin;
     public String parentCommand = "skywars";
 
     // Definition
@@ -17,15 +22,17 @@ public abstract class AbstractSWCommand implements SWCommand {
     public String subUsage = "";
     public String usage = "";
 
-    public AbstractSWCommand(String parentCommandIn, String commandIn, String permissionIn, Boolean forcePlayerIn, String subUsageIn, String usageIn) {
-        if (parentCommandIn != null) parentCommand = parentCommandIn;
+    public Cmd(SkyWarsReloaded plugin, String parentCommandIn, String commandIn, String permissionIn, Boolean forcePlayerIn, String subUsageIn, String usageIn) {
+        this.plugin = plugin;
         this.command = commandIn;
+        if (parentCommandIn != null) parentCommand = parentCommandIn;
         if (permissionIn != null) permission = permissionIn;
         if (forcePlayerIn != null) forcePlayer = forcePlayerIn;
         if (subUsageIn != null) subUsage = subUsageIn;
         if (usageIn != null) usage = usageIn;
     }
 
+    @Override
     public boolean processCommand(SWCommandSender sender, String[] args) {
         SWPlayer player = null;
 
@@ -44,10 +51,10 @@ public abstract class AbstractSWCommand implements SWCommand {
 
     public abstract boolean run(SWCommandSender sender, String[] args);
 
+    @Override
     public String sendUsage(SWCommandSender sender, boolean send) {
         String k = usage.equals("") ? "&7" : " &7";
-        // TODO create chat color util adapter for different platforms
-        String s = /*(ChatColor.translateAlternateColorCodes('&', */"&b/" + parentCommand + " " + command + " " + usage + k + subUsage/*))*/;
+        String s = plugin.getUtils().colorize("&b/" + parentCommand + " " + command + " " + usage + k + subUsage);
         if (send) {
             s = "§fUsage: " + s;
             sender.sendMessage(s);
@@ -55,4 +62,18 @@ public abstract class AbstractSWCommand implements SWCommand {
         return s;
     }
 
+    @Override
+    public String getParentCommand() {
+        return parentCommand;
+    }
+
+    @Override
+    public String getName() {
+        return command;
+    }
+
+    @Override
+    public String getPermission() {
+        return permission;
+    }
 }

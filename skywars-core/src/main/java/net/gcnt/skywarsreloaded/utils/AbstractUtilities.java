@@ -1,8 +1,9 @@
 package net.gcnt.skywarsreloaded.utils;
 
-public final class SWUtils {
+public abstract class AbstractUtilities implements Utilities {
 
-    public static boolean isInt(String arg0) {
+    @Override
+    public boolean isInt(String arg0) {
         try {
             Integer.parseInt(arg0);
             return true;
@@ -10,5 +11,6 @@ public final class SWUtils {
             return false;
         }
     }
+
 
 }

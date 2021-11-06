@@ -12,14 +12,14 @@ public class BukkitGameWorld implements GameWorld {
 
     private final BukkitSkyWarsReloaded plugin;
     private final String gameId;
-    private final GameData gameData;
+    private final GameTemplate gameData;
     private final List<GamePlayer> spectators;
     private final List<GameTeam> teams;
     private GameStatus status;
     private int timer;
     private String worldName;
 
-    public BukkitGameWorld(BukkitSkyWarsReloaded plugin, GameData gameData) {
+    public BukkitGameWorld(BukkitSkyWarsReloaded plugin, GameTemplate gameData) {
         this.plugin = plugin;
         this.gameData = gameData;
         this.gameId = UUID.randomUUID().toString();
@@ -37,7 +37,7 @@ public class BukkitGameWorld implements GameWorld {
     }
 
     @Override
-    public GameData getGame() {
+    public GameTemplate getGame() {
         return gameData;
     }
 

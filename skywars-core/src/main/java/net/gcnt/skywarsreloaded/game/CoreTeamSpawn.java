@@ -1,16 +1,16 @@
 package net.gcnt.skywarsreloaded.game;
 
-import net.gcnt.skywarsreloaded.utils.Coord;
+import net.gcnt.skywarsreloaded.utils.Coordinate;
 
 import java.util.List;
 
 public class CoreTeamSpawn implements TeamSpawn {
 
     private final GameTeam team;
-    private final Coord location;
+    private final Coordinate location;
     private List<GamePlayer> players;
 
-    public CoreTeamSpawn(GameTeam team, Coord location) {
+    public CoreTeamSpawn(GameTeam team, Coordinate location) {
         this.team = team;
         this.location = location;
         this.players = null;
@@ -22,7 +22,7 @@ public class CoreTeamSpawn implements TeamSpawn {
     }
 
     @Override
-    public Coord getLocation() {
+    public Coordinate getLocation() {
         return location;
     }
 

@@ -116,4 +116,18 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     public Object get(String property, Object defaultValue) {
         return fileConfiguration.get(property, defaultValue);
     }
+
+    @Override
+    public void set(String property, Object value) {
+        fileConfiguration.set(property, value);
+    }
+
+    @Override
+    public void save() {
+        try {
+            fileConfiguration.save(getFile());
+        } catch (IOException e) {
+            plugin.getLogger().severe("SkyWarsReloaded failed to save the YAML file called '" + getFileName() + "'.");
+        }
+    }
 }

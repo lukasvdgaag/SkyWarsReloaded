@@ -1,8 +1,11 @@
 package net.gcnt.skywarsreloaded.bukkit;
 
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.command.BukkitSWCommandExecutor;
 import net.gcnt.skywarsreloaded.bukkit.data.config.BukkitYAMLManager;
 import net.gcnt.skywarsreloaded.bukkit.data.player.BukkitSWPlayerDataManager;
+import net.gcnt.skywarsreloaded.bukkit.utils.BukkitUtils;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWConsoleSender;
 import net.gcnt.skywarsreloaded.command.CoreSWCommandManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 
@@ -19,6 +22,12 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
     // Internal Utils
 
+    @Override
+    public void initUtilities() {
+        setUtils(new BukkitUtils());
+    }
+
+    @Override
     public void initYAMLManager() {
         setYAMLManager(new BukkitYAMLManager(this));
     }

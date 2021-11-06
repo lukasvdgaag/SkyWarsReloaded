@@ -1,7 +1,11 @@
 package net.gcnt.skywarsreloaded.command;
 
-import java.util.Collection;
-import java.util.HashMap;
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.command.general.MainCmd;
+import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class CoreSWCommandManager implements SWCommandManager {
 
@@ -13,6 +17,11 @@ public class CoreSWCommandManager implements SWCommandManager {
 
     public void registerBaseCommands() {
         // todo: add base commands to register here
+    }
+
+    @Override
+    public List<SWCommand> getBaseCommands() {
+        return this.commands.values().stream().filter(swCommand -> swCommand.getParentCommand().equals("skywars")).collect(Collectors.toList());
     }
 
     public Collection<SWCommand> getCommands() {

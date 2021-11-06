@@ -16,4 +16,8 @@ public class BukkitSWCommandSender extends AbstractSWCommandSender {
         sender.sendMessage(message);
     }
 
+    @Override
+    public boolean hasPermission(String permission) {
+        return sender.hasPermission(permission);
+    }
 }

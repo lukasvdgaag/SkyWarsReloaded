@@ -95,8 +95,11 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
     }
 
     public boolean copyDefaultFile() {
-        InputStream internalFileStream = getClass().getResourceAsStream(defaultFilePath == null ? "/" + directory + File.separator + fileName : defaultFilePath);
+        String location = defaultFilePath == null ? "/" + fileName : defaultFilePath;
+        InputStream internalFileStream = getClass().getResourceAsStream(location);
+
         if (internalFileStream == null) {
+            plugin.getLogger().severe("Failed to load the default file of " + fileName);
             return false;
         }
         InputStreamReader isr = new InputStreamReader(internalFileStream);

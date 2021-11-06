@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.data.properties;
+package net.gcnt.skywarsreloaded.utils.properties;
 
 public final class MapDataProperties {
 

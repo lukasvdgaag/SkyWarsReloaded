@@ -6,6 +6,9 @@ import net.gcnt.skywarsreloaded.data.config.YAMLManager;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerDataManager;
 import net.gcnt.skywarsreloaded.data.player.Storage;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
+import net.gcnt.skywarsreloaded.game.GameManager;
+import net.gcnt.skywarsreloaded.utils.Utilities;
+import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -25,35 +28,59 @@ public interface SkyWarsReloaded {
 
     YAMLManager getYAMLManager();
 
-    YAMLConfig getConfig();
-
     void setYAMLManager(YAMLManager yamlManager);
 
+    YAMLConfig getConfig();
+
     void setConfig(YAMLConfig config);
+
+    YAMLConfig getMessages();
+
+    void setMessages(YAMLConfig config);
+
+    GameManager getGameManager();
+
+    void setGameManager(GameManager gameManager);
+
 
     // Other plugin managers
 
     SchematicManager getSchematicManager();
 
-    SWCommandManager getCommandManager();
-
     void setSchematicManager(SchematicManager schematicManager);
 
+    SWCommandManager getCommandManager();
+
     void setCommandManager(SWCommandManager commandManager);
+
+
+    // Console
+
+    SWCommandSender getConsoleSender();
+
+    void setConsoleSender(SWCommandSender consoleSender);
+
 
     // Player Data
 
     Storage getStorage();
 
-    SWPlayerDataManager getPlayerDataManager();
-
     void setStorage(Storage storage);
 
+    SWPlayerDataManager getPlayerDataManager();
+
     void setPlayerDataManager(SWPlayerDataManager playerDataManager);
+
+    Utilities getUtils();
+
+    void setUtils(Utilities utils);
+
 
     // Plugin
 
     Logger getLogger();
+
+    void initCommands();
 
     // ---- Util ----
 

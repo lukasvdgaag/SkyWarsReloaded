@@ -18,17 +18,37 @@ public abstract class AbstractYAMLManager implements YAMLManager {
 
     // Utils
 
-    public void loadAll() {
-        this.loadConfig("config", null, "config.yml");
-    }
-
     public YAMLConfig loadConfig(String id, File directory, String fileName) {
-        AbstractYAMLConfig config = this.createConfigInstance(id, directory, fileName);
+        AbstractYAMLConfig config = this.createConfigInstance(id, directory, fileName, null);
         this.files.put(id, config);
         return config;
     }
 
+    public YAMLConfig loadConfig(String id, File directory, String fileName, String defaultDir) {
+        AbstractYAMLConfig config = this.createConfigInstance(id, directory, fileName, defaultDir);
+        this.files.put(id, config);
+        return config;
+    }
+
+    public YAMLConfig loadConfig(String id, String directory, String fileName, String defaultDir) {
+        AbstractYAMLConfig config = this.createConfigInstance(id, directory, fileName, defaultDir);
+        this.files.put(id, config);
+        return config;
+    }
+
+    public YAMLConfig loadConfig(String id, String directory, String fileName) {
+        AbstractYAMLConfig config = this.createConfigInstance(id, directory, fileName, null);
+        this.files.put(id, config);
+        return config;
+    }
+
+    public abstract AbstractYAMLConfig createConfigInstance(String id, File directory, String fileName, String defaultDir);
+
     public abstract AbstractYAMLConfig createConfigInstance(String id, File directory, String fileName);
+
+    public abstract AbstractYAMLConfig createConfigInstance(String id, String directory, String fileName);
+
+    public abstract AbstractYAMLConfig createConfigInstance(String id, String directory, String fileName, String defaultDir);
 
     // Getters
 

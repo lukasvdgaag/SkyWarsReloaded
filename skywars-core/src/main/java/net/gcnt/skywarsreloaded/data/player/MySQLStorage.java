@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.AbstractYAMLConfig;
-import net.gcnt.skywarsreloaded.data.properties.ConfigProperties;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
 import java.sql.Connection;
@@ -31,8 +31,8 @@ public class MySQLStorage implements Storage {
         if (yamlConfig == null)
             throw new NullPointerException("Cannot set up database connection because config file is null. Unable to retrieve database info from config.yml.");
 
-        String hostname = yamlConfig.getString(ConfigProperties.STORAGE_HOSTNAME);
-        String database = yamlConfig.getString(ConfigProperties.STORAGE_DATABASE);
+        String hostname = yamlConfig.getString(ConfigProperties.STORAGE_HOSTNAME.toString());
+        String database = yamlConfig.getString(ConfigProperties.STORAGE_DATABASE.toString());
         int port = 3306;
         if (hostname.contains(":")) {
             String[] split = hostname.split(":");
@@ -41,10 +41,10 @@ public class MySQLStorage implements Storage {
         }
 
         HikariConfig config = new HikariConfig();
-        String uri = "jdbc:mysql://" + hostname + ":" + port + "/" + database + "?useSSL=" + (yamlConfig.getBoolean(ConfigProperties.STORAGE_USE_SSL));
+        String uri = "jdbc:mysql://" + hostname + ":" + port + "/" + database + "?useSSL=" + (yamlConfig.getBoolean(ConfigProperties.STORAGE_USE_SSL.toString()));
         config.setJdbcUrl(uri);
-        config.setUsername(yamlConfig.getString(ConfigProperties.STORAGE_USERNAME));
-        config.setPassword(yamlConfig.getString(ConfigProperties.STORAGE_DATABASE));
+        config.setUsername(yamlConfig.getString(ConfigProperties.STORAGE_USERNAME.toString()));
+        config.setPassword(yamlConfig.getString(ConfigProperties.STORAGE_DATABASE.toString()));
         config.setMinimumIdle(1);
         config.setMaximumPoolSize(50);
         config.setConnectionTimeout(4000);

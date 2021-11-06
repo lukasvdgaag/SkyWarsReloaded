@@ -8,7 +8,7 @@ public interface GameWorld {
 
     String getId();
 
-    GameData getGame();
+    GameTemplate getGame();
 
     List<GameTeam> getTeams();
 

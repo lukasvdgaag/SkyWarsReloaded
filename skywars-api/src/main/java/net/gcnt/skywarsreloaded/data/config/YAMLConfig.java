@@ -37,4 +37,19 @@ public interface YAMLConfig {
 
     Object get(String property, Object defaultValue);
 
+    /**
+     * Set a value to a key in the yaml config
+     *
+     * @param property The key to save the data to
+     * @param value    The value to save
+     */
+    void set(String property, Object value);
+
+    /**
+     * Do not use this unless you know what you are doing! Use {@link YAMLManager} to perform saves instead.
+     * This method is not actually deprecated but instead used as a visual alert.
+     */
+    @Deprecated
+    void save();
+
 }

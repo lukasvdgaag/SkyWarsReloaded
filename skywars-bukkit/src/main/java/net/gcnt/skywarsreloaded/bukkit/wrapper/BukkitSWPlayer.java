@@ -22,4 +22,14 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     public Player getPlayer() {
         return player;
     }
+
+    @Override
+    public void sendMessage(String message) {
+        player.sendMessage(message);
+    }
+
+    @Override
+    public boolean hasPermission(String permission) {
+        return player.hasPermission(permission);
+    }
 }

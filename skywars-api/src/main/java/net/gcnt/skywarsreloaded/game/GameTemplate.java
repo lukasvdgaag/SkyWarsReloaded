@@ -4,7 +4,7 @@ import net.gcnt.skywarsreloaded.utils.Coord;
 
 import java.util.List;
 
-public interface GameData {
+public interface GameTemplate {
 
     String getName();
 
@@ -29,6 +29,8 @@ public interface GameData {
     void setSpectateSpawn(Coord loc);
 
     void disable();
+
+    void enable();
 
     void loadData();
 
