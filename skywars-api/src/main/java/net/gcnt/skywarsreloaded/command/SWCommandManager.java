@@ -17,4 +17,5 @@ public interface SWCommandManager {
 
     <T extends SWCommand> T getCommand(Class<T> clazz);
 
+    void runCommand(SWCommandSender sender, String name, String subCommand, String[] args);
 }

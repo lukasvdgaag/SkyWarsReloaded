@@ -9,14 +9,17 @@ import java.util.stream.Collectors;
 
 public class CoreSWCommandManager implements SWCommandManager {
 
+    private final SkyWarsReloaded main;
+
     private final HashMap<Class<? extends SWCommand>, SWCommand> commands;
 
-    public CoreSWCommandManager() {
+    public CoreSWCommandManager(SkyWarsReloaded mainIn) {
+        this.main = mainIn;
         this.commands = new HashMap<>();
     }
 
     public void registerBaseCommands() {
-        // todo: add base commands to register here
+        this.registerCommand(new MainCmd(this.main));
     }
 
     @Override
@@ -36,4 +39,11 @@ public class CoreSWCommandManager implements SWCommandManager {
         return (T) commands.get(clazz);
     }
 
+    public void runCommand(SWCommandSender sender, String command, String subCommand, String[] args) {
+        for (SWCommand cmd : commands.values()) {
+            if (cmd.getParentCommand().equalsIgnoreCase(command) && cmd.getName().equalsIgnoreCase(subCommand)) {
+                cmd.processCommand(sender, Arrays.copyOfRange(args, 1, args.length));
+            }
+        }
+    }
 }

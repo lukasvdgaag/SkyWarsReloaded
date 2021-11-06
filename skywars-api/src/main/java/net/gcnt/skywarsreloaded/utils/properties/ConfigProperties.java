@@ -1,13 +1,23 @@
 package net.gcnt.skywarsreloaded.utils.properties;
 
-public final class ConfigProperties {
+public enum ConfigProperties {
 
-    public static final String STORAGE_TYPE = "storage.type";
-    public static final String STORAGE_USERNAME = "storage.username";
-    public static final String STORAGE_HOSTNAME = "storage.hostname";
-    public static final String STORAGE_PASSWORD = "storage.password";
-    public static final String STORAGE_DATABASE = "storage.database";
-    public static final String STORAGE_USE_SSL = "storage.use-ssl";
+    STORAGE_TYPE("storage.type"),
+    STORAGE_USERNAME("storage.username"),
+    STORAGE_HOSTNAME("storage.hostname"),
+    STORAGE_PASSWORD("storage.password"),
+    STORAGE_DATABASE("storage.database"),
+    STORAGE_USE_SSL("storage.use-ssl");
 
+    private final String value;
+
+    ConfigProperties(String valueIn) {
+        this.value = valueIn;
+    }
+
+    @Override
+    public String toString() {
+        return this.value;
+    }
 
 }

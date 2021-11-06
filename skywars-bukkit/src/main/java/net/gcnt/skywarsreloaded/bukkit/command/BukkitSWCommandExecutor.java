@@ -3,10 +3,10 @@ package net.gcnt.skywarsreloaded.bukkit.command;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.SWCommand;
 import net.gcnt.skywarsreloaded.command.SWCommandManager;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
+import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
+import org.bukkit.command.*;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;

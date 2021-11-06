@@ -4,6 +4,14 @@ import java.io.File;
 
 public interface YAMLManager {
 
+    /**
+     * Load config or create it if nonexistent
+     *
+     * @param id        The internal ID of the config
+     * @param directory The sub-directory in which to place the config file when created
+     * @param fileName  The name of the file placed in the previously mentioned directory
+     * @return A YAMLConfig instance based on the arguments provided
+     */
     YAMLConfig loadConfig(String id, File directory, String fileName);
 
     /**

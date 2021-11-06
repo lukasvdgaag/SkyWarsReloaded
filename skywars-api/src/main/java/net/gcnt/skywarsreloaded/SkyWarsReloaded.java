@@ -18,8 +18,6 @@ import java.util.logging.Logger;
  */
 public interface SkyWarsReloaded {
 
-    // ---- Getters ----
-
     // Configs
 
     void onEnable();
@@ -81,6 +79,7 @@ public interface SkyWarsReloaded {
     Logger getLogger();
 
     void initCommands();
+
 
     // ---- Util ----
 

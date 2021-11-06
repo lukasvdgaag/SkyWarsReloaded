@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
-    private BukkitSkyWarsReloadedPlugin plugin;
+    private final BukkitSkyWarsReloadedPlugin plugin;
 
     public BukkitSkyWarsReloaded(BukkitSkyWarsReloadedPlugin pluginIn) {
         this.plugin = pluginIn;
@@ -39,7 +39,18 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
     @Override
     public void initCommandManager() {
-        setCommandManager(new CoreSWCommandManager());
+        setCommandManager(new CoreSWCommandManager(this));
+    }
+
+    @Override
+    public void initCommands() {
+        BukkitSWCommandExecutor ex = new BukkitSWCommandExecutor(this);
+        plugin.getCommand("skywars").setExecutor(ex);
+    }
+
+    @Override
+    public void initConsoleSender() {
+        setConsoleSender(new BukkitSWConsoleSender(this.getPlugin().getServer().getConsoleSender()));
     }
 
     public BukkitSkyWarsReloadedPlugin getPlugin() {

@@ -75,8 +75,10 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         getCommandManager().registerBaseCommands();
 
         // Events
+        // todo
 
         // Plugin messaging
+        // todo
 
         this.postEnable();
     }
@@ -101,6 +103,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     public abstract void initCommandManager();
 
+    public abstract void initConsoleSender();
 
     // Getters & Setters
 
