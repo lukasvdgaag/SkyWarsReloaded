@@ -10,6 +10,7 @@ import net.gcnt.skywarsreloaded.data.schematic.CoreSchematicManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.CoreGameManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
+import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.utils.Utilities;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
@@ -29,6 +30,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SchematicManager schematicManager;
     private SWCommandManager commandManager;
     private GameManager gameManager;
+    private SWPlayerManager playerManager;
 
     // others
     private Utilities utilities;
@@ -57,6 +59,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         // Managers
         initCommandManager();
         setGameManager(new CoreGameManager(this));
+        initPlayerDataManager();
 
         // Player data
         initPlayerDataManager();
@@ -185,6 +188,16 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void setGameManager(GameManager gameManager) {
         this.gameManager = gameManager;
+    }
+
+    @Override
+    public SWPlayerManager getPlayerManager() {
+        return this.playerManager;
+    }
+
+    @Override
+    public void setPlayerManager(SWPlayerManager playerManagerIn) {
+        this.playerManager = playerManagerIn;
     }
 
     @Override

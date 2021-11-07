@@ -7,6 +7,7 @@ import net.gcnt.skywarsreloaded.data.player.SWPlayerDataManager;
 import net.gcnt.skywarsreloaded.data.player.Storage;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
+import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.utils.Utilities;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
@@ -36,10 +37,6 @@ public interface SkyWarsReloaded {
 
     void setMessages(YAMLConfig config);
 
-    GameManager getGameManager();
-
-    void setGameManager(GameManager gameManager);
-
 
     // Other plugin managers
 
@@ -50,6 +47,14 @@ public interface SkyWarsReloaded {
     SWCommandManager getCommandManager();
 
     void setCommandManager(SWCommandManager commandManager);
+
+    GameManager getGameManager();
+
+    void setGameManager(GameManager gameManager);
+
+    SWPlayerManager getPlayerManager();
+
+    void setPlayerManager(SWPlayerManager playerManager);
 
 
     // Console

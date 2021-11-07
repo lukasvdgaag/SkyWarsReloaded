@@ -28,6 +28,7 @@ public class BukkitSWCommandExecutor implements CommandExecutor, TabCompleter {
             swSender = main.getPlayerManager().getPlayerByUUID(player.getUniqueId());
         else if (sender instanceof ConsoleCommandSender)
             swSender = main.getConsoleSender();
+        else return true;
 
         this.main.getCommandManager().runCommand(swSender, command.getName(), args.length > 0 ? args[0] : "", args);
         return true;
