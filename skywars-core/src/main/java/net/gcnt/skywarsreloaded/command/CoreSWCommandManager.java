@@ -31,6 +31,9 @@ public class CoreSWCommandManager implements SWCommandManager {
         this.registerCommand(new SaveMapCmd(this.main));
         this.registerCommand(new SetMapTeamsizeCmd(this.main));
         this.registerCommand(new SetMapCreatorCmd(this.main));
+        this.registerCommand(new SetSpawnCmd(this.main));
+        this.registerCommand(new EnableCmd(this.main));
+        this.registerCommand(new DisableCmd(this.main));
     }
 
     @Override

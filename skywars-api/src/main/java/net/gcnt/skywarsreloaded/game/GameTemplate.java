@@ -50,6 +50,8 @@ public interface GameTemplate {
 
     void removeSpawn(Coord loc);
 
+    boolean isEnabled();
+
     List<List<Coord>> getTeamSpawnpoints();
 
 

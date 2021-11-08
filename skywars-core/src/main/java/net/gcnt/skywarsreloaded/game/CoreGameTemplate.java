@@ -3,7 +3,6 @@ package net.gcnt.skywarsreloaded.game;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.utils.Coord;
-import net.gcnt.skywarsreloaded.utils.Coord;
 import net.gcnt.skywarsreloaded.utils.Coordinate;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MapDataProperties;
@@ -107,6 +106,11 @@ public class CoreGameTemplate implements GameTemplate {
     @Override
     public void enable() {
         this.enabled = true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
     @Override
