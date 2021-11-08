@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
+import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 
@@ -75,11 +76,11 @@ public class CoreGameManager implements GameManager {
 
     @Override
     public List<GameWorld> getGameWorlds(GameTemplate data) {
-        return null;
+        return Lists.newArrayList();
     }
 
     @Override
     public List<GameWorld> getGameWorlds() {
-        return null;
+        return Lists.newArrayList();
     }
 }

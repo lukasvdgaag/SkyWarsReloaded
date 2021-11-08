@@ -55,8 +55,18 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
+    public void setTeamSize(int teamSize) {
+        this.teamSize = teamSize;
+    }
+
+    @Override
     public String getDisplayName() {
         return this.displayName;
+    }
+
+    @Override
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     @Override

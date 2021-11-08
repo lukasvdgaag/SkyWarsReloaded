@@ -11,6 +11,4 @@ public abstract class AbstractUtilities implements Utilities {
             return false;
         }
     }
-
-
 }

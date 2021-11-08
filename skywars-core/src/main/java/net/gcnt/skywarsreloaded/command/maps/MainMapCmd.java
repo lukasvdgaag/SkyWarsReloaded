@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.command.general;
+package net.gcnt.skywarsreloaded.command.maps;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
@@ -6,10 +6,10 @@ import net.gcnt.skywarsreloaded.command.SWCommand;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
-public class MainCmd extends Cmd {
+public class MainMapCmd extends Cmd {
 
-    public MainCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywars", "", "skywars.command.main", false, null, "Get a list of commands.");
+    public MainMapCmd(SkyWarsReloaded plugin) {
+        super(plugin, "skywarsmap", "", "skywars.command.map.main", false, null, "Get a list of commands.");
     }
 
     @Override
@@ -18,7 +18,7 @@ public class MainCmd extends Cmd {
         sender.sendMessage(plugin.getUtils().colorize(plugin.getMessages().getString(MessageProperties.CHAT_HEADER.toString())));
 
         // Sending stuff
-        for (SWCommand cmd : plugin.getCommandManager().getCommands("skywars")) {
+        for (SWCommand cmd : plugin.getCommandManager().getCommands("skywarsmap")) {
             // Permission check
             if (!sender.hasPermission(cmd.getPermission())) continue;
 

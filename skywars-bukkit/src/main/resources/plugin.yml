@@ -13,3 +13,6 @@ commands:
   skywars:
     description: Main command.
     aliases: [skywarsreloaded, sw, swr]
+  skywarsmap:
+    description: Map management command.
+    aliases: [swmap, swm]

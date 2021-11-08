@@ -14,7 +14,11 @@ public interface GameTemplate {
 
     String getDisplayName();
 
+    void setDisplayName(String value);
+
     int getTeamSize();
+
+    void setTeamSize(int size);
 
     int getMinPlayers();
 

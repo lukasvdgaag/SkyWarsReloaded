@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.command.BukkitSWCommandExecutor;
 import net.gcnt.skywarsreloaded.bukkit.data.config.BukkitYAMLManager;
 import net.gcnt.skywarsreloaded.bukkit.data.player.BukkitSWPlayerDataManager;
+import net.gcnt.skywarsreloaded.bukkit.managers.BukkitPlayerManager;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitUtils;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWConsoleSender;
 import net.gcnt.skywarsreloaded.command.CoreSWCommandManager;
@@ -46,11 +47,17 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     public void initCommands() {
         BukkitSWCommandExecutor ex = new BukkitSWCommandExecutor(this);
         plugin.getCommand("skywars").setExecutor(ex);
+        plugin.getCommand("skywarsmap").setExecutor(ex);
     }
 
     @Override
     public void initConsoleSender() {
         setConsoleSender(new BukkitSWConsoleSender(this.getPlugin().getServer().getConsoleSender()));
+    }
+
+    @Override
+    public void initPlayerManager() {
+        setPlayerManager(new BukkitPlayerManager(this));
     }
 
     public BukkitSkyWarsReloadedPlugin getPlugin() {

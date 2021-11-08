@@ -56,6 +56,8 @@ public interface SkyWarsReloaded {
 
     void setPlayerManager(SWPlayerManager playerManager);
 
+    void initPlayerManager();
+
 
     // Console
 

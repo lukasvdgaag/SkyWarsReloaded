@@ -57,12 +57,12 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         setStorage(new SQLiteStorage(this)); // requires config
 
         // Managers
+        initPlayerManager();
         initCommandManager();
         setGameManager(new CoreGameManager(this));
         initPlayerDataManager();
 
         // Player data
-        initPlayerDataManager();
         setSchematicManager(new CoreSchematicManager());
 
         // Templates
@@ -76,7 +76,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
         // Commands
         getCommandManager().registerBaseCommands();
-
+        getCommandManager().registerMapCommands();
+        initCommands();
         // Events
         // todo
 

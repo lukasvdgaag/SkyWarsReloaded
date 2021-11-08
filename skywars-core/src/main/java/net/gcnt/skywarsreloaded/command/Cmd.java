@@ -53,8 +53,9 @@ public abstract class Cmd implements SWCommand {
 
     @Override
     public String sendUsage(SWCommandSender sender, boolean send) {
-        String k = usage.equals("") ? "&7" : " &7";
-        String s = plugin.getUtils().colorize("&b/" + parentCommand + " " + command + " " + usage + k + subUsage);
+        String k = subUsage.isEmpty() ? "&7" : " &7" + subUsage;
+        String c = command.isEmpty() ? "" : " " + command;
+        String s = plugin.getUtils().colorize("&b/" + parentCommand + c + k + " &e" + usage);
         if (send) {
             s = "§fUsage: " + s;
             sender.sendMessage(s);

@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.command;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.general.MainCmd;
+import net.gcnt.skywarsreloaded.command.maps.*;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
 import java.util.*;
@@ -11,11 +12,11 @@ public class CoreSWCommandManager implements SWCommandManager {
 
     private final SkyWarsReloaded main;
 
-    private final HashMap<Class<? extends SWCommand>, SWCommand> commands;
+    private final LinkedHashMap<Class<? extends SWCommand>, SWCommand> commands;
 
     public CoreSWCommandManager(SkyWarsReloaded mainIn) {
         this.main = mainIn;
-        this.commands = new HashMap<>();
+        this.commands = new LinkedHashMap<>();
     }
 
     public void registerBaseCommands() {
@@ -23,8 +24,18 @@ public class CoreSWCommandManager implements SWCommandManager {
     }
 
     @Override
-    public List<SWCommand> getBaseCommands() {
-        return this.commands.values().stream().filter(swCommand -> swCommand.getParentCommand().equals("skywars")).collect(Collectors.toList());
+    public void registerMapCommands() {
+        this.registerCommand(new MainMapCmd(this.main));
+        this.registerCommand(new ListMapsCmd(this.main));
+        this.registerCommand(new CreateMapCmd(this.main));
+        this.registerCommand(new SaveMapCmd(this.main));
+        this.registerCommand(new SetMapTeamsizeCmd(this.main));
+        this.registerCommand(new SetMapCreatorCmd(this.main));
+    }
+
+    @Override
+    public List<SWCommand> getCommands(String baseCmd) {
+        return this.commands.values().stream().filter(swCommand -> swCommand.getParentCommand().equals(baseCmd)).collect(Collectors.toList());
     }
 
     public Collection<SWCommand> getCommands() {
@@ -42,7 +53,7 @@ public class CoreSWCommandManager implements SWCommandManager {
     public void runCommand(SWCommandSender sender, String command, String subCommand, String[] args) {
         for (SWCommand cmd : commands.values()) {
             if (cmd.getParentCommand().equalsIgnoreCase(command) && cmd.getName().equalsIgnoreCase(subCommand)) {
-                cmd.processCommand(sender, Arrays.copyOfRange(args, 1, args.length));
+                cmd.processCommand(sender, args.length > 1 ? Arrays.copyOfRange(args, 1, args.length) : new String[0]);
             }
         }
     }
