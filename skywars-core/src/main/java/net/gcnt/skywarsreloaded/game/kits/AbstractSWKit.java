@@ -160,11 +160,13 @@ public abstract class AbstractSWKit implements SWKit {
                 plugin.getLogger().severe(String.format("Failed to load boots for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
             }
         }
-        if (config.isset(KitProperties.INVENTORY_CONTENTS.toString())) {
-            config.getKeys(KitProperties.INVENTORY_CONTENTS.toString()).forEach(slot1 -> {
+
+        String invContentsKey = KitProperties.INVENTORY_CONTENTS.toString();
+        if (config.isset(invContentsKey)) {
+            config.getKeys(invContentsKey).forEach(slot1 -> {
                 try {
                     int number = Integer.parseInt(slot1);
-                    this.inventoryContents.put(number, config.getString(KitProperties.INVENTORY_CONTENTS.toString() + "." + number, null));
+                    this.inventoryContents.put(number, config.getString(invContentsKey + "." + number, null));
                 } catch (Exception e) {
                     plugin.getLogger().severe(String.format("Failed to load slot '%s' for kit %s. Ignoring it. (%s)", slot1, id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
                 }
