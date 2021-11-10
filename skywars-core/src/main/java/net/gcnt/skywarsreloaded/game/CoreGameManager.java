@@ -53,12 +53,12 @@ public class CoreGameManager implements GameManager {
 
     @Override
     public void deleteGameTemplate(String gameId) {
-
+        // todo game template deletion here
     }
 
     @Override
     public List<GameTemplate> getGameTemplates() {
-        return new ArrayList<>(this.templates.values());
+        return this.templates.values().stream().toList();
     }
 
     @Override

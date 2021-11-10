@@ -10,6 +10,7 @@ import net.gcnt.skywarsreloaded.data.schematic.CoreSchematicManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.CoreGameManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
+import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.utils.Utilities;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
@@ -31,18 +32,17 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SWCommandManager commandManager;
     private GameManager gameManager;
     private SWPlayerManager playerManager;
+    private KitManager kitManager;
 
     // others
     private Utilities utilities;
     private SWCommandSender consoleSender;
 
-    // Initialization
-
-    @Override
     /**
      * To inject platform specific code, you can override the preEnable and postEnable methods which
      * are empty by default.
      */
+    @Override
     public void onEnable() {
         this.preEnable();
 
@@ -61,12 +61,14 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         initCommandManager();
         setGameManager(new CoreGameManager(this));
         initPlayerDataManager();
+        initKitManager();
 
         // Player data
         setSchematicManager(new CoreSchematicManager());
 
         // Templates
         getGameManager().loadAllGameTemplates();
+        getKitManager().loadAllKits();
 
         // Worlds
         //todo
@@ -86,6 +88,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
         this.postEnable();
     }
+
+    // Initialization
 
     /**
      * Override to run required initialization before core enable
@@ -109,6 +113,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     public abstract void initConsoleSender();
 
+    public abstract void initKitManager();
+
     // Getters & Setters
 
     @Override
@@ -119,6 +125,16 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void setSchematicManager(SchematicManager schematicManager) {
         this.schematicManager = schematicManager;
+    }
+
+    @Override
+    public KitManager getKitManager() {
+        return kitManager;
+    }
+
+    @Override
+    public void setKitManager(KitManager kitManager) {
+        this.kitManager = kitManager;
     }
 
     @Override

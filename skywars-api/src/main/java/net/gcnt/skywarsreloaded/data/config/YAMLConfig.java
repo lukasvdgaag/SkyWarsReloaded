@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.data.config;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 public interface YAMLConfig {
 
@@ -36,6 +37,12 @@ public interface YAMLConfig {
     Object get(String property);
 
     Object get(String property, Object defaultValue);
+
+    boolean isset(String property);
+
+    boolean contains(String property);
+
+    Set<String> getKeys(String property);
 
     /**
      * Set a value to a key in the yaml config

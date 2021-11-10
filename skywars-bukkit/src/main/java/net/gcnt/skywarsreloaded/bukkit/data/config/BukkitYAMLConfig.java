@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.List;
+import java.util.Set;
 
 public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
@@ -120,6 +121,21 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     @Override
     public void set(String property, Object value) {
         fileConfiguration.set(property, value);
+    }
+
+    @Override
+    public boolean isset(String property) {
+        return fileConfiguration.isSet(property);
+    }
+
+    @Override
+    public boolean contains(String property) {
+        return fileConfiguration.contains(property);
+    }
+
+    @Override
+    public Set<String> getKeys(String property) {
+        return fileConfiguration.getConfigurationSection(property).getKeys(false);
     }
 
     @Override
