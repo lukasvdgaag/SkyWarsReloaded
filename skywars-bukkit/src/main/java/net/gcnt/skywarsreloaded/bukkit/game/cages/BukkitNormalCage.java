@@ -1,6 +1,5 @@
 package net.gcnt.skywarsreloaded.bukkit.game.cages;
 
-import com.sk89q.worldedit.bukkit.BukkitWorld;
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameWorld;
 import net.gcnt.skywarsreloaded.game.TeamSpawn;
