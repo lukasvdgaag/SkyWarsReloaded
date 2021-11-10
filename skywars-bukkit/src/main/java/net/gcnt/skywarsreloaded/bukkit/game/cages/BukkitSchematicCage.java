@@ -30,7 +30,7 @@ public class BukkitSchematicCage extends AbstractSchematicCage {
 
 
     @Override
-    public CompletableFuture<Boolean> removeCage() {
+    public CompletableFuture<Boolean> removeCage(String cage) {
         Plugin skywarsPlugin = this.main.getPlugin();
 
         CompletableFuture<Boolean> future = new CompletableFuture<>();

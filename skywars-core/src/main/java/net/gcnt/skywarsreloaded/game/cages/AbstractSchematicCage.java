@@ -6,10 +6,9 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
-import net.gcnt.skywarsreloaded.game.TeamSpawn;
 import net.gcnt.skywarsreloaded.game.TeamCage;
+import net.gcnt.skywarsreloaded.game.TeamSpawn;
 import net.gcnt.skywarsreloaded.utils.Coord;
-import net.gcnt.skywarsreloaded.utils.Coordinate;
 
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
@@ -20,10 +19,12 @@ public abstract class AbstractSchematicCage implements TeamCage {
     private final TeamSpawn spawn;
 
     private EditSession editSession;
+    private boolean placed;
 
     public AbstractSchematicCage(AbstractSkyWarsReloaded mainIn, TeamSpawn spawn) {
         this.main = mainIn;
         this.spawn = spawn;
+        this.placed = false;
     }
 
     @Override
@@ -36,7 +37,7 @@ public abstract class AbstractSchematicCage implements TeamCage {
 
     public boolean placeCageNow(String cageId) {
         // In the case that the cage already exists, remove the old one
-        removeCage();
+        removeCage(cageId);
 
         // Paste schematic
         SchematicManager schemManager = main.getSchematicManager();
@@ -54,20 +55,32 @@ public abstract class AbstractSchematicCage implements TeamCage {
         final BlockVector3 locationVec = BlockVector3.at(loc.x(), loc.y(), loc.z());
 
         this.editSession = schemManager.pasteSchematic(clipboard, bukkitWorld, locationVec);
+        setPlaced(true);
         return true;
     }
 
     @Override
-    public abstract CompletableFuture<Boolean> removeCage();
+    public abstract CompletableFuture<Boolean> removeCage(String cage);
 
     public boolean removeCageNow() {
         if (editSession == null) return false;
 
         SchematicManager schemManager = main.getSchematicManager();
         schemManager.undoSchematicPaste(editSession);
+        setPlaced(false);
 
         this.editSession = null;
         return true;
+    }
+
+    @Override
+    public boolean isPlaced() {
+        return placed;
+    }
+
+    @Override
+    public void setPlaced(boolean placed) {
+        this.placed = placed;
     }
 
     // Utils

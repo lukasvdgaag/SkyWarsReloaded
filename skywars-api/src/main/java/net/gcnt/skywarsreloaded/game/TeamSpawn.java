@@ -22,4 +22,10 @@ public interface TeamSpawn {
 
     void updateCage();
 
+    void removeCage();
+
+    TeamCage getCage();
+
+    void setCage(TeamCage cage);
+
 }

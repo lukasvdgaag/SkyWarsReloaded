@@ -11,5 +11,12 @@ public interface Coord {
 
     int z();
 
+    Coord add(Coord coord);
+
+    Coord add(int x, int y, int z);
+
     boolean equals(Coord o);
+
+    Coord clone();
+
 }

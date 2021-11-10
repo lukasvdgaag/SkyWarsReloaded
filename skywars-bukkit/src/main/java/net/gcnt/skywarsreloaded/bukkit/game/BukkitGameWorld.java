@@ -2,7 +2,10 @@ package net.gcnt.skywarsreloaded.bukkit.game;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.*;
+import net.gcnt.skywarsreloaded.utils.Coord;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,10 @@ public class BukkitGameWorld implements GameWorld {
         this.status = GameStatus.DISABLED;
         this.timer = 0;
         // todo create a world and edit this.worldName.
+    }
+
+    public World getBukkitWorld() {
+        return Bukkit.getWorld(this.worldName);
     }
 
     @Override
@@ -109,5 +116,22 @@ public class BukkitGameWorld implements GameWorld {
     @Override
     public void setTimer(int timer) {
         this.timer = timer;
+    }
+
+    @Override
+    public String[] generateChestLoot() {
+        return new String[0];
+    }
+
+    @Override
+    public void fillChest(Coord coord) {
+
+    }
+
+    @Override
+    public void removeCages() {
+        teams.forEach(gameTeam -> gameTeam.getSpawns().forEach(
+                TeamSpawn::removeCage
+        ));
     }
 }
