@@ -1,7 +1,9 @@
 package net.gcnt.skywarsreloaded.game.kits;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.HashMap;
@@ -75,14 +77,15 @@ public abstract class AbstractKitManager implements KitManager {
 
         // Add default files on first install
         if (files.length < 1) {
-            this.createKit("default");
+            this.createKit("default", null);
         }
     }
 
     @Override
-    public SWKit createKit(String id) {
+    public SWKit createKit(String id, @Nullable Item icon) {
         if (getKitByName(id) != null) return null;
         SWKit kit = initKit(id);
+        if (icon != null) kit.setIcon(icon);
         kit.saveData();
         kits.put(id, kit);
         return kit;

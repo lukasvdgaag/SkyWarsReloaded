@@ -1,5 +1,7 @@
 package net.gcnt.skywarsreloaded.game.kits;
 
+import net.gcnt.skywarsreloaded.utils.Item;
+
 import java.util.List;
 
 public interface KitManager {
@@ -14,7 +16,7 @@ public interface KitManager {
 
     List<SWKit> getKits();
 
-    SWKit createKit(String id);
+    SWKit createKit(String id, Item icon);
 
     SWKit initKit(String id);
 

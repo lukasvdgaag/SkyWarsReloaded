@@ -27,13 +27,11 @@ public class CreateKitCmd extends Cmd {
         }
 
         final String kitName = args[0];
-        SWKit kit = plugin.getKitManager().createKit(kitName);
+        SWKit kit = plugin.getKitManager().createKit(kitName, item);
         if (kit == null) {
             sender.sendMessage(plugin.getUtils().colorize("&cThere already is a kit with that name."));
             return true;
         }
-        
-        kit.setIcon(item);
 
         sender.sendMessage(plugin.getUtils().colorize("&aA new kit with the name &e" + kitName + "&a has successfully been created."));
         return true;
