@@ -1,5 +1,7 @@
 package net.gcnt.skywarsreloaded.data.config;
 
+import net.gcnt.skywarsreloaded.utils.Item;
+
 import java.io.File;
 import java.util.List;
 import java.util.Set;
@@ -43,6 +45,8 @@ public interface YAMLConfig {
     boolean contains(String property);
 
     Set<String> getKeys(String property);
+
+    Item getItem(String category);
 
     /**
      * Set a value to a key in the yaml config

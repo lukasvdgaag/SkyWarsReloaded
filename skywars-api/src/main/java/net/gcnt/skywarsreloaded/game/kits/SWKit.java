@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.game.kits;
 
 import net.gcnt.skywarsreloaded.game.GamePlayer;
+import net.gcnt.skywarsreloaded.utils.Item;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,15 +28,15 @@ public interface SWKit {
 
     String getPermission();
 
-    Object getHelmet();
+    Item getHelmet();
 
-    Object getChestplate();
+    Item getChestplate();
 
-    Object getLeggings();
+    Item getLeggings();
 
-    Object getBoots();
+    Item getBoots();
 
-    HashMap<Integer, Object> getContents();
+    HashMap<Integer, Item> getContents();
 
     List<String> getEffects();
 
