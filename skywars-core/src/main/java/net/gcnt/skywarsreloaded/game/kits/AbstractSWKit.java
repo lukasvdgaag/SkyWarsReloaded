@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.game.kits;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
+import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.KitProperties;
 
@@ -23,12 +24,12 @@ public abstract class AbstractSWKit implements SWKit {
     private List<String> lore;
     private int slot;
 
-    private Object helmet;
-    private Object chestplate;
-    private Object leggings;
-    private Object boots;
+    private Item helmet;
+    private Item chestplate;
+    private Item leggings;
+    private Item boots;
 
-    private HashMap<Integer, Object> inventoryContents;
+    private HashMap<Integer, Item> inventoryContents;
     private List<String> effects;
 
     private KitRequirements kitRequirements;
@@ -76,27 +77,27 @@ public abstract class AbstractSWKit implements SWKit {
     }
 
     @Override
-    public Object getHelmet() {
+    public Item getHelmet() {
         return helmet;
     }
 
     @Override
-    public Object getChestplate() {
+    public Item getChestplate() {
         return chestplate;
     }
 
     @Override
-    public Object getLeggings() {
+    public Item getLeggings() {
         return leggings;
     }
 
     @Override
-    public Object getBoots() {
+    public Item getBoots() {
         return boots;
     }
 
     @Override
-    public HashMap<Integer, Object> getContents() {
+    public HashMap<Integer, Item> getContents() {
         return inventoryContents;
     }
 
@@ -140,22 +141,22 @@ public abstract class AbstractSWKit implements SWKit {
         if (config.isset(KitProperties.ARMOR_CONTENTS.toString())) {
             // armor init
             try {
-                this.helmet = config.getString(KitProperties.HELMET.toString());
+                this.helmet = config.getItem(KitProperties.HELMET.toString());
             } catch (Exception e) {
                 plugin.getLogger().severe(String.format("Failed to load helmet for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
             }
             try {
-                this.chestplate = config.getString(KitProperties.CHESTPLATE.toString());
+                this.chestplate = config.getItem(KitProperties.CHESTPLATE.toString());
             } catch (Exception e) {
                 plugin.getLogger().severe(String.format("Failed to load chestplate for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
             }
             try {
-                this.leggings = config.getString(KitProperties.LEGGINGS.toString());
+                this.leggings = config.getItem(KitProperties.LEGGINGS.toString());
             } catch (Exception e) {
                 plugin.getLogger().severe(String.format("Failed to load leggings for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
             }
             try {
-                this.boots = config.getString(KitProperties.BOOTS.toString());
+                this.boots = config.getItem(KitProperties.BOOTS.toString());
             } catch (Exception e) {
                 plugin.getLogger().severe(String.format("Failed to load boots for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
             }
@@ -164,7 +165,7 @@ public abstract class AbstractSWKit implements SWKit {
             config.getKeys(KitProperties.INVENTORY_CONTENTS.toString()).forEach(slot1 -> {
                 try {
                     int number = Integer.parseInt(slot1);
-                    this.inventoryContents.put(number, config.getString(KitProperties.INVENTORY_CONTENTS.toString() + "." + number, null));
+                    this.inventoryContents.put(number, config.getItem(KitProperties.INVENTORY_CONTENTS + "." + number));
                 } catch (Exception e) {
                     plugin.getLogger().severe(String.format("Failed to load slot '%s' for kit %s. Ignoring it. (%s)", slot1, id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
                 }
