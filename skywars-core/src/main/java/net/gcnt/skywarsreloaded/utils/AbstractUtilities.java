@@ -11,4 +11,14 @@ public abstract class AbstractUtilities implements Utilities {
             return false;
         }
     }
+
+    @Override
+    public boolean isBoolean(String arg0) {
+        try {
+            Boolean.parseBoolean(arg0);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

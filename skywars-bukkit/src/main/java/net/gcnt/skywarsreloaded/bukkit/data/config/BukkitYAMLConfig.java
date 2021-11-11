@@ -157,7 +157,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     public Item getItem(String category) {
         if (!contains(category)) return null;
         ConfigurationSection section = fileConfiguration.getConfigurationSection(category);
-        if (!section.isSet("material")) return null;
+        if (section == null || !section.isSet("material")) return null;
 
         try {
             BukkitItem item = new BukkitItem(plugin, section.getString("material"));
