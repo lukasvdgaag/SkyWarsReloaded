@@ -36,4 +36,8 @@ public interface Item {
 
     void setDamage(byte damage);
 
+    void clearCachedItem();
+
+    void cacheItem();
+
 }

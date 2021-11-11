@@ -15,14 +15,60 @@ import java.util.List;
 public class BukkitItem extends AbstractItem {
 
     private final SkyWarsReloaded plugin;
+    private ItemStack itemStack;
 
     public BukkitItem(SkyWarsReloaded plugin, String material) {
         super(material);
         this.plugin = plugin;
+        this.itemStack = null;
+    }
+
+    public static BukkitItem fromBukkit(SkyWarsReloaded plugin, ItemStack itemStack) {
+        if (itemStack == null) return null;
+
+        BukkitItem item = new BukkitItem(plugin, itemStack.getType().name());
+
+        if (itemStack.hasItemMeta()) {
+            ItemMeta meta = itemStack.getItemMeta();
+            item.setLore(meta.getLore());
+
+            final List<String> flags = new ArrayList<>();
+            meta.getItemFlags().forEach(itemFlag -> flags.add(itemFlag.name()));
+            item.setItemFlags(flags);
+
+            final List<String> enchantments = new ArrayList<>();
+            meta.getEnchants().forEach((enchantment, integer) -> enchantments.add(enchantment.getName() + ":" + integer));
+            item.setEnchantments(enchantments);
+
+            item.setDisplayName(meta.getDisplayName());
+        }
+        item.setDurability(item.getDurability());
+        item.setDamage(item.getDamage());
+        item.setAmount(item.getAmount());
+
+        item.setItemStack(itemStack);
+
+        return item;
+    }
+
+    public void setItemStack(ItemStack itemStack) {
+        this.itemStack = itemStack;
+    }
+
+    @Override
+    public void cacheItem() {
+        getBukkitItem();
+    }
+
+    @Override
+    public void clearCachedItem() {
+        this.itemStack = null;
     }
 
     public ItemStack getBukkitItem() {
         try {
+            if (itemStack != null) return itemStack;
+
             final int serverVersion = plugin.getUtils().getServerVersion();
 
             Material mat = Material.valueOf(material.toUpperCase());
@@ -67,6 +113,7 @@ public class BukkitItem extends AbstractItem {
                 item.setItemMeta(meta);
             }
 
+            setItemStack(item);
             return item;
         } catch (Exception e) {
             plugin.getLogger().severe(String.format("Failed to load item with material %s. Ignoring it. (%s)", material, e.getClass().getName() + ": " + e.getLocalizedMessage()));

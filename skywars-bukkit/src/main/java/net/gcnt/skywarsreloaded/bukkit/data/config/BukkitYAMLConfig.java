@@ -154,10 +154,10 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     }
 
     @Override
-    public Item getItem(String category) {
-        if (!contains(category)) return null;
+    public Item getItem(String category, Item def) {
+        if (!contains(category)) return def;
         ConfigurationSection section = fileConfiguration.getConfigurationSection(category);
-        if (section == null || !section.isSet("material")) return null;
+        if (section == null || !section.isSet("material")) return def;
 
         try {
             BukkitItem item = new BukkitItem(plugin, section.getString("material"));
@@ -179,7 +179,12 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
             plugin.getLogger().severe(String.format("Failed to load item with material %s. Ignoring it. (%s)", section.getString("material"), e.getClass().getName() + ": " + e.getLocalizedMessage()));
         }
 
-        return null;
+        return def;
+    }
+
+    @Override
+    public Item getItem(String category) {
+        return getItem(category, new BukkitItem(plugin, "STONE"));
     }
 
     @Override

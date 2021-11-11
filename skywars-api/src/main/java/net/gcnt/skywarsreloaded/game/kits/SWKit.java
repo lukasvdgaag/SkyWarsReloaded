@@ -16,29 +16,53 @@ public interface SWKit {
 
     String getDisplayName();
 
-    String getIcon();
+    void setDisplayName(String name);
 
-    String getUnavailableIcon();
+    Item getIcon();
+
+    void setIcon(Item icon);
+
+    Item getUnavailableIcon();
+
+    void setUnavailableIcon(Item icon);
 
     int getSlot();
 
+    void setSlot(int slot);
+
     String getDescription();
 
+    void setDescription(String description);
+
     List<String> getLore();
+
+    void setLore(List<String> lore);
 
     String getPermission();
 
     Item getHelmet();
 
+    void setHelmet(Item item);
+
     Item getChestplate();
+
+    void setChestplate(Item item);
 
     Item getLeggings();
 
+    void setLeggings(Item item);
+
     Item getBoots();
+
+    void setBoots(Item item);
 
     HashMap<Integer, Item> getContents();
 
+    void setContents(HashMap<Integer, Item> contents);
+
     List<String> getEffects();
+
+    void setEffects(List<String> effects);
 
     KitRequirements getRequirements();
 

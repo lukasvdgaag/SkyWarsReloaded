@@ -83,6 +83,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         // Commands
         getCommandManager().registerBaseCommands();
         getCommandManager().registerMapCommands();
+        getCommandManager().registerKitCommands();
         initCommands();
         // Events
         // todo

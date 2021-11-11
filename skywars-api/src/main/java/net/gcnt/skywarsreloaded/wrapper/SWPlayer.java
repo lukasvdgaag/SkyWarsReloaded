@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.wrapper;
 
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
+import net.gcnt.skywarsreloaded.utils.Item;
 
 import java.util.UUID;
 
@@ -18,4 +19,13 @@ public interface SWPlayer extends SWCommandSender {
     SWPlayerData getPlayerData();
 
     void setPlayerData(SWPlayerData playerData);
+
+    Item getItemInHand(boolean offHand);
+
+    Item[] getInventory();
+
+    void setSlot(int slot, Item item);
+
+    Item getSlot(int slot);
+
 }

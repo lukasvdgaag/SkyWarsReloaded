@@ -12,7 +12,10 @@ softdepend:
 commands:
   skywars:
     description: Main command.
-    aliases: [skywarsreloaded, sw, swr]
+    aliases: [ skywarsreloaded, sw, swr ]
   skywarsmap:
     description: Map management command.
-    aliases: [swmap, swm]
+    aliases: [ swmap, swm ]
+  skywarskit:
+    description: Kit management command.
+    aliases: [ swkit, swk ]

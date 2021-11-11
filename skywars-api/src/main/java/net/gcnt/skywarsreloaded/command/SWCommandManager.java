@@ -11,6 +11,8 @@ public interface SWCommandManager {
 
     void registerMapCommands();
 
+    void registerKitCommands();
+
     List<SWCommand> getCommands(String baseCmd);
 
     Collection<SWCommand> getCommands();

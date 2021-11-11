@@ -33,6 +33,7 @@ public abstract class AbstractItem implements Item {
     @Override
     public void setMaterial(String material) {
         this.material = material;
+        clearCachedItem();
     }
 
     @Override
@@ -43,6 +44,7 @@ public abstract class AbstractItem implements Item {
     @Override
     public void setAmount(int amount) {
         this.amount = amount;
+        clearCachedItem();
     }
 
     @Override
@@ -53,6 +55,7 @@ public abstract class AbstractItem implements Item {
     @Override
     public void setEnchantments(List<String> enchantments) {
         this.enchantments = enchantments;
+        clearCachedItem();
     }
 
     @Override
@@ -63,6 +66,7 @@ public abstract class AbstractItem implements Item {
     @Override
     public void setLore(List<String> lore) {
         this.lore = lore;
+        clearCachedItem();
     }
 
     @Override
@@ -73,6 +77,7 @@ public abstract class AbstractItem implements Item {
     @Override
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+        clearCachedItem();
     }
 
     @Override
@@ -83,6 +88,7 @@ public abstract class AbstractItem implements Item {
     @Override
     public void setItemFlags(List<String> itemFlags) {
         this.itemFlags = itemFlags;
+        clearCachedItem();
     }
 
     @Override
@@ -93,6 +99,7 @@ public abstract class AbstractItem implements Item {
     @Override
     public void setDurability(short durability) {
         this.durability = durability;
+        clearCachedItem();
     }
 
     @Override
@@ -103,5 +110,13 @@ public abstract class AbstractItem implements Item {
     @Override
     public void setDamage(byte damage) {
         this.damage = damage;
+        clearCachedItem();
     }
+
+    @Override
+    public abstract void clearCachedItem();
+
+    @Override
+    public abstract void cacheItem();
+
 }

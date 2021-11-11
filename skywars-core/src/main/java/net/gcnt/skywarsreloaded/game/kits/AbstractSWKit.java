@@ -20,8 +20,8 @@ public abstract class AbstractSWKit implements SWKit {
 
     private String displayName;
     private String description;
-    private String icon;
-    private String unavailableIcon;
+    private Item icon;
+    private Item unavailableIcon;
     private List<String> lore;
     private int slot;
 
@@ -55,13 +55,28 @@ public abstract class AbstractSWKit implements SWKit {
     }
 
     @Override
-    public String getIcon() {
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    @Override
+    public Item getIcon() {
         return icon;
     }
 
     @Override
-    public String getUnavailableIcon() {
+    public void setIcon(Item icon) {
+        this.icon = icon;
+    }
+
+    @Override
+    public Item getUnavailableIcon() {
         return unavailableIcon;
+    }
+
+    @Override
+    public void setUnavailableIcon(Item unavailableIcon) {
+        this.unavailableIcon = unavailableIcon;
     }
 
     @Override
@@ -70,8 +85,18 @@ public abstract class AbstractSWKit implements SWKit {
     }
 
     @Override
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
     public List<String> getLore() {
         return lore;
+    }
+
+    @Override
+    public void setLore(List<String> lore) {
+        this.lore = lore;
     }
 
     @Override
@@ -85,8 +110,18 @@ public abstract class AbstractSWKit implements SWKit {
     }
 
     @Override
+    public void setHelmet(Item helmet) {
+        this.helmet = helmet;
+    }
+
+    @Override
     public Item getChestplate() {
         return chestplate;
+    }
+
+    @Override
+    public void setChestplate(Item chestplate) {
+        this.chestplate = chestplate;
     }
 
     @Override
@@ -95,8 +130,18 @@ public abstract class AbstractSWKit implements SWKit {
     }
 
     @Override
+    public void setLeggings(Item leggings) {
+        this.leggings = leggings;
+    }
+
+    @Override
     public Item getBoots() {
         return boots;
+    }
+
+    @Override
+    public void setBoots(Item boots) {
+        this.boots = boots;
     }
 
     @Override
@@ -105,8 +150,18 @@ public abstract class AbstractSWKit implements SWKit {
     }
 
     @Override
+    public void setContents(HashMap<Integer, Item> inventoryContents) {
+        this.inventoryContents = inventoryContents;
+    }
+
+    @Override
     public List<String> getEffects() {
         return effects;
+    }
+
+    @Override
+    public void setEffects(List<String> effects) {
+        this.effects = effects;
     }
 
     @Override
@@ -120,11 +175,17 @@ public abstract class AbstractSWKit implements SWKit {
     }
 
     @Override
+    public void setSlot(int slot) {
+        this.slot = slot;
+    }
+
+    @Override
     public synchronized void loadData() {
         // basic kit info init
         this.displayName = config.getString(KitProperties.DISPLAY_NAME.toString(), id);
-        this.icon = config.getString(KitProperties.ICON.toString(), "STONE");
-        this.unavailableIcon = config.getString(KitProperties.UNAVAILABLE_ICON.toString(), "BARRIER");
+        // todo load default item when not in config.
+        this.icon = config.getItem(KitProperties.ICON.toString());
+        this.unavailableIcon = config.getItem(KitProperties.UNAVAILABLE_ICON.toString());
         this.description = config.getString(KitProperties.DESCRIPTION.toString(), "SkyWarsReloaded Kit");
         this.lore = config.getStringList(KitProperties.LORE.toString());
         this.effects = config.getStringList(KitProperties.EFFECTS.toString());

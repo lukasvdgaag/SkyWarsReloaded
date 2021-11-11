@@ -24,6 +24,6 @@ public class MainMapCmd extends Cmd {
 
             sender.sendMessage(cmd.sendUsage(sender, false));
         }
-        return false;
+        return true;
     }
 }

@@ -48,6 +48,8 @@ public interface YAMLConfig {
 
     Item getItem(String category);
 
+    Item getItem(String category, Item def);
+
     /**
      * Set a value to a key in the yaml config
      *
