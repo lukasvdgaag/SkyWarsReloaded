@@ -99,7 +99,7 @@ public class CoreTeamSpawn implements TeamSpawn {
 
     @Override
     public void removeCage() {
-        if (cage.isPlaced()) return;
+        if (!cage.isPlaced()) return;
         cage.removeCage(this.cageDesign);
     }
 

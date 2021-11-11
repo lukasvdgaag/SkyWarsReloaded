@@ -1,7 +1,5 @@
 package net.gcnt.skywarsreloaded.game.chest;
 
-import net.gcnt.skywarsreloaded.game.kits.SWKit;
-
 import java.util.List;
 
 public interface ChestManager {

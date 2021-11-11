@@ -7,6 +7,7 @@ import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.KitProperties;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,6 +39,8 @@ public abstract class AbstractSWKit implements SWKit {
         this.plugin = plugin;
         this.id = id;
         this.permission = "sw.kit." + id;
+        this.inventoryContents = new HashMap<>();
+        this.effects = new ArrayList<>();
         this.config = plugin.getYAMLManager().loadConfig("kit-" + id, FolderProperties.KITS_FOLDER.toString(), id + ".yml", "/kits/boom.yml");
     }
 

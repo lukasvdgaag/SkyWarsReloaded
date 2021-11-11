@@ -28,13 +28,13 @@ public class BukkitSWKit extends AbstractSWKit {
 
     public BukkitSWKit(SkyWarsReloaded plugin, String id) {
         super(plugin, id);
-        this.helmet = ((BukkitItem) getHelmet()).getBukkitItem();
-        this.chestplate = ((BukkitItem) getChestplate()).getBukkitItem();
-        this.leggings = ((BukkitItem) getLeggings()).getBukkitItem();
-        this.boots = ((BukkitItem) getBoots()).getBukkitItem();
+        this.helmet = getHelmet() == null ? null : ((BukkitItem) getHelmet()).getBukkitItem();
+        this.chestplate = getChestplate() == null ? null : ((BukkitItem) getChestplate()).getBukkitItem();
+        this.leggings = getLeggings() == null ? null : ((BukkitItem) getLeggings()).getBukkitItem();
+        this.boots = getBoots() == null ? null : ((BukkitItem) getBoots()).getBukkitItem();
 
         this.inventory = new HashMap<>();
-        getContents().forEach((slot, item) -> inventory.put(slot, ((BukkitItem) item).getBukkitItem()));
+        getContents().forEach((slot, item) -> inventory.put(slot, item == null ? null : ((BukkitItem) item).getBukkitItem()));
 
         this.effects = new ArrayList<>();
         getEffects().forEach(s -> effects.add(new BukkitEffect(plugin, s)));

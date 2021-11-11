@@ -7,6 +7,7 @@ import net.gcnt.skywarsreloaded.data.player.SWPlayerDataManager;
 import net.gcnt.skywarsreloaded.data.player.Storage;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
+import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.utils.Utilities;
@@ -86,6 +87,10 @@ public interface SkyWarsReloaded {
     Utilities getUtils();
 
     void setUtils(Utilities utils);
+
+    ChestManager getChestManager();
+
+    void setChestManager(ChestManager chestManager);
 
 
     // Plugin

@@ -10,6 +10,7 @@ import net.gcnt.skywarsreloaded.data.schematic.CoreSchematicManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.CoreGameManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
+import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.utils.Utilities;
@@ -33,6 +34,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private GameManager gameManager;
     private SWPlayerManager playerManager;
     private KitManager kitManager;
+    private ChestManager chestManager;
 
     // others
     private Utilities utilities;
@@ -62,13 +64,15 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         setGameManager(new CoreGameManager(this));
         initPlayerDataManager();
         initKitManager();
+        initChestManager();
+        setSchematicManager(new CoreSchematicManager());
 
         // Player data
-        setSchematicManager(new CoreSchematicManager());
 
         // Templates
         getGameManager().loadAllGameTemplates();
         getKitManager().loadAllKits();
+        getChestManager().loadAllChestTypes();
 
         // Worlds
         //todo
@@ -114,6 +118,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public abstract void initConsoleSender();
 
     public abstract void initKitManager();
+
+    public abstract void initChestManager();
 
     // Getters & Setters
 
@@ -235,5 +241,15 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void setCommandManager(SWCommandManager commandManager) {
         this.commandManager = commandManager;
+    }
+
+    @Override
+    public ChestManager getChestManager() {
+        return chestManager;
+    }
+
+    @Override
+    public void setChestManager(ChestManager chestManager) {
+        this.chestManager = chestManager;
     }
 }

@@ -8,7 +8,6 @@ import net.gcnt.skywarsreloaded.game.cages.NormalCageShape;
 import net.gcnt.skywarsreloaded.utils.Coord;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.concurrent.CompletableFuture;
