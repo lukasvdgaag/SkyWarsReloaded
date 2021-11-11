@@ -50,6 +50,7 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
         BukkitSWCommandExecutor ex = new BukkitSWCommandExecutor(this);
         plugin.getCommand("skywars").setExecutor(ex);
         plugin.getCommand("skywarsmap").setExecutor(ex);
+        plugin.getCommand("skywarskit").setExecutor(ex);
     }
 
     @Override

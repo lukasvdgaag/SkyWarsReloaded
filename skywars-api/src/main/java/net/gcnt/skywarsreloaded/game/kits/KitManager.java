@@ -10,8 +10,12 @@ public interface KitManager {
 
     void deleteKit(String kitId);
 
+    void createDefaultsIfNotPresent();
+
     List<SWKit> getKits();
 
     SWKit createKit(String id);
+
+    SWKit initKit(String id);
 
 }

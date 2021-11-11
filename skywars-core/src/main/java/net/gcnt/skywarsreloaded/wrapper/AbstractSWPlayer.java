@@ -1,16 +1,19 @@
 package net.gcnt.skywarsreloaded.wrapper;
 
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
 
 import java.util.UUID;
 
 public abstract class AbstractSWPlayer implements SWPlayer {
 
+    public final SkyWarsReloaded plugin;
     private final UUID uuid;
     private boolean online;
     private SWPlayerData playerData;
 
-    public AbstractSWPlayer(UUID uuid, boolean online) {
+    public AbstractSWPlayer(SkyWarsReloaded plugin, UUID uuid, boolean online) {
+        this.plugin = plugin;
         this.uuid = uuid;
         this.online = online;
     }

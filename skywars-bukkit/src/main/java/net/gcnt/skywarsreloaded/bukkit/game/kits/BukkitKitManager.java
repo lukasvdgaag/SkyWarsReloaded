@@ -14,38 +14,7 @@ public class BukkitKitManager extends AbstractKitManager {
     }
 
     @Override
-    public void loadAllKits() {
-        File dir = new File(plugin.getDataFolder(), FolderProperties.KITS_FOLDER.toString());
-
-        // Sanity checks
-        if (!dir.exists()) return;
-
-        // Reset all currently loaded kits
-        this.kits.clear();
-
-        // Load all from directory
-        for (File file : dir.listFiles()) {
-
-            // Sanity checks
-            if (file.isDirectory() || !file.getName().endsWith(".yml")) continue;
-            String name = file.getName().replace(".yml", "");
-            if (getKitByName(name) != null) continue;
-
-            // Load data & store in cache
-            SWKit kit = new BukkitSWKit(plugin, name);
-            kits.put(name, kit);
-
-            kit.loadData();
-            plugin.getLogger().info("Loaded kit '" + name + "'.");
-        }
-    }
-
-    @Override
-    public SWKit createKit(String id) {
-        if (getKitByName(id) != null) return null;
-        SWKit kit = new BukkitSWKit(plugin, id);
-        kit.saveData();
-        kits.put(id, kit);
-        return kit;
+    public SWKit initKit(String id) {
+        return new BukkitSWKit(plugin, id);
     }
 }

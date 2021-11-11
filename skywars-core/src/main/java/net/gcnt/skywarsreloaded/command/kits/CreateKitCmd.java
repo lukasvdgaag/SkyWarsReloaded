@@ -19,14 +19,6 @@ public class CreateKitCmd extends Cmd {
             sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a kit name."));
             return false;
         }
-
-        final String kitName = args[0];
-        SWKit kit = plugin.getKitManager().createKit(kitName);
-        if (kit == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere already is a kit with that name."));
-            return true;
-        }
-
         SWPlayer swp = (SWPlayer) sender;
         Item item = swp.getItemInHand(false);
         if (item == null) {
@@ -34,6 +26,13 @@ public class CreateKitCmd extends Cmd {
             return true;
         }
 
+        final String kitName = args[0];
+        SWKit kit = plugin.getKitManager().createKit(kitName);
+        if (kit == null) {
+            sender.sendMessage(plugin.getUtils().colorize("&cThere already is a kit with that name."));
+            return true;
+        }
+        
         kit.setIcon(item);
 
         sender.sendMessage(plugin.getUtils().colorize("&aA new kit with the name &e" + kitName + "&a has successfully been created."));

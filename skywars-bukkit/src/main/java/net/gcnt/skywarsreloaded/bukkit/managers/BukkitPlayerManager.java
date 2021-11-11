@@ -34,7 +34,7 @@ public class BukkitPlayerManager extends AbstractPlayerManager {
         SWPlayer swp = getPlayerByUUID(uuid);
         if (swp != null) return swp;
 
-        swp = new BukkitSWPlayer(uuid, true);
+        swp = new BukkitSWPlayer(plugin, uuid, true);
         players.add(swp);
         return swp;
     }

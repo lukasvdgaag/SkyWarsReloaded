@@ -4,9 +4,9 @@ unavailable-icon: BARRIER
 description: TNT says Boom!
 slot: 1
 lore:
-- ''
-- ''
-- ''
+  - ''
+  - ''
+  - ''
 requirements:
   permission: false # needs permission
   cost: 1000 # or needs to pay 1k cash
@@ -20,30 +20,23 @@ contents:
     chestplate: ''
     leggings: ''
     boots:
-      ==: org.bukkit.inventory.ItemStack
-      type: DIAMOND_BOOTS
-      meta:
-        ==: ItemMeta
-        meta-type: UNSPECIFIC
-        enchants:
-          PROTECTION_ENVIRONMENTAL: 1
+      material: DIAMOND_BOOTS
+      enchantments:
+        - PROTECTION_ENVIRONMENTAL:1
   inventory:
     '1':
       ==: org.bukkit.inventory.ItemStack
       type: TNT
       amount: 6
     '2':
-      ==: org.bukkit.inventory.ItemStack
-      type: DARK_OAK_PRESSURE_PLATE
+      material: DARK_OAK_PRESSURE_PLATE
       amount: 2
     '3':
-      ==: org.bukkit.inventory.ItemStack
-      type: LEVER
+      material: LEVER
     '4':
-      ==: org.bukkit.inventory.ItemStack
-      type: REDSTONE
+      material: REDSTONE
       amount: 4
 
 effects: # list of option effects to be applied to the player during the game.
-# format: <TYPE>:[duration]:[amount]
-- STRENGTH:1
+  # format: <TYPE>:[duration]:[amount]
+  - STRENGTH:1
