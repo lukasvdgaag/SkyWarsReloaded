@@ -45,5 +45,5 @@ contents:
       amount: 4
 
 effects: # list of option effects to be applied to the player during the game.
-# format: <TYPE>:[amount]
+# format: <TYPE>:[duration]:[amount]
 - STRENGTH:1
