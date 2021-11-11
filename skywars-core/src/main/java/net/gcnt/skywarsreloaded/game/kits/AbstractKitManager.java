@@ -40,7 +40,10 @@ public abstract class AbstractKitManager implements KitManager {
         this.kits.clear();
 
         // Load all from directory
-        for (File file : dir.listFiles()) {
+        File[] files = dir.listFiles();
+        if (files == null) return;
+
+        for (File file : files) {
 
             // Sanity checks
             if (file.isDirectory() || !file.getName().endsWith(".yml")) continue;
@@ -63,7 +66,7 @@ public abstract class AbstractKitManager implements KitManager {
 
     @Override
     public void createDefaultsIfNotPresent() {
-        File dir = new File(plugin.getDataFolder(), FolderProperties.CHEST_TYPES_FOLDER.toString());
+        File dir = new File(plugin.getDataFolder(), FolderProperties.KITS_FOLDER.toString());
 
         // Sanity checks
         if (!dir.exists()) {
