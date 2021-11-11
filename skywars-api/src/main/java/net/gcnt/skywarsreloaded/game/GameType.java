@@ -1,10 +1,9 @@
 package net.gcnt.skywarsreloaded.game;
 
-public enum ChestType {
+public enum GameType {
 
     BASIC,
     NORMAL,
-    OVERPOWERED,
     INSANE
 
 }

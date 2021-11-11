@@ -4,7 +4,9 @@ public enum FolderProperties {
 
     TEMPLATE_FOLDER("map_templates"),
     PLAYERDATA_FOLDER("player_data"),
-    KITS_FOLDER("kits");
+    KITS_FOLDER("kits"),
+    CHEST_TYPES_FOLDER("chests")
+    ;
 
     private final String folderName;
 
