@@ -6,4 +6,6 @@ public interface Utilities {
 
     String colorize(String arg0);
 
+    int getServerVersion();
+
 }
