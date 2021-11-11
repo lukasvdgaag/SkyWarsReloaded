@@ -41,7 +41,7 @@ public abstract class AbstractSWKit implements SWKit {
         this.permission = "sw.kit." + id;
         this.inventoryContents = new HashMap<>();
         this.effects = new ArrayList<>();
-        this.config = plugin.getYAMLManager().loadConfig("kit-" + id, FolderProperties.KITS_FOLDER.toString(), id + ".yml", "/kits/boom.yml");
+        this.config = plugin.getYAMLManager().loadConfig("kit-" + id, FolderProperties.KITS_FOLDER.toString(), id + ".yml", "/kits/default.yml");
         this.kitRequirements = new CoreKitRequirements(this);
     }
 

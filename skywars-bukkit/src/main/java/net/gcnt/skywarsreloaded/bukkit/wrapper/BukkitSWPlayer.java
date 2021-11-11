@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.wrapper.AbstractSWPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -44,6 +45,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
             if (offHand) item = player.getInventory().getItemInOffHand();
             else item = player.getInventory().getItemInMainHand();
         } else item = player.getInventory().getItemInHand();
+        if (item == null || item.getType() == Material.AIR) return null;
         return BukkitItem.fromBukkit(plugin, item);
     }
 
@@ -52,7 +54,8 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
         final ItemStack[] contents = player.getInventory().getContents();
         Item[] items = new Item[contents.length];
         for (int i = 0; i < contents.length; i++) {
-            items[i] = BukkitItem.fromBukkit(plugin, contents[i]);
+            ItemStack item = contents[i];
+            items[i] = BukkitItem.fromBukkit(plugin, item == null || item.getType() == Material.AIR ? null : item);
         }
         return items;
     }
