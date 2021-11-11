@@ -1,7 +1,10 @@
 package net.gcnt.skywarsreloaded.game.chest;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,7 +19,57 @@ public abstract class AbstractChestManager implements ChestManager {
     }
 
     @Override
-    public abstract void loadAllChestTypes();
+    public void loadAllChestTypes() {
+        // Chests folder under skywars plugin
+        File dir = new File(plugin.getDataFolder(), FolderProperties.CHEST_TYPES_FOLDER.toString());
+
+        // Sanity checks
+        if (!dir.exists()) return;
+
+        // Reset all currently loaded chest types
+        this.chests.clear();
+
+        // Load all from directory
+        File[] files = dir.listFiles();
+        if (files == null) return;
+
+        for (File file : files) {
+
+            // Sanity checks
+            if (file.isDirectory() || !file.getName().endsWith(".yml")) continue;
+            String name = file.getName().replace(".yml", "");
+            if (getChestTypeByName(name) != null) continue;
+
+            // Load data & store in cache
+            SWChestType chestType = this.initChestType(name);
+            chests.put(name, chestType);
+
+            chestType.loadData();
+            plugin.getLogger().info("Loaded chest type '" + name + "'.");
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unused")
+    public void createDefaultsIfNotPresent() {
+        File dir = new File(plugin.getDataFolder(), FolderProperties.CHEST_TYPES_FOLDER.toString());
+
+        // Sanity checks
+        if (!dir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            dir.mkdirs();
+        }
+
+        // List all from directory
+        File[] files = dir.listFiles();
+        if (files == null) return;
+
+        // Add default files on first install
+        if (files.length < 1) {
+            this.createChestType("normal");
+            this.createChestType("center");
+        }
+    }
 
     @Override
     public SWChestType getChestTypeByName(String chestId) {
@@ -34,6 +87,18 @@ public abstract class AbstractChestManager implements ChestManager {
     }
 
     @Override
-    public abstract SWChestType createChestType(String id);
+    public SWChestType createChestType(@NotNull String name) {
+        if (getChestTypeByName(name) != null) return null;
+
+        SWChestType chestType = this.initChestType(name);
+        chestType.saveData();
+        chests.put(name, chestType);
+        return chestType;
+    }
+
+    // Platform specific
+
+    @Override
+    public abstract SWChestType initChestType(String name);
 
 }
