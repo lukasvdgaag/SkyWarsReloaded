@@ -2,8 +2,7 @@ package net.gcnt.skywarsreloaded.command;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.general.MainCmd;
-import net.gcnt.skywarsreloaded.command.kits.CreateKitCmd;
-import net.gcnt.skywarsreloaded.command.kits.MainKitCmd;
+import net.gcnt.skywarsreloaded.command.kits.*;
 import net.gcnt.skywarsreloaded.command.maps.*;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
@@ -42,6 +41,12 @@ public class CoreSWCommandManager implements SWCommandManager {
     public void registerKitCommands() {
         this.registerCommand(new MainKitCmd(this.main));
         this.registerCommand(new CreateKitCmd(this.main));
+        this.registerCommand(new PreviewKitCmd(this.main));
+        this.registerCommand(new SetKitContentsCmd(this.main));
+        this.registerCommand(new SetKitIconCmd(this.main));
+        this.registerCommand(new SetKitUnavailableIconCmd(this.main));
+        this.registerCommand(new SetKitSlotCmd(this.main));
+        this.registerCommand(new SetKitDisplayNameCmd(this.main));
     }
 
     @Override

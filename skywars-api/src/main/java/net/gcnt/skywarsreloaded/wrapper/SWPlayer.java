@@ -28,4 +28,22 @@ public interface SWPlayer extends SWCommandSender {
 
     Item getSlot(int slot);
 
+    Item getHelmet();
+
+    void setHelmet(Item helmet);
+
+    Item getChestplate();
+
+    void setChestplate(Item chestplate);
+
+    Item getLeggings();
+
+    void setLeggings(Item leggings);
+
+    Item getBoots();
+
+    void setBoots(Item boots);
+
+    void clearInventory();
+
 }

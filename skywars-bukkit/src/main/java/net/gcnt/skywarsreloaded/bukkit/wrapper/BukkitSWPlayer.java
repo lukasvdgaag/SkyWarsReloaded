@@ -69,4 +69,49 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     public Item getSlot(int slot) {
         return BukkitItem.fromBukkit(plugin, player.getInventory().getItem(slot));
     }
+
+    @Override
+    public Item getHelmet() {
+        return BukkitItem.fromBukkit(plugin, player.getInventory().getHelmet());
+    }
+
+    @Override
+    public void setHelmet(Item helmet) {
+        player.getInventory().setHelmet(((BukkitItem) helmet).getBukkitItem());
+    }
+
+    @Override
+    public Item getChestplate() {
+        return BukkitItem.fromBukkit(plugin, player.getInventory().getChestplate());
+    }
+
+    @Override
+    public void setChestplate(Item chestplate) {
+        player.getInventory().setHelmet(((BukkitItem) chestplate).getBukkitItem());
+    }
+
+    @Override
+    public Item getLeggings() {
+        return BukkitItem.fromBukkit(plugin, player.getInventory().getLeggings());
+    }
+
+    @Override
+    public void setLeggings(Item leggings) {
+        player.getInventory().setHelmet(((BukkitItem) leggings).getBukkitItem());
+    }
+
+    @Override
+    public Item getBoots() {
+        return BukkitItem.fromBukkit(plugin, player.getInventory().getBoots());
+    }
+
+    @Override
+    public void setBoots(Item boots) {
+        player.getInventory().setHelmet(((BukkitItem) boots).getBukkitItem());
+    }
+
+    @Override
+    public void clearInventory() {
+        player.getInventory().clear();
+    }
 }
