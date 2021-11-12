@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.game.kits;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
-import net.gcnt.skywarsreloaded.game.GamePlayer;
+import net.gcnt.skywarsreloaded.data.player.PlayerStat;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.KitProperties;
@@ -211,7 +211,13 @@ public abstract class AbstractSWKit implements SWKit {
         this.kitRequirements.setRequirePermission(config.getBoolean(KitProperties.REQUIREMENTS_PERMISSION.toString(), false));
         this.kitRequirements.setCost(config.getInt(KitProperties.REQUIREMENTS_COST.toString(), 0));
         if (config.contains(KitProperties.REQUIREMENTS_STATS.toString())) {
-            config.getKeys(KitProperties.REQUIREMENTS_STATS.toString()).forEach(stat -> this.kitRequirements.addMinimumStat(stat, config.getInt(KitProperties.REQUIREMENTS_STATS.toString() + "." + stat)));
+            config.getKeys(KitProperties.REQUIREMENTS_STATS.toString()).forEach(stat -> {
+                try {
+                    this.kitRequirements.addMinimumStat(PlayerStat.fromString(stat), config.getInt(KitProperties.REQUIREMENTS_STATS + "." + stat));
+                } catch (Exception e) {
+                    plugin.getLogger().severe(String.format("Failed to load %s stat requirement for kit %s. Ignoring it. (%s)", stat, id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                }
+            });
         }
 
         // inventory content init
@@ -272,7 +278,7 @@ public abstract class AbstractSWKit implements SWKit {
         // clearing required stats from current file
         config.set(KitProperties.REQUIREMENTS_STATS.toString(), null);
         getRequirements().getMinimumStats().forEach(
-                (stat, value) -> config.set(KitProperties.REQUIREMENTS_STATS + "." + stat, value)
+                (stat, value) -> config.set(KitProperties.REQUIREMENTS_STATS + "." + stat.getProperty(), value)
         );
 
         config.set(KitProperties.HELMET.toString(), helmet);

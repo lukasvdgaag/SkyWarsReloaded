@@ -9,7 +9,9 @@ lore:
   - ''
 requirements:
   permission: false # needs permission
-  cost: 1000 # or needs to pay 1k cash
+  cost: 1000 # or needs to pay 1k cash\
+  level: 10
+  experience: 100
   stats: # or needs at least the following stats
     kills: 100
     wins: 100

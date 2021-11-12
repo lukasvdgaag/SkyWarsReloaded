@@ -1,5 +1,7 @@
 package net.gcnt.skywarsreloaded.game.kits;
 
+import net.gcnt.skywarsreloaded.data.player.PlayerStat;
+
 import java.util.HashMap;
 
 public interface KitRequirements {
@@ -14,9 +16,17 @@ public interface KitRequirements {
 
     void setCost(int cost);
 
-    HashMap<String, Integer> getMinimumStats();
+    int getLevel();
 
-    void addMinimumStat(String stat, int value);
+    void setLevel(int level);
+
+    int getExperience();
+
+    void setExperience(int experience);
+
+    HashMap<PlayerStat, Integer> getMinimumStats();
+
+    void addMinimumStat(PlayerStat stat, int value);
 
 
 }

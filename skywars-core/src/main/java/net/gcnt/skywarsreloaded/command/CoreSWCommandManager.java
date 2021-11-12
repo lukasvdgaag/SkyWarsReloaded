@@ -49,6 +49,7 @@ public class CoreSWCommandManager implements SWCommandManager {
         this.registerCommand(new SetKitDisplayNameCmd(this.main));
         this.registerCommand(new SetKitDescriptionCmd(this.main));
         this.registerCommand(new SetKitLoreCmd(this.main));
+        this.registerCommand(new SetKitRequirementsCmd(this.main));
     }
 
     @Override
