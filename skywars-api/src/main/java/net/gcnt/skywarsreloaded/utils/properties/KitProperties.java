@@ -20,7 +20,8 @@ public enum KitProperties {
     HELMET("contents.armor.helmet"),
     CHESTPLATE("contents.armor.chestplate"),
     LEGGINGS("contents.armor.leggings"),
-    BOOTS("contents.armor.boots");
+    BOOTS("contents.armor.boots"),
+    OFF_HAND("contents.off-hand");
 
 
     private final String property;

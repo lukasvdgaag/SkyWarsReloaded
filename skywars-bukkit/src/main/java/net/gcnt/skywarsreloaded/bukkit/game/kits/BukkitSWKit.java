@@ -4,7 +4,6 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitEffect;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWPlayer;
-import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.kits.AbstractSWKit;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 import org.bukkit.entity.Player;
@@ -18,20 +17,27 @@ import java.util.List;
 
 public class BukkitSWKit extends AbstractSWKit {
 
-    private final ItemStack helmet;
-    private final ItemStack chestplate;
-    private final ItemStack leggings;
-    private final ItemStack boots;
-    private final HashMap<Integer, ItemStack> inventory;
+    private ItemStack helmet;
+    private ItemStack chestplate;
+    private ItemStack leggings;
+    private ItemStack boots;
+    private ItemStack offHand;
+    private HashMap<Integer, ItemStack> inventory;
 
-    private final List<BukkitEffect> effects;
+    private List<BukkitEffect> effects;
 
     public BukkitSWKit(SkyWarsReloaded plugin, String id) {
         super(plugin, id);
+    }
+
+    @Override
+    public synchronized void loadData() {
+        super.loadData();
         this.helmet = getHelmet() == null ? null : ((BukkitItem) getHelmet()).getBukkitItem();
         this.chestplate = getChestplate() == null ? null : ((BukkitItem) getChestplate()).getBukkitItem();
         this.leggings = getLeggings() == null ? null : ((BukkitItem) getLeggings()).getBukkitItem();
         this.boots = getBoots() == null ? null : ((BukkitItem) getBoots()).getBukkitItem();
+        this.offHand = getOffHand() == null ? null : ((BukkitItem) getOffHand()).getBukkitItem();
 
         this.inventory = new HashMap<>();
         getContents().forEach((slot, item) -> inventory.put(slot, item == null ? null : ((BukkitItem) item).getBukkitItem()));
@@ -41,8 +47,7 @@ public class BukkitSWKit extends AbstractSWKit {
     }
 
     @Override
-    public void givePlayer(GamePlayer sp) {
-        final SWPlayer swp = sp.getSWPlayer();
+    public void giveToPlayer(SWPlayer swp) {
         final Player p = ((BukkitSWPlayer) swp).getPlayer();
         final PlayerInventory inventory = p.getInventory();
 
@@ -58,6 +63,9 @@ public class BukkitSWKit extends AbstractSWKit {
         inventory.setLeggings(this.leggings);
         inventory.setBoots(this.boots);
         this.inventory.forEach(inventory::setItem);
+        if (plugin.getUtils().getServerVersion() >= 9) {
+            inventory.setItemInOffHand(this.offHand);
+        }
 
         effects.forEach(bukkitEffect -> {
             if (bukkitEffect != null) bukkitEffect.applyToPlayer(swp);

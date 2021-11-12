@@ -41,6 +41,9 @@ public class SetKitContentsCmd extends Cmd {
         kit.setChestplate(swp.getChestplate());
         kit.setLeggings(swp.getLeggings());
         kit.setBoots(swp.getBoots());
+        if (plugin.getUtils().getServerVersion() >= 9) {
+            kit.setOffHand(swp.getItemInHand(true));
+        }
 
         kit.saveData();
         sender.sendMessage(plugin.getUtils().colorize("&aThe contents of the kit &e" + kitName + " &ahave been changed to &ethe items in your inventory&a!"));

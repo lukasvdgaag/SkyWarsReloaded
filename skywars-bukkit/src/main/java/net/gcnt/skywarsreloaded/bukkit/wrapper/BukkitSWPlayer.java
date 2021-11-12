@@ -53,7 +53,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     public Item[] getInventory() {
         final ItemStack[] contents = player.getInventory().getContents();
         Item[] items = new Item[contents.length];
-        for (int i = 0; i < contents.length; i++) {
+        for (int i = 0; i < 36; i++) {
             ItemStack item = contents[i];
             items[i] = BukkitItem.fromBukkit(plugin, item == null || item.getType() == Material.AIR ? null : item);
         }

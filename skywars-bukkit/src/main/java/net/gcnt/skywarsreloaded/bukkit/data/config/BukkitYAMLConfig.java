@@ -161,7 +161,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
         try {
             BukkitItem item = new BukkitItem(plugin, section.getString("material"));
-            item.setAmount(section.getInt("amount", 0));
+            item.setAmount(section.getInt("amount", 1));
             item.setEnchantments(section.getStringList("enchantments"));
             item.setDisplayName(section.getString("display-name", null));
             item.setLore(section.getStringList("lore"));
@@ -184,7 +184,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public Item getItem(String category) {
-        return getItem(category, new BukkitItem(plugin, "STONE"));
+        return getItem(category, new BukkitItem(plugin, null));
     }
 
     @Override

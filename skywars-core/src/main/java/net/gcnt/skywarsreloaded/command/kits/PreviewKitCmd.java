@@ -3,11 +3,8 @@ package net.gcnt.skywarsreloaded.command.kits;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
-import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
-
-import java.util.HashMap;
 
 public class PreviewKitCmd extends Cmd {
 
@@ -30,13 +27,7 @@ public class PreviewKitCmd extends Cmd {
             return true;
         }
 
-        swp.clearInventory();
-
-        kit.getContents().forEach(swp::setSlot);
-        swp.setHelmet(kit.getHelmet());
-        swp.setChestplate(kit.getChestplate());
-        swp.setLeggings(kit.getLeggings());
-        swp.setBoots(kit.getBoots());
+        kit.giveToPlayer(swp);
 
         sender.sendMessage(plugin.getUtils().colorize("&aThe kit &e" + kitName + " &ahas been previewed in your inventory!"));
         return true;

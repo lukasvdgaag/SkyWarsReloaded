@@ -68,6 +68,7 @@ public class BukkitItem extends AbstractItem {
     public ItemStack getBukkitItem() {
         try {
             if (itemStack != null) return itemStack;
+            if (material == null || material.isEmpty()) return null;
 
             final int serverVersion = plugin.getUtils().getServerVersion();
 

@@ -34,6 +34,8 @@ public class SetKitDisplayNameCmd extends Cmd {
         args = Arrays.copyOfRange(args, 1, args.length);
         String displayName = String.join(" ", args);
         kit.setDisplayName(displayName);
+        kit.saveData();
+        
         sender.sendMessage(plugin.getUtils().colorize("&aThe display name of the kit &e" + kitName + " &ahas been changed to &e" + displayName + "&a!"));
         return true;
     }

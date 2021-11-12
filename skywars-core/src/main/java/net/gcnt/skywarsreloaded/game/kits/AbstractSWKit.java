@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.KitProperties;
+import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public abstract class AbstractSWKit implements SWKit {
 
-    private final SkyWarsReloaded plugin;
+    public final SkyWarsReloaded plugin;
     private final String id;
     private final String permission;
     private final YAMLConfig config;
@@ -29,6 +30,7 @@ public abstract class AbstractSWKit implements SWKit {
     private Item chestplate;
     private Item leggings;
     private Item boots;
+    private Item offHand;
 
     private HashMap<Integer, Item> inventoryContents;
     private List<String> effects;
@@ -158,6 +160,16 @@ public abstract class AbstractSWKit implements SWKit {
     }
 
     @Override
+    public Item getOffHand() {
+        return offHand;
+    }
+
+    @Override
+    public void setOffHand(Item item) {
+        this.offHand = item;
+    }
+
+    @Override
     public List<String> getEffects() {
         return effects;
     }
@@ -205,6 +217,7 @@ public abstract class AbstractSWKit implements SWKit {
         // inventory content init
         inventoryContents = new HashMap<>();
         if (!config.contains(KitProperties.CONTENTS.toString())) return;
+        this.offHand = config.getItem(KitProperties.OFF_HAND.toString());
         if (config.isset(KitProperties.ARMOR_CONTENTS.toString())) {
             // armor init
             try {
@@ -255,6 +268,9 @@ public abstract class AbstractSWKit implements SWKit {
 
         config.set(KitProperties.REQUIREMENTS_PERMISSION.toString(), getRequirements().requiresPermission());
         config.set(KitProperties.REQUIREMENTS_COST.toString(), getRequirements().getCost());
+
+        // clearing required stats from current file
+        config.set(KitProperties.REQUIREMENTS_STATS.toString(), null);
         getRequirements().getMinimumStats().forEach(
                 (stat, value) -> config.set(KitProperties.REQUIREMENTS_STATS + "." + stat, value)
         );
@@ -263,7 +279,10 @@ public abstract class AbstractSWKit implements SWKit {
         config.set(KitProperties.CHESTPLATE.toString(), chestplate);
         config.set(KitProperties.LEGGINGS.toString(), leggings);
         config.set(KitProperties.BOOTS.toString(), boots);
+        config.set(KitProperties.OFF_HAND.toString(), offHand);
 
+        // clearing contents of inventory from file.
+        config.set(KitProperties.INVENTORY_CONTENTS.toString(), null);
         getContents().forEach(
                 (slot, item) -> config.set(KitProperties.INVENTORY_CONTENTS + "." + slot, item)
         );
@@ -272,5 +291,5 @@ public abstract class AbstractSWKit implements SWKit {
     }
 
     @Override
-    public abstract void givePlayer(GamePlayer sp);
+    public abstract void giveToPlayer(SWPlayer sp);
 }

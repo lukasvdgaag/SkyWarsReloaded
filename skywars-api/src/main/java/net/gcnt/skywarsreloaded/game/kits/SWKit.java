@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.game.kits;
 
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.utils.Item;
+import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -60,12 +61,16 @@ public interface SWKit {
 
     void setContents(HashMap<Integer, Item> contents);
 
+    Item getOffHand();
+
+    void setOffHand(Item item);
+
     List<String> getEffects();
 
     void setEffects(List<String> effects);
 
     KitRequirements getRequirements();
 
-    void givePlayer(GamePlayer sp);
+    void giveToPlayer(SWPlayer sp);
 
 }
