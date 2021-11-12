@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.bukkit.data.config.BukkitYAMLManager;
 import net.gcnt.skywarsreloaded.bukkit.data.player.BukkitSWPlayerDataManager;
 import net.gcnt.skywarsreloaded.bukkit.game.chest.BukkitChestManager;
 import net.gcnt.skywarsreloaded.bukkit.game.kits.BukkitKitManager;
+import net.gcnt.skywarsreloaded.bukkit.listener.BukkitSWEventListener;
 import net.gcnt.skywarsreloaded.bukkit.managers.BukkitPlayerManager;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitUtils;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWConsoleSender;
@@ -66,6 +67,13 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     public void initChestManager() {
         setChestManager(new BukkitChestManager(this));
+    }
+
+    @Override
+    public void initEventListener() {
+        BukkitSWEventListener bukkitEventListener = new BukkitSWEventListener(this);
+        this.plugin.getServer().getPluginManager().registerEvents(bukkitEventListener, this.plugin);
+        setEventListener(bukkitEventListener);
     }
 
     @Override

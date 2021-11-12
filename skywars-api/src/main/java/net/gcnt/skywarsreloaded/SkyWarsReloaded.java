@@ -9,6 +9,7 @@ import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
 import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
+import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.utils.Utilities;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
@@ -91,6 +92,10 @@ public interface SkyWarsReloaded {
     ChestManager getChestManager();
 
     void setChestManager(ChestManager chestManager);
+
+    SWEventListener getEventListener();
+
+    void setEventListener(SWEventListener listener);
 
 
     // Plugin
