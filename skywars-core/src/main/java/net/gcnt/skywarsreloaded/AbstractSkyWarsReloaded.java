@@ -12,6 +12,7 @@ import net.gcnt.skywarsreloaded.game.CoreGameManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
 import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
+import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.utils.Utilities;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
@@ -35,6 +36,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SWPlayerManager playerManager;
     private KitManager kitManager;
     private ChestManager chestManager;
+    private SWEventListener eventListener;
 
     // others
     private Utilities utilities;
@@ -86,9 +88,10 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         getCommandManager().registerBaseCommands();
         getCommandManager().registerMapCommands();
         getCommandManager().registerKitCommands();
-        initCommands();
-        // Events
-        // todo
+        initCommands(); // Register commands to the platform
+
+        // Events - Init objects and register event listener to the platform
+        initEventListener();
 
         // Plugin messaging
         // todo
@@ -123,6 +126,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public abstract void initKitManager();
 
     public abstract void initChestManager();
+
+    public abstract void initEventListener();
 
     // Getters & Setters
 
@@ -255,4 +260,16 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public void setChestManager(ChestManager chestManager) {
         this.chestManager = chestManager;
     }
+
+    @Override
+    public SWEventListener getEventListener() {
+        return this.eventListener;
+    }
+
+    @Override
+    public void setEventListener(SWEventListener listener) {
+        this.eventListener = listener;
+    }
+
+
 }
