@@ -7,6 +7,9 @@ import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SetKitUnavailableIconCmd extends Cmd {
 
     public SetKitUnavailableIconCmd(SkyWarsReloaded plugin) {
@@ -38,5 +41,15 @@ public class SetKitUnavailableIconCmd extends Cmd {
         kit.saveData();
         sender.sendMessage(plugin.getUtils().colorize("&aThe unavailable icon of the kit &e" + kitName + " &ahas been changed to &ethe item you're holding&a!"));
         return true;
+    }
+
+    @Override
+    public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
+        if (args.length == 1) {
+            List<String> kits = new ArrayList<>();
+            plugin.getKitManager().getKits().forEach(kit -> kits.add(kit.getId()));
+            return kits;
+        }
+        return new ArrayList<>();
     }
 }

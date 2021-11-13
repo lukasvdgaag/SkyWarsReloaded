@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.command.kits;
 
+import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.data.player.PlayerStat;
@@ -13,7 +14,8 @@ import java.util.List;
 public class SetKitRequirementsCmd extends Cmd {
 
     public SetKitRequirementsCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarskit", "requirements", "skywars.command.kit.requirements", false, "<kit> <requirement> <value>", "Manage the kit's requirements.");
+        super(plugin, "skywarskit", "requirements", "skywars.command.kit.requirements", false,
+                "<kit> <requirement> <value>", "Manage the kit's requirements.");
     }
 
     @Override
@@ -118,4 +120,27 @@ public class SetKitRequirementsCmd extends Cmd {
         sender.sendMessage(plugin.getUtils().colorize("&aThe &e" + requirement + "&a kit requirement of the kit &e" + kitName + " &ahas been changed to &e" + value + "&a!"));
         return true;
     }
+
+    @Override
+    public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
+        if (args.length == 1) {
+            List<String> kits = new ArrayList<>();
+            plugin.getKitManager().getKits().forEach(kit -> kits.add(kit.getId()));
+            return kits;
+        } else if (args.length == 2) {
+            return Lists.newArrayList("permission", "cost", "level", "experience", "stats");
+        } else if (args.length == 3) {
+            if (args[1].equalsIgnoreCase("permission")) {
+                return Lists.newArrayList("true", "false");
+            } else if (args[1].equalsIgnoreCase("stats")) {
+                List<String> options = new ArrayList<>();
+                for (PlayerStat stat : PlayerStat.values()) {
+                    options.add(stat.getProperty());
+                }
+                return options;
+            }
+        }
+        return new ArrayList<>();
+    }
+
 }

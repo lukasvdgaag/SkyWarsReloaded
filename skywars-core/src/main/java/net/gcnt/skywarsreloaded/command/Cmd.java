@@ -4,6 +4,10 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Extend this in all command handling classes. <3
  */
@@ -49,7 +53,32 @@ public abstract class Cmd implements SWCommand {
         return true;
     }
 
+    @Override
+    public List<String> processTabCompletion(SWCommandSender sender, String[] args) {
+        List<String> options;
+        if (args.length == 1) {
+            options = new ArrayList<>();
+            for (SWCommand cmd : plugin.getCommandManager().getCommands(getParentCommand())) {
+                options.add(cmd.getName());
+            }
+        } else {
+            options = onTabCompletion(sender, Arrays.copyOfRange(args, 1, args.length));
+        }
+        List<String> possibilities = new ArrayList<>();
+        final String arg = args.length == 0 ? "" : args[args.length - 1];
+        for (String option : options) {
+            if (arg.isEmpty() || option.startsWith(arg.toLowerCase())) {
+                possibilities.add(option);
+            }
+        }
+        return possibilities;
+    }
+
     public abstract boolean run(SWCommandSender sender, String[] args);
+
+    public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
+        return new ArrayList<>();
+    }
 
     @Override
     public String sendUsage(SWCommandSender sender, boolean send) {

@@ -6,7 +6,9 @@ import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.SpawnType;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class SetSpawnCmd extends Cmd {
@@ -38,5 +40,21 @@ public class SetSpawnCmd extends Cmd {
 
         // todo set spawn and send message
         return true;
+    }
+
+    @Override
+    public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
+        if (args.length == 1) {
+            List<String> maps = new ArrayList<>();
+            plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            return maps;
+        } else if (args.length == 2) {
+            List<String> options = new ArrayList<>();
+            for (SpawnType type : SpawnType.values()) {
+                options.add(type.name().toLowerCase());
+            }
+            return options;
+        }
+        return new ArrayList<>();
     }
 }

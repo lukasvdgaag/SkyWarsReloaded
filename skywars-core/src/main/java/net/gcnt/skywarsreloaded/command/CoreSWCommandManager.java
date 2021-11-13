@@ -76,4 +76,22 @@ public class CoreSWCommandManager implements SWCommandManager {
             }
         }
     }
+
+    public List<String> runTabCompletion(SWCommandSender sender, String command, String subCommand, String[] args) {
+        // getting the subcommand
+        for (SWCommand cmd : commands.values()) {
+            if (cmd.getParentCommand().equalsIgnoreCase(command) && cmd.getName().equalsIgnoreCase(subCommand)) {
+                return cmd.processTabCompletion(sender, args);
+            }
+        }
+
+        // getting the main command for all subcommands.
+        for (SWCommand cmd : getCommands(command)) {
+            if (cmd.getName().equals("")) {
+                return cmd.processTabCompletion(sender, args);
+            }
+        }
+
+        return new ArrayList<>();
+    }
 }

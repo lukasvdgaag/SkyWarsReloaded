@@ -6,6 +6,10 @@ import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class PreviewKitCmd extends Cmd {
 
     public PreviewKitCmd(SkyWarsReloaded plugin) {
@@ -31,5 +35,15 @@ public class PreviewKitCmd extends Cmd {
 
         sender.sendMessage(plugin.getUtils().colorize("&aThe kit &e" + kitName + " &ahas been previewed in your inventory!"));
         return true;
+    }
+
+    @Override
+    public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
+        if (args.length == 1) {
+            List<String> kits = new ArrayList<>();
+            plugin.getKitManager().getKits().forEach(kit -> kits.add(kit.getId()));
+            return kits;
+        }
+        return new ArrayList<>();
     }
 }

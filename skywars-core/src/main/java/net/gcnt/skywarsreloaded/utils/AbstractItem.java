@@ -65,6 +65,7 @@ public abstract class AbstractItem implements Item {
 
     @Override
     public void setLore(List<String> lore) {
+        if (lore == null) lore = new ArrayList<>();
         this.lore = lore;
         clearCachedItem();
     }

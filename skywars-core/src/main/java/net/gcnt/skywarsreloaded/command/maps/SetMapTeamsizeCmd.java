@@ -5,7 +5,9 @@ import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class SetMapTeamsizeCmd extends Cmd {
 
@@ -43,5 +45,15 @@ public class SetMapTeamsizeCmd extends Cmd {
         template.setTeamSize(size);
         sender.sendMessage(plugin.getUtils().colorize("&aThe team size of the map &e" + templateName + " &ahas been changed to &e" + size + "&a!"));
         return true;
+    }
+
+    @Override
+    public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
+        if (args.length == 1) {
+            List<String> maps = new ArrayList<>();
+            plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            return maps;
+        }
+        return new ArrayList<>();
     }
 }

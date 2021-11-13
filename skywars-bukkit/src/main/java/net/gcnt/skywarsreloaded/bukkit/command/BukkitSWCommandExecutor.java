@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,8 +34,16 @@ public class BukkitSWCommandExecutor implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] args) {
-        // todo
-        return null;
+        SWCommandSender swSender;
+
+        if (sender instanceof Player player)
+            // creating the player if not existing.
+            swSender = main.getPlayerManager().initPlayer(player.getUniqueId());
+        else if (sender instanceof ConsoleCommandSender)
+            swSender = main.getConsoleSender();
+        else return new ArrayList<>();
+
+        return this.main.getCommandManager().runTabCompletion(swSender, command.getName(), args.length > 0 ? args[0] : "", args);
     }
 
 }

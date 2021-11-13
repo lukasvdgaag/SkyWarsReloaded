@@ -6,7 +6,9 @@ import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class SetKitDisplayNameCmd extends Cmd {
 
@@ -35,8 +37,19 @@ public class SetKitDisplayNameCmd extends Cmd {
         String displayName = String.join(" ", args);
         kit.setDisplayName(displayName);
         kit.saveData();
-        
+
         sender.sendMessage(plugin.getUtils().colorize("&aThe display name of the kit &e" + kitName + " &ahas been changed to &e" + displayName + "&a!"));
         return true;
     }
+
+    @Override
+    public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
+        if (args.length == 1) {
+            List<String> kits = new ArrayList<>();
+            plugin.getKitManager().getKits().forEach(kit -> kits.add(kit.getId()));
+            return kits;
+        }
+        return new ArrayList<>();
+    }
+
 }

@@ -6,6 +6,9 @@ import net.gcnt.skywarsreloaded.command.SWCommand;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainMapCmd extends Cmd {
 
     public MainMapCmd(SkyWarsReloaded plugin) {
@@ -25,5 +28,14 @@ public class MainMapCmd extends Cmd {
             sender.sendMessage(cmd.sendUsage(sender, false));
         }
         return true;
+    }
+
+    @Override
+    public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
+        List<String> options = new ArrayList<>();
+        for (SWCommand cmd : plugin.getCommandManager().getCommands(getParentCommand())) {
+            options.add(cmd.getName());
+        }
+        return options;
     }
 }

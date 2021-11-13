@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.command.kits;
 
+import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
@@ -91,5 +92,27 @@ public class SetKitLoreCmd extends Cmd {
         }
         kit.saveData();
         return true;
+    }
+
+    @Override
+    public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
+        if (args.length == 1) {
+            List<String> kits = new ArrayList<>();
+            plugin.getKitManager().getKits().forEach(kit -> kits.add(kit.getId()));
+            return kits;
+        } else if (args.length == 2) {
+            return Lists.newArrayList("add", "remove", "clear", "preview");
+        } else if (args.length == 3) {
+            if (!args[1].equalsIgnoreCase("remove")) return new ArrayList<>();
+            SWKit kit = plugin.getKitManager().getKitByName(args[0]);
+            if (kit == null) return new ArrayList<>();
+
+            List<String> options = new ArrayList<>();
+            for (int i = 0; i < kit.getLore().size(); i++) {
+                options.add((i + 1) + "");
+            }
+            return options;
+        }
+        return new ArrayList<>();
     }
 }
