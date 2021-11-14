@@ -1,19 +1,25 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.utils.Coord;
+import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface GameWorld {
 
     String getId();
 
-    GameTemplate getGame();
+    GameTemplate getTemplate();
 
     List<GameTeam> getTeams();
 
     String getWorldName();
+
+    boolean canJoin();
+
+    GamePlayer preparePlayerJoin(UUID uuid);
 
     void addPlayers(SWPlayer... players);
 
@@ -38,7 +44,7 @@ public interface GameWorld {
      *
      * @return String array with all slots and their ItemStack values as strings.
      */
-    String[] generateChestLoot();
+    Item[] generateChestLoot();
 
     /**
      * Fill the chest with the given coord.

@@ -27,7 +27,7 @@ public class CoreTeamSpawn implements TeamSpawn {
 
     @Override
     public boolean isOccupied() {
-        return players.size() < this.team.getGameWorld().getGame().getTeamSize();
+        return players.size() < this.team.getGameWorld().getTemplate().getTeamSize();
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CoreTeamSpawn implements TeamSpawn {
             if (!swp.isOnline()) continue;
             SWPlayerData swpd = swp.getPlayerData();
 
-            final int teamSize = getTeam().getGameWorld().getGame().getTeamSize();
+            final int teamSize = getTeam().getGameWorld().getTemplate().getTeamSize();
             String cage = teamSize == 1 ? swpd.getSoloCage() : swpd.getTeamCage();
             // todo probably also check if the cage exists here.
             if (cage == null || cage.isEmpty()) cage = "default";

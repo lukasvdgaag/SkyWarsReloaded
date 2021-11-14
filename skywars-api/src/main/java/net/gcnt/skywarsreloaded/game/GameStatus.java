@@ -2,11 +2,20 @@ package net.gcnt.skywarsreloaded.game;
 
 public enum GameStatus {
 
-    DISABLED,
-    WAITING_LOBBY,
-    WAITING_CAGES,
-    COUNTDOWN,
-    PLAYING,
-    ENDING
+    DISABLED(false),
+    WAITING_LOBBY(true),
+    WAITING_CAGES(true),
+    COUNTDOWN(true),
+    PLAYING(false),
+    ENDING(false);
 
+    private final boolean joinable;
+
+    GameStatus(boolean canJoin) {
+        this.joinable = canJoin;
+    }
+
+    public boolean isJoinable() {
+        return joinable;
+    }
 }

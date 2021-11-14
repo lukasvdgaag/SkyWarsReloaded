@@ -10,6 +10,10 @@ public interface GamePlayer {
 
     void setAlive(boolean alive);
 
+    boolean isSpectating();
+
+    void setSpectating(boolean spectating);
+
     GameWorld getGame();
 
     GameTeam getTeam();
