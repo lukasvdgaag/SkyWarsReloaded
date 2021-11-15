@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.utils;
 
-public interface Utilities {
+public interface PlatformUtils {
 
     boolean isInt(String arg0);
 

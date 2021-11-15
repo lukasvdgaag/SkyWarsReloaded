@@ -11,11 +11,11 @@ import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
-import net.gcnt.skywarsreloaded.utils.Utilities;
+import net.gcnt.skywarsreloaded.utils.PlatformUtils;
+import net.gcnt.skywarsreloaded.utils.SWLogger;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 /**
  * The interface for the main class of the SkyWarsReloaded plugin.
@@ -63,11 +63,6 @@ public interface SkyWarsReloaded {
 
     void setPlayerManager(SWPlayerManager playerManager);
 
-    void initPlayerManager();
-
-    void initKitManager();
-
-
     // Console
 
     SWCommandSender getConsoleSender();
@@ -85,9 +80,9 @@ public interface SkyWarsReloaded {
 
     void setPlayerDataManager(SWPlayerDataManager playerDataManager);
 
-    Utilities getUtils();
+    PlatformUtils getUtils();
 
-    void setUtils(Utilities utils);
+    void setPlatformUtils(PlatformUtils utils);
 
     ChestManager getChestManager();
 
@@ -100,7 +95,9 @@ public interface SkyWarsReloaded {
 
     // Plugin
 
-    Logger getLogger();
+    SWLogger getLogger();
+
+    void setLogger(SWLogger logger);
 
     void initCommands();
 

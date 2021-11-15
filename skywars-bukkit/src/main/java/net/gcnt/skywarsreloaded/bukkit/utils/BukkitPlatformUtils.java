@@ -1,11 +1,10 @@
 package net.gcnt.skywarsreloaded.bukkit.utils;
 
-import net.gcnt.skywarsreloaded.utils.AbstractUtilities;
-import net.gcnt.skywarsreloaded.utils.Utilities;
+import net.gcnt.skywarsreloaded.utils.AbstractPlatformUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
-public class BukkitUtils extends AbstractUtilities {
+public class BukkitPlatformUtils extends AbstractPlatformUtils {
 
     @Override
     public String colorize(String arg0) {

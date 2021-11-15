@@ -14,13 +14,18 @@ import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
-import net.gcnt.skywarsreloaded.utils.Utilities;
+import net.gcnt.skywarsreloaded.utils.PlatformUtils;
+import net.gcnt.skywarsreloaded.utils.SWLogger;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
 /**
  * Abstract SkyWarsReloaded class that needs to be inherited by a subclass.
  */
 public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
+
+    // Utils
+    private SWLogger swLogger;
+    private PlatformUtils platformUtils;
 
     // Data
     private Storage storage;
@@ -39,7 +44,6 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SWEventListener eventListener;
 
     // others
-    private Utilities utilities;
     private SWCommandSender consoleSender;
 
     /**
@@ -51,7 +55,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         this.preEnable();
 
         // utils
-        initUtilities();
+        initPlatformUtils();
 
         // Data and configs
         initYAMLManager();
@@ -113,9 +117,13 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public void postEnable() {
     }
 
-    public abstract void initUtilities();
+    public abstract void initLogger();
+
+    public abstract void initPlatformUtils();
 
     public abstract void initYAMLManager();
+
+    public abstract void initPlayerManager();
 
     public abstract void initPlayerDataManager();
 
@@ -130,6 +138,16 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public abstract void initEventListener();
 
     // Getters & Setters
+
+    @Override
+    public SWLogger getLogger() {
+        return this.swLogger;
+    }
+
+    @Override
+    public void setLogger(SWLogger swLoggerIn) {
+        this.swLogger = swLoggerIn;
+    }
 
     @Override
     public SchematicManager getSchematicManager() {
@@ -202,13 +220,13 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public Utilities getUtils() {
-        return this.utilities;
+    public PlatformUtils getUtils() {
+        return this.platformUtils;
     }
 
     @Override
-    public void setUtils(Utilities utils) {
-        this.utilities = utils;
+    public void setPlatformUtils(PlatformUtils utils) {
+        this.platformUtils = utils;
     }
 
     @Override

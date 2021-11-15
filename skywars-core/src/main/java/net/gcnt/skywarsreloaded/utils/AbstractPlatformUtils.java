@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.utils;
 
-public abstract class AbstractUtilities implements Utilities {
+public abstract class AbstractPlatformUtils implements PlatformUtils {
 
     @Override
     public boolean isInt(String arg0) {

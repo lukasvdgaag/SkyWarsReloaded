@@ -8,13 +8,13 @@ import net.gcnt.skywarsreloaded.bukkit.game.chest.BukkitChestManager;
 import net.gcnt.skywarsreloaded.bukkit.game.kits.BukkitKitManager;
 import net.gcnt.skywarsreloaded.bukkit.listener.BukkitSWEventListener;
 import net.gcnt.skywarsreloaded.bukkit.managers.BukkitPlayerManager;
-import net.gcnt.skywarsreloaded.bukkit.utils.BukkitUtils;
+import net.gcnt.skywarsreloaded.bukkit.utils.BukkitPlatformUtils;
+import net.gcnt.skywarsreloaded.bukkit.utils.BukkitSWLogger;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWConsoleSender;
 import net.gcnt.skywarsreloaded.command.CoreSWCommandManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
@@ -27,8 +27,13 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     // Internal Utils
 
     @Override
-    public void initUtilities() {
-        setUtils(new BukkitUtils());
+    public void initLogger() {
+        setLogger(new BukkitSWLogger(this.plugin.getLogger(), false));
+    }
+
+    @Override
+    public void initPlatformUtils() {
+        setPlatformUtils(new BukkitPlatformUtils());
     }
 
     @Override
@@ -98,11 +103,6 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     public void setSchematicManager(SchematicManager schematicManager) {
         super.setSchematicManager(schematicManager);
-    }
-
-    @Override
-    public Logger getLogger() {
-        return plugin.getLogger();
     }
 
     @Override
