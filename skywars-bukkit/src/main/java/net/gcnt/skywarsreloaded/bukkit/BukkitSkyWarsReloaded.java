@@ -6,6 +6,8 @@ import net.gcnt.skywarsreloaded.bukkit.data.config.BukkitYAMLManager;
 import net.gcnt.skywarsreloaded.bukkit.data.player.BukkitSWPlayerDataManager;
 import net.gcnt.skywarsreloaded.bukkit.game.chest.BukkitChestManager;
 import net.gcnt.skywarsreloaded.bukkit.game.kits.BukkitKitManager;
+import net.gcnt.skywarsreloaded.bukkit.game.loader.BukkitWorldLoader;
+import net.gcnt.skywarsreloaded.bukkit.game.loader.SlimeWorldLoader;
 import net.gcnt.skywarsreloaded.bukkit.listener.BukkitSWEventListener;
 import net.gcnt.skywarsreloaded.bukkit.managers.BukkitPlayerManager;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitPlatformUtils;
@@ -13,6 +15,8 @@ import net.gcnt.skywarsreloaded.bukkit.utils.BukkitSWLogger;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWConsoleSender;
 import net.gcnt.skywarsreloaded.command.CoreSWCommandManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 
@@ -49,6 +53,18 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     public void initCommandManager() {
         setCommandManager(new CoreSWCommandManager(this));
+    }
+
+    @Override
+    public void initWorldLoader() {
+        if (getConfig().getBoolean(ConfigProperties.ENABLE_SLIME_WORLD_MANAGER.toString(), false)) {
+            if (((Plugin) plugin).getServer().getPluginManager().isPluginEnabled("SlimeWorldManager")) {
+                // SWM found! yay
+                setWorldLoader(new SlimeWorldLoader(this));
+                return;
+            }
+        }
+        setWorldLoader(new BukkitWorldLoader(this));
     }
 
     @Override

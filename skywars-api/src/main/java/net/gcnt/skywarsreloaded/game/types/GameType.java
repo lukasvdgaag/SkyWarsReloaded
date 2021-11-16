@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.game;
+package net.gcnt.skywarsreloaded.game.types;
 
 public enum GameType {
 

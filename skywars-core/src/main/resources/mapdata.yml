@@ -3,6 +3,7 @@ creator: GCNT
 team-size: 2
 min-players: 4
 enabled: false
+border-radius: 100
 
 default-chest-type: NORMAL
 default-health: TEN
@@ -11,11 +12,9 @@ default-weather: CLEAR
 default-modifier: NONE
 
 spawn-points:
-  -
+  - - 'x:y:z'
     - 'x:y:z'
-    - 'x:y:z'
-  -
-    - 'x:y:z'
+  - - 'x:y:z'
     - 'x:y:z'
 chests:
   - 'x:y:z'

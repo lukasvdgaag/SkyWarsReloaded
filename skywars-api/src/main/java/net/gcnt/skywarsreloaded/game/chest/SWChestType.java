@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.game.chest;
 
-import net.gcnt.skywarsreloaded.game.GameType;
+import net.gcnt.skywarsreloaded.game.types.GameType;
 import net.gcnt.skywarsreloaded.utils.Item;
 
 import java.util.HashMap;

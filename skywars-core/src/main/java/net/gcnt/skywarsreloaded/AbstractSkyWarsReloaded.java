@@ -12,6 +12,7 @@ import net.gcnt.skywarsreloaded.game.CoreGameManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
 import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
+import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
@@ -42,6 +43,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private KitManager kitManager;
     private ChestManager chestManager;
     private SWEventListener eventListener;
+    private GameWorldLoader worldLoader;
 
     // others
     private SWCommandSender consoleSender;
@@ -83,7 +85,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         getChestManager().loadAllChestTypes();
 
         // Worlds
-        //todo
+        initWorldLoader();
 
         // Console
         initConsoleSender();
@@ -136,6 +138,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public abstract void initChestManager();
 
     public abstract void initEventListener();
+
+    public abstract void initWorldLoader();
 
     // Getters & Setters
 
@@ -289,5 +293,13 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         this.eventListener = listener;
     }
 
+    @Override
+    public GameWorldLoader getWorldLoader() {
+        return worldLoader;
+    }
 
+    @Override
+    public void setWorldLoader(GameWorldLoader loader) {
+        this.worldLoader = loader;
+    }
 }

@@ -5,3 +5,7 @@ storage:
   password: pass
   database: skywarsreloaded
   use-ssl: true
+
+world-loader:
+  # awtoamticaly use slime worlds if SlimeWorldManager (SWM) was detected.
+  enable-swm: true

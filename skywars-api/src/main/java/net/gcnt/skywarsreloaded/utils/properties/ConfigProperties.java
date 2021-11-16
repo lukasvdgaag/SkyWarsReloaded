@@ -7,7 +7,9 @@ public enum ConfigProperties {
     STORAGE_HOSTNAME("storage.hostname"),
     STORAGE_PASSWORD("storage.password"),
     STORAGE_DATABASE("storage.database"),
-    STORAGE_USE_SSL("storage.use-ssl");
+    STORAGE_USE_SSL("storage.use-ssl"),
+
+    ENABLE_SLIME_WORLD_MANAGER("world-loader.enable-swm");
 
     private final String value;
 

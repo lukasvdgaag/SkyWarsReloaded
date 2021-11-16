@@ -25,6 +25,7 @@ public class CoreGameTemplate implements GameTemplate {
     private List<SWCoord> chests;
     private List<SWCoord> signs;
     private List<List<SWCoord>> teamSpawnLocations;
+    private int borderRadius;
     private boolean enabled;
 
     public CoreGameTemplate(SkyWarsReloaded plugin, String name) {
@@ -114,11 +115,22 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
+    public int getBorderRadius() {
+        return borderRadius;
+    }
+
+    @Override
+    public void setBorderRadius(int borderRadius) {
+        this.borderRadius = borderRadius;
+    }
+
+    @Override
     public synchronized void loadData() {
         this.displayName = config.getString(MapDataProperties.DISPLAY_NAME.toString(), name);
         this.creator = config.getString(MapDataProperties.CREATOR.toString(), "GCNT");
         this.teamSize = config.getInt(MapDataProperties.TEAM_SIZE.toString(), 1);
         this.minPlayers = config.getInt(MapDataProperties.MIN_PLAYERS.toString(), 4);
+        this.borderRadius = config.getInt(MapDataProperties.BORDER_RADIUS.toString(), 100);
         this.enabled = config.getBoolean(MapDataProperties.ENABLED.toString(), false);
 
         this.lobbySpawn = new CoreSWCoord(plugin, config.getString(MapDataProperties.LOBBY_SPAWN.toString(), null));
@@ -158,6 +170,7 @@ public class CoreGameTemplate implements GameTemplate {
         config.set(MapDataProperties.TEAM_SIZE.toString(), teamSize);
         config.set(MapDataProperties.MIN_PLAYERS.toString(), minPlayers);
         config.set(MapDataProperties.ENABLED.toString(), enabled);
+        config.set(MapDataProperties.BORDER_RADIUS.toString(), borderRadius);
 
         config.set(MapDataProperties.LOBBY_SPAWN.toString(), lobbySpawn.toString());
         config.set(MapDataProperties.SPECTATE_SPAWN.toString(), spectateSpawn.toString());

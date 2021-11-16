@@ -7,6 +7,7 @@ public enum MapDataProperties {
     TEAM_SIZE("team-size"),
     MIN_PLAYERS("min-players"),
     ENABLED("enabled"),
+    BORDER_RADIUS("border-radius"),
 
     DEFAULT_CHEST("default-chest-type"),
     DEFAULT_HEALTH("default-health"),

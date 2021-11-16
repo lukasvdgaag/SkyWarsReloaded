@@ -54,5 +54,9 @@ public interface GameTemplate {
 
     List<List<SWCoord>> getTeamSpawnpoints();
 
+    int getBorderRadius();
+
+    void setBorderRadius(int radus);
+
 
 }
