@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class AbstractSWKit implements SWKit {
+public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
 
     public final SkyWarsReloaded plugin;
     private final String id;
@@ -35,9 +35,8 @@ public abstract class AbstractSWKit implements SWKit {
     private HashMap<Integer, Item> inventoryContents;
     private List<String> effects;
 
-    private KitRequirements kitRequirements;
-
     public AbstractSWKit(SkyWarsReloaded plugin, String id) {
+        super();
         this.plugin = plugin;
         this.id = id;
         this.permission = "sw.kit." + id;
@@ -47,7 +46,6 @@ public abstract class AbstractSWKit implements SWKit {
         this.effects = new ArrayList<>();
         this.lore = new ArrayList<>();
         this.config = plugin.getYAMLManager().loadConfig("kit-" + id, FolderProperties.KITS_FOLDER.toString(), id + ".yml", "/kits/default.yml");
-        this.kitRequirements = new CoreKitRequirements(this);
     }
 
     @Override
@@ -181,11 +179,6 @@ public abstract class AbstractSWKit implements SWKit {
     }
 
     @Override
-    public KitRequirements getRequirements() {
-        return kitRequirements;
-    }
-
-    @Override
     public int getSlot() {
         return slot;
     }
@@ -208,15 +201,14 @@ public abstract class AbstractSWKit implements SWKit {
         this.slot = config.getInt(KitProperties.SLOT.toString(), -1);
 
         // kit requirement init
-        this.kitRequirements = new CoreKitRequirements(this);
-        this.kitRequirements.setRequirePermission(config.getBoolean(KitProperties.REQUIREMENTS_PERMISSION.toString(), false));
-        this.kitRequirements.setCost(config.getInt(KitProperties.REQUIREMENTS_COST.toString(), 0));
+        setRequirePermission(config.getBoolean(KitProperties.REQUIREMENTS_PERMISSION.toString(), false));
+        setCost(config.getInt(KitProperties.REQUIREMENTS_COST.toString(), 0));
         if (config.contains(KitProperties.REQUIREMENTS_STATS.toString())) {
             config.getKeys(KitProperties.REQUIREMENTS_STATS.toString()).forEach(stat -> {
                 try {
-                    this.kitRequirements.addMinimumStat(PlayerStat.fromString(stat), config.getInt(KitProperties.REQUIREMENTS_STATS + "." + stat));
+                    addMinimumStat(PlayerStat.fromString(stat), config.getInt(KitProperties.REQUIREMENTS_STATS + "." + stat));
                 } catch (Exception e) {
-                    plugin.getLogger().severe(String.format("Failed to load %s stat requirement for kit %s. Ignoring it. (%s)", stat, id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                    plugin.getLogger().error(String.format("Failed to load %s stat requirement for kit %s. Ignoring it. (%s)", stat, id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
                 }
             });
         }
@@ -230,22 +222,22 @@ public abstract class AbstractSWKit implements SWKit {
             try {
                 this.helmet = config.getItem(KitProperties.HELMET.toString());
             } catch (Exception e) {
-                plugin.getLogger().severe(String.format("Failed to load helmet for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                plugin.getLogger().error(String.format("Failed to load helmet for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
             }
             try {
                 this.chestplate = config.getItem(KitProperties.CHESTPLATE.toString());
             } catch (Exception e) {
-                plugin.getLogger().severe(String.format("Failed to load chestplate for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                plugin.getLogger().error(String.format("Failed to load chestplate for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
             }
             try {
                 this.leggings = config.getItem(KitProperties.LEGGINGS.toString());
             } catch (Exception e) {
-                plugin.getLogger().severe(String.format("Failed to load leggings for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                plugin.getLogger().error(String.format("Failed to load leggings for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
             }
             try {
                 this.boots = config.getItem(KitProperties.BOOTS.toString());
             } catch (Exception e) {
-                plugin.getLogger().severe(String.format("Failed to load boots for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                plugin.getLogger().error(String.format("Failed to load boots for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
             }
         }
 
@@ -256,7 +248,7 @@ public abstract class AbstractSWKit implements SWKit {
                     int number = Integer.parseInt(slot1);
                     this.inventoryContents.put(number, config.getItem(KitProperties.INVENTORY_CONTENTS + "." + number));
                 } catch (Exception e) {
-                    plugin.getLogger().severe(String.format("Failed to load slot '%s' for kit %s. Ignoring it. (%s)", slot1, id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                    plugin.getLogger().error(String.format("Failed to load slot '%s' for kit %s. Ignoring it. (%s)", slot1, id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
                 }
             });
         }
@@ -273,12 +265,12 @@ public abstract class AbstractSWKit implements SWKit {
         config.set(KitProperties.EFFECTS.toString(), effects);
         config.set(KitProperties.SLOT.toString(), slot);
 
-        config.set(KitProperties.REQUIREMENTS_PERMISSION.toString(), getRequirements().requiresPermission());
-        config.set(KitProperties.REQUIREMENTS_COST.toString(), getRequirements().getCost());
+        config.set(KitProperties.REQUIREMENTS_PERMISSION.toString(), requiresPermission());
+        config.set(KitProperties.REQUIREMENTS_COST.toString(), getCost());
 
         // clearing required stats from current file
         config.set(KitProperties.REQUIREMENTS_STATS.toString(), null);
-        getRequirements().getMinimumStats().forEach(
+        getMinimumStats().forEach(
                 (stat, value) -> config.set(KitProperties.REQUIREMENTS_STATS + "." + stat.getProperty(), value)
         );
 

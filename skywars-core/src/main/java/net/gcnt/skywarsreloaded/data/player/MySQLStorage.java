@@ -71,9 +71,9 @@ public class MySQLStorage implements Storage {
                      KEY  (`uuid`)
                     )""");
         } catch (SQLException e) {
-            plugin.getLogger().severe("SkyWarsReloaded failed to connect to the MySQL database with the following hostname: '" + hostname + ":" + port + "'. Do you have access?");
-            plugin.getLogger().severe("Here's the mysql URI we used: " + uri);
-            plugin.getLogger().severe("Disabling the plugin to prevent further complications...");
+            plugin.getLogger().error("SkyWarsReloaded failed to connect to the MySQL database with the following hostname: '" + hostname + ":" + port + "'. Do you have access?");
+            plugin.getLogger().error("Here's the mysql URI we used: " + uri);
+            plugin.getLogger().error("Disabling the plugin to prevent further complications...");
             e.printStackTrace();
             plugin.disableSkyWars();
         }

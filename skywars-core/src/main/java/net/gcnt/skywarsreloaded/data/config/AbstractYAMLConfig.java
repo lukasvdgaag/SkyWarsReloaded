@@ -99,7 +99,7 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
         InputStream internalFileStream = getClass().getResourceAsStream(location);
 
         if (internalFileStream == null) {
-            plugin.getLogger().severe("Failed to load the default file of " + fileName);
+            plugin.getLogger().error("Failed to load the default file of " + fileName);
             return false;
         }
         InputStreamReader isr = new InputStreamReader(internalFileStream);

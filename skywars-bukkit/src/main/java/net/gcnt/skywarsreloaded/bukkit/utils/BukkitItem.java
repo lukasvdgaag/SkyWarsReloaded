@@ -95,7 +95,7 @@ public class BukkitItem extends AbstractItem {
                             meta.addEnchant(Enchantment.getByName(ench.toUpperCase()), 1, true);
                         }
                     } catch (Exception e) {
-                        plugin.getLogger().severe(String.format("Failed to add enchantment %s to material %s. Ignoring it. (%s)", ench, material, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                        plugin.getLogger().error(String.format("Failed to add enchantment %s to material %s. Ignoring it. (%s)", ench, material, e.getClass().getName() + ": " + e.getLocalizedMessage()));
                     }
                 });
 
@@ -103,7 +103,7 @@ public class BukkitItem extends AbstractItem {
                     try {
                         meta.addItemFlags(ItemFlag.valueOf(flag.toUpperCase()));
                     } catch (Exception e) {
-                        plugin.getLogger().severe(String.format("Failed to add enchantment %s to material %s. Ignoring it. (%s)", flag, material, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                        plugin.getLogger().error(String.format("Failed to add enchantment %s to material %s. Ignoring it. (%s)", flag, material, e.getClass().getName() + ": " + e.getLocalizedMessage()));
                     }
                 });
 
@@ -117,7 +117,7 @@ public class BukkitItem extends AbstractItem {
             setItemStack(item);
             return item;
         } catch (Exception e) {
-            plugin.getLogger().severe(String.format("Failed to load item with material %s. Ignoring it. (%s)", material, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+            plugin.getLogger().error(String.format("Failed to load item with material %s. Ignoring it. (%s)", material, e.getClass().getName() + ": " + e.getLocalizedMessage()));
         }
         return null;
     }

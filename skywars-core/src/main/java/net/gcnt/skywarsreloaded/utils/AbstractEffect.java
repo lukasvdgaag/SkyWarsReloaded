@@ -26,11 +26,11 @@ public abstract class AbstractEffect implements Effect {
                 if (plugin.getUtils().isInt(split[1])) {
                     strength = Integer.parseInt(split[1]);
                     if (strength < 0) {
-                        plugin.getLogger().severe(String.format("Failed to load strength of effect from string %s. Using the default: %d. (%s)", input, 1, "java.lang.IllegalArgumentException: " + split[1] + " must be at least 1."));
+                        plugin.getLogger().error(String.format("Failed to load strength of effect from string %s. Using the default: %d. (%s)", input, 1, "java.lang.IllegalArgumentException: " + split[1] + " must be at least 1."));
                         strength = 1;
                     }
                 } else {
-                    plugin.getLogger().severe(String.format("Failed to load strength of effect from string %s. Using the default: %d. (%s)", input, 1, "java.lang.NumberFormatException: " + split[1] + " is not a number."));
+                    plugin.getLogger().error(String.format("Failed to load strength of effect from string %s. Using the default: %d. (%s)", input, 1, "java.lang.NumberFormatException: " + split[1] + " is not a number."));
                 }
             } else {
                 // 3 or more args.
@@ -39,20 +39,20 @@ public abstract class AbstractEffect implements Effect {
                 if (plugin.getUtils().isInt(split[1])) {
                     duration = Integer.parseInt(split[1]);
                     if (duration < 0) {
-                        plugin.getLogger().severe(String.format("Failed to load duration option of effect from string %s. Using the default: %s. (%s)", input, "infinite", "java.lang.IllegalArgumentException: " + split[1] + " must be at least 1."));
+                        plugin.getLogger().error(String.format("Failed to load duration option of effect from string %s. Using the default: %s. (%s)", input, "infinite", "java.lang.IllegalArgumentException: " + split[1] + " must be at least 1."));
                         duration = Integer.MAX_VALUE;
                     }
                 } else {
-                    plugin.getLogger().severe(String.format("Failed to load duration option of effect from string %s. Using the default: %s. (%s)", input, "infinite", "java.lang.NumberFormatException: " + split[1] + " is not a number."));
+                    plugin.getLogger().error(String.format("Failed to load duration option of effect from string %s. Using the default: %s. (%s)", input, "infinite", "java.lang.NumberFormatException: " + split[1] + " is not a number."));
                 }
                 if (plugin.getUtils().isInt(split[2])) {
                     strength = Integer.parseInt(split[2]);
                     if (strength < 0) {
-                        plugin.getLogger().severe(String.format("Failed to load strength option of effect from string %s. Using the default: %d. (%s)", input, 1, "java.lang.IllegalArgumentException: " + split[2] + " must be at least 1."));
+                        plugin.getLogger().error(String.format("Failed to load strength option of effect from string %s. Using the default: %d. (%s)", input, 1, "java.lang.IllegalArgumentException: " + split[2] + " must be at least 1."));
                         strength = 1;
                     }
                 } else {
-                    plugin.getLogger().severe(String.format("Failed to load strength option of effect from string %s. Using the default: %d. (%s)", input, 1, "java.lang.NumberFormatException: " + split[2] + " is not a number."));
+                    plugin.getLogger().error(String.format("Failed to load strength option of effect from string %s. Using the default: %d. (%s)", input, 1, "java.lang.NumberFormatException: " + split[2] + " is not a number."));
                 }
 
                 if (split.length >= 4) {
@@ -60,7 +60,7 @@ public abstract class AbstractEffect implements Effect {
                     if (plugin.getUtils().isBoolean(split[3])) {
                         particles = Boolean.parseBoolean(split[3]);
                     } else {
-                        plugin.getLogger().severe(String.format("Failed to load show-particles option of effect from string %s. Using the default: %b. (%s)", input, true, "java.lang.IllegalArgumentException: " + split[3] + " is not a boolean."));
+                        plugin.getLogger().error(String.format("Failed to load show-particles option of effect from string %s. Using the default: %b. (%s)", input, true, "java.lang.IllegalArgumentException: " + split[3] + " is not a boolean."));
                     }
                 }
             }

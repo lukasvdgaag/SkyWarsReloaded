@@ -176,7 +176,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
             }
             return item;
         } catch (Exception e) {
-            plugin.getLogger().severe(String.format("Failed to load item with material %s. Ignoring it. (%s)", section.getString("material"), e.getClass().getName() + ": " + e.getLocalizedMessage()));
+            plugin.getLogger().error(String.format("Failed to load item with material %s. Ignoring it. (%s)", section.getString("material"), e.getClass().getName() + ": " + e.getLocalizedMessage()));
         }
 
         return def;
@@ -192,7 +192,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
         try {
             fileConfiguration.save(getFile());
         } catch (IOException e) {
-            plugin.getLogger().severe("SkyWarsReloaded failed to save the YAML file called '" + getFileName() + "'.");
+            plugin.getLogger().error("SkyWarsReloaded failed to save the YAML file called '" + getFileName() + "'.");
         }
     }
 }
