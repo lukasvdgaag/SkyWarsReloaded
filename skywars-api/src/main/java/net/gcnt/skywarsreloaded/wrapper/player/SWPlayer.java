@@ -1,7 +1,8 @@
-package net.gcnt.skywarsreloaded.wrapper;
+package net.gcnt.skywarsreloaded.wrapper.player;
 
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
 import net.gcnt.skywarsreloaded.utils.Item;
+import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 /**
  * General data about a player that is independent of any running state of games or teams
