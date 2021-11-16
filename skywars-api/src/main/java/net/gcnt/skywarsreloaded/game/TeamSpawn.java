@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
-import net.gcnt.skywarsreloaded.utils.Coord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ public interface TeamSpawn {
 
     boolean isOccupied();
 
-    Coord getLocation();
+    SWCoord getLocation();
 
     List<GamePlayer> getPlayers();
 

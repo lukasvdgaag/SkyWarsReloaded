@@ -8,7 +8,7 @@ import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.TeamCage;
 import net.gcnt.skywarsreloaded.game.TeamSpawn;
-import net.gcnt.skywarsreloaded.utils.Coord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
@@ -50,7 +50,7 @@ public abstract class AbstractSchematicCage implements TeamCage {
             return false;
         }
 
-        final Coord loc = spawn.getLocation();
+        final SWCoord loc = spawn.getLocation();
         final BukkitWorld bukkitWorld = this.getWorldEditWorldByName(spawn.getTeam().getGameWorld().getWorldName());
         final BlockVector3 locationVec = BlockVector3.at(loc.x(), loc.y(), loc.z());
 

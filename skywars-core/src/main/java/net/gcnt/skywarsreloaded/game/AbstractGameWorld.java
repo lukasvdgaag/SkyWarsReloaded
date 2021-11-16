@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.utils.Coord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
@@ -118,7 +118,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     @Override
-    public abstract void fillChest(Coord coord);
+    public abstract void fillChest(SWCoord coord);
 
     @Override
     public void removeCages() {

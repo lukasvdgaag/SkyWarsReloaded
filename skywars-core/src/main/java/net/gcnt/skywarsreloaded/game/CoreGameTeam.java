@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
-import net.gcnt.skywarsreloaded.utils.Coordinate;
+import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
 import java.util.ArrayList;
@@ -15,14 +15,14 @@ public class CoreGameTeam implements GameTeam {
     private final List<CoreTeamSpawn> spawns;
     private List<GamePlayer> players;
 
-    public CoreGameTeam(GameWorld game, String name, TeamColor color, List<Coordinate> spawns) {
+    public CoreGameTeam(GameWorld game, String name, TeamColor color, List<CoreSWCoord> spawns) {
         this.game = game;
         this.name = name;
         this.color = color;
         this.spawns = new ArrayList<>();
         this.players = new ArrayList<>();
 
-        for (Coordinate coord : spawns) {
+        for (CoreSWCoord coord : spawns) {
             this.spawns.add(new CoreTeamSpawn(this, coord));
         }
     }

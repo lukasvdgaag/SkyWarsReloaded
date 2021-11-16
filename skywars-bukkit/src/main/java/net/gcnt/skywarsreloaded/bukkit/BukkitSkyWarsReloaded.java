@@ -28,7 +28,7 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
     @Override
     public void initLogger() {
-        setLogger(new BukkitSWLogger(this.plugin.getLogger(), false));
+        setLogger(new BukkitSWLogger(this, this.plugin.getLogger(), false));
     }
 
     @Override
@@ -103,6 +103,22 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     public void setSchematicManager(SchematicManager schematicManager) {
         super.setSchematicManager(schematicManager);
+    }
+
+    @Override
+    public String getVersion() {
+        return this.plugin.getDescription().getVersion();
+    }
+
+    @Override
+    public String getMinecraftVersion() {
+        return this.plugin.getServer().getVersion();
+    }
+
+    @Override
+    public String getPlatformVersion() {
+        // todo not sure if this is correct, TBD
+        return this.plugin.getServer().getClass().getPackage().getImplementationVersion();
     }
 
     @Override

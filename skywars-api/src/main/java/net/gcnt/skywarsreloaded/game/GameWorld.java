@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
-import net.gcnt.skywarsreloaded.utils.Coord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
@@ -51,7 +51,7 @@ public interface GameWorld {
      *
      * @param coord Location of the chest
      */
-    void fillChest(Coord coord);
+    void fillChest(SWCoord coord);
 
     /**
      * Removes all the cages that are currently placed.

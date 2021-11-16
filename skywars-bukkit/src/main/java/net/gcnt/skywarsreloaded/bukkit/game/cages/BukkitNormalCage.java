@@ -5,7 +5,7 @@ import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameWorld;
 import net.gcnt.skywarsreloaded.game.TeamSpawn;
 import net.gcnt.skywarsreloaded.game.cages.AbstractNormalCage;
 import net.gcnt.skywarsreloaded.game.cages.NormalCageShape;
-import net.gcnt.skywarsreloaded.utils.Coord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
@@ -39,10 +39,10 @@ public class BukkitNormalCage extends AbstractNormalCage {
         if (shape == null) return false;
 
         final World world = ((BukkitGameWorld) getSpawn().getTeam().getGameWorld()).getBukkitWorld();
-        final Coord baseCoord = getSpawn().getLocation();
+        final SWCoord baseCoord = getSpawn().getLocation();
 
-        for (Coord toAdd : shape.getLocations()) {
-            Coord loc = baseCoord.clone().add(toAdd);
+        for (SWCoord toAdd : shape.getLocations()) {
+            SWCoord loc = baseCoord.clone().add(toAdd);
             world.getBlockAt(loc.x(), loc.y(), loc.z()).setType(Material.GLASS);
             // todo get cage material from config?
         }
@@ -68,10 +68,10 @@ public class BukkitNormalCage extends AbstractNormalCage {
         if (shape == null) return false;
 
         final World world = ((BukkitGameWorld) getSpawn().getTeam().getGameWorld()).getBukkitWorld();
-        final Coord baseCoord = getSpawn().getLocation();
+        final SWCoord baseCoord = getSpawn().getLocation();
 
-        for (Coord toAdd : shape.getLocations()) {
-            Coord loc = baseCoord.clone().add(toAdd);
+        for (SWCoord toAdd : shape.getLocations()) {
+            SWCoord loc = baseCoord.clone().add(toAdd);
             world.getBlockAt(loc.x(), loc.y(), loc.z()).setType(Material.AIR);
         }
 

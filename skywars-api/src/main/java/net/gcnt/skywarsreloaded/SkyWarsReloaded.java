@@ -106,4 +106,21 @@ public interface SkyWarsReloaded {
 
     void disableSkyWars();
 
+    /**
+     * Get the plugin version
+     * @return The plugin version
+     */
+    String getVersion();
+
+    /**
+     * Get the server's minecraft version
+     * @return The server's minecraft version
+     */
+    String getMinecraftVersion();
+
+    /**
+     * Get the platform's version (such as git-Purpur-1413)
+     * @return The platform's version
+     */
+    String getPlatformVersion();
 }

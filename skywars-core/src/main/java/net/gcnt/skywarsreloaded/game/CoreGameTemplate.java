@@ -2,8 +2,8 @@ package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
-import net.gcnt.skywarsreloaded.utils.Coord;
-import net.gcnt.skywarsreloaded.utils.Coordinate;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MapDataProperties;
 
@@ -18,13 +18,13 @@ public class CoreGameTemplate implements GameTemplate {
     private final String name;
     private String displayName;
     private String creator;
-    private Coord spectateSpawn;
-    private Coord lobbySpawn;
+    private SWCoord spectateSpawn;
+    private SWCoord lobbySpawn;
     private int teamSize;
     private int minPlayers;
-    private List<Coord> chests;
-    private List<Coord> signs;
-    private List<List<Coord>> teamSpawnLocations;
+    private List<SWCoord> chests;
+    private List<SWCoord> signs;
+    private List<List<SWCoord>> teamSpawnLocations;
     private boolean enabled;
 
     public CoreGameTemplate(SkyWarsReloaded plugin, String name) {
@@ -69,22 +69,22 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
-    public Coord getSpectateSpawn() {
+    public SWCoord getSpectateSpawn() {
         return this.spectateSpawn;
     }
 
     @Override
-    public void setSpectateSpawn(Coord loc) {
+    public void setSpectateSpawn(SWCoord loc) {
         this.spectateSpawn = loc;
     }
 
     @Override
-    public Coord getWaitingLobbySpawn() {
+    public SWCoord getWaitingLobbySpawn() {
         return this.lobbySpawn;
     }
 
     @Override
-    public void setWaitingLobbySpawn(Coord loc) {
+    public void setWaitingLobbySpawn(SWCoord loc) {
         this.lobbySpawn = loc;
     }
 
@@ -121,17 +121,17 @@ public class CoreGameTemplate implements GameTemplate {
         this.minPlayers = config.getInt(MapDataProperties.MIN_PLAYERS.toString(), 4);
         this.enabled = config.getBoolean(MapDataProperties.ENABLED.toString(), false);
 
-        this.lobbySpawn = new Coordinate(plugin, config.getString(MapDataProperties.LOBBY_SPAWN.toString(), null));
-        this.spectateSpawn = new Coordinate(plugin, config.getString(MapDataProperties.SPECTATE_SPAWN.toString(), null));
+        this.lobbySpawn = new CoreSWCoord(plugin, config.getString(MapDataProperties.LOBBY_SPAWN.toString(), null));
+        this.spectateSpawn = new CoreSWCoord(plugin, config.getString(MapDataProperties.SPECTATE_SPAWN.toString(), null));
 
         this.chests = new ArrayList<>();
         for (String chestLoc : config.getStringList(MapDataProperties.CHESTS.toString())) {
-            Coord loc = new Coordinate(plugin, chestLoc);
+            SWCoord loc = new CoreSWCoord(plugin, chestLoc);
             this.chests.add(loc);
         }
         this.signs = new ArrayList<>();
         for (String signLoc : config.getStringList(MapDataProperties.SIGNS.toString())) {
-            Coord loc = new Coordinate(plugin, signLoc);
+            SWCoord loc = new CoreSWCoord(plugin, signLoc);
             this.signs.add(loc);
         }
 
@@ -139,12 +139,12 @@ public class CoreGameTemplate implements GameTemplate {
         try {
             List<List<String>> spawnPoints = (List<List<String>>) config.get(MapDataProperties.SPAWNPOINTS.toString());
             spawnPoints.forEach(list -> {
-                List<Coord> locs = new ArrayList<>();
-                list.forEach(s -> locs.add(new Coordinate(plugin, s)));
+                List<SWCoord> locs = new ArrayList<>();
+                list.forEach(s -> locs.add(new CoreSWCoord(plugin, s)));
                 this.teamSpawnLocations.add(locs);
             });
         } catch (Exception e) {
-            plugin.getLogger().severe("SkyWarsReloaded failed to load the spawnpoints of the game named '" + name + "'.");
+            plugin.getLogger().error("SkyWarsReloaded failed to load the spawnpoints of the game named '" + name + "'.");
             e.printStackTrace();
         }
 
@@ -162,20 +162,20 @@ public class CoreGameTemplate implements GameTemplate {
         config.set(MapDataProperties.LOBBY_SPAWN.toString(), lobbySpawn.toString());
         config.set(MapDataProperties.SPECTATE_SPAWN.toString(), spectateSpawn.toString());
 
-        config.set(MapDataProperties.CHESTS.toString(), chests.stream().map(Coord::toString).collect(Collectors.toList()));
-        config.set(MapDataProperties.SIGNS.toString(), signs.stream().map(Coord::toString).collect(Collectors.toList()));
+        config.set(MapDataProperties.CHESTS.toString(), chests.stream().map(SWCoord::toString).collect(Collectors.toList()));
+        config.set(MapDataProperties.SIGNS.toString(), signs.stream().map(SWCoord::toString).collect(Collectors.toList()));
 
         List<List<String>> spawnPoints = new ArrayList<>();
-        for (List<Coord> list : this.teamSpawnLocations) {
-            spawnPoints.add(list.stream().map(Coord::toString).collect(Collectors.toList()));
+        for (List<SWCoord> list : this.teamSpawnLocations) {
+            spawnPoints.add(list.stream().map(SWCoord::toString).collect(Collectors.toList()));
         }
         config.set(MapDataProperties.SPAWNPOINTS.toString(), spawnPoints);
         config.save();
     }
 
     @Override
-    public synchronized boolean addChest(Coord loc) {
-        for (Coord chest : this.chests) {
+    public synchronized boolean addChest(SWCoord loc) {
+        for (SWCoord chest : this.chests) {
             if (chest.equals(loc)) return false;
         }
         this.chests.add(loc);
@@ -183,8 +183,8 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
-    public synchronized boolean removeChest(Coord loc) {
-        for (Coord chest : this.chests) {
+    public synchronized boolean removeChest(SWCoord loc) {
+        for (SWCoord chest : this.chests) {
             if (chest.equals(loc)) {
                 this.chests.remove(loc);
                 return true;
@@ -194,23 +194,23 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
-    public List<Coord> getChests() {
+    public List<SWCoord> getChests() {
         return this.chests;
     }
 
     @Override
-    public List<List<Coord>> getTeamSpawnpoints() {
+    public List<List<SWCoord>> getTeamSpawnpoints() {
         return this.teamSpawnLocations;
     }
 
     @Override
-    public void addSpawn(int team, Coord loc) {
+    public void addSpawn(int team, SWCoord loc) {
         // todo add the spawn. Didn't have the logic.
     }
 
     @Override
-    public void removeSpawn(Coord loc) {
-        for (List<Coord> locs : getTeamSpawnpoints()) {
+    public void removeSpawn(SWCoord loc) {
+        for (List<SWCoord> locs : getTeamSpawnpoints()) {
             locs.removeIf(coord -> coord.equals(loc));
         }
     }

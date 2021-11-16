@@ -3,7 +3,7 @@ package net.gcnt.skywarsreloaded.utils;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import org.jetbrains.annotations.Nullable;
 
-public class Coordinate implements Coord {
+public class CoreSWCoord implements SWCoord {
 
     private int x;
     private int y;
@@ -16,7 +16,7 @@ public class Coordinate implements Coord {
      * @param y Location y point;
      * @param z Location z point;
      */
-    public Coordinate(int x, int y, int z) {
+    public CoreSWCoord(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -30,7 +30,7 @@ public class Coordinate implements Coord {
      * @throws NumberFormatException     Thrown if one of the points seems to not be an integer.
      * @throws IllegalArgumentException  Thrown if the input string is null or empty.
      */
-    public Coordinate(SkyWarsReloaded plugin, @Nullable String input) {
+    public CoreSWCoord(SkyWarsReloaded plugin, @Nullable String input) {
         if (input == null || input.isEmpty()) {
             throw new IllegalArgumentException("String cannot be converted to a Coord location. Input is empty/null.");
         }
@@ -51,7 +51,7 @@ public class Coordinate implements Coord {
         return x + ":" + y + ":" + z;
     }
 
-    public boolean equals(Coord o) {
+    public boolean equals(SWCoord o) {
         return (o.toString().equals(this.toString()));
     }
 
@@ -71,12 +71,12 @@ public class Coordinate implements Coord {
     }
 
     @Override
-    public Coord add(Coord coord) {
+    public SWCoord add(SWCoord coord) {
         return add(coord.x(), coord.y(), coord.z());
     }
 
     @Override
-    public Coord add(int x, int y, int z) {
+    public SWCoord add(int x, int y, int z) {
         this.x += x;
         this.y += y;
         this.z += z;
@@ -84,7 +84,7 @@ public class Coordinate implements Coord {
     }
 
     @Override
-    public Coord clone() {
-        return new Coordinate(x, y, z);
+    public SWCoord clone() {
+        return new CoreSWCoord(x, y, z);
     }
 }

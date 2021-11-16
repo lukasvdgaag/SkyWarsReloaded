@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
-import net.gcnt.skywarsreloaded.utils.Coord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 
 import java.util.List;
 
@@ -24,13 +24,13 @@ public interface GameTemplate {
 
     void setMinPlayers(int amount);
 
-    Coord getWaitingLobbySpawn();
+    SWCoord getWaitingLobbySpawn();
 
-    void setWaitingLobbySpawn(Coord loc);
+    void setWaitingLobbySpawn(SWCoord loc);
 
-    Coord getSpectateSpawn();
+    SWCoord getSpectateSpawn();
 
-    void setSpectateSpawn(Coord loc);
+    void setSpectateSpawn(SWCoord loc);
 
     void disable();
 
@@ -40,19 +40,19 @@ public interface GameTemplate {
 
     void saveData();
 
-    boolean addChest(Coord loc);
+    boolean addChest(SWCoord loc);
 
-    boolean removeChest(Coord loc);
+    boolean removeChest(SWCoord loc);
 
-    List<Coord> getChests();
+    List<SWCoord> getChests();
 
-    void addSpawn(int team, Coord loc);
+    void addSpawn(int team, SWCoord loc);
 
-    void removeSpawn(Coord loc);
+    void removeSpawn(SWCoord loc);
 
     boolean isEnabled();
 
-    List<List<Coord>> getTeamSpawnpoints();
+    List<List<SWCoord>> getTeamSpawnpoints();
 
 
 }

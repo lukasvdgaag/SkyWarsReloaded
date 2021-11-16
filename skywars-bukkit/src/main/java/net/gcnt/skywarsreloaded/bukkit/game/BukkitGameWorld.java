@@ -4,7 +4,7 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.game.AbstractGameWorld;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.utils.Coord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -23,7 +23,7 @@ public class BukkitGameWorld extends AbstractGameWorld {
     }
 
     @Override
-    public void fillChest(Coord coord) {
+    public void fillChest(SWCoord coord) {
         World world = getBukkitWorld();
         if (world == null) return;
         Block block = world.getBlockAt(coord.x(), coord.y(), coord.z());
