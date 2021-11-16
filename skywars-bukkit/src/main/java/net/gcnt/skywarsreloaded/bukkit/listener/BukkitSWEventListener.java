@@ -2,8 +2,8 @@ package net.gcnt.skywarsreloaded.bukkit.listener;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.listener.AbstractSWEventListener;
-import net.gcnt.skywarsreloaded.wrapper.AbstractSWOfflinePlayer;
-import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.player.AbstractSWOfflinePlayer;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

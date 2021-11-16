@@ -1,9 +1,9 @@
-package net.gcnt.skywarsreloaded.bukkit.wrapper;
+package net.gcnt.skywarsreloaded.bukkit.wrapper.scheduler;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
-import net.gcnt.skywarsreloaded.wrapper.AbstractSWScheduler;
-import net.gcnt.skywarsreloaded.wrapper.SWRunnable;
+import net.gcnt.skywarsreloaded.wrapper.scheduler.AbstractSWScheduler;
+import net.gcnt.skywarsreloaded.wrapper.scheduler.SWRunnable;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BukkitSWScheduler extends AbstractSWScheduler {

@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
-import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 public class CoreGamePlayer implements GamePlayer {
 

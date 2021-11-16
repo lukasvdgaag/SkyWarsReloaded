@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.bukkit.game;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWPlayer;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
 import net.gcnt.skywarsreloaded.game.AbstractSWScoreboard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

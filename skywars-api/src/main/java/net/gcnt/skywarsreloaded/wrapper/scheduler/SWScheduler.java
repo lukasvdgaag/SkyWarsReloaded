@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.wrapper;
+package net.gcnt.skywarsreloaded.wrapper.scheduler;
 
 public interface SWScheduler {
 

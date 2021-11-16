@@ -1,6 +1,6 @@
-package net.gcnt.skywarsreloaded.bukkit.wrapper;
+package net.gcnt.skywarsreloaded.bukkit.wrapper.sender;
 
-import net.gcnt.skywarsreloaded.wrapper.AbstractSWConsoleSender;
+import net.gcnt.skywarsreloaded.wrapper.sender.AbstractSWConsoleSender;
 import org.bukkit.command.ConsoleCommandSender;
 
 public class BukkitSWConsoleSender extends AbstractSWConsoleSender {

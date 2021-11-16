@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.wrapper;
+package net.gcnt.skywarsreloaded.wrapper.scheduler;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 

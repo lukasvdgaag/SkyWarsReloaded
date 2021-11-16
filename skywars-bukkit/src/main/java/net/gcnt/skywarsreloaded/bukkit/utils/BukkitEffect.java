@@ -1,9 +1,9 @@
 package net.gcnt.skywarsreloaded.bukkit.utils;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWPlayer;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
 import net.gcnt.skywarsreloaded.utils.AbstractEffect;
-import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;

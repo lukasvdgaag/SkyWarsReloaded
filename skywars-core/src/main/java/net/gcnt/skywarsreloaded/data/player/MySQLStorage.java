@@ -5,7 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.AbstractYAMLConfig;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
-import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.wrapper;
+package net.gcnt.skywarsreloaded.wrapper.player;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;

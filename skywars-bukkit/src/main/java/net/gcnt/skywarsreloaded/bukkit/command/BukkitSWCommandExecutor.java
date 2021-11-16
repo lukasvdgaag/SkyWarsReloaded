@@ -1,12 +1,11 @@
 package net.gcnt.skywarsreloaded.bukkit.command;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
+import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class BukkitSWCommandExecutor implements CommandExecutor, TabCompleter {

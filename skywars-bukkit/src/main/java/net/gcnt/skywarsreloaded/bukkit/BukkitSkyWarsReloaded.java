@@ -10,8 +10,8 @@ import net.gcnt.skywarsreloaded.bukkit.listener.BukkitSWEventListener;
 import net.gcnt.skywarsreloaded.bukkit.managers.BukkitPlayerManager;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitPlatformUtils;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitSWLogger;
-import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWConsoleSender;
-import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWScheduler;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.sender.BukkitSWConsoleSender;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.scheduler.BukkitSWScheduler;
 import net.gcnt.skywarsreloaded.command.CoreSWCommandManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 

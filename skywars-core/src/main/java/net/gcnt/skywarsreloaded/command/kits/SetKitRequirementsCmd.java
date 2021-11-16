@@ -6,10 +6,9 @@ import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.data.player.PlayerStat;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.game.kits.Unlockable;
-import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
+import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SetKitRequirementsCmd extends Cmd {

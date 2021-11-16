@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
-import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
