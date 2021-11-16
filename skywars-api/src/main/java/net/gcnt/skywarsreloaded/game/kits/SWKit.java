@@ -1,6 +1,5 @@
 package net.gcnt.skywarsreloaded.game.kits;
 
-import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
 
@@ -68,8 +67,6 @@ public interface SWKit {
     List<String> getEffects();
 
     void setEffects(List<String> effects);
-
-    KitRequirements getRequirements();
 
     void giveToPlayer(SWPlayer sp);
 

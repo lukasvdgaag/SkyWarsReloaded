@@ -17,7 +17,7 @@ public class BukkitEffect extends AbstractEffect {
         try {
             effect = new PotionEffect(PotionEffectType.getByName(getType()), getDuration(), getStrength(), true, showParticles());
         } catch (Exception e) {
-            plugin.getLogger().severe(String.format("Failed to load bukkit effect from string %s. Using the default: %d. (%s)", input, 1, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+            plugin.getLogger().error(String.format("Failed to load bukkit effect from string %s. Using the default: %d. (%s)", input, 1, e.getClass().getName() + ": " + e.getLocalizedMessage()));
         }
     }
 

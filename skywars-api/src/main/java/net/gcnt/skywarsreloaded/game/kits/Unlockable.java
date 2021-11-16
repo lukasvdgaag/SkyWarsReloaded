@@ -4,9 +4,7 @@ import net.gcnt.skywarsreloaded.data.player.PlayerStat;
 
 import java.util.HashMap;
 
-public interface KitRequirements {
-
-    SWKit getKit();
+public interface Unlockable {
 
     boolean requiresPermission();
 
@@ -15,14 +13,6 @@ public interface KitRequirements {
     int getCost();
 
     void setCost(int cost);
-
-    int getLevel();
-
-    void setLevel(int level);
-
-    int getExperience();
-
-    void setExperience(int experience);
 
     HashMap<PlayerStat, Integer> getMinimumStats();
 

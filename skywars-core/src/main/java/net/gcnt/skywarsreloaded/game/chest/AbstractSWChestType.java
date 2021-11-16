@@ -72,9 +72,9 @@ public abstract class AbstractSWChestType implements SWChestType {
                     int number = Integer.parseInt(slot1);
                     gameTypeItems.put(number, config.getItem(configPath + "." + number));
                 } catch (Exception e) {
-                    plugin.getLogger().severe(
+                    plugin.getLogger().error(
                             String.format("Failed to load slot '%s' under game type '%s' for chest type '%s'. Ignoring it. (%s)",
-                            slot1, gameTypeConfigSectionName, name, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                                    slot1, gameTypeConfigSectionName, name, e.getClass().getName() + ": " + e.getLocalizedMessage()));
                 }
             });
         }

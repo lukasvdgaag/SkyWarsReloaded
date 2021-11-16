@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.data.player.PlayerStat;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
+import net.gcnt.skywarsreloaded.game.kits.Unlockable;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
 
 import java.util.ArrayList;
@@ -23,8 +24,6 @@ public class SetKitRequirementsCmd extends Cmd {
         final StringBuilder options = new StringBuilder();
         options.append("&7").append("permission").append("&f, ");
         options.append("&7").append("cost").append("&f, ");
-        options.append("&7").append("level").append("&f, ");
-        options.append("&7").append("experience").append("&f, ");
         options.append("&7").append("stats");
         final String optionVal = options.toString();
 
@@ -53,8 +52,6 @@ public class SetKitRequirementsCmd extends Cmd {
         boolean checkInt = false;
         switch (requirement) {
             case "cost":
-            case "level":
-            case "experience":
                 // value entered, checking if it's an int.
                 value = args[2];
                 checkInt = true;
@@ -106,13 +103,13 @@ public class SetKitRequirementsCmd extends Cmd {
             return true;
         }
 
+        Unlockable unlockable = (Unlockable) kit;
+
         switch (requirement) {
-            case "cost" -> kit.getRequirements().setCost(Integer.parseInt(value));
-            case "level" -> kit.getRequirements().setLevel(Integer.parseInt(value));
-            case "experience" -> kit.getRequirements().setExperience(Integer.parseInt(value));
-            case "permission" -> kit.getRequirements().setRequirePermission(Boolean.parseBoolean(value));
+            case "cost" -> unlockable.setCost(Integer.parseInt(value));
+            case "permission" -> unlockable.setRequirePermission(Boolean.parseBoolean(value));
             default -> {
-                kit.getRequirements().addMinimumStat(PlayerStat.fromString(requirement), Integer.parseInt(value));
+                unlockable.addMinimumStat(PlayerStat.fromString(requirement), Integer.parseInt(value));
             }
         }
 
@@ -128,7 +125,7 @@ public class SetKitRequirementsCmd extends Cmd {
             plugin.getKitManager().getKits().forEach(kit -> kits.add(kit.getId()));
             return kits;
         } else if (args.length == 2) {
-            return Lists.newArrayList("permission", "cost", "level", "experience", "stats");
+            return Lists.newArrayList("permission", "cost", "stats");
         } else if (args.length == 3) {
             if (args[1].equalsIgnoreCase("permission")) {
                 return Lists.newArrayList("true", "false");

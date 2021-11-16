@@ -53,11 +53,11 @@ public class SQLiteStorage implements Storage {
                          selected_kill_messages_theme TEXT DEFAULT NULL
                         )""");
             } else {
-                plugin.getLogger().severe("SkyWarsReloaded failed to connect to SQLite database file for player data.");
+                plugin.getLogger().error("SkyWarsReloaded failed to connect to SQLite database file for player data.");
             }
         } catch (SQLException e) {
-            plugin.getLogger().severe("SkyWarsReloaded failed to create the SQLite database called 'playerdata.db'!"); // todo change this name?
-            plugin.getLogger().severe("Disabling the plugin to prevent further complications!");
+            plugin.getLogger().error("SkyWarsReloaded failed to create the SQLite database called 'playerdata.db'!"); // todo change this name?
+            plugin.getLogger().error("Disabling the plugin to prevent further complications!");
             e.printStackTrace();
             plugin.disableSkyWars();
         }
