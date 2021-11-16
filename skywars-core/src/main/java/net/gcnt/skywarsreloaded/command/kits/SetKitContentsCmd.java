@@ -4,8 +4,8 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
-import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

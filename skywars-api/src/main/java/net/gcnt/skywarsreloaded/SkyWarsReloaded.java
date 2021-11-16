@@ -14,7 +14,8 @@ import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
-import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
+import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
+import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
 
 import java.io.File;
 
@@ -96,6 +97,10 @@ public interface SkyWarsReloaded {
     SWEventListener getEventListener();
 
     void setEventListener(SWEventListener listener);
+
+    SWScheduler getScheduler();
+
+    void setScheduler(SWScheduler scheduler);
 
 
     // Plugin

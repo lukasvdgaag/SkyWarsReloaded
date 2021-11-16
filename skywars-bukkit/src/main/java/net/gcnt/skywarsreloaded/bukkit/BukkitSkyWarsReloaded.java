@@ -12,7 +12,8 @@ import net.gcnt.skywarsreloaded.bukkit.listener.BukkitSWEventListener;
 import net.gcnt.skywarsreloaded.bukkit.managers.BukkitPlayerManager;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitPlatformUtils;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitSWLogger;
-import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWConsoleSender;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.sender.BukkitSWConsoleSender;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.scheduler.BukkitSWScheduler;
 import net.gcnt.skywarsreloaded.command.CoreSWCommandManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
@@ -33,6 +34,11 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     public void initLogger() {
         setLogger(new BukkitSWLogger(this, this.plugin.getLogger(), false));
+    }
+
+    @Override
+    protected void initScheduler() {
+        setScheduler(new BukkitSWScheduler(this));
     }
 
     @Override

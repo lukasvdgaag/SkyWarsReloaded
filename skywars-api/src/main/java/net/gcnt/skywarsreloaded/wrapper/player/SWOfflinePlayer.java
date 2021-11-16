@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.wrapper;
+package net.gcnt.skywarsreloaded.wrapper.player;
 
 import java.util.UUID;
 

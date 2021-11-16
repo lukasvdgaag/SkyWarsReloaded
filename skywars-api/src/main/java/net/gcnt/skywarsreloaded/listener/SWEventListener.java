@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.listener;
 
-import net.gcnt.skywarsreloaded.wrapper.SWOfflinePlayer;
-import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.player.SWOfflinePlayer;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 public interface SWEventListener {
 

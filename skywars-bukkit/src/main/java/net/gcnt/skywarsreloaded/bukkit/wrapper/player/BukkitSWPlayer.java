@@ -1,9 +1,9 @@
-package net.gcnt.skywarsreloaded.bukkit.wrapper;
+package net.gcnt.skywarsreloaded.bukkit.wrapper.player;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.wrapper.AbstractSWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.player.AbstractSWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

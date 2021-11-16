@@ -1,12 +1,10 @@
 package net.gcnt.skywarsreloaded.bukkit.managers;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.bukkit.wrapper.BukkitSWPlayer;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
 import net.gcnt.skywarsreloaded.manager.AbstractPlayerManager;
-import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class BukkitPlayerManager extends AbstractPlayerManager {

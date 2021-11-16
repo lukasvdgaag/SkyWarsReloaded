@@ -4,7 +4,7 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.general.MainCmd;
 import net.gcnt.skywarsreloaded.command.kits.*;
 import net.gcnt.skywarsreloaded.command.maps.*;
-import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
+import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.manager;
 
-import net.gcnt.skywarsreloaded.wrapper.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.command;
 
-import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
+import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.List;
 
