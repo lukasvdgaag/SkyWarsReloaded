@@ -12,4 +12,8 @@ public interface GameWorldLoader {
 
     void deleteWorld(GameWorld gameWorld);
 
+    void createBasePlatform(GameWorld gameWorld);
+
+    void updateWorldBorder(GameWorld gameWorld);
+
 }

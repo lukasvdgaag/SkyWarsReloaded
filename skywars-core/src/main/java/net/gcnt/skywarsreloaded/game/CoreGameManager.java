@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CoreGameManager implements GameManager {
+public abstract class CoreGameManager implements GameManager {
 
-    private final SkyWarsReloaded plugin;
+    public final SkyWarsReloaded plugin;
     private HashMap<String, GameTemplate> templates;
 
     public CoreGameManager(SkyWarsReloaded plugin) {
@@ -65,14 +65,13 @@ public class CoreGameManager implements GameManager {
     public GameTemplate createGameTemplate(String gameId) {
         if (getGameTemplateByName(gameId) != null) return null;
         GameTemplate template = new CoreGameTemplate(plugin, gameId);
+        template.loadData();
         template.saveData();
         return template;
     }
 
     @Override
-    public GameWorld createGameWorld(GameTemplate data) {
-        return null;
-    }
+    public abstract GameWorld createGameWorld(GameTemplate data);
 
     @Override
     public List<GameWorld> getGameWorlds(GameTemplate data) {

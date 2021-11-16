@@ -2,8 +2,8 @@ package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     public List<GamePlayer> players;
     public GameStatus status;
     public int timer;
+    public boolean editing;
 
     public AbstractGameWorld(SkyWarsReloaded plugin, String id, GameTemplate gameTemplate) {
         this.plugin = plugin;
@@ -31,6 +32,7 @@ public abstract class AbstractGameWorld implements GameWorld {
         this.players = new ArrayList<>();
         this.timer = 0;
         this.status = GameStatus.DISABLED;
+        this.worldName = "swr-" + id;
     }
 
     @Override
@@ -51,6 +53,16 @@ public abstract class AbstractGameWorld implements GameWorld {
     @Override
     public String getWorldName() {
         return worldName;
+    }
+
+    @Override
+    public boolean isEditing() {
+        return editing;
+    }
+
+    @Override
+    public void setEditing(boolean editing) {
+        this.editing = editing;
     }
 
     @Override

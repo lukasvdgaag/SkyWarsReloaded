@@ -7,8 +7,10 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.loader.AbstractWorldLoader;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator;
 
 import java.io.File;
@@ -18,8 +20,17 @@ import java.util.Random;
 
 public class BukkitWorldLoader extends AbstractWorldLoader {
 
+    private Biome voidBiome;
+
     public BukkitWorldLoader(SkyWarsReloaded plugin) {
         super(plugin);
+
+        try {
+            voidBiome = Biome.valueOf("THE_VOID");
+        } catch (Exception e) {
+            voidBiome = Biome.valueOf("VOID");
+        }
+
     }
 
     @Override
@@ -37,7 +48,7 @@ public class BukkitWorldLoader extends AbstractWorldLoader {
                 ChunkData chunkData = createChunkData(world);
                 for (int i = 0; i < 16; i++) {
                     for (int j = 0; j < 16; j++) {
-                        biome.setBiome(i, j, org.bukkit.block.Biome.valueOf("VOID"));
+                        biome.setBiome(i, j, voidBiome);
                     }
                 }
                 return chunkData;
@@ -67,5 +78,22 @@ public class BukkitWorldLoader extends AbstractWorldLoader {
         } catch (IOException e) {
             plugin.getLogger().error(String.format("Failed to delete world %s. (%s)", world.getName(), e.getClass().getName() + ": " + e.getLocalizedMessage()));
         }
+    }
+
+    @Override
+    public void createBasePlatform(GameWorld gameWorld) {
+        World world = Bukkit.getWorld(gameWorld.getWorldName());
+        if (world == null) return;
+
+        world.getBlockAt(0, 50, 0).setType(Material.STONE);
+    }
+
+    @Override
+    public void updateWorldBorder(GameWorld gameWorld) {
+        World world = Bukkit.getWorld(gameWorld.getWorldName());
+        if (world == null) return;
+
+        world.getWorldBorder().setCenter(0, 0);
+        world.getWorldBorder().setSize(gameWorld.getTemplate().getBorderRadius());
     }
 }

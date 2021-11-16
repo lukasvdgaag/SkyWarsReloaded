@@ -10,6 +10,7 @@ import net.gcnt.skywarsreloaded.data.schematic.CoreSchematicManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.CoreGameManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
+import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
@@ -73,7 +74,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         // Managers
         initPlayerManager();
         initCommandManager();
-        setGameManager(new CoreGameManager(this));
+        initGameManager();
         initPlayerDataManager();
         initKitManager();
         initChestManager();
@@ -109,6 +110,13 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         this.postEnable();
     }
 
+    @Override
+    public void onDisable() {
+        for (GameWorld world : getGameManager().getGameWorlds()) {
+            getWorldLoader().deleteWorld(world);
+        }
+    }
+
     // Initialization
 
     /**
@@ -122,6 +130,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
      */
     public void postEnable() {
     }
+
 
     public abstract void initLogger();
 
@@ -146,6 +155,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public abstract void initEventListener();
 
     public abstract void initWorldLoader();
+
+    public abstract void initGameManager();
 
     // Getters & Setters
 

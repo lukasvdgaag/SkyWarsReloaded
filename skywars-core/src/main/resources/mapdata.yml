@@ -1,4 +1,3 @@
-display-name:
 creator: GCNT
 team-size: 2
 min-players: 4
@@ -10,21 +9,3 @@ default-health: TEN
 default-time: DAY
 default-weather: CLEAR
 default-modifier: NONE
-
-spawn-points:
-  - - 'x:y:z'
-    - 'x:y:z'
-  - - 'x:y:z'
-    - 'x:y:z'
-chests:
-  - 'x:y:z'
-  - 'x:y:z'
-  - 'x:y:z'
-  - 'x:y:z'
-  - 'x:y:z'
-
-signs:
-  - 'x:y:z'
-
-lobby-spawn: 'x:y:z'
-spectate-spawn: 'x:y:z'

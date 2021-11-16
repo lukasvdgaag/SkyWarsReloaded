@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.command.maps;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
@@ -42,6 +43,14 @@ public class SetWorldSizeCmd extends Cmd {
         }
 
         template.setBorderRadius(size);
+
+        List<GameWorld> gameWorld = plugin.getGameManager().getGameWorlds(template);
+        for (GameWorld world : gameWorld) {
+            if (world.isEditing()) {
+                plugin.getWorldLoader().updateWorldBorder(world);
+            }
+        }
+
         sender.sendMessage(plugin.getUtils().colorize("&aThe world size of the map &e" + templateName + " &ahas been changed to &e" + size + "&a!"));
         return true;
     }

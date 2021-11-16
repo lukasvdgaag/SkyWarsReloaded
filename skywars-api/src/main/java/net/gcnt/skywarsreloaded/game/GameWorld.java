@@ -20,6 +20,10 @@ public interface GameWorld {
 
     boolean canJoin();
 
+    boolean isEditing();
+
+    void setEditing(boolean edit);
+
     GamePlayer preparePlayerJoin(UUID uuid);
 
     void addPlayers(SWPlayer... players);

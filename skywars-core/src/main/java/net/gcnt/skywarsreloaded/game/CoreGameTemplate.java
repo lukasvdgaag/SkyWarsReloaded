@@ -2,8 +2,8 @@ package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MapDataProperties;
 
@@ -30,8 +30,19 @@ public class CoreGameTemplate implements GameTemplate {
 
     public CoreGameTemplate(SkyWarsReloaded plugin, String name) {
         this.plugin = plugin;
-        this.name = name;
         this.config = plugin.getYAMLManager().loadConfig("gamedata-" + name, FolderProperties.TEMPLATE_FOLDER.toString(), name + ".yml", "/mapdata.yml");
+        this.name = name;
+        this.chests = new ArrayList<>();
+        this.signs = new ArrayList<>();
+        this.teamSpawnLocations = new ArrayList<>();
+        this.displayName = name;
+        this.creator = "GCNT";
+        this.spectateSpawn = null;
+        this.lobbySpawn = null;
+        this.teamSize = 1;
+        this.minPlayers = 4;
+        this.borderRadius = 100;
+        this.enabled = false;
     }
 
     @Override
@@ -133,8 +144,10 @@ public class CoreGameTemplate implements GameTemplate {
         this.borderRadius = config.getInt(MapDataProperties.BORDER_RADIUS.toString(), 100);
         this.enabled = config.getBoolean(MapDataProperties.ENABLED.toString(), false);
 
-        this.lobbySpawn = new CoreSWCoord(plugin, config.getString(MapDataProperties.LOBBY_SPAWN.toString(), null));
-        this.spectateSpawn = new CoreSWCoord(plugin, config.getString(MapDataProperties.SPECTATE_SPAWN.toString(), null));
+        String lspawn = config.getString(MapDataProperties.LOBBY_SPAWN.toString(), null);
+        String sspawn = config.getString(MapDataProperties.SPECTATE_SPAWN.toString(), null);
+        this.lobbySpawn = lspawn == null ? null : new CoreSWCoord(plugin, lspawn);
+        this.spectateSpawn = sspawn == null ? null : new CoreSWCoord(plugin, sspawn);
 
         this.chests = new ArrayList<>();
         for (String chestLoc : config.getStringList(MapDataProperties.CHESTS.toString())) {
@@ -150,11 +163,15 @@ public class CoreGameTemplate implements GameTemplate {
         this.teamSpawnLocations = new ArrayList<>();
         try {
             List<List<String>> spawnPoints = (List<List<String>>) config.get(MapDataProperties.SPAWNPOINTS.toString());
-            spawnPoints.forEach(list -> {
-                List<SWCoord> locs = new ArrayList<>();
-                list.forEach(s -> locs.add(new CoreSWCoord(plugin, s)));
-                this.teamSpawnLocations.add(locs);
-            });
+            if (spawnPoints != null) {
+                spawnPoints.forEach(list -> {
+                    if (list != null) {
+                        List<SWCoord> locs = new ArrayList<>();
+                        list.forEach(s -> locs.add(new CoreSWCoord(plugin, s)));
+                        this.teamSpawnLocations.add(locs);
+                    }
+                });
+            }
         } catch (Exception e) {
             plugin.getLogger().error("SkyWarsReloaded failed to load the spawnpoints of the game named '" + name + "'.");
             e.printStackTrace();
@@ -172,8 +189,8 @@ public class CoreGameTemplate implements GameTemplate {
         config.set(MapDataProperties.ENABLED.toString(), enabled);
         config.set(MapDataProperties.BORDER_RADIUS.toString(), borderRadius);
 
-        config.set(MapDataProperties.LOBBY_SPAWN.toString(), lobbySpawn.toString());
-        config.set(MapDataProperties.SPECTATE_SPAWN.toString(), spectateSpawn.toString());
+        config.set(MapDataProperties.LOBBY_SPAWN.toString(), lobbySpawn == null ? null : lobbySpawn.toString());
+        config.set(MapDataProperties.SPECTATE_SPAWN.toString(), spectateSpawn == null ? null : spectateSpawn.toString());
 
         config.set(MapDataProperties.CHESTS.toString(), chests.stream().map(SWCoord::toString).collect(Collectors.toList()));
         config.set(MapDataProperties.SIGNS.toString(), signs.stream().map(SWCoord::toString).collect(Collectors.toList()));

@@ -28,6 +28,8 @@ public interface SkyWarsReloaded {
 
     void onEnable();
 
+    void onDisable();
+
     File getDataFolder();
 
     YAMLManager getYAMLManager();

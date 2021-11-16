@@ -30,4 +30,14 @@ public class SlimeWorldLoader extends AbstractWorldLoader {
     public void deleteWorld(GameWorld gameWorld) {
 
     }
+
+    @Override
+    public void createBasePlatform(GameWorld gameWorld) {
+
+    }
+
+    @Override
+    public void updateWorldBorder(GameWorld gameWorld) {
+
+    }
 }

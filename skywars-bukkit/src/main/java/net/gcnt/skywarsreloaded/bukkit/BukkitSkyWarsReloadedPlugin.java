@@ -9,8 +9,16 @@ public class BukkitSkyWarsReloadedPlugin extends JavaPlugin {
      * Use {@link BukkitSkyWarsReloaded} instead.
      */
 
+    private BukkitSkyWarsReloaded plugin;
+
     @Override
     public void onEnable() {
-        new BukkitSkyWarsReloaded(this).onEnable();
+        plugin = new BukkitSkyWarsReloaded(this);
+        plugin.onEnable();
+    }
+
+    @Override
+    public void onDisable() {
+        plugin.onDisable();
     }
 }

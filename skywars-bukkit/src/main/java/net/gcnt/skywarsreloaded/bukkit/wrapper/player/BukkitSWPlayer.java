@@ -5,7 +5,9 @@ import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.wrapper.player.AbstractSWPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -113,5 +115,30 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     @Override
     public void clearInventory() {
         player.getInventory().clear();
+    }
+
+    @Override
+    public void teleport(String world, double x, double y, double z) {
+        World bworld = Bukkit.getWorld(world);
+        if (bworld == null) return;
+        player.teleport(new Location(bworld, x, y, z));
+    }
+
+    @Override
+    public void teleport(String world, double x, double y, double z, float yaw, float pitch) {
+        World bworld = Bukkit.getWorld(world);
+        if (bworld == null) return;
+        player.teleport(new Location(bworld, x, y, z, yaw, pitch));
+    }
+
+    @Override
+    public void sendTitle(String title, String subtitle) {
+        sendTitle(title, subtitle, 20, 50, 20);
+    }
+
+    @Override
+    public void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+        // todo check for older versions that do not support the fade in, stay, and fade out.
+        player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
     }
 }

@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.wrapper.player;
 
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
 import net.gcnt.skywarsreloaded.utils.Item;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 /**
@@ -38,5 +39,13 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
     void setBoots(Item boots);
 
     void clearInventory();
+
+    void teleport(String world, double x, double y, double z);
+
+    void teleport(String world, double x, double y, double z, float yaw, float pitch);
+
+    void sendTitle(String title, String subtitle);
+
+    void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut);
 
 }

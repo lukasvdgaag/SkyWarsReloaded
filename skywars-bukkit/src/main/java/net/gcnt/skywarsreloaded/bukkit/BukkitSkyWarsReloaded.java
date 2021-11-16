@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.command.BukkitSWCommandExecutor;
 import net.gcnt.skywarsreloaded.bukkit.data.config.BukkitYAMLManager;
 import net.gcnt.skywarsreloaded.bukkit.data.player.BukkitSWPlayerDataManager;
+import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameManager;
 import net.gcnt.skywarsreloaded.bukkit.game.chest.BukkitChestManager;
 import net.gcnt.skywarsreloaded.bukkit.game.kits.BukkitKitManager;
 import net.gcnt.skywarsreloaded.bukkit.game.loader.BukkitWorldLoader;
@@ -82,6 +83,11 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
         plugin.getCommand("skywarsmap").setTabCompleter(ex);
         plugin.getCommand("skywarskit").setExecutor(ex);
         plugin.getCommand("skywarskit").setTabCompleter(ex);
+    }
+
+    @Override
+    public void initGameManager() {
+        setGameManager(new BukkitGameManager(this));
     }
 
     @Override

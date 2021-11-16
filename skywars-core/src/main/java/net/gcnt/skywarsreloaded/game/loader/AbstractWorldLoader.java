@@ -22,4 +22,10 @@ public abstract class AbstractWorldLoader implements GameWorldLoader {
 
     @Override
     public abstract void deleteWorld(GameWorld gameWorld);
+
+    @Override
+    public abstract void createBasePlatform(GameWorld gameWorld);
+
+    @Override
+    public abstract void updateWorldBorder(GameWorld gameWorld);
 }
