@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class BukkitSWEventListener extends AbstractSWEventListener implements Listener {
@@ -22,6 +23,11 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
     @EventHandler
     public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
         this.onAsyncPlayerPreLogin(new AbstractSWOfflinePlayer(event.getUniqueId(), false));
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        this.onPlayerJoin(this.getPlayerFromBukkitPlayer(event.getPlayer()));
     }
 
     @EventHandler
