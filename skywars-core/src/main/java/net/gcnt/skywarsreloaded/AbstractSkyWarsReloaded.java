@@ -17,6 +17,7 @@ import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
 import net.gcnt.skywarsreloaded.wrapper.SWCommandSender;
+import net.gcnt.skywarsreloaded.wrapper.SWScheduler;
 
 /**
  * Abstract SkyWarsReloaded class that needs to be inherited by a subclass.
@@ -26,6 +27,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     // Utils
     private SWLogger swLogger;
     private PlatformUtils platformUtils;
+    private SWScheduler scheduler;
 
     // Data
     private Storage storage;
@@ -55,7 +57,9 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         this.preEnable();
 
         // utils
+        initLogger();
         initPlatformUtils();
+        initScheduler();
 
         // Data and configs
         initYAMLManager();
@@ -118,6 +122,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     public abstract void initLogger();
+
+    protected abstract void initScheduler();
 
     public abstract void initPlatformUtils();
 
@@ -290,4 +296,11 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
 
+    public SWScheduler getScheduler() {
+        return scheduler;
+    }
+
+    public void setScheduler(SWScheduler scheduler) {
+        this.scheduler = scheduler;
+    }
 }
