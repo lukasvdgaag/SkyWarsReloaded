@@ -1,6 +1,8 @@
 package net.gcnt.skywarsreloaded.listener;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.wrapper.event.CoreSWBlockPlaceEvent;
+import net.gcnt.skywarsreloaded.wrapper.event.SWBlockPlaceEvent;
 import net.gcnt.skywarsreloaded.wrapper.player.SWOfflinePlayer;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
@@ -38,7 +40,7 @@ public class AbstractSWEventListener implements SWEventListener {
     }
 
     @Override
-    public void onPlayerBlockPlace(SWPlayer player) {
+    public void onPlayerBlockPlace(SWBlockPlaceEvent event) {
 
     }
 

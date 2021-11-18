@@ -2,8 +2,13 @@ package net.gcnt.skywarsreloaded.bukkit.listener;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.listener.AbstractSWEventListener;
+import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.wrapper.event.CoreSWBlockPlaceEvent;
 import net.gcnt.skywarsreloaded.wrapper.player.AbstractSWOfflinePlayer;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,7 +52,12 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
 
     @EventHandler
     public void onPlayerBlockPlaceEvent(BlockPlaceEvent event) {
-        this.onPlayerBlockPlace(this.getPlayerFromBukkitPlayer(event.getPlayer()));
+        SWPlayer p = this.getPlayerFromBukkitPlayer(event.getPlayer());
+        Block block = event.getBlock();
+        Location loc = block.getLocation();
+        SWCoord coord = new CoreSWCoord(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        String wName = event.getBlockPlaced().getType().name();
+        this.onPlayerBlockPlace(new CoreSWBlockPlaceEvent(p, loc.getWorld().getName(), coord, wName));
     }
 
     // Utils

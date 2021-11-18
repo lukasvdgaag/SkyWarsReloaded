@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.listener;
 
+import net.gcnt.skywarsreloaded.wrapper.event.SWBlockPlaceEvent;
 import net.gcnt.skywarsreloaded.wrapper.player.SWOfflinePlayer;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
@@ -15,6 +16,6 @@ public interface SWEventListener {
 
     void onPlayerBlockBreak(SWPlayer player);
 
-    void onPlayerBlockPlace(SWPlayer player);
+    void onPlayerBlockPlace(SWBlockPlaceEvent event);
 
 }
