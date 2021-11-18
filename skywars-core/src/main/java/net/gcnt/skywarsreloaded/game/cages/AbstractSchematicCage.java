@@ -54,7 +54,7 @@ public abstract class AbstractSchematicCage implements TeamCage {
         final BukkitWorld bukkitWorld = this.getWorldEditWorldByName(spawn.getTeam().getGameWorld().getWorldName());
         final BlockVector3 locationVec = BlockVector3.at(loc.x(), loc.y(), loc.z());
 
-        this.editSession = schemManager.pasteSchematic(clipboard, bukkitWorld, locationVec);
+        this.editSession = schemManager.pasteSchematic(clipboard, bukkitWorld, locationVec, false);
         setPlaced(true);
         return true;
     }

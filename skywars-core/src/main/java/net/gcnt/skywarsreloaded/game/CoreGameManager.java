@@ -12,11 +12,13 @@ import java.util.List;
 public abstract class CoreGameManager implements GameManager {
 
     public final SkyWarsReloaded plugin;
+    public HashMap<GameTemplate, List<GameWorld>> gameWorlds;
     private HashMap<String, GameTemplate> templates;
 
     public CoreGameManager(SkyWarsReloaded plugin) {
         this.plugin = plugin;
         this.templates = new HashMap<>();
+        this.gameWorlds = new HashMap<>();
     }
 
     @Override
@@ -75,11 +77,20 @@ public abstract class CoreGameManager implements GameManager {
 
     @Override
     public List<GameWorld> getGameWorlds(GameTemplate data) {
-        return Lists.newArrayList();
+        return gameWorlds.getOrDefault(data, new ArrayList<>());
     }
 
     @Override
     public List<GameWorld> getGameWorlds() {
-        return Lists.newArrayList();
+        List<GameWorld> worlds = new ArrayList<>();
+        gameWorlds.forEach((gameTemplate, gameWorlds1) -> worlds.addAll(gameWorlds1));
+        return worlds;
     }
+
+    protected void addWorld(GameTemplate temp, GameWorld wrld) {
+        List<GameWorld> worlds = this.gameWorlds.getOrDefault(temp, new ArrayList<>());
+        worlds.add(wrld);
+        this.gameWorlds.put(temp, worlds);
+    }
+
 }

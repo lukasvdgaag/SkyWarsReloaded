@@ -58,5 +58,4 @@ public interface GameTemplate {
 
     void setBorderRadius(int radus);
 
-
 }

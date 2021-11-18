@@ -78,7 +78,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         initPlayerDataManager();
         initKitManager();
         initChestManager();
-        setSchematicManager(new CoreSchematicManager());
+        setSchematicManager(new CoreSchematicManager(this));
 
         // Player data
 

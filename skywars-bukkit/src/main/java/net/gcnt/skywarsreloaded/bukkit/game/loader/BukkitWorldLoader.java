@@ -6,6 +6,8 @@ import com.sk89q.worldedit.math.BlockVector3;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.loader.AbstractWorldLoader;
+import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -59,22 +61,26 @@ public class BukkitWorldLoader extends AbstractWorldLoader {
 
     @Override
     public void loadSchematic(GameWorld gameWorld) {
-        Clipboard clip = plugin.getSchematicManager().getSchematic(new File(plugin.getDataFolder(), "worlds"), gameWorld.getTemplate().getName() + ".schem");
+        Clipboard clip = plugin.getSchematicManager().getSchematic(new File(plugin.getDataFolder(), FolderProperties.WORLD_SCHEMATICS_FOLDER.toString()), gameWorld.getTemplate().getName() + ".schem");
         if (clip == null) return; // todo throw error?
-        World world = Bukkit.getWorld(gameWorld.getTemplate().getName());
+        World world = Bukkit.getWorld(gameWorld.getWorldName());
         if (world == null) return; // todo throw error? regenerate world?
 
-        plugin.getSchematicManager().pasteSchematic(clip, new BukkitWorld(world), BlockVector3.at(0, 0, 0));
+        plugin.getSchematicManager().pasteSchematic(clip, new BukkitWorld(world), BlockVector3.at(0, 0, 0), true);
     }
 
     @Override
     public void deleteWorld(GameWorld gameWorld) {
         World world = Bukkit.getWorld(gameWorld.getWorldName());
-        if (world == null) return;
+        if (world == null) {
+            return;
+        }
+
+        // todo teleport all players to lobby first.
 
         Bukkit.unloadWorld(world, false);
         try {
-            Files.deleteIfExists(world.getWorldFolder().toPath());
+            FileUtils.deleteDirectory(world.getWorldFolder());
         } catch (IOException e) {
             plugin.getLogger().error(String.format("Failed to delete world %s. (%s)", world.getName(), e.getClass().getName() + ": " + e.getLocalizedMessage()));
         }

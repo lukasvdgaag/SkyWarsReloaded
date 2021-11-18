@@ -15,6 +15,8 @@ public class BukkitGameManager extends CoreGameManager {
 
     @Override
     public GameWorld createGameWorld(GameTemplate data) {
-        return new BukkitGameWorld(plugin, UUID.randomUUID().toString(), data);
+        GameWorld world = new BukkitGameWorld(plugin, UUID.randomUUID().toString(), data);
+        addWorld(data, world);
+        return world;
     }
 }

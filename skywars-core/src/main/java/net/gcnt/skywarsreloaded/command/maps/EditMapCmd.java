@@ -1,14 +1,17 @@
 package net.gcnt.skywarsreloaded.command.maps;
 
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.math.BlockVector3;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
+import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
-import net.gcnt.skywarsreloaded.wrapper.scheduler.CoreSWRunnable;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,22 +49,22 @@ public class EditMapCmd extends Cmd {
         }
 
         sender.sendMessage(plugin.getUtils().colorize("&7Please hold while we generate the template world..."));
-        player.sendTitle(plugin.getUtils().colorize("&6Generating World..."), plugin.getUtils().colorize("&7Please hold while we generate the template world"), 20, Integer.MAX_VALUE, 20);
-        plugin.getScheduler().runSyncLater(new CoreSWRunnable() {
-            @Override
-            public void run() {
-                GameWorld world = plugin.getGameManager().createGameWorld(template);
-                world.setEditing(true);
+        player.sendTitle(plugin.getUtils().colorize("&6Generating World..."), plugin.getUtils().colorize("&7Please hold while we generate the template world"), 20, 20 * 30, 20);
+        GameWorld world = plugin.getGameManager().createGameWorld(template);
+        world.setEditing(true);
 
-                plugin.getWorldLoader().createEmptyWorld(world);
-                plugin.getWorldLoader().createBasePlatform(world);
-                plugin.getWorldLoader().updateWorldBorder(world);
+        plugin.getWorldLoader().createEmptyWorld(world);
+        plugin.getWorldLoader().createBasePlatform(world);
+        plugin.getWorldLoader().updateWorldBorder(world);
 
-                player.teleport(world.getWorldName(), 0, 51, 0);
-                player.sendTitle(plugin.getUtils().colorize("&aGenerated World!"), plugin.getUtils().colorize("&7We completed generating the template world"), 0, 100, 20);
-                sender.sendMessage(plugin.getUtils().colorize("&aWe finished generating the template world! &7You can now start building within the world borders. We will automatically convert the world to a schematic file when you're done."));
-            }
-        }, 1);
+        File schemFile = new File(new File(plugin.getDataFolder(), FolderProperties.WORLD_SCHEMATICS_FOLDER.toString()), template.getName() + ".schem");
+        if (schemFile.exists()) {
+            plugin.getWorldLoader().loadSchematic(world);
+        }
+
+        player.teleport(world.getWorldName(), 0, 51, 0);
+        player.sendTitle(plugin.getUtils().colorize("&aGenerated World!"), plugin.getUtils().colorize("&7We completed generating the template world"), 0, 100, 20);
+        sender.sendMessage(plugin.getUtils().colorize("&aWe finished generating the template world! &7You can now start building within the world borders. We will automatically convert the world to a schematic file when you're done."));
         return true;
     }
 

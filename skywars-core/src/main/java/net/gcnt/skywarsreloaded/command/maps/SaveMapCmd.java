@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.command.maps;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
@@ -26,6 +27,20 @@ public class SaveMapCmd extends Cmd {
         if (template == null) {
             sender.sendMessage(plugin.getUtils().colorize("&cThere is no game template with that name."));
             return true;
+        }
+
+        List<GameWorld> worlds = plugin.getGameManager().getGameWorlds(template);
+        for (GameWorld world : worlds) {
+            if (world.isEditing()) {
+                // schematic creating and saving
+                boolean successful = plugin.getSchematicManager().saveGameWorldToSchematic(world, plugin.getUtils().getWorldEditWorld(world.getWorldName()));
+                if (successful) {
+                    sender.sendMessage(plugin.getUtils().colorize("&dWorld template schematic saved! &aWe have successfully saved the template world you were editing to a WorldEdit schematic."));
+                } else {
+                    sender.sendMessage(plugin.getUtils().colorize("&c&lError while saving world template schematic! &r&cWe failed to save the template world you were editing to a WorldEdit schematic. Please check the console for more information."));
+                }
+                break;
+            }
         }
 
         template.saveData();
