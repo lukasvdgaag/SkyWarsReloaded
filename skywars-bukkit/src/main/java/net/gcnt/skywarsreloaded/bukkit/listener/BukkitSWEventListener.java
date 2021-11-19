@@ -4,8 +4,7 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.listener.AbstractSWEventListener;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
-import net.gcnt.skywarsreloaded.wrapper.event.CoreSWBlockPlaceEvent;
-import net.gcnt.skywarsreloaded.wrapper.player.AbstractSWOfflinePlayer;
+import net.gcnt.skywarsreloaded.wrapper.event.*;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -27,37 +26,94 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
 
     @EventHandler
     public void onPlayerLogin(AsyncPlayerPreLoginEvent event) {
-        this.onAsyncPlayerPreLogin(new AbstractSWOfflinePlayer(event.getUniqueId(), false));
+        // Get data
+        SWAsyncPlayerPreLoginEvent.Result result = SWAsyncPlayerPreLoginEvent.Result.valueOf(event.getLoginResult().name());
+
+        // Fire event
+        CoreSWAsyncPlayerPreLoginEvent swEvent = new CoreSWAsyncPlayerPreLoginEvent(event.getUniqueId(), event.getName(), event.getAddress(), result);
+        this.onAsyncPlayerPreLogin(swEvent);
+
+        // Update changes
+        event.setLoginResult(AsyncPlayerPreLoginEvent.Result.valueOf(swEvent.getResult().name()));
+        event.setKickMessage(swEvent.getKickMessage());
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        this.onPlayerJoin(this.getPlayerFromBukkitPlayer(event.getPlayer()));
+        // Get data
+        SWPlayer p = this.getPlayerFromBukkitPlayer(event.getPlayer());
+
+        // Fire Event
+        SWPlayerJoinEvent swEvent = new CoreSWPlayerJoinEvent(p, event.getJoinMessage());
+        this.onPlayerJoin(swEvent);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        this.onPlayerQuit(this.getPlayerFromBukkitPlayer(event.getPlayer()));
+        // Get data
+        SWPlayer p = this.getPlayerFromBukkitPlayer(event.getPlayer());
+
+        // Fire Event
+        SWPlayerQuitEvent swEvent = new CoreSWPlayerQuitEvent(p, event.getQuitMessage());
+        this.onPlayerQuit(swEvent);
     }
 
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
-        this.onPlayerInteract(this.getPlayerFromBukkitPlayer(event.getPlayer()));
+        // Get data
+        SWPlayer p = this.getPlayerFromBukkitPlayer(event.getPlayer());
+        Block block = event.getClickedBlock();
+        Location loc = block.getLocation();
+        SWCoord coord = new CoreSWCoord(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        String wName = block.getType().name();
+        SWPlayerInteractEvent.Action action = SWPlayerInteractEvent.Action.valueOf(event.getAction().name());
+
+        // Fire Event
+        SWPlayerInteractEvent swEvent = new CoreSWPlayerInteractEvent(p, loc.getWorld().getName(), coord, wName, action);
+        this.onPlayerInteract(swEvent);
+
+        // Update changes
+        if (swEvent.isCancelled()) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onPlayerBlockBreakEvent(BlockBreakEvent event) {
-        this.onPlayerBlockBreak(this.getPlayerFromBukkitPlayer(event.getPlayer()));
+        // Get data
+        SWPlayer p = this.getPlayerFromBukkitPlayer(event.getPlayer());
+        Block block = event.getBlock();
+        Location loc = block.getLocation();
+        SWCoord coord = new CoreSWCoord(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        String wName = block.getType().name();
+
+        // Fire core event
+        SWBlockBreakEvent swEvent = new CoreSWBlockBreakEvent(p, loc.getWorld().getName(), coord, wName);
+        this.onPlayerBlockBreak(swEvent);
+
+        // Update changes
+        if (swEvent.isCancelled()) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onPlayerBlockPlaceEvent(BlockPlaceEvent event) {
+        // Get data
         SWPlayer p = this.getPlayerFromBukkitPlayer(event.getPlayer());
         Block block = event.getBlock();
         Location loc = block.getLocation();
         SWCoord coord = new CoreSWCoord(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         String wName = event.getBlockPlaced().getType().name();
-        this.onPlayerBlockPlace(new CoreSWBlockPlaceEvent(p, loc.getWorld().getName(), coord, wName));
+
+        // Fire core event
+        SWBlockPlaceEvent swEvent = new CoreSWBlockPlaceEvent(p, loc.getWorld().getName(), coord, wName);
+        this.onPlayerBlockPlace(swEvent);
+
+        // Update changes
+        if (swEvent.isCancelled()) {
+            event.setCancelled(true);
+        }
     }
 
     // Utils

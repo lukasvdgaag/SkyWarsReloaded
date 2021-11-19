@@ -5,61 +5,63 @@ import java.util.UUID;
 
 public class CoreSWAsyncPlayerPreLoginEvent implements SWAsyncPlayerPreLoginEvent {
 
-    private UUID uuid;
-    private String name;
-    private InetAddress address;
+    private final UUID uuid;
+    private final String name;
+    private final InetAddress address;
     private Result result;
     private String message;
 
-    public CoreSWAsyncPlayerPreLoginEvent(UUID uuid, String name, InetAddress address) {
+    public CoreSWAsyncPlayerPreLoginEvent(UUID uuid, String name, InetAddress address, Result resultIn) {
         this.uuid = uuid;
         this.name = name;
         this.address = address;
-        this.result = Result.ALLOWED;
+        this.result = resultIn == null ? Result.ALLOWED : resultIn;
     }
 
     @Override
     public String getName() {
-        return null;
+        return this.name;
     }
 
     @Override
     public InetAddress getIP() {
-        return null;
+        return this.address;
     }
 
     @Override
     public UUID getUUID() {
-        return null;
+        return this.uuid;
     }
 
     @Override
     public void allow() {
-
+        this.result = Result.ALLOWED;
+        this.message = "";
     }
 
     @Override
-    public void disallow(Result result, String reason) {
-
+    public void disallow(Result resultIn, String reason) {
+        this.result = resultIn;
+        this.message = reason;
     }
 
     @Override
-    public void setResult(Result result) {
-
+    public void setResult(Result resultIn) {
+        this.result = resultIn;
     }
 
     @Override
     public Result getResult() {
-        return null;
+        return this.result;
     }
 
     @Override
-    public void setKickMessage(String message) {
-
+    public void setKickMessage(String messageIn) {
+        this.message = messageIn;
     }
 
     @Override
     public String getKickMessage() {
-        return null;
+        return this.message;
     }
 }

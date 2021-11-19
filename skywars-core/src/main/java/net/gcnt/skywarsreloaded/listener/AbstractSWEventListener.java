@@ -1,10 +1,7 @@
 package net.gcnt.skywarsreloaded.listener;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.wrapper.event.CoreSWBlockPlaceEvent;
-import net.gcnt.skywarsreloaded.wrapper.event.SWBlockPlaceEvent;
-import net.gcnt.skywarsreloaded.wrapper.player.SWOfflinePlayer;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.event.*;
 
 public class AbstractSWEventListener implements SWEventListener {
 
@@ -15,27 +12,27 @@ public class AbstractSWEventListener implements SWEventListener {
     }
 
     @Override
-    public void onAsyncPlayerPreLogin(SWOfflinePlayer player) {
+    public void onAsyncPlayerPreLogin(SWAsyncPlayerPreLoginEvent event) {
 
     }
 
     @Override
-    public void onPlayerJoin(SWPlayer player) {
+    public void onPlayerJoin(SWPlayerJoinEvent event) {
 
     }
 
     @Override
-    public void onPlayerQuit(SWPlayer player) {
-        this.plugin.getPlayerManager().removePlayer(player);
+    public void onPlayerQuit(SWPlayerQuitEvent event) {
+        this.plugin.getPlayerManager().removePlayer(event.getPlayer());
     }
 
     @Override
-    public void onPlayerInteract(SWPlayer player) {
+    public void onPlayerInteract(SWPlayerInteractEvent event) {
 
     }
 
     @Override
-    public void onPlayerBlockBreak(SWPlayer player) {
+    public void onPlayerBlockBreak(SWBlockBreakEvent event) {
 
     }
 

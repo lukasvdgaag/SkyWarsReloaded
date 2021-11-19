@@ -3,33 +3,39 @@ package net.gcnt.skywarsreloaded.wrapper.event;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
-public class CoreSWBlockPlaceEvent extends CoreSWPlayerEvent implements SWBlockPlaceEvent {
+public class CoreSWPlayerInteractEvent extends CoreSWPlayerEvent implements SWPlayerInteractEvent {
 
     private final String worldName;
     private final SWCoord coord;
     private final String blockType;
+    private final SWPlayerInteractEvent.Action action;
 
     private boolean cancelled;
 
-    public CoreSWBlockPlaceEvent(SWPlayer player, String worldNameIn, SWCoord coordIn, String blockTypeIn) {
+    public CoreSWPlayerInteractEvent(SWPlayer player, String worldNameIn, SWCoord coordIn, String blockTypeIn, SWPlayerInteractEvent.Action actionIn) {
         super(player);
         this.worldName = worldNameIn;
         this.coord = coordIn;
         this.blockType = blockTypeIn;
-
+        this.action = actionIn;
         this.cancelled = false;
     }
 
-    public SWCoord getCoord() {
-        return this.coord;
+    public String getClickedBlockWorld() {
+        return worldName;
     }
 
-    public String getBlockTypeName() {
-        return this.blockType;
+    public SWCoord getClickedBlockLocation() {
+        return coord;
     }
-    
-    public String getWorldName() {
-        return this.worldName;
+
+    public String getClickedBlockType() {
+        return blockType;
+    }
+
+    @Override
+    public Action getAction() {
+        return action;
     }
 
     @Override

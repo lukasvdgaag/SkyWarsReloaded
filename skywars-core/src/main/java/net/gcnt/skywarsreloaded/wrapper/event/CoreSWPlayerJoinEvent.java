@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.wrapper.event;
 
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
-public class CoreSWPlayerJoinEvent extends CoreSWPlayerEvent implements SWPlayerJoinEvent{
+public class CoreSWPlayerJoinEvent extends CoreSWPlayerEvent implements SWPlayerJoinEvent {
 
     private String joinMessage;
 

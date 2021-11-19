@@ -1,20 +1,18 @@
 package net.gcnt.skywarsreloaded.listener;
 
-import net.gcnt.skywarsreloaded.wrapper.event.SWBlockPlaceEvent;
-import net.gcnt.skywarsreloaded.wrapper.player.SWOfflinePlayer;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.event.*;
 
 public interface SWEventListener {
 
-    void onAsyncPlayerPreLogin(SWOfflinePlayer player);
+    void onAsyncPlayerPreLogin(SWAsyncPlayerPreLoginEvent event);
 
-    void onPlayerJoin(SWPlayer player);
+    void onPlayerJoin(SWPlayerJoinEvent event);
 
-    void onPlayerQuit(SWPlayer player);
+    void onPlayerQuit(SWPlayerQuitEvent event);
 
-    void onPlayerInteract(SWPlayer player);
+    void onPlayerInteract(SWPlayerInteractEvent event);
 
-    void onPlayerBlockBreak(SWPlayer player);
+    void onPlayerBlockBreak(SWBlockBreakEvent event);
 
     void onPlayerBlockPlace(SWBlockPlaceEvent event);
 

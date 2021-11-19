@@ -3,7 +3,7 @@ package net.gcnt.skywarsreloaded.wrapper.event;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
-public class CoreSWBlockPlaceEvent extends CoreSWPlayerEvent implements SWBlockPlaceEvent {
+public class CoreSWBlockBreakEvent extends CoreSWPlayerEvent implements SWBlockBreakEvent {
 
     private final String worldName;
     private final SWCoord coord;
@@ -11,7 +11,7 @@ public class CoreSWBlockPlaceEvent extends CoreSWPlayerEvent implements SWBlockP
 
     private boolean cancelled;
 
-    public CoreSWBlockPlaceEvent(SWPlayer player, String worldNameIn, SWCoord coordIn, String blockTypeIn) {
+    public CoreSWBlockBreakEvent(SWPlayer player, String worldNameIn, SWCoord coordIn, String blockTypeIn) {
         super(player);
         this.worldName = worldNameIn;
         this.coord = coordIn;
