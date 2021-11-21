@@ -4,6 +4,8 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.types.SpawnType;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ public class SetSpawnCmd extends Cmd {
     public boolean run(SWCommandSender sender, String[] args) {
         if (args.length == 0) {
             sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a game template name."));
-            return false; // todo not sure if I should return false/true here to show the usage too or not.
+            return true;
         } else if (args.length == 1) {
             sender.sendMessage(plugin.getUtils().colorize(String.format("&cPlease enter a spawn type. Options: &7%s&f, &7%s&f, &7%s", "player", "lobby", "spectate")));
         }
@@ -36,7 +38,21 @@ public class SetSpawnCmd extends Cmd {
             return true;
         }
 
-        // todo set spawn and send message
+        SWPlayer player = (SWPlayer) sender;
+        final SWCoord location = player.getLocation();
+
+        switch (type) {
+            case LOBBY -> {
+                template.setWaitingLobbySpawn(location);
+                sender.sendMessage(plugin.getUtils().colorize(String.format("&aThe waiting spawn of the template &b%s &ahas been set to your current location.", template.getDisplayName())));
+            }
+            case SPECTATE -> {
+                template.setSpectateSpawn(location);
+                sender.sendMessage(plugin.getUtils().colorize(String.format("&aThe spectator spawn of the template &b%s &ahas been set to your current location.", template.getDisplayName())));
+            }
+            // todo PLAYER spawn.
+        }
+
         return true;
     }
 

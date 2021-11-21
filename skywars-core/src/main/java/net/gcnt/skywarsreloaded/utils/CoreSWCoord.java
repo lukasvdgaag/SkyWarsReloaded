@@ -5,9 +5,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class CoreSWCoord implements SWCoord {
 
-    private int x;
-    private int y;
-    private int z;
+    private double x;
+    private double y;
+    private double z;
 
     /**
      * Get a new coord from the x, y, and z coordinates.
@@ -17,6 +17,12 @@ public class CoreSWCoord implements SWCoord {
      * @param z Location z point;
      */
     public CoreSWCoord(int x, int y, int z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public CoreSWCoord(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -57,16 +63,31 @@ public class CoreSWCoord implements SWCoord {
 
     @Override
     public int x() {
+        return (int) x;
+    }
+
+    @Override
+    public double xPrecise() {
         return x;
     }
 
     @Override
     public int y() {
+        return (int) y;
+    }
+
+    @Override
+    public double yPrecise() {
         return y;
     }
 
     @Override
     public int z() {
+        return (int) z;
+    }
+
+    @Override
+    public double zPrecise() {
         return z;
     }
 
@@ -76,7 +97,7 @@ public class CoreSWCoord implements SWCoord {
     }
 
     @Override
-    public SWCoord add(int x, int y, int z) {
+    public SWCoord add(double x, double y, double z) {
         this.x += x;
         this.y += y;
         this.z += z;

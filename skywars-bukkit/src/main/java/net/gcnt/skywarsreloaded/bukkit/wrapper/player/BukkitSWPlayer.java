@@ -2,7 +2,9 @@ package net.gcnt.skywarsreloaded.bukkit.wrapper.player;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
+import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.AbstractSWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -115,6 +117,12 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     @Override
     public void clearInventory() {
         player.getInventory().clear();
+    }
+
+    @Override
+    public SWCoord getLocation() {
+        final Location location = player.getLocation();
+        return new CoreSWCoord(location.getX(), location.getY(), location.getZ());
     }
 
     @Override

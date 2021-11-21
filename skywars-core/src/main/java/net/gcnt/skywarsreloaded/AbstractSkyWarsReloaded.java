@@ -1,6 +1,8 @@
 package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.command.SWCommandManager;
+import net.gcnt.skywarsreloaded.data.config.Data;
+import net.gcnt.skywarsreloaded.data.config.RuntimeData;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.config.YAMLManager;
 import net.gcnt.skywarsreloaded.data.player.SQLiteStorage;
@@ -8,7 +10,6 @@ import net.gcnt.skywarsreloaded.data.player.SWPlayerDataManager;
 import net.gcnt.skywarsreloaded.data.player.Storage;
 import net.gcnt.skywarsreloaded.data.schematic.CoreSchematicManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
-import net.gcnt.skywarsreloaded.game.CoreGameManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.chest.ChestManager;
@@ -35,6 +36,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private Storage storage;
     private YAMLConfig config;
     private YAMLConfig messages;
+    private Data dataConfig;
 
     // Managers
     private YAMLManager yamlManager;
@@ -67,6 +69,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         // Data and configs
         initYAMLManager();
         setConfig(getYAMLManager().loadConfig("config", getDataFolder(), "config.yml")); // requires yaml mgr
+        setDataConfig(new RuntimeData(getConfig()));
         setMessages(getYAMLManager().loadConfig("messages", getDataFolder(), "messages.yml")); // requires yaml mgr
 
         setStorage(new SQLiteStorage(this)); // requires config
@@ -198,6 +201,16 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void setConfig(YAMLConfig config) {
         this.config = config;
+    }
+
+    @Override
+    public Data getDataConfig() {
+        return this.dataConfig;
+    }
+
+    @Override
+    public void setDataConfig(Data data) {
+        this.dataConfig = data;
     }
 
     @Override

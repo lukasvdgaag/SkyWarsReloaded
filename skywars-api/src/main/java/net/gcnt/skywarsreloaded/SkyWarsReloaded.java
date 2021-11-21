@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.command.SWCommandManager;
+import net.gcnt.skywarsreloaded.data.config.Data;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.config.YAMLManager;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerDataManager;
@@ -14,8 +15,8 @@ import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
-import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
+import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.io.File;
 
@@ -39,6 +40,10 @@ public interface SkyWarsReloaded {
     YAMLConfig getConfig();
 
     void setConfig(YAMLConfig config);
+
+    Data getDataConfig();
+
+    void setDataConfig(Data data);
 
     YAMLConfig getMessages();
 

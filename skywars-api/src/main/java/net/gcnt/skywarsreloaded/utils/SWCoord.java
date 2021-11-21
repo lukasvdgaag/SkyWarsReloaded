@@ -7,13 +7,19 @@ public interface SWCoord {
 
     int x();
 
+    double xPrecise();
+
     int y();
+
+    double yPrecise();
 
     int z();
 
+    double zPrecise();
+
     SWCoord add(SWCoord coord);
 
-    SWCoord add(int x, int y, int z);
+    SWCoord add(double x, double y, double z);
 
     boolean equals(SWCoord o);
 

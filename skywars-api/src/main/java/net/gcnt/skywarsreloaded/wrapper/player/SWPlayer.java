@@ -40,6 +40,8 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
 
     void clearInventory();
 
+    SWCoord getLocation();
+
     void teleport(String world, double x, double y, double z);
 
     void teleport(String world, double x, double y, double z, float yaw, float pitch);
