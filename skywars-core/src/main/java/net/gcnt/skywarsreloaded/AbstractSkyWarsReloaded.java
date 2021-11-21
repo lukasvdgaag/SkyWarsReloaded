@@ -1,8 +1,6 @@
 package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.command.SWCommandManager;
-import net.gcnt.skywarsreloaded.data.config.Data;
-import net.gcnt.skywarsreloaded.data.config.RuntimeData;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.config.YAMLManager;
 import net.gcnt.skywarsreloaded.data.player.SQLiteStorage;
@@ -36,7 +34,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private Storage storage;
     private YAMLConfig config;
     private YAMLConfig messages;
-    private Data dataConfig;
+    private YAMLConfig dataConfig;
 
     // Managers
     private YAMLManager yamlManager;
@@ -69,7 +67,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         // Data and configs
         initYAMLManager();
         setConfig(getYAMLManager().loadConfig("config", getDataFolder(), "config.yml")); // requires yaml mgr
-        setDataConfig(new RuntimeData(getConfig()));
+        setDataConfig(getYAMLManager().loadConfig("data", getDataFolder(), "data.yml")); // requires yaml mgr
         setMessages(getYAMLManager().loadConfig("messages", getDataFolder(), "messages.yml")); // requires yaml mgr
 
         setStorage(new SQLiteStorage(this)); // requires config
@@ -204,12 +202,12 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public Data getDataConfig() {
+    public YAMLConfig getDataConfig() {
         return this.dataConfig;
     }
 
     @Override
-    public void setDataConfig(Data data) {
+    public void setDataConfig(YAMLConfig data) {
         this.dataConfig = data;
     }
 

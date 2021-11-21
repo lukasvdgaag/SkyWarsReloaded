@@ -1,7 +1,6 @@
 package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.command.SWCommandManager;
-import net.gcnt.skywarsreloaded.data.config.Data;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.config.YAMLManager;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerDataManager;
@@ -41,9 +40,9 @@ public interface SkyWarsReloaded {
 
     void setConfig(YAMLConfig config);
 
-    Data getDataConfig();
+    YAMLConfig getDataConfig();
 
-    void setDataConfig(Data data);
+    void setDataConfig(YAMLConfig data);
 
     YAMLConfig getMessages();
 
