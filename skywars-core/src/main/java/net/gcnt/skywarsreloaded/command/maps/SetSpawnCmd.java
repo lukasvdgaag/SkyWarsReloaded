@@ -37,6 +37,7 @@ public class SetSpawnCmd extends Cmd {
             sender.sendMessage(plugin.getUtils().colorize(String.format("&cPlease enter a valid spawn type. Options: &7%s&f, &7%s&f, &7%s", "player", "lobby", "spectate")));
             return true;
         }
+        // todo: check if arg is number, translate to machine index -1, add error messages.
 
         SWPlayer player = (SWPlayer) sender;
         final SWCoord location = player.getLocation();

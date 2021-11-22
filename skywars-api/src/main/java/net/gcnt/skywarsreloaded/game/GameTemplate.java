@@ -47,7 +47,7 @@ public interface GameTemplate {
 
     List<SWCoord> getChests();
 
-    void addSpawn(int team, SWCoord loc);
+    SpawnAddResult addSpawn(int team, SWCoord loc);
 
     void removeSpawn(SWCoord loc);
 
