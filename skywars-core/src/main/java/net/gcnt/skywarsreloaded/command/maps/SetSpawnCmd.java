@@ -50,11 +50,16 @@ public class SetSpawnCmd extends Cmd {
                 template.setSpectateSpawn(location);
                 sender.sendMessage(plugin.getUtils().colorize(String.format("&aThe spectator spawn of the template &b%s &ahas been set to your current location.", template.getDisplayName())));
             }
-            // todo PLAYER spawn.
+            case PLAYER -> {
+                // todo PLAYER spawn (see above)
+            }
         }
 
         return true;
     }
+
+    // /swm setspawn player
+    // /swm setspawn player <team>
 
     @Override
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {

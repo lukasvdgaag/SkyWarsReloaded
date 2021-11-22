@@ -9,7 +9,8 @@ public enum ConfigProperties {
     STORAGE_DATABASE("storage.database"),
     STORAGE_USE_SSL("storage.use-ssl"),
 
-    ENABLE_SLIME_WORLD_MANAGER("world-loader.enable-swm");
+    ENABLE_SLIME_WORLD_MANAGER("world-loader.enable-swm"),
+    LOBBY_SPAWN("lobby-spawn");
 
     private final String value;
 
