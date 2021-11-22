@@ -35,7 +35,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public boolean generateWorldInstance(GameWorld gameWorld) {
+    public boolean generateWorldInstance(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException {
         createEmptyWorld(gameWorld);
         return loadSchematic(gameWorld);
     }
@@ -61,10 +61,11 @@ public class SchemWorldLoader extends BukkitWorldLoader {
 
     /**
      * Pastes the schematic into the world.
+     *
      * @param gameWorld GameWorld to paste into
      * @return true if the schematic existed
      */
-    public boolean loadSchematic(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException{
+    public boolean loadSchematic(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException {
         File schemFolder = new File(plugin.getDataFolder(), FolderProperties.WORLD_SCHEMATICS_FOLDER.toString());
         String schemFileName = gameWorld.getTemplate().getName() + ".schem";
 

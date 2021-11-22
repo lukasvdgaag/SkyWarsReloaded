@@ -9,7 +9,7 @@ public interface GameWorldLoader {
      * @param gameWorld The {@link GameWorld} used to determine data to be loaded
      * @return true if the template data already exists give the template name
      */
-    boolean generateWorldInstance(GameWorld gameWorld);
+    boolean generateWorldInstance(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException ;
 
     void createEmptyWorld(GameWorld gameWorld);
 
