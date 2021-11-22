@@ -1,11 +1,13 @@
 package net.gcnt.skywarsreloaded.game;
 
+import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MapDataProperties;
+import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -234,8 +236,32 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
-    public void addSpawn(int team, SWCoord loc) {
-        // todo add the spawn. Didn't have the logic.
+    public SpawnAddResult addSpawn(int team, SWCoord loc) {
+        // player entered invalid index.
+        if (team < 0) {
+            return SpawnAddResult.INDEX_TOO_LOW;
+        }
+        if (team > teamSpawnLocations.size()) {
+            return SpawnAddResult.INDEX_TOO_HIGH;
+        }
+
+        // checking if there is already a team with this spawn location. #stupidproof
+        for (List<SWCoord> locs : teamSpawnLocations) {
+            for (SWCoord loc1 : locs) {
+                if (loc1.equals(loc)) return SpawnAddResult.SPAWN_ALREADY_EXISTS;
+            }
+        }
+
+        // checking if the teamsize is 1, or if they entered the current size (team + 1)
+        if (teamSize == 1 || team == teamSpawnLocations.size()) {
+            // add new team to the list.
+            this.teamSpawnLocations.add(Lists.newArrayList(loc));
+            return SpawnAddResult.NEW_TEAM_ADDED;
+        }
+
+        // adding spawn to team.
+        this.teamSpawnLocations.get(team).add(loc);
+        return SpawnAddResult.TEAM_UPDATED;
     }
 
     @Override

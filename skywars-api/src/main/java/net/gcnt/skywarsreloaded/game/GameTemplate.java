@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public interface GameTemplate {
 
     List<SWCoord> getChests();
 
-    void addSpawn(int team, SWCoord loc);
+    SpawnAddResult addSpawn(int team, SWCoord loc);
 
     void removeSpawn(SWCoord loc);
 
