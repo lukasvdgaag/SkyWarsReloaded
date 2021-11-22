@@ -7,14 +7,14 @@ import net.gcnt.skywarsreloaded.bukkit.data.player.BukkitSWPlayerDataManager;
 import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameManager;
 import net.gcnt.skywarsreloaded.bukkit.game.chest.BukkitChestManager;
 import net.gcnt.skywarsreloaded.bukkit.game.kits.BukkitKitManager;
-import net.gcnt.skywarsreloaded.bukkit.game.loader.BukkitWorldLoader;
+import net.gcnt.skywarsreloaded.bukkit.game.loader.SchemWorldLoader;
 import net.gcnt.skywarsreloaded.bukkit.game.loader.SlimeWorldLoader;
 import net.gcnt.skywarsreloaded.bukkit.listener.BukkitSWEventListener;
 import net.gcnt.skywarsreloaded.bukkit.managers.BukkitPlayerManager;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitPlatformUtils;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitSWLogger;
-import net.gcnt.skywarsreloaded.bukkit.wrapper.sender.BukkitSWConsoleSender;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.scheduler.BukkitSWScheduler;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.sender.BukkitSWConsoleSender;
 import net.gcnt.skywarsreloaded.command.CoreSWCommandManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
@@ -71,7 +71,9 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
                 return;
             }
         }
-        setWorldLoader(new BukkitWorldLoader(this));
+
+        // Fallback to schematic loading
+        setWorldLoader(new SchemWorldLoader(this));
     }
 
     @Override
