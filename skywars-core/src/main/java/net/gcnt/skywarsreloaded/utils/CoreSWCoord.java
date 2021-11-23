@@ -1,13 +1,17 @@
 package net.gcnt.skywarsreloaded.utils;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.jetbrains.annotations.Nullable;
 
 public class CoreSWCoord implements SWCoord {
 
+    private SWWorld world;
     private double x;
     private double y;
     private double z;
+    private float yaw;
+    private float pitch;
 
     /**
      * Get a new coord from the x, y, and z coordinates.
@@ -22,10 +26,58 @@ public class CoreSWCoord implements SWCoord {
         this.z = z;
     }
 
+    public CoreSWCoord(SWWorld world, int x, int y, int z) {
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public CoreSWCoord(int x, int y, int z, float yaw, float pitch) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+    }
+
+    public CoreSWCoord(SWWorld world, int x, int y, int z, float yaw, float pitch) {
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+    }
+
     public CoreSWCoord(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public CoreSWCoord(SWWorld world, double x, double y, double z) {
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public CoreSWCoord(double x, double y, double z, float yaw, float pitch) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+    }
+
+    public CoreSWCoord(SWWorld world, double x, double y, double z, float yaw, float pitch) {
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
     }
 
     /**
@@ -54,11 +106,27 @@ public class CoreSWCoord implements SWCoord {
 
     @Override
     public String toString() {
+        if (world != null) return world.getName() + ":" + x + ":" + y + ":" + z;
+
         return x + ":" + y + ":" + z;
     }
 
     public boolean equals(SWCoord o) {
         return (o.toString().equals(this.toString()));
+    }
+
+    public SWWorld world() {
+        return world;
+    }
+
+    private int floor(double num) {
+        int floor = (int) num;
+        return (double) floor == num ? floor : floor - (int) (Double.doubleToRawLongBits(num) >>> 63);
+    }
+
+    @Override
+    public SWCoord asBlock() {
+        return new CoreSWCoord(floor(xPrecise()), floor(yPrecise()), floor(zPrecise()));
     }
 
     @Override
@@ -89,6 +157,16 @@ public class CoreSWCoord implements SWCoord {
     @Override
     public double zPrecise() {
         return z;
+    }
+
+    @Override
+    public float pitch() {
+        return pitch;
+    }
+
+    @Override
+    public float yaw() {
+        return yaw;
     }
 
     @Override
