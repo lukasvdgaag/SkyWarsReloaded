@@ -35,6 +35,8 @@ public interface GameManager {
 
     List<GameWorld> getGameWorlds(GameTemplate data);
 
+    GameWorld getGameWorldFromWorldName(String worldName);
+
     List<GameWorld> getGameWorlds();
 
 }

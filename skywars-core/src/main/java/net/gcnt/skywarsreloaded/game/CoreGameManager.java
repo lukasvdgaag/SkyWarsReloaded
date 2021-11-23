@@ -57,6 +57,15 @@ public abstract class CoreGameManager implements GameManager {
     }
 
     @Override
+    public GameWorld getGameWorldFromWorldName(String worldName) {
+        if (worldName == null) return null;
+        for (GameWorld gameWorld : getGameWorlds()) {
+            if (gameWorld.getWorldName().equals(worldName)) return gameWorld;
+        }
+        return null;
+    }
+
+    @Override
     public boolean deleteGameTemplate(String gameId, boolean deleteMap) {
         GameTemplate template = this.getGameTemplateByName(gameId);
         this.templates.remove(gameId);

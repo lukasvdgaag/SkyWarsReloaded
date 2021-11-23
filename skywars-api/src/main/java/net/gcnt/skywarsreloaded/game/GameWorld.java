@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.game.types.GameStatus;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +16,8 @@ public interface GameWorld {
     GameTemplate getTemplate();
 
     List<GameTeam> getTeams();
+
+    SWWorld getWorld();
 
     String getWorldName();
 

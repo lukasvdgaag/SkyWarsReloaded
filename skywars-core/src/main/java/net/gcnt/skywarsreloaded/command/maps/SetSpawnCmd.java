@@ -3,8 +3,11 @@ package net.gcnt.skywarsreloaded.command.maps;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.types.SpawnType;
+import net.gcnt.skywarsreloaded.utils.AbstractItem;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
@@ -14,45 +17,94 @@ import java.util.List;
 public class SetSpawnCmd extends Cmd {
 
     public SetSpawnCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "setspawn", "skywars.command.map.setspawn", true, "<map> <type>", "Set a spawnpoint.");
+        super(plugin, "skywarsmap", "setspawn", "skywars.command.map.setspawn", true, "<type> [team]", "Set a spawnpoint.");
     }
 
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
-        if (args.length == 0) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a game template name."));
+        SWPlayer player = (SWPlayer) sender;
+        GameWorld world = plugin.getGameManager().getGameWorldFromWorldName(player.getLocation().world().getName());
+        if (world == null) {
+            sender.sendMessage(plugin.getUtils().colorize("&cYou must be in a skywars game template world to execute this command."));
             return true;
-        } else if (args.length == 1) {
-            sender.sendMessage(plugin.getUtils().colorize(String.format("&cPlease enter a spawn type. Options: &7%s&f, &7%s&f, &7%s", "player", "lobby", "spectate")));
         }
 
-        final String templateName = args[0];
-        GameTemplate template = plugin.getGameManager().getGameTemplateByName(templateName);
-        if (template == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere is no game template with that name."));
+        GameTemplate template = world.getTemplate();
+        if (!world.isEditing()) {
+            sender.sendMessage(plugin.getUtils().colorize(String.format("&cYou are currently in a skywars game world for the arena &7%s&c that is not in editing mode. Use \"&c&o/swmap edit %s&c\" to edit this template.", template.getDisplayName(), template.getName())));
             return true;
         }
-        SpawnType type = SpawnType.fromString(args[1]);
+
+        SpawnType type = SpawnType.fromString(args[0]);
         if (type == null) {
             sender.sendMessage(plugin.getUtils().colorize(String.format("&cPlease enter a valid spawn type. Options: &7%s&f, &7%s&f, &7%s", "player", "lobby", "spectate")));
             return true;
         }
-        // todo: check if arg is number, translate to machine index -1, add error messages.
+        int team = 1;
 
-        SWPlayer player = (SWPlayer) sender;
+        if (type == SpawnType.PLAYER) {
+            if (template.getTeamSize() > 1) {
+                if (args.length == 1) {
+                    sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a team number."));
+                    return true;
+                }
+                //else
+                if (!plugin.getUtils().isInt(args[1])) {
+                    sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid team number (number)."));
+                    return true;
+                }
+
+                team = Integer.parseInt(args[1]);
+            } else {
+                if (args.length > 1) {
+                    // player entered a team number.
+                    player.sendTitle(plugin.getUtils().colorize("&c&lNOT A TEAM GAME!"), plugin.getUtils().colorize("&7You can only set team spawns for team games"));
+                    sender.sendMessage(plugin.getUtils().colorize("&7Not a team game template!&c You are currently editing a solo game template (with team size 1) which doesn't support adding a spawn to a specific team. If you wish to" +
+                            " make this template a team arena, please use the command \"&o/swmap teamsize " + template.getName() + " <size>&r&c\"."));
+                    return true;
+                }
+            }
+        }
+
         final SWCoord location = player.getLocation();
+        final int teamIndex = team - 1;
 
         switch (type) {
             case LOBBY -> {
                 template.setWaitingLobbySpawn(location);
+                player.sendTitle(plugin.getUtils().colorize("&a&lSPAWN SET!"), plugin.getUtils().colorize("&7Successfully set the waiting lobby spawnpoint!"));
                 sender.sendMessage(plugin.getUtils().colorize(String.format("&aThe waiting spawn of the template &b%s &ahas been set to your current location.", template.getDisplayName())));
             }
             case SPECTATE -> {
                 template.setSpectateSpawn(location);
+                player.sendTitle(plugin.getUtils().colorize("&a&lSPAWN SET!"), plugin.getUtils().colorize("&7Successfully set the spectator spawnpoint!"));
                 sender.sendMessage(plugin.getUtils().colorize(String.format("&aThe spectator spawn of the template &b%s &ahas been set to your current location.", template.getDisplayName())));
             }
             case PLAYER -> {
-                // todo PLAYER spawn (see above)
+                // todo check if number of spawns for that team does not exceed the team size
+                // todo maybe send title and/or chat message with the number of spawns left to set for the current team.
+                SpawnAddResult result = template.addSpawn(teamIndex, location.asBlock());
+                String message = switch (result) {
+                    case INDEX_TOO_LOW -> "&cPlease enter a valid team number (greater than 0)";
+                    case INDEX_TOO_HIGH -> String.format("&cPlease enter a valid team number (max %d)", template.getTeamSpawnpoints().size() + 1);
+                    case SPAWN_ALREADY_EXISTS -> "&cThe location you're trying to set is already defined for another team.";
+                    case NEW_TEAM_ADDED -> {
+                        if (template.getTeamSize() == 1) {
+                            yield String.format("&aAdded player spawnpoint &b#%d &ato game template &b%s&a.", template.getTeamSpawnpoints().size(), template.getDisplayName());
+                        } else {
+                            yield String.format("&aAdded player spawnpoint &b#%d &ato team &b%d &afor game template &b%s&a.", template.getTeamSpawnpoints().get(team - 1).size(), team, template.getDisplayName());
+                        }
+                    }
+                    case TEAM_UPDATED -> String.format("&aAdded player spawnpoint &b#%d &ato team &b%d &afor game template &b%s&a.", template.getTeamSpawnpoints().get(team - 1).size(), team, template.getDisplayName());
+                };
+
+                if (result.isSuccess()) {
+                    player.sendTitle(plugin.getUtils().colorize("&a&lSPAWN SET!"), plugin.getUtils().colorize("&7Successfully added a new player spawnpoint!"));
+                    location.world().setBlockAt(location, AbstractItem.getItem("BEACON"));
+                } else {
+                    player.sendTitle(plugin.getUtils().colorize("&c&lOH NO!"), plugin.getUtils().colorize("&7Couldn't add the player spawn (see chat)!"));
+                }
+                sender.sendMessage(plugin.getUtils().colorize(message));
             }
         }
 
@@ -65,15 +117,25 @@ public class SetSpawnCmd extends Cmd {
     @Override
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
-            List<String> maps = new ArrayList<>();
-            plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
-            return maps;
-        } else if (args.length == 2) {
             List<String> options = new ArrayList<>();
             for (SpawnType type : SpawnType.values()) {
                 options.add(type.name().toLowerCase());
             }
             return options;
+        } else if (args.length == 2) {
+            if (sender instanceof SWPlayer player) {
+                SpawnType type = SpawnType.fromString(args[0]);
+                if (type == SpawnType.PLAYER) {
+                    GameWorld world = plugin.getGameManager().getGameWorldFromWorldName(player.getLocation().world().getName());
+                    if (world != null && world.isEditing() && world.getTemplate().getTeamSize() > 1) {
+                        List<String> options = new ArrayList<>();
+                        for (int i = 0; i < world.getTemplate().getTeamSpawnpoints().size() + 1; i++) {
+                            options.add(String.valueOf(i + 1));
+                        }
+                        return options;
+                    }
+                }
+            }
         }
         return new ArrayList<>();
     }

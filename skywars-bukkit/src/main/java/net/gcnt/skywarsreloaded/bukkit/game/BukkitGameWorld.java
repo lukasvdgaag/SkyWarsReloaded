@@ -2,10 +2,12 @@ package net.gcnt.skywarsreloaded.bukkit.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.game.AbstractGameWorld;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -20,6 +22,11 @@ public class BukkitGameWorld extends AbstractGameWorld {
 
     public World getBukkitWorld() {
         return Bukkit.getWorld(worldName);
+    }
+
+    @Override
+    public SWWorld getWorld() {
+        return new BukkitSWWorld(plugin, getBukkitWorld());
     }
 
     @Override

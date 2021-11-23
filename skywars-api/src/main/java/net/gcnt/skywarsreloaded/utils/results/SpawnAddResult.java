@@ -14,4 +14,7 @@ public enum SpawnAddResult {
         this.success = success;
     }
 
+    public boolean isSuccess() {
+        return success;
+    }
 }

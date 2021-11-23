@@ -25,6 +25,20 @@ public abstract class AbstractItem implements Item {
         damage = 0;
     }
 
+    public static AbstractItem getItem(String material) {
+        return new AbstractItem(material) {
+            @Override
+            public void clearCachedItem() {
+
+            }
+
+            @Override
+            public void cacheItem() {
+
+            }
+        };
+    }
+
     @Override
     public String getMaterial() {
         return material;
