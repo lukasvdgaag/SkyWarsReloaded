@@ -16,6 +16,7 @@ public class CoreSWAsyncPlayerPreLoginEvent implements SWAsyncPlayerPreLoginEven
         this.name = name;
         this.address = address;
         this.result = resultIn == null ? Result.ALLOWED : resultIn;
+        this.message = null;
     }
 
     @Override
@@ -46,22 +47,22 @@ public class CoreSWAsyncPlayerPreLoginEvent implements SWAsyncPlayerPreLoginEven
     }
 
     @Override
-    public void setResult(Result resultIn) {
-        this.result = resultIn;
-    }
-
-    @Override
     public Result getResult() {
         return this.result;
     }
 
     @Override
-    public void setKickMessage(String messageIn) {
-        this.message = messageIn;
+    public void setResult(Result resultIn) {
+        this.result = resultIn;
     }
 
     @Override
     public String getKickMessage() {
         return this.message;
+    }
+
+    @Override
+    public void setKickMessage(String messageIn) {
+        this.message = messageIn;
     }
 }

@@ -36,6 +36,7 @@ public class EditMapCmd extends Cmd {
         for (GameWorld world : worlds) {
             if (world.isEditing()) {
                 player.sendMessage(plugin.getUtils().colorize("&7Teleporting you to the current existing map template to edit..."));
+                world.readyForEditing();
                 player.teleport(world.getWorldName(), 0, 51, 0);
                 return true;
             } else if (world.getStatus() != GameStatus.DISABLED) {
@@ -61,8 +62,9 @@ public class EditMapCmd extends Cmd {
         // Handle the initialization of a world if this was the creation of the template
         if (!templateExists) {
             plugin.getWorldLoader().createBasePlatform(world);
-            plugin.getWorldLoader().updateWorldBorder(world);
         }
+
+        world.readyForEditing();
 
         player.teleport(world.getWorldName(), 0, 51, 0);
         player.sendTitle(plugin.getUtils().colorize("&aGenerated World!"), plugin.getUtils().colorize("&7We completed generating the template world"), 0, 100, 20);

@@ -81,9 +81,8 @@ public class SetSpawnCmd extends Cmd {
                 sender.sendMessage(plugin.getUtils().colorize(String.format("&aThe spectator spawn of the template &b%s &ahas been set to your current location.", template.getDisplayName())));
             }
             case PLAYER -> {
-                // todo check if number of spawns for that team does not exceed the team size
-                // todo maybe send title and/or chat message with the number of spawns left to set for the current team.
-                SpawnAddResult result = template.addSpawn(teamIndex, location.asBlock());
+                final SWCoord blockLocation = location.asBlock();
+                SpawnAddResult result = template.addSpawn(teamIndex, blockLocation);
                 String message = switch (result) {
                     case INDEX_TOO_LOW -> "&cPlease enter a valid team number (greater than 0)";
                     case INDEX_TOO_HIGH -> String.format("&cPlease enter a valid team number (max %d)", template.getTeamSpawnpoints().size() + 1);
@@ -92,15 +91,21 @@ public class SetSpawnCmd extends Cmd {
                         if (template.getTeamSize() == 1) {
                             yield String.format("&aAdded player spawnpoint &b#%d &ato game template &b%s&a.", template.getTeamSpawnpoints().size(), template.getDisplayName());
                         } else {
-                            yield String.format("&aAdded player spawnpoint &b#%d &ato team &b%d &afor game template &b%s&a.", template.getTeamSpawnpoints().get(team - 1).size(), team, template.getDisplayName());
+                            int currentSpawns = template.getTeamSpawnpoints().get(teamIndex).size();
+                            if (currentSpawns < template.getTeamSize()) {
+                                yield String.format("&aAdded player spawnpoint &b#%d &ato team &b%d &afor game template &b%s&a. &e%d &aspawns left to set for this team.", currentSpawns, team, template.getDisplayName(), template.getTeamSize() - currentSpawns);
+                            } else {
+                                yield String.format("&aAdded the final player spawnpoint &b#%d &ato team &b%d &afor game template &b%s&a. &e0 &aleft to go.", currentSpawns, team, template.getDisplayName());
+                            }
                         }
                     }
                     case TEAM_UPDATED -> String.format("&aAdded player spawnpoint &b#%d &ato team &b%d &afor game template &b%s&a.", template.getTeamSpawnpoints().get(team - 1).size(), team, template.getDisplayName());
+                    case MAX_TEAM_SPAWNS_REACHED -> String.format("&cTeam %d has reached its maximum player spawnpoints. You could increase the team size of this template with \"&o/swmap teamsize %s <size>&c\" if you wish to proceed.", team, template.getName());
                 };
 
                 if (result.isSuccess()) {
                     player.sendTitle(plugin.getUtils().colorize("&a&lSPAWN SET!"), plugin.getUtils().colorize("&7Successfully added a new player spawnpoint!"));
-                    location.world().setBlockAt(location, AbstractItem.getItem("BEACON"));
+                    location.world().setBlockAt(blockLocation, AbstractItem.getItem("BEACON"));
                 } else {
                     player.sendTitle(plugin.getUtils().colorize("&c&lOH NO!"), plugin.getUtils().colorize("&7Couldn't add the player spawn (see chat)!"));
                 }

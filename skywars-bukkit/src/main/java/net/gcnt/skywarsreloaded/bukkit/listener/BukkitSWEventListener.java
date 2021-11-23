@@ -62,14 +62,20 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
         // Get data
         SWPlayer p = this.getPlayerFromBukkitPlayer(event.getPlayer());
+
+        SWCoord location = null;
         Block block = event.getClickedBlock();
-        Location loc = block.getLocation();
-        SWCoord coord = new CoreSWCoord(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        String wName = block.getType().name();
+        String blockType = "AIR";
+
+        if (block != null) {
+            Location loc = block.getLocation();
+            location = new CoreSWCoord(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            blockType = block.getType().name();
+        }
         SWPlayerInteractEvent.Action action = SWPlayerInteractEvent.Action.valueOf(event.getAction().name());
 
         // Fire Event
-        SWPlayerInteractEvent swEvent = new CoreSWPlayerInteractEvent(p, loc.getWorld().getName(), coord, wName, action);
+        SWPlayerInteractEvent swEvent = new CoreSWPlayerInteractEvent(p, event.getPlayer().getWorld().getName(), location, blockType, action);
         this.onPlayerInteract(swEvent);
 
         // Update changes

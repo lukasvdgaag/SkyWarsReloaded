@@ -9,6 +9,7 @@ import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -50,5 +51,12 @@ public class BukkitGameWorld extends AbstractGameWorld {
                 inventory.setItem(i, ((BukkitItem) items[i]).getBukkitItem());
             }
         }
+    }
+
+    @Override
+    public void readyForEditing() {
+        World world = getBukkitWorld();
+        plugin.getWorldLoader().updateWorldBorder(this);
+        getTemplate().getTeamSpawnpoints().forEach(swCoords -> swCoords.forEach(swCoord -> world.getBlockAt(swCoord.x(), swCoord.y(), swCoord.z()).setType(Material.BEACON)));
     }
 }

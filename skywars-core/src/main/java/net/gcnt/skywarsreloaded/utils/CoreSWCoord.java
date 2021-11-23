@@ -107,8 +107,7 @@ public class CoreSWCoord implements SWCoord {
     @Override
     public String toString() {
         if (world != null) return world.getName() + ":" + x + ":" + y + ":" + z;
-
-        return x + ":" + y + ":" + z;
+        return x() + ":" + y() + ":" + z();
     }
 
     public boolean equals(SWCoord o) {

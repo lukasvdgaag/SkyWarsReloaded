@@ -56,17 +56,19 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
 
             } catch (UnknownWorldException ex) {
                 plugin.getLogger().error(String.format("Attempted to load template '%s$' from SWM but doesn't exist! (loader: %s$)", templateName, slimeLoaderType));
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
                 plugin.getLogger().reportException(ex);
-            } catch(CorruptedWorldException ex) {
+            } catch (CorruptedWorldException ex) {
                 plugin.getLogger().error(String.format("The world template '%s$' is corrupted! (loader: %s$)", templateName, slimeLoaderType));
-            } catch(NewerFormatException ex) {
+            } catch (NewerFormatException ex) {
                 plugin.getLogger().error(String.format("The world template '%s$' is in a newer format! (loader: %s$)", templateName, slimeLoaderType));
-            } catch(WorldInUseException ex) {
+            } catch (WorldInUseException ex) {
                 plugin.getLogger().error(String.format("The world template '%s$' is in use by another server in non read-only mode! (loader: %s$)", templateName, slimeLoaderType));
-            } catch (ExecutionException | InterruptedException ignored) {}
+            } catch (ExecutionException | InterruptedException ignored) {
+            }
         });
+        return true;
     }
 
     @Override

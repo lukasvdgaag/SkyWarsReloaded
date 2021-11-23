@@ -43,6 +43,8 @@ public interface GameWorld {
 
     void setStatus(GameStatus status);
 
+    void readyForEditing();
+
     int getTimer();
 
     void setTimer(int timer);

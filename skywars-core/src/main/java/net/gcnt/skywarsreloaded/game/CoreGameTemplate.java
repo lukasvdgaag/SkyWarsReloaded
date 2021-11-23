@@ -253,10 +253,17 @@ public class CoreGameTemplate implements GameTemplate {
         }
 
         // checking if the teamsize is 1, or if they entered the current size (team + 1)
-        if (teamSize == 1 || team == teamSpawnLocations.size()) {
+        if (getTeamSize() == 1 || team == teamSpawnLocations.size()) {
             // add new team to the list.
             this.teamSpawnLocations.add(Lists.newArrayList(loc));
             return SpawnAddResult.NEW_TEAM_ADDED;
+        }
+
+        if (getTeamSize() > 1) {
+            List<SWCoord> coords = this.teamSpawnLocations.get(team);
+            if (coords.size() >= getTeamSize()) {
+                return SpawnAddResult.MAX_TEAM_SPAWNS_REACHED;
+            }
         }
 
         // adding spawn to team.
