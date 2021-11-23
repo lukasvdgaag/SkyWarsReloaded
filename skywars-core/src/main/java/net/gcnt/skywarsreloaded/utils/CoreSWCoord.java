@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class CoreSWCoord implements SWCoord {
 
+    private String worldName;
     private SWWorld world;
     private double x;
     private double y;
@@ -24,13 +25,18 @@ public class CoreSWCoord implements SWCoord {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.yaw = 0;
+        this.pitch = 0;
     }
 
     public CoreSWCoord(SWWorld world, int x, int y, int z) {
         this.world = world;
+        this.worldName = world.getName();
         this.x = x;
         this.y = y;
         this.z = z;
+        this.yaw = 0;
+        this.pitch = 0;
     }
 
     public CoreSWCoord(int x, int y, int z, float yaw, float pitch) {
@@ -43,6 +49,7 @@ public class CoreSWCoord implements SWCoord {
 
     public CoreSWCoord(SWWorld world, int x, int y, int z, float yaw, float pitch) {
         this.world = world;
+        this.worldName = world.getName();
         this.x = x;
         this.y = y;
         this.z = z;
@@ -54,13 +61,18 @@ public class CoreSWCoord implements SWCoord {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.yaw = 0;
+        this.pitch = 0;
     }
 
     public CoreSWCoord(SWWorld world, double x, double y, double z) {
         this.world = world;
+        this.worldName = world.getName();
         this.x = x;
         this.y = y;
         this.z = z;
+        this.yaw = 0;
+        this.pitch = 0;
     }
 
     public CoreSWCoord(double x, double y, double z, float yaw, float pitch) {
@@ -73,6 +85,7 @@ public class CoreSWCoord implements SWCoord {
 
     public CoreSWCoord(SWWorld world, double x, double y, double z, float yaw, float pitch) {
         this.world = world;
+        this.worldName = world.getName();
         this.x = x;
         this.y = y;
         this.z = z;
@@ -93,24 +106,40 @@ public class CoreSWCoord implements SWCoord {
             throw new IllegalArgumentException("String cannot be converted to a Coord location. Input is empty/null.");
         }
         String[] arg0 = input.split(":");
-        if (arg0.length != 3) {
+        int lenAdd = 0;
+        if (arg0.length < 3 || arg0.length > 6) {
             throw new IndexOutOfBoundsException("The coord input string \"" + input + "\" has an invalid amount of arguments.");
-        } else if (!plugin.getUtils().isInt(arg0[0]) || !plugin.getUtils().isInt(arg0[1]) || !plugin.getUtils().isInt(arg0[2])) {
-            throw new NumberFormatException("One of the coord points seems to not be an integer: " + input);
+        }
+        if (arg0.length == 4 || arg0.length == 6) lenAdd = 1;
+
+        if (!plugin.getUtils().isDouble(arg0[lenAdd]) || !plugin.getUtils().isDouble(arg0[1 + lenAdd]) || !plugin.getUtils().isDouble(arg0[2 + lenAdd])) {
+            throw new NumberFormatException("One of the coord points seems to not be a number: " + input);
         }
 
-        x = Integer.parseInt(arg0[0]);
-        y = Integer.parseInt(arg0[1]);
-        z = Integer.parseInt(arg0[2]);
+        // todo add support for coord strings with pitch and yaws (+ world names).
+
+        x = Double.parseDouble(arg0[lenAdd]);
+        y = Double.parseDouble(arg0[1 + lenAdd]);
+        z = Double.parseDouble(arg0[2 + lenAdd]);
+        if (arg0.length == 4) {
+            this.worldName = arg0[0];
+            this.world = plugin.getUtils().getSWWorld(arg0[0]);
+            if (this.world == null) {
+                plugin.getLogger().warn(String.format("The world \"%s\" is null for SWCoord \"%s\". This may cause problems in the futures when it gets referred to.", arg0[0], input));
+            }
+        }
     }
 
     @Override
     public String toString() {
-        if (world != null) return world.getName() + ":" + x + ":" + y + ":" + z;
-        return x() + ":" + y() + ":" + z();
+        if (worldName != null) return worldName + ":" + x + ":" + y + ":" + z;
+        return xPrecise() + ":" + yPrecise() + ":" + zPrecise();
     }
 
     public boolean equals(SWCoord o) {
+        if (this.world == null || o.world() == null) {
+            return this.x == o.xPrecise() && this.y == o.yPrecise() && this.z == o.zPrecise() && this.pitch == o.pitch() && this.yaw == o.yaw();
+        }
         return (o.toString().equals(this.toString()));
     }
 

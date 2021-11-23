@@ -8,6 +8,7 @@ import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MapDataProperties;
 import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
+import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -218,7 +219,7 @@ public class CoreGameTemplate implements GameTemplate {
     public synchronized boolean removeChest(SWCoord loc) {
         for (SWCoord chest : this.chests) {
             if (chest.equals(loc)) {
-                this.chests.remove(loc);
+                this.chests.remove(chest);
                 return true;
             }
         }
@@ -272,10 +273,17 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
-    public void removeSpawn(SWCoord loc) {
-        for (List<SWCoord> locs : getTeamSpawnpoints()) {
-            locs.removeIf(coord -> coord.equals(loc));
+    public synchronized SpawnRemoveResult removeSpawn(SWCoord loc) {
+        for (int team = 0; team < getTeamSpawnpoints().size(); team++) {
+            final List<SWCoord> swCoords = getTeamSpawnpoints().get(team);
+            for (int pos = 0; pos < swCoords.size(); pos++) {
+                if (swCoords.get(pos).equals(loc.asBlock())) {
+                    swCoords.remove(pos);
+                    return new SpawnRemoveResult(true, team, pos);
+                }
+            }
         }
+        return new SpawnRemoveResult(false, 0, 0);
     }
 
     @Override

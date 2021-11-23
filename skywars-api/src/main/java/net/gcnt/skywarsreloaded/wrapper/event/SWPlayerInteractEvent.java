@@ -8,8 +8,6 @@ public interface SWPlayerInteractEvent extends SWPlayerEvent, SWCancellable {
 
     SWCoord getClickedBlockLocation();
 
-    String getClickedBlockWorld();
-
     String getClickedBlockType();
 
     enum Action {

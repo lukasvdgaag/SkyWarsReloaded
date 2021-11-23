@@ -30,7 +30,7 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
         SWAsyncPlayerPreLoginEvent.Result result = SWAsyncPlayerPreLoginEvent.Result.valueOf(event.getLoginResult().name());
 
         // Fire event
-        CoreSWAsyncPlayerPreLoginEvent swEvent = new CoreSWAsyncPlayerPreLoginEvent(event.getUniqueId(), event.getName(), event.getAddress(), result);
+        SWAsyncPlayerPreLoginEvent swEvent = new CoreSWAsyncPlayerPreLoginEvent(event.getUniqueId(), event.getName(), event.getAddress(), result);
         this.onAsyncPlayerPreLogin(swEvent);
 
         // Update changes
@@ -69,13 +69,13 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
 
         if (block != null) {
             Location loc = block.getLocation();
-            location = new CoreSWCoord(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+            location = new CoreSWCoord(plugin.getUtils().getSWWorld(loc.getWorld().getName()), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
             blockType = block.getType().name();
         }
         SWPlayerInteractEvent.Action action = SWPlayerInteractEvent.Action.valueOf(event.getAction().name());
 
         // Fire Event
-        SWPlayerInteractEvent swEvent = new CoreSWPlayerInteractEvent(p, event.getPlayer().getWorld().getName(), location, blockType, action);
+        SWPlayerInteractEvent swEvent = new CoreSWPlayerInteractEvent(p, location, blockType, action);
         this.onPlayerInteract(swEvent);
 
         // Update changes
@@ -90,11 +90,11 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
         SWPlayer p = this.getPlayerFromBukkitPlayer(event.getPlayer());
         Block block = event.getBlock();
         Location loc = block.getLocation();
-        SWCoord coord = new CoreSWCoord(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        SWCoord coord = new CoreSWCoord(plugin.getUtils().getSWWorld(loc.getWorld().getName()), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         String wName = block.getType().name();
 
         // Fire core event
-        SWBlockBreakEvent swEvent = new CoreSWBlockBreakEvent(p, loc.getWorld().getName(), coord, wName);
+        SWBlockBreakEvent swEvent = new CoreSWBlockBreakEvent(p, coord, wName);
         this.onPlayerBlockBreak(swEvent);
 
         // Update changes
@@ -109,11 +109,11 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
         SWPlayer p = this.getPlayerFromBukkitPlayer(event.getPlayer());
         Block block = event.getBlock();
         Location loc = block.getLocation();
-        SWCoord coord = new CoreSWCoord(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        SWCoord coord = new CoreSWCoord(plugin.getUtils().getSWWorld(loc.getWorld().getName()), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         String wName = event.getBlockPlaced().getType().name();
 
         // Fire core event
-        SWBlockPlaceEvent swEvent = new CoreSWBlockPlaceEvent(p, loc.getWorld().getName(), coord, wName);
+        SWBlockPlaceEvent swEvent = new CoreSWBlockPlaceEvent(p, coord, wName);
         this.onPlayerBlockPlace(swEvent);
 
         // Update changes

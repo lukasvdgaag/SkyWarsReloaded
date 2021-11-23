@@ -44,7 +44,7 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
     @Override
     public void initPlatformUtils() {
-        setPlatformUtils(new BukkitPlatformUtils());
+        setPlatformUtils(new BukkitPlatformUtils(this));
     }
 
     @Override

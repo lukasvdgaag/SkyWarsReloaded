@@ -18,10 +18,10 @@ public class SetMapTeamsizeCmd extends Cmd {
     public boolean run(SWCommandSender sender, String[] args) {
         if (args.length == 0) {
             sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a game template name."));
-            return false; // todo not sure if I should return false/true here to show the usage too or not.
+            return true;
         } else if (args.length == 1) {
             sender.sendMessage(plugin.getUtils().colorize("&cPlease enter the number of players per team."));
-            return false; // todo not sure if I should return false/true here to show the usage too or not.
+            return true;
         }
 
         if (!plugin.getUtils().isInt(args[1])) {
@@ -40,6 +40,8 @@ public class SetMapTeamsizeCmd extends Cmd {
             sender.sendMessage(plugin.getUtils().colorize("&cThere is no game template with that name."));
             return true;
         }
+
+        // todo check if new team size is lower than current one and check all player spawnpoints for errors.
 
         template.setTeamSize(size);
         sender.sendMessage(plugin.getUtils().colorize("&aThe team size of the map &e" + templateName + " &ahas been changed to &e" + size + "&a!"));

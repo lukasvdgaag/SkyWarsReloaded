@@ -7,7 +7,5 @@ public interface SWBlockPlaceEvent extends SWPlayerEvent, SWCancellable {
     SWCoord getCoord();
 
     String getBlockTypeName();
-    
-    String getWorldName();
 
 }
