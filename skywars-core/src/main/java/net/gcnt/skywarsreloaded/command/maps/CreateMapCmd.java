@@ -1,7 +1,5 @@
 package net.gcnt.skywarsreloaded.command.maps;
 
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.math.BlockVector3;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
@@ -39,14 +37,15 @@ public class CreateMapCmd extends Cmd {
         GameWorld world = plugin.getGameManager().createGameWorld(template);
         world.setEditing(true);
 
-        plugin.getWorldLoader().createEmptyWorld(world);
+        plugin.getWorldLoader().generateWorldInstance(world);
         plugin.getWorldLoader().createBasePlatform(world);
         plugin.getWorldLoader().updateWorldBorder(world);
 
+        // todo: remove (dupli) check EditMapCmd
         String fileName = template.getName() + ".schem";
         File schemFile = new File(new File(plugin.getDataFolder(), FolderProperties.WORLD_SCHEMATICS_FOLDER.toString()), fileName);
         if (schemFile.exists()) {
-            plugin.getWorldLoader().loadSchematic(world);
+            // plugin.getWorldLoader().loadSchematic(world);
         }
 
         player.teleport(world.getWorldName(), 0, 51, 0);

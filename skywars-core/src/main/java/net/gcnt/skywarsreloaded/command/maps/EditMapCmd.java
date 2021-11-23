@@ -1,17 +1,13 @@
 package net.gcnt.skywarsreloaded.command.maps;
 
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.math.BlockVector3;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
-import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,13 +49,19 @@ public class EditMapCmd extends Cmd {
         GameWorld world = plugin.getGameManager().createGameWorld(template);
         world.setEditing(true);
 
-        plugin.getWorldLoader().createEmptyWorld(world);
-        plugin.getWorldLoader().createBasePlatform(world);
-        plugin.getWorldLoader().updateWorldBorder(world);
+        // Create instance of the world given the template data, or create a new one if it doesn't exist.
+        boolean templateExists;
+        try {
+            templateExists = plugin.getWorldLoader().generateWorldInstance(world);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            sender.sendMessage(plugin.getUtils().colorize("&cThere was an error while generating the world, please check the server console for details."));
+            return true;
+        }
 
-        File schemFile = new File(new File(plugin.getDataFolder(), FolderProperties.WORLD_SCHEMATICS_FOLDER.toString()), template.getName() + ".schem");
-        if (schemFile.exists()) {
-            plugin.getWorldLoader().loadSchematic(world);
+        // Handle the initialization of a world if this was the creation of the template
+        if (!templateExists) {
+            plugin.getWorldLoader().createBasePlatform(world);
+            plugin.getWorldLoader().updateWorldBorder(world);
         }
 
         player.teleport(world.getWorldName(), 0, 51, 0);
