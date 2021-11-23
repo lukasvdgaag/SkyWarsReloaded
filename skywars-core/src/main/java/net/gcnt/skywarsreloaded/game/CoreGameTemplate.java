@@ -270,4 +270,9 @@ public class CoreGameTemplate implements GameTemplate {
             locs.removeIf(coord -> coord.equals(loc));
         }
     }
+
+    @Override
+    public YAMLConfig getConfig() {
+        return this.config;
+    }
 }

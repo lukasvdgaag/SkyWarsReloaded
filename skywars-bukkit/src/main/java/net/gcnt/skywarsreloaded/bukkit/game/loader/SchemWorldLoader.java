@@ -5,8 +5,10 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameWorld;
+import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
+import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -88,7 +90,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public void deleteWorld(GameWorld gameWorld) {
+    public void deleteWorldInstance(GameWorld gameWorld) {
         World world = ((BukkitGameWorld) gameWorld).getBukkitWorld();
         if (world == null) {
             return;
@@ -105,11 +107,30 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
+    public void deleteMap(GameTemplate gameTemplate) {
+        File schemFolder = new File(plugin.getDataFolder(), FolderProperties.WORLD_SCHEMATICS_FOLDER.toString());
+        String schemFileName = gameTemplate.getName() + ".schem";
+
+        File schemFile = new File(schemFolder, schemFileName);
+        if (schemFile.exists()) {
+            try {
+                FileUtils.forceDelete(schemFile);
+            } catch (IOException e) {
+                plugin.getLogger().error(String.format("Failed to delete schematic file %s. (%s)", schemFileName, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+            }
+        }
+    }
+
+    @Override
     public void createBasePlatform(GameWorld gameWorld) {
         World world = ((BukkitGameWorld) gameWorld).getBukkitWorld();
         if (world == null) return;
 
-        world.getBlockAt(0, 50, 0).setType(Material.STONE);
+        world.getBlockAt(
+                InternalProperties.MAP_CREATE_PLATFORM_X,
+                InternalProperties.MAP_CREATE_PLATFORM_Y,
+                InternalProperties.MAP_CREATE_PLATFORM_Z
+        ).setType(Material.STONE);
     }
 
     @Override
