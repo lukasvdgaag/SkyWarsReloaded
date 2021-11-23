@@ -18,7 +18,7 @@ public class EnableCmd extends Cmd {
     public boolean run(SWCommandSender sender, String[] args) {
         if (args.length == 0) {
             sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a game template name."));
-            return false; // todo not sure if I should return false/true here to show the usage too or not.
+            return true;
         }
 
         final String templateName = args[0];

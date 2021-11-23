@@ -19,7 +19,7 @@ public class SaveMapCmd extends Cmd {
     public boolean run(SWCommandSender sender, String[] args) {
         if (args.length == 0) {
             sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a game template name."));
-            return false; // todo not sure if I should return false/true here to show the usage too or not.
+            return true;
         }
 
         final String templateName = args[0];
@@ -42,6 +42,8 @@ public class SaveMapCmd extends Cmd {
                 break;
             }
         }
+
+        // todo check for incorrect / uncompleted setup steps here before saving game template.
 
         template.saveData();
         sender.sendMessage(plugin.getUtils().colorize("&aThe data of template &e" + templateName + " &ahas successfully been saved!"));
