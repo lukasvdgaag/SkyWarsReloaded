@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
+import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
@@ -27,7 +28,7 @@ public class EditMapCmd extends Cmd {
         final String templateName = args[0];
         GameTemplate template = plugin.getGameManager().getGameTemplateByName(templateName);
         if (template == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere already is no game template with that name."));
+            sender.sendMessage(plugin.getUtils().colorize("&cThere is no game template with that name."));
             return true;
         }
         final SWPlayer player = (SWPlayer) sender;
@@ -55,7 +56,7 @@ public class EditMapCmd extends Cmd {
         try {
             templateExists = plugin.getWorldLoader().generateWorldInstance(world);
         } catch (IllegalArgumentException | IllegalStateException e) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere was an error while generating the world, please check the server console for details."));
+            sender.sendMessage(plugin.getUtils().colorize("&cAn error occurred while generating the world, please check the server console for details."));
             return true;
         }
 
@@ -66,7 +67,10 @@ public class EditMapCmd extends Cmd {
 
         world.readyForEditing();
 
-        player.teleport(world.getWorldName(), 0, 51, 0);
+        player.teleport(world.getWorldName(),
+                InternalProperties.MAP_CREATE_PLATFORM_X,
+                InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
+                InternalProperties.MAP_CREATE_PLATFORM_Z);
         player.sendTitle(plugin.getUtils().colorize("&aGenerated World!"), plugin.getUtils().colorize("&7We completed generating the template world"), 0, 100, 20);
         sender.sendMessage(plugin.getUtils().colorize("&aWe finished generating the template world! &7You can now start building within the world borders. We will automatically convert the world to a schematic file when you're done."));
         return true;

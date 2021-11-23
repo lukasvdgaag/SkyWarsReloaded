@@ -10,6 +10,7 @@ import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import org.bukkit.Bukkit;
@@ -68,6 +69,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
             } catch (ExecutionException | InterruptedException ignored) {
             }
         });
+        // todo use futures
         return true;
     }
 
@@ -83,7 +85,12 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public void deleteWorld(GameWorld gameWorld) {
+    public void deleteWorldInstance(GameWorld gameWorld) {
+
+    }
+
+    @Override
+    public void deleteMap(GameTemplate gameTemplate) {
 
     }
 

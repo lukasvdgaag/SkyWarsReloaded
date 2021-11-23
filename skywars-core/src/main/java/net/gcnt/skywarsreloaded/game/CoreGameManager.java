@@ -1,10 +1,11 @@
 package net.gcnt.skywarsreloaded.game;
 
-import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +13,8 @@ import java.util.List;
 public abstract class CoreGameManager implements GameManager {
 
     public final SkyWarsReloaded plugin;
-    public HashMap<GameTemplate, List<GameWorld>> gameWorlds;
-    private HashMap<String, GameTemplate> templates;
+    public final HashMap<GameTemplate, List<GameWorld>> gameWorlds;
+    private final HashMap<String, GameTemplate> templates;
 
     public CoreGameManager(SkyWarsReloaded plugin) {
         this.plugin = plugin;
@@ -32,7 +33,9 @@ public abstract class CoreGameManager implements GameManager {
         this.templates.clear();
 
         // Load all from directory
-        for (File file : dir.listFiles()) {
+        File[] files = dir.listFiles();
+        assert files != null;
+        for (File file : files) {
 
             // Sanity checks
             if (file.isDirectory() || !file.getName().endsWith(".yml")) continue;
@@ -63,8 +66,26 @@ public abstract class CoreGameManager implements GameManager {
     }
 
     @Override
-    public void deleteGameTemplate(String gameId) {
-        // todo game template deletion here
+    public boolean deleteGameTemplate(String gameId, boolean deleteMap) {
+        GameTemplate template = this.getGameTemplateByName(gameId);
+        this.templates.remove(gameId);
+        if (template == null) return false;
+
+        // Delete template data
+        try {
+            Files.deleteIfExists(template.getConfig().getFile().toPath());
+        } catch (IOException e) {
+            this.plugin.getLogger().error("Could not delete the template file do to the error below:");
+            e.printStackTrace();
+            return false;
+        }
+
+        // Delete map data (blocks of the skywars map, not matter the storage method)
+        if (deleteMap) {
+            this.plugin.getWorldLoader().deleteMap(template);
+        }
+
+        return true;
     }
 
     @Override
@@ -74,7 +95,10 @@ public abstract class CoreGameManager implements GameManager {
 
     @Override
     public GameTemplate createGameTemplate(String gameId) {
-        if (getGameTemplateByName(gameId) != null) return null;
+        // If a game template already exists with that name, return null
+        if (this.getGameTemplateByName(gameId) != null) return null;
+
+        // Create new game template & save to disk
         GameTemplate template = new CoreGameTemplate(plugin, gameId);
         template.loadData();
         template.saveData();
@@ -96,9 +120,9 @@ public abstract class CoreGameManager implements GameManager {
         return worlds;
     }
 
-    protected void addWorld(GameTemplate temp, GameWorld wrld) {
+    protected void addWorld(GameTemplate temp, GameWorld world) {
         List<GameWorld> worlds = this.gameWorlds.getOrDefault(temp, new ArrayList<>());
-        worlds.add(wrld);
+        worlds.add(world);
         this.gameWorlds.put(temp, worlds);
     }
 

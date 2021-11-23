@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
+import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
 
@@ -59,4 +60,5 @@ public interface GameTemplate {
 
     void setBorderRadius(int radus);
 
+    YAMLConfig getConfig();
 }
