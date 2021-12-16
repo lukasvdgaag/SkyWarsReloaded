@@ -4,14 +4,23 @@ import java.util.List;
 
 public interface GameManager {
 
+    /**
+     * Load all {@link GameTemplate} from storage into memory.
+     */
     void loadAllGameTemplates();
 
+    /**
+     * Get a {@link GameTemplate} by its name/identifier.
+     *
+     * @param gameId Identifier of the template.
+     * @return GameTemplate if found, null otherwise.
+     */
     GameTemplate getGameTemplateByName(String gameId);
 
     /**
      * Delete a game template from the skywars registry and optionally from the active storage method
      *
-     * @param gameId The template name to delete
+     * @param gameId    The template name to delete
      * @param deleteMap If true, the map will be deleted as well
      * @return If the map deletion was successful
      */
@@ -19,6 +28,7 @@ public interface GameManager {
 
     /**
      * Get all the currently known game templates
+     *
      * @return A list of all the game templates
      */
     List<GameTemplate> getGameTemplates();
@@ -31,12 +41,35 @@ public interface GameManager {
      */
     GameTemplate createGameTemplate(String gameId);
 
+    /**
+     * Create a new {@link GameWorld} from a {@link GameTemplate}.
+     *
+     * @param data GameTemplate to create a world from.
+     * @return The newly created {@link GameWorld}.
+     */
     GameWorld createGameWorld(GameTemplate data);
 
+    /**
+     * Get a list of {@link GameWorld} from its template.
+     *
+     * @param data Template to get the GameWorlds from.
+     * @return List of {@link GameWorld} that matches the template.
+     */
     List<GameWorld> getGameWorlds(GameTemplate data);
 
+    /**
+     * Get a GameWorld by its assigned world name.
+     *
+     * @param worldName Name of the world to look up.
+     * @return {@link GameWorld} if found, null otherwise.
+     */
     GameWorld getGameWorldFromWorldName(String worldName);
 
+    /**
+     * Get a list of all GameWorlds.
+     *
+     * @return List of all GameWorlds.
+     */
     List<GameWorld> getGameWorlds();
 
 }

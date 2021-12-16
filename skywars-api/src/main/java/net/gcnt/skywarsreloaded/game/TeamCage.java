@@ -17,13 +17,23 @@ public interface TeamCage {
     /**
      * Remove the cage from the world
      *
-     * @param cage Id of the cage to remove. Only applies to normal cages.
+     * @param cage Identifier of the cage to remove. Only applies to normal cages.
      * @return Future with a boolean indicating whether the removing of the cage succeeded
      */
     CompletableFuture<Boolean> removeCage(String cage);
 
+    /**
+     * Check whether the cage has been placed.
+     *
+     * @return True when placed, false otherwise.
+     */
     boolean isPlaced();
 
+    /**
+     * Set whether the cage has been placed.
+     *
+     * @param placed Whether the cage was placed.
+     */
     void setPlaced(boolean placed);
 
 }

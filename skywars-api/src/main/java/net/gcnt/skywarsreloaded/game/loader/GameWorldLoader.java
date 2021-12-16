@@ -7,11 +7,17 @@ public interface GameWorldLoader {
 
     /**
      * Create an instance of a minecraft world for the given game world based on the template associated
+     *
      * @param gameWorld The {@link GameWorld} used to determine data to be loaded
      * @return true if the template data already exists given the template name
      */
-    boolean generateWorldInstance(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException ;
+    boolean generateWorldInstance(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException;
 
+    /**
+     * Create an empty world for the corresponding GameWorld.
+     *
+     * @param gameWorld {@link GameWorld} to create a void world for.
+     */
     void createEmptyWorld(GameWorld gameWorld);
 
     /**
@@ -28,8 +34,18 @@ public interface GameWorldLoader {
      */
     void deleteMap(GameTemplate gameTemplate);
 
+    /**
+     * Create the base platform to spawn on when editing the map for the first time.
+     *
+     * @param gameWorld The {@link GameWorld} to create the platform in.
+     */
     void createBasePlatform(GameWorld gameWorld);
 
+    /**
+     * Update the World Border for the target {@link GameWorld}.
+     *
+     * @param gameWorld {@link GameWorld} to update the border of.
+     */
     void updateWorldBorder(GameWorld gameWorld);
 
 }

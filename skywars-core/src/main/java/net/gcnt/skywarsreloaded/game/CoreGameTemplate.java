@@ -9,6 +9,7 @@ import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MapDataProperties;
 import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
 import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -237,12 +238,12 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
-    public SpawnAddResult addSpawn(int team, SWCoord loc) {
+    public synchronized SpawnAddResult addSpawn(int team, SWCoord loc) {
         // player entered invalid index.
-        if (team < 0) {
+        if (team < 0 && teamSize != 1) {
             return SpawnAddResult.INDEX_TOO_LOW;
         }
-        if (team > teamSpawnLocations.size()) {
+        if (team > teamSpawnLocations.size() && teamSize != 1) {
             return SpawnAddResult.INDEX_TOO_HIGH;
         }
 
@@ -254,13 +255,13 @@ public class CoreGameTemplate implements GameTemplate {
         }
 
         // checking if the teamsize is 1, or if they entered the current size (team + 1)
-        if (getTeamSize() == 1 || team == teamSpawnLocations.size()) {
+        if (teamSize == 1 || team == teamSpawnLocations.size()) {
             // add new team to the list.
             this.teamSpawnLocations.add(Lists.newArrayList(loc));
             return SpawnAddResult.NEW_TEAM_ADDED;
         }
 
-        if (getTeamSize() > 1) {
+        if (teamSize > 1) {
             List<SWCoord> coords = this.teamSpawnLocations.get(team);
             if (coords.size() >= getTeamSize()) {
                 return SpawnAddResult.MAX_TEAM_SPAWNS_REACHED;
@@ -289,5 +290,10 @@ public class CoreGameTemplate implements GameTemplate {
     @Override
     public YAMLConfig getConfig() {
         return this.config;
+    }
+
+    @Override
+    public void checkToDoList(SWPlayer player) {
+        
     }
 }
