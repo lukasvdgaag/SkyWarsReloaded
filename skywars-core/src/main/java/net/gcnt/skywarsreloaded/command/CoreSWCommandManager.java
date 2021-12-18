@@ -77,9 +77,9 @@ public class CoreSWCommandManager implements SWCommandManager {
     @Override
     public SWCommand matchCommand(String name, String subCommand) {
         Optional<SWCommand> res = commands.values().stream().filter(swCommand -> swCommand.getParentCommand().equalsIgnoreCase(name) ||
-                        swCommand.getName().equalsIgnoreCase(subCommand) ||
-                        Arrays.stream(swCommand.getAliases()).anyMatch(s -> s.equalsIgnoreCase(subCommand))
-                ).findFirst();
+                swCommand.getName().equalsIgnoreCase(subCommand) ||
+                Arrays.stream(swCommand.getAliases()).anyMatch(s -> s.equalsIgnoreCase(subCommand))
+        ).findFirst();
         return res.orElse(null);
     }
 
