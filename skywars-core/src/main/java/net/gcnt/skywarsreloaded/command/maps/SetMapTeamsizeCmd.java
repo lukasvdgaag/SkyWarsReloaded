@@ -44,6 +44,7 @@ public class SetMapTeamsizeCmd extends Cmd {
         // todo check if new team size is lower than current one and check all player spawnpoints for errors.
 
         template.setTeamSize(size);
+        template.setIsTeamSizeSetup(true);
         sender.sendMessage(plugin.getUtils().colorize("&aThe team size of the map &e%s &ahas been changed to &e%d&a!".formatted(template.getName(), size)));
 
         template.checkToDoList(sender);

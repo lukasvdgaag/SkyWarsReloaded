@@ -22,7 +22,10 @@ public class CreateMapCmd extends Cmd {
             return true;
         }
 
-        final SWPlayer player = (SWPlayer) sender;
+        if (plugin.getDataConfig().getCoord("lobby") == null) {
+            sender.sendMessage(plugin.getUtils().colorize("&cYou must have set the lobby spawn before you can continue with this! Use &7/sw setlobby&e to set it."));
+            return true;
+        }
 
         // Verify that the template exists
         final String templateName = args[0];
@@ -31,6 +34,8 @@ public class CreateMapCmd extends Cmd {
             sender.sendMessage(plugin.getUtils().colorize("&cThere already is a game template with that name."));
             return true;
         }
+
+        final SWPlayer player = (SWPlayer) sender;
 
         // User progress feedback
         sender.sendMessage(plugin.getUtils().colorize("&aA new game template with the name &e%s&a has successfully been created.".formatted(template.getName())));

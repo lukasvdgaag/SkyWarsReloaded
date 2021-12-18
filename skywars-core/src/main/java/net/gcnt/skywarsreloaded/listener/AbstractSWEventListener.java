@@ -46,6 +46,7 @@ public class AbstractSWEventListener implements SWEventListener {
             if (res) {
                 event.getPlayer().sendTitle(plugin.getUtils().colorize("&c&lCHEST REMOVED"), plugin.getUtils().colorize("&7Removed a chest from the template!"), 5, 30, 5);
                 event.getPlayer().sendMessage(plugin.getUtils().colorize(String.format("&cRemoved a chest from game template &7%s&c. There's &7%d &cleft.", template.getDisplayName(), template.getChests().size())));
+                template.checkToDoList(event.getPlayer());
             }
         } else if (event.getBlockTypeName().equalsIgnoreCase("BEACON")) {
             // player is removing a player spawnpoint.
@@ -60,6 +61,7 @@ public class AbstractSWEventListener implements SWEventListener {
                     message = String.format("&cRemoved player spawnpoint &7#%d &cfrom team &7%d &cfor game template &7%s&c. &e%d &cspawns left to set for this team.", res.getIndex() + 1, res.getTeam() + 1, template.getDisplayName(), template.getTeamSize() - currentSpawns);
                 }
                 event.getPlayer().sendMessage(plugin.getUtils().colorize(message));
+                template.checkToDoList(event.getPlayer());
             }
         }
     }
@@ -76,6 +78,7 @@ public class AbstractSWEventListener implements SWEventListener {
             if (res) {
                 event.getPlayer().sendTitle(plugin.getUtils().colorize("&a&lCHEST ADDED"), plugin.getUtils().colorize("&7Added a new chest to the template!"), 5, 30, 5);
                 event.getPlayer().sendMessage(plugin.getUtils().colorize(String.format("&aAdded a new chest (&b#%d&a) to game template &b%s&a.", template.getChests().size(), template.getDisplayName())));
+                template.checkToDoList(event.getPlayer());
             }
         }
 

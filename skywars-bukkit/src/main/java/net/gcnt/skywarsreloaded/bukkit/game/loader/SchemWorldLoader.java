@@ -7,14 +7,13 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameWorld;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import org.bukkit.*;
 import org.bukkit.block.Biome;
+import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 
 import java.io.File;
@@ -96,7 +95,12 @@ public class SchemWorldLoader extends BukkitWorldLoader {
             return;
         }
 
-        // todo teleport all players to lobby first.
+        final SWCoord loc = plugin.getDataConfig().getCoord("lobby");
+        final Location bukkitLoc = (loc != null && loc.world() != null) ? new Location(Bukkit.getWorld(loc.world().getName()), loc.xPrecise(), loc.yPrecise(), loc.zPrecise(), loc.yaw(), loc.pitch()) : new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
+
+        for (Player player : world.getPlayers()) {
+            player.teleport(bukkitLoc);
+        }
 
         Bukkit.unloadWorld(world, false);
         try {

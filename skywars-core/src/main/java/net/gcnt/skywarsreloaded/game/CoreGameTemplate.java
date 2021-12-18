@@ -295,22 +295,36 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
+    public void setIsTeamSizeSetup(boolean setup) {
+        this.isTeamsizeSetup = setup;
+    }
+
+    @Override
+    public boolean isTeamSizeSetup() {
+        return this.isTeamsizeSetup;
+    }
+
+    @Override
     public boolean checkToDoList(SWCommandSender player) {
         if (!isTeamsizeSetup) {
+            player.sendMessage(plugin.getUtils().colorize("&6&lGame Setup ToDo List:"));
             player.sendMessage(plugin.getUtils().colorize("&a&lLet's start with the teamsize! &7Use &e/swm teamsize <size> &7to change the team size of your game. Use 2 for Duos, 3 for Trios etc."));
             return false;
         }
         if (teamSize > 1 && lobbySpawn == null) { // todo add a check, probs from config, if they enabled the waiting lobby for single players too.
+            player.sendMessage(plugin.getUtils().colorize("&6&lGame Setup ToDo List:"));
             player.sendMessage(plugin.getUtils().colorize("&a&lNow let's set the lobby spawn! &7This is the location that we send players to when they join the game, before the cages. Use &e/swm spawn lobby &7 to set it."));
             return false;
         }
 
         if (spectateSpawn == null) {
+            player.sendMessage(plugin.getUtils().colorize("&6&lGame Setup ToDo List:"));
             player.sendMessage(plugin.getUtils().colorize("&a&lLet's move on to the spectator spawn! &7This is the location that we send players to when they die or spectate the game. Use &e/swm spawn spectate&7 to set it."));
             return false;
         }
 
         if (chests.isEmpty()) {
+            player.sendMessage(plugin.getUtils().colorize("&6&lGame Setup ToDo List:"));
             player.sendMessage(plugin.getUtils().colorize("&a&lLet's add our first chest! &7Go ahead and place your first chest."));
             return false;
         }
@@ -321,10 +335,12 @@ public class CoreGameTemplate implements GameTemplate {
             int teamNumber = i + 1;
             if (coords.size() < teamSize) {
                 int spawnsLeft = teamSize - coords.size();
+                player.sendMessage(plugin.getUtils().colorize("&6&lGame Setup ToDo List:"));
                 player.sendMessage(plugin.getUtils().colorize("&a&lLet's set %d more spawn(s) for team %d! &7Use &e/swm spawn player %d &7to add a spawn.".formatted(spawnsLeft, teamNumber, teamNumber)));
                 return false;
             } else if (coords.size() > teamSize) {
                 int spawnsLeft = coords.size() - teamSize;
+                player.sendMessage(plugin.getUtils().colorize("&6&lGame Setup ToDo List:"));
                 player.sendMessage(plugin.getUtils().colorize("&c&lTeam %d has too many spawns! &7Remove %d spawn(s) from this team by breaking one of its beacons.".formatted(teamNumber, spawnsLeft)));
                 return false;
             }
@@ -337,6 +353,7 @@ public class CoreGameTemplate implements GameTemplate {
             sb.append("&7to set a player spawn");
             if (teamSize > 1) sb.append(" where 1 is the team number");
             sb.append(".");
+            player.sendMessage(plugin.getUtils().colorize("&6&lGame Setup ToDo List:"));
             player.sendMessage(plugin.getUtils().colorize(sb.toString()));
         }
 

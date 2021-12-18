@@ -205,6 +205,20 @@ public interface GameTemplate {
     YAMLConfig getConfig();
 
     /**
+     * Set whether the team size has been set up for this template.
+     *
+     * @param setup Whether a non-default team size has been set up.
+     */
+    void setIsTeamSizeSetup(boolean setup);
+
+    /**
+     * Get whether the team size has been set up for this template.
+     *
+     * @return true if set up, false otherwise.
+     */
+    boolean isTeamSizeSetup();
+
+    /**
      * Run a check through all possible things to set up for the arena to see if anything is left.
      * This method will send a message to the target player with the next thing to do on the list.
      *

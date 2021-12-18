@@ -25,6 +25,11 @@ public class EditMapCmd extends Cmd {
             return true;
         }
 
+        if (plugin.getDataConfig().getCoord("lobby") == null) {
+            sender.sendMessage(plugin.getUtils().colorize("&cYou must have set the lobby spawn before you can continue with this! Use &7/sw setlobby&e to set it."));
+            return true;
+        }
+
         final String templateName = args[0];
         GameTemplate template = plugin.getGameManager().getGameTemplateByName(templateName);
         if (template == null) {

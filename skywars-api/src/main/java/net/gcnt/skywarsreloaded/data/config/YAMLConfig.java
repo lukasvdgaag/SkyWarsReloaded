@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.data.config;
 
 import net.gcnt.skywarsreloaded.utils.Item;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 
 import java.io.File;
 import java.util.List;
@@ -49,6 +50,10 @@ public interface YAMLConfig {
     Item getItem(String category);
 
     Item getItem(String category, Item def);
+
+    SWCoord getCoord(String property);
+
+    SWCoord getCoord(String property, SWCoord def);
 
     /**
      * Set a value to a key in the yaml config

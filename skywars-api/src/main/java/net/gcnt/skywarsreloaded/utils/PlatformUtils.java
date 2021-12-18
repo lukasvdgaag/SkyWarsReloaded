@@ -9,6 +9,8 @@ public interface PlatformUtils {
 
     boolean isDouble(String arg0);
 
+    boolean isFloat(String arg0);
+
     boolean isBoolean(String arg0);
 
     String colorize(String arg0);

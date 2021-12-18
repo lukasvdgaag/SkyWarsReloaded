@@ -14,78 +14,21 @@ public class CoreSWCoord implements SWCoord {
     private float yaw;
     private float pitch;
 
-    /**
-     * Get a new coord from the x, y, and z coordinates.
-     *
-     * @param x Location x point;
-     * @param y Location y point;
-     * @param z Location z point;
-     */
-    public CoreSWCoord(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw = 0;
-        this.pitch = 0;
-    }
-
-    public CoreSWCoord(SWWorld world, int x, int y, int z) {
-        this.world = world;
-        this.worldName = world.getName();
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw = 0;
-        this.pitch = 0;
-    }
-
-    public CoreSWCoord(int x, int y, int z, float yaw, float pitch) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw = yaw;
-        this.pitch = pitch;
-    }
-
-    public CoreSWCoord(SWWorld world, int x, int y, int z, float yaw, float pitch) {
-        this.world = world;
-        this.worldName = world.getName();
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw = yaw;
-        this.pitch = pitch;
-    }
-
     public CoreSWCoord(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw = 0;
-        this.pitch = 0;
+        this(null, x, y, z, 0, 0);
     }
 
     public CoreSWCoord(SWWorld world, double x, double y, double z) {
-        this.world = world;
-        this.worldName = world.getName();
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw = 0;
-        this.pitch = 0;
+        this(world, x, y, z, 0, 0);
     }
 
     public CoreSWCoord(double x, double y, double z, float yaw, float pitch) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw = yaw;
-        this.pitch = pitch;
+        this(null, x, y, z, yaw, pitch);
     }
 
     public CoreSWCoord(SWWorld world, double x, double y, double z, float yaw, float pitch) {
         this.world = world;
-        this.worldName = world.getName();
+        if (world != null) this.worldName = world.getName();
         this.x = x;
         this.y = y;
         this.z = z;
@@ -107,12 +50,13 @@ public class CoreSWCoord implements SWCoord {
         }
         String[] arg0 = input.split(":");
         int lenAdd = 0;
-        if (arg0.length < 3 || arg0.length > 6) {
+        final int length = arg0.length;
+        if (length < 3 || length > 6) {
             throw new IndexOutOfBoundsException("The coord input string \"" + input + "\" has an invalid amount of arguments.");
         }
-        if (arg0.length == 4 || arg0.length == 6) lenAdd = 1;
+        if (length == 4 || length == 6) lenAdd = 1;
 
-        if (!plugin.getUtils().isDouble(arg0[lenAdd]) || !plugin.getUtils().isDouble(arg0[1 + lenAdd]) || !plugin.getUtils().isDouble(arg0[2 + lenAdd])) {
+        if (!plugin.getUtils().isDouble(arg0[lenAdd]) || !plugin.getUtils().isDouble(arg0[1 + lenAdd]) || !plugin.getUtils().isDouble(arg0[2 + lenAdd]) || (lenAdd == 1 && (!plugin.getUtils().isFloat(arg0[3 + lenAdd]) || !plugin.getUtils().isFloat(arg0[4 + lenAdd])))) {
             throw new NumberFormatException("One of the coord points seems to not be a number: " + input);
         }
 
@@ -121,19 +65,27 @@ public class CoreSWCoord implements SWCoord {
         x = Double.parseDouble(arg0[lenAdd]);
         y = Double.parseDouble(arg0[1 + lenAdd]);
         z = Double.parseDouble(arg0[2 + lenAdd]);
-        if (arg0.length == 4) {
+        if (lenAdd == 1) { // aka checks if length == 4 || length == 6 (contains world name)
             this.worldName = arg0[0];
             this.world = plugin.getUtils().getSWWorld(arg0[0]);
             if (this.world == null) {
                 plugin.getLogger().warn(String.format("The world \"%s\" is null for SWCoord \"%s\". This may cause problems in the futures when it gets referred to.", arg0[0], input));
             }
         }
+        if (length == 5 || length == 6) {
+            this.yaw = Float.parseFloat(arg0[length - 2]);
+            this.pitch = Float.parseFloat(arg0[length - 1]);
+        }
     }
 
     @Override
     public String toString() {
-        if (worldName != null) return worldName + ":" + x + ":" + y + ":" + z;
-        return xPrecise() + ":" + yPrecise() + ":" + zPrecise();
+        StringBuilder sb = new StringBuilder();
+
+        if (worldName != null) sb.append(worldName).append(":");
+        sb.append(xPrecise()).append(":").append(yPrecise()).append(":").append(zPrecise());
+        if (yaw != 0 || pitch != 0) sb.append(yaw).append(":").append(pitch);
+        return sb.toString();
     }
 
     public boolean equals(SWCoord o) {

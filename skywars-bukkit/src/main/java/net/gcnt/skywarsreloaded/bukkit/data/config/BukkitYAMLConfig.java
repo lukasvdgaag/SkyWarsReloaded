@@ -3,7 +3,9 @@ package net.gcnt.skywarsreloaded.bukkit.data.config;
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.data.config.AbstractYAMLConfig;
+import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -185,6 +187,18 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     @Override
     public Item getItem(String category) {
         return getItem(category, new BukkitItem(plugin, null));
+    }
+
+    @Override
+    public SWCoord getCoord(String property, SWCoord def) {
+        if (!contains(property)) return null;
+
+        return new CoreSWCoord(plugin, fileConfiguration.getString(property));
+    }
+
+    @Override
+    public SWCoord getCoord(String property) {
+        return getCoord(property, null);
     }
 
     @Override
