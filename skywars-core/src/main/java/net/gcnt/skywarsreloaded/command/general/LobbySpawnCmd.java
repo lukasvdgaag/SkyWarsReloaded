@@ -14,7 +14,7 @@ import java.util.List;
 public class LobbySpawnCmd extends Cmd {
 
     public LobbySpawnCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywars", "setlobby", "skywars.command.setlobby", true, "", "Set the lobby spawn.");
+        super(plugin, "skywars", "setlobby", "skywars.command.setlobby", true, "", "Set the lobby spawn.", "setspawn");
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.List;
 public class SetKitDescriptionCmd extends Cmd {
 
     public SetKitDescriptionCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarskit", "description", "skywars.command.kit.description", false, "<kit> <displayname>", "Set the kit's description.");
+        super(plugin, "skywarskit", "description", "skywars.command.kit.description", false, "<kit> <displayname>", "Set the kit's description.", "desc");
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.List;
 public class SaveMapCmd extends Cmd {
 
     public SaveMapCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "save", "skywars.command.map.creator", true, "<map>", "Save a map template.");
+        super(plugin, "skywarsmap", "save", "skywars.command.map.creator", true, "<map>", "Save a map template.", "s");
     }
 
     @Override

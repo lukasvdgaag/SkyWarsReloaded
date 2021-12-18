@@ -11,7 +11,7 @@ import java.util.List;
 public class EnableCmd extends Cmd {
 
     public EnableCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "enable", "skywars.command.map.enable", true, "<map>", "Enable a template.");
+        super(plugin, "skywarsmap", "enable", "skywars.command.map.enable", true, "<map>", "Enable a template.", "en");
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.List;
 public class SetKitSlotCmd extends Cmd {
 
     public SetKitSlotCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarskit", "slot", "skywars.command.kit.slot", false, "<kit> <slot>", "Set the kit's menu slot.");
+        super(plugin, "skywarskit", "slot", "skywars.command.kit.slot", false, "<kit> <slot>", "Set the kit's menu slot.", "s");
     }
 
     @Override

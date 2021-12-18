@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.command;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.command.general.LobbySpawnCmd;
 import net.gcnt.skywarsreloaded.command.general.MainCmd;
 import net.gcnt.skywarsreloaded.command.kits.*;
 import net.gcnt.skywarsreloaded.command.maps.*;
@@ -22,6 +23,7 @@ public class CoreSWCommandManager implements SWCommandManager {
 
     public void registerBaseCommands() {
         this.registerCommand(new MainCmd(this.main));
+        this.registerCommand(new LobbySpawnCmd(this.main));
     }
 
     @Override
@@ -72,12 +74,20 @@ public class CoreSWCommandManager implements SWCommandManager {
         return (T) commands.get(clazz);
     }
 
+    @Override
+    public SWCommand matchCommand(String name, String subCommand) {
+        Optional<SWCommand> res = commands.values().stream().filter(swCommand -> swCommand.getParentCommand().equalsIgnoreCase(name) ||
+                        swCommand.getName().equalsIgnoreCase(subCommand) ||
+                        Arrays.stream(swCommand.getAliases()).anyMatch(s -> s.equalsIgnoreCase(subCommand))
+                ).findFirst();
+        return res.orElse(null);
+    }
+
     public void runCommand(SWCommandSender sender, String command, String subCommand, String[] args) {
-        for (SWCommand cmd : commands.values()) {
-            if (cmd.getParentCommand().equalsIgnoreCase(command) && cmd.getName().equalsIgnoreCase(subCommand)) {
-                cmd.processCommand(sender, args.length > 1 ? Arrays.copyOfRange(args, 1, args.length) : new String[0]);
-            }
-        }
+        SWCommand match = matchCommand(command, subCommand);
+        if (match == null) return;
+
+        match.processCommand(sender, args.length > 1 ? Arrays.copyOfRange(args, 1, args.length) : new String[0]);
     }
 
     public List<String> runTabCompletion(SWCommandSender sender, String command, String subCommand, String[] args) {

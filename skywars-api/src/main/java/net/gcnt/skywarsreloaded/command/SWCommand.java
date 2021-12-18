@@ -18,4 +18,6 @@ public interface SWCommand {
 
     String getName();
 
+    String[] getAliases();
+
 }

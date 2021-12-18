@@ -13,7 +13,7 @@ import java.util.List;
 public class SetKitUnavailableIconCmd extends Cmd {
 
     public SetKitUnavailableIconCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarskit", "unavailableicon", "skywars.command.kit.unavailable-icon", true, "<kit>", "Set the kit unavailable icon.");
+        super(plugin, "skywarskit", "unavailableicon", "skywars.command.kit.unavailable-icon", true, "<kit>", "Set the kit unavailable icon.", "ui");
     }
 
     @Override

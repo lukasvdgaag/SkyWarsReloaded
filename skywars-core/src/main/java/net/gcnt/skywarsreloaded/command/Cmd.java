@@ -19,6 +19,7 @@ public abstract class Cmd implements SWCommand {
 
     // Definition
     public String command;
+    public String[] aliases;
     public String permission = "skywars.command";
 
     // Attributes
@@ -26,9 +27,10 @@ public abstract class Cmd implements SWCommand {
     public String subUsage = "";
     public String usage = "";
 
-    public Cmd(SkyWarsReloaded plugin, String parentCommandIn, String commandIn, String permissionIn, Boolean forcePlayerIn, String subUsageIn, String usageIn) {
+    public Cmd(SkyWarsReloaded plugin, String parentCommandIn, String commandIn, String permissionIn, Boolean forcePlayerIn, String subUsageIn, String usageIn, String... aliases) {
         this.plugin = plugin;
         this.command = commandIn;
+        this.aliases = aliases;
         if (parentCommandIn != null) parentCommand = parentCommandIn;
         if (permissionIn != null) permission = permissionIn;
         if (forcePlayerIn != null) forcePlayer = forcePlayerIn;
@@ -100,6 +102,11 @@ public abstract class Cmd implements SWCommand {
     @Override
     public String getName() {
         return command;
+    }
+
+    @Override
+    public String[] getAliases() {
+        return aliases;
     }
 
     @Override

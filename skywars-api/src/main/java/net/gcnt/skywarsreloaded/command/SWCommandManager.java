@@ -21,6 +21,8 @@ public interface SWCommandManager {
 
     <T extends SWCommand> T getCommand(Class<T> clazz);
 
+    SWCommand matchCommand(String name, String subCommand);
+
     void runCommand(SWCommandSender sender, String name, String subCommand, String[] args);
 
     List<String> runTabCompletion(SWCommandSender sender, String name, String subCommand, String[] args);

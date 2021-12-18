@@ -10,7 +10,7 @@ import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 public class CreateKitCmd extends Cmd {
 
     public CreateKitCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarskit", "create", "skywars.command.kit.create", true, "<name>", "Create a new kit");
+        super(plugin, "skywarskit", "create", "skywars.command.kit.create", true, "<name>", "Create a new kit", "c");
     }
 
     @Override

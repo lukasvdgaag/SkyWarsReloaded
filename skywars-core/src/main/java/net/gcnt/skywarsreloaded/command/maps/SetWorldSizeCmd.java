@@ -12,7 +12,7 @@ import java.util.List;
 public class SetWorldSizeCmd extends Cmd {
 
     public SetWorldSizeCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "worldsize", "skywars.command.map.worldsize", true, "<map> <worldsize>", "Set the world size.");
+        super(plugin, "skywarsmap", "worldsize", "skywars.command.map.worldsize", true, "<map> <worldsize>", "Set the world size.", "ws");
     }
 
     @Override

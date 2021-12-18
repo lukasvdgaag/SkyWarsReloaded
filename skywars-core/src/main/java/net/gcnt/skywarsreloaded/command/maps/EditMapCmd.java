@@ -15,7 +15,7 @@ import java.util.List;
 public class EditMapCmd extends Cmd {
 
     public EditMapCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "edit", "skywars.command.map.edit", true, "<name>", "Edit a map template.");
+        super(plugin, "skywarsmap", "edit", "skywars.command.map.edit", true, "<name>", "Edit a map template.", "e");
     }
 
     @Override
@@ -26,7 +26,7 @@ public class EditMapCmd extends Cmd {
         }
 
         if (plugin.getDataConfig().getCoord("lobby") == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cYou must have set the lobby spawn before you can continue with this! Use &7/sw setlobby&e to set it."));
+            sender.sendMessage(plugin.getUtils().colorize("&cYou must have set the lobby spawn before you can continue with this! Use &7/sw setlobby&c to set it."));
             return true;
         }
 

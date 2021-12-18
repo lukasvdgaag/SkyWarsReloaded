@@ -13,7 +13,7 @@ import java.util.List;
 public class SetKitLoreCmd extends Cmd {
 
     public SetKitLoreCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarskit", "lore", "skywars.command.kit.lore", false, "<kit> <add/remove/clear/preview> [value]", "Manage the kit's lore.");
+        super(plugin, "skywarskit", "lore", "skywars.command.kit.lore", false, "<kit> <add/remove/clear/preview> [value]", "Manage the kit's lore.", "l");
     }
 
     @Override

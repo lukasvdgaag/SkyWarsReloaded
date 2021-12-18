@@ -11,7 +11,7 @@ import java.util.List;
 public class DisableCmd extends Cmd {
 
     public DisableCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "disable", "skywars.command.map.disable", true, "<map>", "Disable a template.");
+        super(plugin, "skywarsmap", "disable", "skywars.command.map.disable", true, "<map>", "Disable a template.", "d");
     }
 
     @Override

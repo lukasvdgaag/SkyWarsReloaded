@@ -11,7 +11,7 @@ import java.util.List;
 public class SetMapTeamsizeCmd extends Cmd {
 
     public SetMapTeamsizeCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "teamsize", "skywars.command.map.teamsize", true, "<map> <teamsize>", "Set the team size.");
+        super(plugin, "skywarsmap", "teamsize", "skywars.command.map.teamsize", true, "<map> <teamsize>", "Set the team size.", "ts", "size");
     }
 
     @Override

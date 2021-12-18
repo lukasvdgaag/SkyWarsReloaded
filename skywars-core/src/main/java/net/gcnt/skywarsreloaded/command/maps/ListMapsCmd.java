@@ -11,7 +11,7 @@ import java.util.List;
 public class ListMapsCmd extends Cmd {
 
     public ListMapsCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "list", "skywars.command.map.list", true, null, "Get a list of all templates.");
+        super(plugin, "skywarsmap", "list", "skywars.command.map.list", true, null, "Get a list of all templates.", "l");
     }
 
     @Override

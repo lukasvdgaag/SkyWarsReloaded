@@ -15,7 +15,7 @@ public class SetKitRequirementsCmd extends Cmd {
 
     public SetKitRequirementsCmd(SkyWarsReloaded plugin) {
         super(plugin, "skywarskit", "requirements", "skywars.command.kit.requirements", false,
-                "<kit> <requirement> <value>", "Manage the kit's requirements.");
+                "<kit> <requirement> <value>", "Manage the kit's requirements.", "rq");
     }
 
     @Override

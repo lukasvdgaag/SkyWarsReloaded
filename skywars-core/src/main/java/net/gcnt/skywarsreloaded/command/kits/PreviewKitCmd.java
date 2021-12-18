@@ -12,7 +12,7 @@ import java.util.List;
 public class PreviewKitCmd extends Cmd {
 
     public PreviewKitCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarskit", "preview", "skywars.command.kit.preview", true, "<kit>", "Preview the kit.");
+        super(plugin, "skywarskit", "preview", "skywars.command.kit.preview", true, "<kit>", "Preview the kit.", "p");
     }
 
     @Override

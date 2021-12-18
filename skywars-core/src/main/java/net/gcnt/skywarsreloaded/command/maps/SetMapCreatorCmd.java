@@ -12,7 +12,7 @@ import java.util.List;
 public class SetMapCreatorCmd extends Cmd {
 
     public SetMapCreatorCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "creator", "skywars.command.map.creator", true, "<map> <creator>", "Set the map creator.");
+        super(plugin, "skywarsmap", "creator", "skywars.command.map.creator", true, "<map> <creator>", "Set the map creator.", "maker");
     }
 
     @Override

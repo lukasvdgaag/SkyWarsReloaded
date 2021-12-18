@@ -12,7 +12,7 @@ import java.util.List;
 public class SetKitDisplayNameCmd extends Cmd {
 
     public SetKitDisplayNameCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarskit", "displayname", "skywars.command.kit.displayname", false, "<kit> <displayname>", "Set the kit's display name.");
+        super(plugin, "skywarskit", "displayname", "skywars.command.kit.displayname", false, "<kit> <displayname>", "Set the kit's display name.", "display", "dn");
     }
 
     @Override

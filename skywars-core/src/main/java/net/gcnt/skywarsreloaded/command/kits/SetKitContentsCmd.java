@@ -14,7 +14,7 @@ import java.util.List;
 public class SetKitContentsCmd extends Cmd {
 
     public SetKitContentsCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarskit", "contents", "skywars.command.kit.contents", true, "<kit>", "Set the kit's contents.");
+        super(plugin, "skywarskit", "contents", "skywars.command.kit.contents", true, "<kit>", "Set the kit's contents.", "content", "items");
     }
 
     @Override

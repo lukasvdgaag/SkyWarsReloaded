@@ -17,7 +17,7 @@ import java.util.List;
 public class SetSpawnCmd extends Cmd {
 
     public SetSpawnCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "setspawn", "skywars.command.map.setspawn", true, "<type> [team]", "Set a spawnpoint.");
+        super(plugin, "skywarsmap", "setspawn", "skywars.command.map.setspawn", true, "<type> [team]", "Set a spawnpoint.", "ss", "spawn");
     }
 
     @Override

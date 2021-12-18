@@ -11,7 +11,7 @@ import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 public class CreateMapCmd extends Cmd {
 
     public CreateMapCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "create", "skywars.command.map.create", true, "<name>", "Create a new map template.");
+        super(plugin, "skywarsmap", "create", "skywars.command.map.create", true, "<name>", "Create a new map template.", "c");
     }
 
     @Override
@@ -23,7 +23,7 @@ public class CreateMapCmd extends Cmd {
         }
 
         if (plugin.getDataConfig().getCoord("lobby") == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cYou must have set the lobby spawn before you can continue with this! Use &7/sw setlobby&e to set it."));
+            sender.sendMessage(plugin.getUtils().colorize("&cYou must have set the lobby spawn before you can continue with this! Use &7/sw setlobby&c to set it."));
             return true;
         }
 

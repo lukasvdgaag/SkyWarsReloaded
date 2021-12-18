@@ -12,7 +12,7 @@ import java.util.List;
 public class TodoMapCmd extends Cmd {
 
     public TodoMapCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "todo", "skywars.command.map.todo", true, "<map>", "Check the todo list.");
+        super(plugin, "skywarsmap", "todo", "skywars.command.map.todo", true, "<map>", "Check the todo list.", "td");
     }
 
     @Override

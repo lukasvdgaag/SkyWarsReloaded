@@ -13,7 +13,7 @@ import java.util.List;
 public class SetKitIconCmd extends Cmd {
 
     public SetKitIconCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarskit", "icon", "skywars.command.kit.icon", true, "<kit>", "Set the kit icon.");
+        super(plugin, "skywarskit", "icon", "skywars.command.kit.icon", true, "<kit>", "Set the kit icon.", "i");
     }
 
     @Override
