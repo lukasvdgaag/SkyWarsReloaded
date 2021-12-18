@@ -84,7 +84,7 @@ public class CoreSWCoord implements SWCoord {
 
         if (worldName != null) sb.append(worldName).append(":");
         sb.append(xPrecise()).append(":").append(yPrecise()).append(":").append(zPrecise());
-        if (yaw != 0 || pitch != 0) sb.append(yaw).append(":").append(pitch);
+        if (yaw != 0 || pitch != 0) sb.append(":").append(yaw).append(":").append(pitch);
         return sb.toString();
     }
 
