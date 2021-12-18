@@ -51,7 +51,9 @@ public class SetWorldSizeCmd extends Cmd {
             }
         }
 
-        sender.sendMessage(plugin.getUtils().colorize("&aThe world size of the map &e" + templateName + " &ahas been changed to &e" + size + "&a!"));
+        sender.sendMessage(plugin.getUtils().colorize("&aThe world size of the map &e%s &ahas been changed to &e%d&a!".formatted(template.getName(), size)));
+
+        template.checkToDoList(sender);
         return true;
     }
 

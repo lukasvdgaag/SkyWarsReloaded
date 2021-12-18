@@ -4,7 +4,7 @@ import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
 import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.List;
 
@@ -209,7 +209,8 @@ public interface GameTemplate {
      * This method will send a message to the target player with the next thing to do on the list.
      *
      * @param player Player to send the messages to.
+     * @return true if all checks passed, false if there's things left to set up.
      */
-    void checkToDoList(SWPlayer player);
+    boolean checkToDoList(SWCommandSender player);
 
 }

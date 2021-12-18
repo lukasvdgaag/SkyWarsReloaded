@@ -46,7 +46,7 @@ public class SaveMapCmd extends Cmd {
         // todo check for incorrect / uncompleted setup steps here before saving game template.
 
         template.saveData();
-        sender.sendMessage(plugin.getUtils().colorize("&aThe data of template &e" + templateName + " &ahas successfully been saved!"));
+        sender.sendMessage(plugin.getUtils().colorize("&aThe data of template &e%s &ahas successfully been saved!".formatted(template.getName())));
         return true;
     }
 

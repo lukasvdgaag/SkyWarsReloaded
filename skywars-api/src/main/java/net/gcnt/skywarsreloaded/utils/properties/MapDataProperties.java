@@ -9,6 +9,8 @@ public enum MapDataProperties {
     ENABLED("enabled"),
     BORDER_RADIUS("border-radius"),
 
+    IS_TEAMSIZE_SETUP("checks.teamsize-setup"),
+
     DEFAULT_CHEST("default-chest-type"),
     DEFAULT_HEALTH("default-health"),
     DEFAULT_TIME("default-time"),

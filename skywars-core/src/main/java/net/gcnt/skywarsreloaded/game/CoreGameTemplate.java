@@ -9,7 +9,7 @@ import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MapDataProperties;
 import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
 import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +31,7 @@ public class CoreGameTemplate implements GameTemplate {
     private List<List<SWCoord>> teamSpawnLocations;
     private int borderRadius;
     private boolean enabled;
+    private boolean isTeamsizeSetup;
 
     public CoreGameTemplate(SkyWarsReloaded plugin, String name) {
         this.plugin = plugin;
@@ -41,12 +42,9 @@ public class CoreGameTemplate implements GameTemplate {
         this.teamSpawnLocations = new ArrayList<>();
         this.displayName = name;
         this.creator = "GCNT";
-        this.spectateSpawn = null;
-        this.lobbySpawn = null;
         this.teamSize = 1;
         this.minPlayers = 4;
         this.borderRadius = 100;
-        this.enabled = false;
     }
 
     @Override
@@ -148,6 +146,8 @@ public class CoreGameTemplate implements GameTemplate {
         this.borderRadius = config.getInt(MapDataProperties.BORDER_RADIUS.toString(), 100);
         this.enabled = config.getBoolean(MapDataProperties.ENABLED.toString(), false);
 
+        this.isTeamsizeSetup = config.getBoolean(MapDataProperties.IS_TEAMSIZE_SETUP.toString(), false);
+
         String lspawn = config.getString(MapDataProperties.LOBBY_SPAWN.toString(), null);
         String sspawn = config.getString(MapDataProperties.SPECTATE_SPAWN.toString(), null);
         this.lobbySpawn = lspawn == null ? null : new CoreSWCoord(plugin, lspawn);
@@ -192,6 +192,8 @@ public class CoreGameTemplate implements GameTemplate {
         config.set(MapDataProperties.MIN_PLAYERS.toString(), minPlayers);
         config.set(MapDataProperties.ENABLED.toString(), enabled);
         config.set(MapDataProperties.BORDER_RADIUS.toString(), borderRadius);
+
+        config.set(MapDataProperties.IS_TEAMSIZE_SETUP.toString(), isTeamsizeSetup);
 
         config.set(MapDataProperties.LOBBY_SPAWN.toString(), lobbySpawn == null ? null : lobbySpawn.toString());
         config.set(MapDataProperties.SPECTATE_SPAWN.toString(), spectateSpawn == null ? null : spectateSpawn.toString());
@@ -293,7 +295,51 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
-    public void checkToDoList(SWPlayer player) {
-        
+    public boolean checkToDoList(SWCommandSender player) {
+        if (!isTeamsizeSetup) {
+            player.sendMessage(plugin.getUtils().colorize("&a&lLet's start with the teamsize! &7Use &e/swm teamsize <size> &7to change the team size of your game. Use 2 for Duos, 3 for Trios etc."));
+            return false;
+        }
+        if (teamSize > 1 && lobbySpawn == null) { // todo add a check, probs from config, if they enabled the waiting lobby for single players too.
+            player.sendMessage(plugin.getUtils().colorize("&a&lNow let's set the lobby spawn! &7This is the location that we send players to when they join the game, before the cages. Use &e/swm spawn lobby &7 to set it."));
+            return false;
+        }
+
+        if (spectateSpawn == null) {
+            player.sendMessage(plugin.getUtils().colorize("&a&lLet's move on to the spectator spawn! &7This is the location that we send players to when they die or spectate the game. Use &e/swm spawn spectate&7 to set it."));
+            return false;
+        }
+
+        if (chests.isEmpty()) {
+            player.sendMessage(plugin.getUtils().colorize("&a&lLet's add our first chest! &7Go ahead and place your first chest."));
+            return false;
+        }
+
+        int found = 0;
+        for (int i = 0; i < teamSpawnLocations.size(); i++) {
+            List<SWCoord> coords = teamSpawnLocations.get(i);
+            int teamNumber = i + 1;
+            if (coords.size() < teamSize) {
+                int spawnsLeft = teamSize - coords.size();
+                player.sendMessage(plugin.getUtils().colorize("&a&lLet's set %d more spawn(s) for team %d! &7Use &e/swm spawn player %d &7to add a spawn.".formatted(spawnsLeft, teamNumber, teamNumber)));
+                return false;
+            } else if (coords.size() > teamSize) {
+                int spawnsLeft = coords.size() - teamSize;
+                player.sendMessage(plugin.getUtils().colorize("&c&lTeam %d has too many spawns! &7Remove %d spawn(s) from this team by breaking one of its beacons.".formatted(teamNumber, spawnsLeft)));
+                return false;
+            }
+            found += coords.size();
+        }
+
+        if (found == 0) {
+            StringBuilder sb = new StringBuilder("&a&lLet's add our first player spawn! &7Use /swm spawn player ");
+            if (teamSize > 1) sb.append("1 ");
+            sb.append("&7to set a player spawn");
+            if (teamSize > 1) sb.append(" where 1 is the team number");
+            sb.append(".");
+            player.sendMessage(plugin.getUtils().colorize(sb.toString()));
+        }
+
+        return true;
     }
 }

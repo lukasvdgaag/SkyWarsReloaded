@@ -73,6 +73,8 @@ public class EditMapCmd extends Cmd {
                 InternalProperties.MAP_CREATE_PLATFORM_Z);
         player.sendTitle(plugin.getUtils().colorize("&aGenerated World!"), plugin.getUtils().colorize("&7We completed generating the template world"), 0, 100, 20);
         sender.sendMessage(plugin.getUtils().colorize("&aWe finished generating the template world! &7You can now start building within the world borders. We will automatically convert the world to a schematic file when you're done."));
+
+        template.checkToDoList(sender);
         return true;
     }
 

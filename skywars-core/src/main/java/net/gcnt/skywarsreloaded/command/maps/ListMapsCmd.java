@@ -29,7 +29,7 @@ public class ListMapsCmd extends Cmd {
         int gameCount;
         for (GameTemplate template : templates) {
             gameCount = plugin.getGameManager().getGameWorlds(template).size();
-            sender.sendMessage(plugin.getUtils().colorize(String.format("&8- %-22s %-22s %s", "&e" + template.getName(), "&7" + template.getCreator(), "&b" + gameCount)));
+            sender.sendMessage(plugin.getUtils().colorize("&8- %-22s %-22s %s".formatted("&e" + template.getName(), "&7" + template.getCreator(), "&b" + gameCount)));
         }
         return true;
     }

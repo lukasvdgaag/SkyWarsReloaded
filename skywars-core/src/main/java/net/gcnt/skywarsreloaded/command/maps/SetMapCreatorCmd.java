@@ -35,7 +35,9 @@ public class SetMapCreatorCmd extends Cmd {
         args = Arrays.copyOfRange(args, 1, args.length);
         String creator = String.join(" ", args);
         template.setCreator(creator);
-        sender.sendMessage(plugin.getUtils().colorize("&aThe creator of the map &e" + templateName + " &ahas been changed to &e" + creator + "&a!"));
+        sender.sendMessage(plugin.getUtils().colorize("&aThe creator of the map &e%s &ahas been changed to &e%s&a!".formatted(template.getName(), creator)));
+
+        template.checkToDoList(sender);
         return true;
     }
 

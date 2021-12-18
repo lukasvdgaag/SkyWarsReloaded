@@ -33,7 +33,7 @@ public class DisableCmd extends Cmd {
         }
 
         template.disable();
-        sender.sendMessage(plugin.getUtils().colorize("&aThe template &e" + templateName + " &ahas successfully been &cdisabled&a!"));
+        sender.sendMessage(plugin.getUtils().colorize("&aThe template &e%s &ahas successfully been &cdisabled&a!".formatted(template.getName())));
         return true;
     }
 
