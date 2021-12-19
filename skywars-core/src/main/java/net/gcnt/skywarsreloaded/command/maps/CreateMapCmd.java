@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
