@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.command.kits;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
@@ -17,32 +18,35 @@ public class SetKitSlotCmd extends Cmd {
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a kit name."));
+            plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_NAME.toString()).send(sender);
             return true;
         } else if (args.length == 1) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter the menu slot of the kit."));
+            plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_SLOT.toString()).send(sender);
             return true;
         }
 
         if (!plugin.getUtils().isInt(args[1])) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid slot number (number)."));
+            plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_SLOT_NUMBER.toString()).send(sender);
             return false;
         }
         int slot = Integer.parseInt(args[1]);
         if (slot < 0) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid slot number (0 or greater)"));
+            plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_SLOT_GREATER.toString()).send(sender);
             return false;
         }
 
         final String kitName = args[0];
         SWKit kit = plugin.getKitManager().getKitByName(kitName);
         if (kit == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere is no kit with that name."));
+            plugin.getMessages().getMessage(MessageProperties.KITS_DOESNT_EXIST.toString()).replace("%kit%", kitName).send(sender);
             return true;
         }
 
         kit.setSlot(slot);
-        sender.sendMessage(plugin.getUtils().colorize("&aThe menu slot of the kit &e" + kitName + " &ahas been changed to &e" + slot + "&a!"));
+        plugin.getMessages().getMessage(MessageProperties.KITS_SET_SLOT.toString())
+                .replace("%kit%", kitName)
+                .replace("%slot%", slot + "")
+                .send(sender);
         return true;
     }
 
