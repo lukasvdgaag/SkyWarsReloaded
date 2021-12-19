@@ -7,9 +7,9 @@ import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public abstract class AbstractGameWorld implements GameWorld {
 
@@ -68,41 +68,51 @@ public abstract class AbstractGameWorld implements GameWorld {
     @Override
     public boolean canJoin() {
         if (!this.status.isJoinable()) return false;
-        // checking if there is an empty spawn somewhere.
-        return this.getPlayers().size() < getTemplate().getTeamSize() * getTeams().size();
+        return true;
     }
 
     @Override
-    public GamePlayer preparePlayerJoin(UUID uuid) {
-        if (!canJoin()) return null;
-        SWPlayer swp = plugin.getPlayerManager().initPlayer(uuid);
+    public boolean isSpawnAvailable() {
+        // checking if there is an empty spawn somewhere.
+        return this.players.size() < getTemplate().getTeamSize() * getTeams().size();
+    }
+
+    @Override
+    public GamePlayer preparePlayerJoin(UUID uuid, boolean ignoreAvailableSpawns) {
+        if (!canJoin()) throw new IllegalStateException("Game is not joinable, the main skywars plugins or extensions " +
+                "should always check if the instance is joinable before calling this method. (user id: " + uuid +
+                " | game id: " + this.id + ")");
+        if (!this.isSpawnAvailable() && !ignoreAvailableSpawns)
+            throw new IllegalStateException("No spawns are available");
+        SWPlayer swp = plugin.getPlayerManager().getPlayerByUUID(uuid);
+        if (swp == null) swp = plugin.getPlayerManager().initPlayer(uuid);
         if (swp == null) return null;
         return new CoreGamePlayer(swp, this);
     }
 
     @Override
-    public void addPlayers(SWPlayer... players) {
-
+    public void addPlayers(GamePlayer... players) {
+        this.players.addAll(Arrays.asList(players));
     }
 
     @Override
-    public void removePlayer(SWPlayer player) {
-
+    public void removePlayer(GamePlayer player) {
+        this.players.remove(player);
     }
 
     @Override
-    public List<GamePlayer> getPlayers() {
+    public List<GamePlayer> getPlayersCopy() {
         return new ArrayList<>(players);
     }
 
     @Override
     public List<GamePlayer> getAlivePlayers() {
-        return players.stream().filter(GamePlayer::isAlive).collect(Collectors.toList());
+        return players.stream().filter(GamePlayer::isAlive).toList();
     }
 
     @Override
     public List<GamePlayer> getSpectators() {
-        return players.stream().filter(GamePlayer::isSpectating).collect(Collectors.toList());
+        return players.stream().filter(GamePlayer::isSpectating).toList();
     }
 
     @Override

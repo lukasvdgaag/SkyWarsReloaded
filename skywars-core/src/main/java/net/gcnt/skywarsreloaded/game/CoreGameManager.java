@@ -82,7 +82,7 @@ public abstract class CoreGameManager implements GameManager {
 
         // Delete map data (blocks of the skywars map, not matter the storage method)
         if (deleteMap) {
-            this.plugin.getWorldLoader().deleteMap(template);
+            this.plugin.getWorldLoader().deleteMap(template, false);
         }
 
         return true;
@@ -119,6 +119,13 @@ public abstract class CoreGameManager implements GameManager {
         gameWorlds.forEach((gameTemplate, gameWorlds1) -> worlds.addAll(gameWorlds1));
         return worlds;
     }
+
+    @Override
+    public List<GameWorld> getGameWorldsByTemplate(GameTemplate template) {
+        return new ArrayList<>(gameWorlds.get(template));
+    }
+
+    // Internal util
 
     protected void addWorld(GameTemplate temp, GameWorld world) {
         List<GameWorld> worlds = this.gameWorlds.getOrDefault(temp, new ArrayList<>());

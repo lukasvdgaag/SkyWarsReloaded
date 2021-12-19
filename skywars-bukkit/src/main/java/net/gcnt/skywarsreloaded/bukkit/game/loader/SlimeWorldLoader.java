@@ -10,13 +10,19 @@ import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.types.GameStatus;
+import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
+import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
 import org.bukkit.Bukkit;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class SlimeWorldLoader extends BukkitWorldLoader {
@@ -41,7 +47,8 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public boolean generateWorldInstance(GameWorld gameWorld) {
+    public CompletableFuture<Boolean> generateWorldInstance(GameWorld gameWorld) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
         this.plugin.getScheduler().runAsync(() -> {
             String templateName = gameWorld.getTemplate().getName();
             try {
@@ -52,25 +59,31 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
                 // This method must be called synchronously
                 plugin.getScheduler().callSyncMethod(() -> {
                     slimeWorldManagerPlugin.generateWorld(tmpWorld);
+                    future.complete(true);
                     return null;
                 }).get();
 
             } catch (UnknownWorldException ex) {
                 plugin.getLogger().error(String.format("Attempted to load template '%s$' from SWM but doesn't exist! (loader: %s$)", templateName, slimeLoaderType));
+                future.complete(false);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 plugin.getLogger().reportException(ex);
+                future.complete(false);
             } catch (CorruptedWorldException ex) {
                 plugin.getLogger().error(String.format("The world template '%s$' is corrupted! (loader: %s$)", templateName, slimeLoaderType));
+                future.complete(false);
             } catch (NewerFormatException ex) {
                 plugin.getLogger().error(String.format("The world template '%s$' is in a newer format! (loader: %s$)", templateName, slimeLoaderType));
+                future.complete(false);
             } catch (WorldInUseException ex) {
                 plugin.getLogger().error(String.format("The world template '%s$' is in use by another server in non read-only mode! (loader: %s$)", templateName, slimeLoaderType));
-            } catch (ExecutionException | InterruptedException ignored) {
+                future.complete(false);
+            } catch (ExecutionException | InterruptedException ex) {
+                future.complete(false);
             }
         });
-        // todo use futures
-        return true;
+        return future;
     }
 
     @Override
@@ -86,21 +99,40 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
 
     @Override
     public void deleteWorldInstance(GameWorld gameWorld) {
+        String spawnLocationStr = this.plugin.getDataConfig().getString(RuntimeDataProperties.LOBBY_SPAWN.toString(), null);
+        SWCoord coord = null;
+        try {
+            coord = new CoreSWCoord(this.plugin, spawnLocationStr);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException ex) {
+            ex.printStackTrace();
+        }
 
+        if (coord == null) {
+            coord = this.plugin.getServer().getDefaultWorld().getDefaultSpawnLocation();
+        }
+
+        for (GamePlayer player : gameWorld.getPlayersCopy()) {
+            player.getSWPlayer().teleport(coord);
+        }
+
+        gameWorld.getWorld().unload(false);
     }
 
     @Override
-    public void deleteMap(GameTemplate gameTemplate) {
+    public void deleteMap(GameTemplate gameTemplate, boolean forceUnloadInstances) {
+        if (forceUnloadInstances) {
+            for (GameWorld gameWorld : this.plugin.getGameManager().getGameWorldsByTemplate(gameTemplate)) {
+                if (!gameWorld.getStatus().equals(GameStatus.DISABLED)) {
+                    // todo gameWorld.forceStop();
+                }
+                gameWorld.getWorld().unload(false);
+            }
+        }
 
-    }
-
-    @Override
-    public void createBasePlatform(GameWorld gameWorld) {
-
-    }
-
-    @Override
-    public void updateWorldBorder(GameWorld gameWorld) {
-
+        try {
+            this.slimeLoader.deleteWorld(gameTemplate.getName());
+        } catch (UnknownWorldException | IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -146,6 +146,11 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     }
 
     @Override
+    public void teleport(SWCoord coord) {
+        this.teleport(coord.world().getName(), coord.x(), coord.y(), coord.z());
+    }
+
+    @Override
     public void sendTitle(String title, String subtitle) {
         sendTitle(title, subtitle, 20, 50, 20);
     }

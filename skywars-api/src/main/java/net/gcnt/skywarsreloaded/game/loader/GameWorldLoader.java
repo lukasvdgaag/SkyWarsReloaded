@@ -3,6 +3,8 @@ package net.gcnt.skywarsreloaded.game.loader;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface GameWorldLoader {
 
     /**
@@ -11,7 +13,7 @@ public interface GameWorldLoader {
      * @param gameWorld The {@link GameWorld} used to determine data to be loaded
      * @return true if the template data already exists given the template name
      */
-    boolean generateWorldInstance(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException;
+    CompletableFuture<Boolean> generateWorldInstance(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException;
 
     /**
      * Create an empty world for the corresponding GameWorld.
@@ -32,7 +34,7 @@ public interface GameWorldLoader {
      *
      * @param gameTemplate The {@link GameTemplate} to delete the map for
      */
-    void deleteMap(GameTemplate gameTemplate);
+    void deleteMap(GameTemplate gameTemplate, boolean forceUnloadInstances);
 
     /**
      * Create the base platform to spawn on when editing the map for the first time.

@@ -11,6 +11,7 @@ import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class EditMapCmd extends Cmd {
 
@@ -57,29 +58,31 @@ public class EditMapCmd extends Cmd {
         world.setEditing(true);
 
         // Create instance of the world given the template data, or create a new one if it doesn't exist.
-        boolean templateExists;
+        CompletableFuture<Boolean> templateExistsFuture;
         try {
-            templateExists = plugin.getWorldLoader().generateWorldInstance(world);
+            templateExistsFuture = plugin.getWorldLoader().generateWorldInstance(world);
         } catch (IllegalArgumentException | IllegalStateException e) {
             sender.sendMessage(plugin.getUtils().colorize("&cAn error occurred while generating the world, please check the server console for details."));
             return true;
         }
 
-        // Handle the initialization of a world if this was the creation of the template
-        if (!templateExists) {
-            plugin.getWorldLoader().createBasePlatform(world);
-        }
+        templateExistsFuture.thenAccept(templateExists -> {
+            // Handle the initialization of a world if this was the creation of the template
+            if (!templateExists) {
+                plugin.getWorldLoader().createBasePlatform(world);
+            }
 
-        world.readyForEditing();
+            world.readyForEditing();
 
-        player.teleport(world.getWorldName(),
-                InternalProperties.MAP_CREATE_PLATFORM_X,
-                InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
-                InternalProperties.MAP_CREATE_PLATFORM_Z);
-        player.sendTitle(plugin.getUtils().colorize("&aGenerated World!"), plugin.getUtils().colorize("&7We completed generating the template world"), 0, 100, 20);
-        sender.sendMessage(plugin.getUtils().colorize("&aWe finished generating the template world! &7You can now start building within the world borders. We will automatically convert the world to a schematic file when you're done."));
+            player.teleport(world.getWorldName(),
+                    InternalProperties.MAP_CREATE_PLATFORM_X,
+                    InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
+                    InternalProperties.MAP_CREATE_PLATFORM_Z);
+            player.sendTitle(plugin.getUtils().colorize("&aGenerated World!"), plugin.getUtils().colorize("&7We completed generating the template world"), 0, 100, 20);
+            sender.sendMessage(plugin.getUtils().colorize("&aWe finished generating the template world! &7You can now start building within the world borders. We will automatically convert the world to a schematic file when you're done."));
 
-        template.checkToDoList(sender);
+            template.checkToDoList(sender);
+        });
         return true;
     }
 

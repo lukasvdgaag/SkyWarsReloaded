@@ -15,6 +15,7 @@ import net.gcnt.skywarsreloaded.bukkit.utils.BukkitPlatformUtils;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitSWLogger;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.scheduler.BukkitSWScheduler;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.sender.BukkitSWConsoleSender;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.server.BukkitSWServer;
 import net.gcnt.skywarsreloaded.command.CoreSWCommandManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
@@ -117,6 +118,11 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     public void initPlayerManager() {
         setPlayerManager(new BukkitPlayerManager(this));
+    }
+
+    @Override
+    public void initServer() {
+        setServer(new BukkitSWServer(this));
     }
 
     public BukkitSkyWarsReloadedPlugin getPlugin() {

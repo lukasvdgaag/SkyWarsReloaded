@@ -19,6 +19,7 @@ import org.bukkit.generator.ChunkGenerator;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 
 public class SchemWorldLoader extends BukkitWorldLoader {
 
@@ -36,9 +37,9 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public boolean generateWorldInstance(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException {
-        createEmptyWorld(gameWorld);
-        return loadSchematic(gameWorld);
+    public CompletableFuture<Boolean> generateWorldInstance(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException {
+        this.createEmptyWorld(gameWorld);
+        return CompletableFuture.completedFuture(loadSchematic(gameWorld)); // todo check if this works
     }
 
     @Override
@@ -111,7 +112,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public void deleteMap(GameTemplate gameTemplate) {
+    public void deleteMap(GameTemplate gameTemplate, boolean forceUnloadInstances) {
         File schemFolder = new File(plugin.getDataFolder(), FolderProperties.WORLD_SCHEMATICS_FOLDER.toString());
         String schemFileName = gameTemplate.getName() + ".schem";
 
@@ -137,12 +138,4 @@ public class SchemWorldLoader extends BukkitWorldLoader {
         ).setType(Material.STONE);
     }
 
-    @Override
-    public void updateWorldBorder(GameWorld gameWorld) {
-        World world = ((BukkitGameWorld) gameWorld).getBukkitWorld();
-        if (world == null) return;
-
-        world.getWorldBorder().setCenter(0, 0);
-        world.getWorldBorder().setSize(gameWorld.getTemplate().getBorderRadius());
-    }
 }

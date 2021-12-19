@@ -8,6 +8,8 @@ import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
+import java.util.concurrent.CompletableFuture;
+
 public class CreateMapCmd extends Cmd {
 
     public CreateMapCmd(SkyWarsReloaded plugin) {
@@ -47,29 +49,32 @@ public class CreateMapCmd extends Cmd {
         world.setEditing(true);
 
         // Create instance of the world given the template data, or create a new one if it doesn't exist.
-        boolean templateExists;
+        CompletableFuture<Boolean> templateExistsFuture;
         try {
-            templateExists = plugin.getWorldLoader().generateWorldInstance(world);
+            templateExistsFuture = plugin.getWorldLoader().generateWorldInstance(world);
         } catch (IllegalArgumentException | IllegalStateException e) {
             sender.sendMessage(plugin.getUtils().colorize("&cAn error occurred while generating the world, please check the server console for details."));
             return true;
         }
 
-        // Handle the initialization of a world if this was the creation of the template
-        if (!templateExists) {
-            plugin.getWorldLoader().createBasePlatform(world);
-            plugin.getWorldLoader().updateWorldBorder(world);
-        }
+        templateExistsFuture.thenAccept(templateExists -> {
+            // Handle the initialization of a world if this was the creation of the template
+            if (!templateExists) {
+                plugin.getWorldLoader().createBasePlatform(world);
+                plugin.getWorldLoader().updateWorldBorder(world);
+            }
 
-        // Teleport the player onto the platform that was just created
-        player.teleport(world.getWorldName(),
-                InternalProperties.MAP_CREATE_PLATFORM_X,
-                InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
-                InternalProperties.MAP_CREATE_PLATFORM_Z);
+            // Teleport the player onto the platform that was just created
+            player.teleport(world.getWorldName(),
+                    InternalProperties.MAP_CREATE_PLATFORM_X,
+                    InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
+                    InternalProperties.MAP_CREATE_PLATFORM_Z);
 
-        // User feedback
-        player.sendTitle(plugin.getUtils().colorize("&aGenerated World!"), plugin.getUtils().colorize("&7We completed generating the template world"), 0, 100, 20);
-        sender.sendMessage(plugin.getUtils().colorize("&aWe finished generating the template world! &7You can now start building within the world borders. We will automatically convert the world to a schematic file when you're done."));
+            // User feedback
+            player.sendTitle(plugin.getUtils().colorize("&aGenerated World!"), plugin.getUtils().colorize("&7We completed generating the template world"), 0, 100, 20);
+            sender.sendMessage(plugin.getUtils().colorize("&aWe finished generating the template world! &7You can now start building within the world borders. We will automatically convert the world to a schematic file when you're done."));
+        });
+
         return true;
     }
 }

@@ -19,6 +19,7 @@ import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
+import net.gcnt.skywarsreloaded.wrapper.server.SWServer;
 
 /**
  * Abstract SkyWarsReloaded class that needs to be inherited by a subclass.
@@ -29,6 +30,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SWLogger swLogger;
     private PlatformUtils platformUtils;
     private SWScheduler scheduler;
+    private SWServer server;
 
     // Data
     private Storage storage;
@@ -158,6 +160,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public abstract void initWorldLoader();
 
     public abstract void initGameManager();
+
+    public abstract void initServer();
 
     // Getters & Setters
 
@@ -337,5 +341,15 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     public void setScheduler(SWScheduler scheduler) {
         this.scheduler = scheduler;
+    }
+
+    @Override
+    public SWServer getServer() {
+        return this.server;
+    }
+
+    @Override
+    public void setServer(SWServer serverIn) {
+        this.server = serverIn;
     }
 }

@@ -16,6 +16,7 @@ import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
+import net.gcnt.skywarsreloaded.wrapper.server.SWServer;
 
 import java.io.File;
 
@@ -129,6 +130,8 @@ public interface SkyWarsReloaded {
      */
     String getVersion();
 
+    // Server
+
     /**
      * Get the server's minecraft version
      *
@@ -142,4 +145,18 @@ public interface SkyWarsReloaded {
      * @return The platform's version
      */
     String getPlatformVersion();
+
+    /**
+     * Get the server wrapper
+     *
+     * @return The server wrapper
+     */
+    SWServer getServer();
+
+    /**
+     * Set server wrapper
+     *
+     * @param server The server wrapper
+     */
+    void setServer(SWServer server);
 }

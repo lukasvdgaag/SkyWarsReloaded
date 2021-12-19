@@ -72,4 +72,12 @@ public interface GameManager {
      */
     List<GameWorld> getGameWorlds();
 
+    /**
+     * Get a list of all GameWorlds that were created under a specified template.
+     *
+     * @param template The template to get the game instances of.
+     * @return List of all GameWorlds.
+     */
+    List<GameWorld> getGameWorldsByTemplate(GameTemplate template);
+
 }

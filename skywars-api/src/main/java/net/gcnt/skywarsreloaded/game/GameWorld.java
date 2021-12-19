@@ -1,9 +1,8 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 import java.util.List;
@@ -23,17 +22,19 @@ public interface GameWorld {
 
     boolean canJoin();
 
+    boolean isSpawnAvailable();
+
     boolean isEditing();
 
     void setEditing(boolean edit);
 
-    GamePlayer preparePlayerJoin(UUID uuid);
+    GamePlayer preparePlayerJoin(UUID uuid, boolean ignoreAvailableSpawns);
 
-    void addPlayers(SWPlayer... players);
+    void addPlayers(GamePlayer... players);
 
-    void removePlayer(SWPlayer player);
+    void removePlayer(GamePlayer player);
 
-    List<GamePlayer> getPlayers();
+    List<GamePlayer> getPlayersCopy();
 
     List<GamePlayer> getAlivePlayers();
 
