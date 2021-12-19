@@ -3,15 +3,14 @@ package net.gcnt.skywarsreloaded.bukkit.data.config;
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.data.config.AbstractYAMLConfig;
-import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
-import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -199,6 +198,31 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     @Override
     public SWCoord getCoord(String property) {
         return getCoord(property, null);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Message getMessage(String property) {
+        if (!contains(property)) return null;
+        Object res = get(property, null);
+        if (res instanceof String string) {
+            return new CoreMessage(plugin, string);
+        } else if (res instanceof List stringList) {
+            return new CoreMessage(plugin, stringList);
+        }
+        return null;
+    }
+
+    @Override
+    public Message getMessage(String property, String def) {
+        if (!contains(property)) return new CoreMessage(plugin, def);
+        return new CoreMessage(plugin, getString(property));
+    }
+
+    @Override
+    public Message getMessage(String property, List<String> def) {
+        if (!contains(property)) return new CoreMessage(plugin, def);
+        return new CoreMessage(plugin, getStringList(property));
     }
 
     @Override

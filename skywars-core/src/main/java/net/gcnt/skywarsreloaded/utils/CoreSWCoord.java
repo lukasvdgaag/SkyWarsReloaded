@@ -60,8 +60,6 @@ public class CoreSWCoord implements SWCoord {
             throw new NumberFormatException("One of the coord points seems to not be a number: " + input);
         }
 
-        // todo add support for coord strings with pitch and yaws (+ world names).
-
         x = Double.parseDouble(arg0[lenAdd]);
         y = Double.parseDouble(arg0[1 + lenAdd]);
         z = Double.parseDouble(arg0[2 + lenAdd]);
