@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.data.player.PlayerStat;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.game.kits.Unlockable;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
@@ -20,12 +21,6 @@ public class SetKitRequirementsCmd extends Cmd {
 
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
-        final StringBuilder options = new StringBuilder();
-        options.append("&7").append("permission").append("&f, ");
-        options.append("&7").append("cost").append("&f, ");
-        options.append("&7").append("stats");
-        final String optionVal = options.toString();
-
         final StringBuilder statOptions = new StringBuilder();
         for (int i = 0; i < PlayerStat.values().length; i++) {
             statOptions.append("&7").append(PlayerStat.values()[i].getProperty());
@@ -36,13 +31,13 @@ public class SetKitRequirementsCmd extends Cmd {
         final String statOptionVal = statOptions.toString();
 
         if (args.length == 0) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a kit name."));
+            plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_NAME.toString()).send(sender);
             return true;
         } else if (args.length == 1) {
-            sender.sendMessage(plugin.getUtils().colorize(String.format("&cPlease enter the kit requirement you want to change. Options: %s", optionVal)));
+            plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_KIT_REQUIREMENT.toString()).send(sender);
             return true;
         } else if (args.length == 2) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a kit requirement value."));
+            plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_KIT_REQUIREMENT_VALUE.toString()).send(sender);
             return true;
         }
 
@@ -50,21 +45,21 @@ public class SetKitRequirementsCmd extends Cmd {
         String value;
         boolean checkInt = false;
         switch (requirement) {
-            case "cost":
+            case "cost" -> {
                 // value entered, checking if it's an int.
                 value = args[2];
                 checkInt = true;
-                break;
-            case "permission":
+            }
+            case "permission" -> {
                 value = args[2].toLowerCase();
                 if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")) {
-                    sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid kit requirement value (boolean)"));
+                    plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_KIT_REQUIREMENT_VALUE_BOOLEAN.toString()).send(sender);
                     return true;
                 }
-                break;
-            case "stats":
+            }
+            case "stats" -> {
                 if (args.length == 3) {
-                    sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a kit requirement value."));
+                    plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_KIT_REQUIREMENT_VALUE.toString()).send(sender);
                     return true;
                 } else {
                     requirement = args[2];
@@ -73,24 +68,27 @@ public class SetKitRequirementsCmd extends Cmd {
 
                     PlayerStat stat = PlayerStat.fromString(requirement);
                     if (stat == null) {
-                        sender.sendMessage(plugin.getUtils().colorize(String.format("&cPlease enter a valid kit stat requirement. Options: &7%s", statOptionVal)));
+                        plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_KIT_STAT_REQUIREMENT.toString())
+                                .replace("%options%", statOptionVal)
+                                .send(sender);
                         return true;
                     }
                 }
-                break;
-            default:
-                sender.sendMessage(plugin.getUtils().colorize(String.format("&cPlease enter a valid kit requirement. Options: &7%s", optionVal)));
+            }
+            default -> {
+                plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_KIT_REQUIREMENT.toString()).send(sender);
                 return true;
+            }
         }
 
         if (checkInt) {
             if (!plugin.getUtils().isInt(value)) {
-                sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid kit requirement value (number)."));
+                plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_KIT_REQUIREMENT_VALUE_NUMBER.toString()).send(sender);
                 return true;
             }
             int index = Integer.parseInt(value);
             if (index < 0) {
-                sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid kit requirement value (0 or greater)"));
+                plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_KIT_REQUIREMENT_VALUE_GREATER.toString()).send(sender);
                 return true;
             }
         }
@@ -98,7 +96,7 @@ public class SetKitRequirementsCmd extends Cmd {
         final String kitName = args[0];
         SWKit kit = plugin.getKitManager().getKitByName(kitName);
         if (kit == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere is no kit with that name."));
+            plugin.getMessages().getMessage(MessageProperties.KITS_DOESNT_EXIST.toString()).replace("%kit%", kitName).send(sender);
             return true;
         }
 
@@ -107,13 +105,15 @@ public class SetKitRequirementsCmd extends Cmd {
         switch (requirement) {
             case "cost" -> unlockable.setCost(Integer.parseInt(value));
             case "permission" -> unlockable.setRequirePermission(Boolean.parseBoolean(value));
-            default -> {
-                unlockable.addMinimumStat(PlayerStat.fromString(requirement), Integer.parseInt(value));
-            }
+            default -> unlockable.addMinimumStat(PlayerStat.fromString(requirement), Integer.parseInt(value));
         }
 
         kit.saveData();
-        sender.sendMessage(plugin.getUtils().colorize("&aThe &e" + requirement + "&a kit requirement of the kit &e" + kitName + " &ahas been changed to &e" + value + "&a!"));
+        plugin.getMessages().getMessage(MessageProperties.KITS_SET_REQUIREMENT.toString())
+                .replace("%kit%", kitName)
+                .replace("%requirement%", requirement)
+                .replace("%value%", value)
+                .send(sender);
         return true;
     }
 

@@ -16,20 +16,23 @@ public class ListMapsCmd extends Cmd {
 
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
-        sender.sendMessage(plugin.getUtils().colorize(plugin.getMessages().getString(MessageProperties.CHAT_HEADER.toString())));
-        sender.sendMessage(plugin.getUtils().colorize(String.format("  %-26s %-26s %s", "&e&nTemplate&r", "&7&nCreator&r", "&b&nGame count&r")));
-//        sender.sendMessage(plugin.getUtils().colorize("&r  &e&nTemplate&r  &7&nCreator&r  &b&nGame count&r"));
+        plugin.getMessages().getMessage(MessageProperties.CHAT_HEADER.toString()).send(sender);
+        plugin.getMessages().getMessage(MessageProperties.MAPS_LIST_HEADER.toString()).send(sender);
 
         List<GameTemplate> templates = plugin.getGameManager().getGameTemplates();
         if (templates.isEmpty()) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere are no templates."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_LIST_EMPTY.toString()).send(sender);
             return true;
         }
 
         int gameCount;
         for (GameTemplate template : templates) {
             gameCount = plugin.getGameManager().getGameWorlds(template).size();
-            sender.sendMessage(plugin.getUtils().colorize("&8- %-22s %-22s %s".formatted("&e" + template.getName(), "&7" + template.getCreator(), "&b" + gameCount)));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_LIST_LINE.toString())
+                    .replace("%template%", template.getDisplayName())
+                    .replace("%creator%", template.getCreator())
+                    .replace("%count%", gameCount + "")
+                    .send(sender);
         }
         return true;
     }

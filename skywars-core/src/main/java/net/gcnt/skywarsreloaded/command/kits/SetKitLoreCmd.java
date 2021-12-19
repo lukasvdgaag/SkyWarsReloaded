@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
@@ -19,10 +20,10 @@ public class SetKitLoreCmd extends Cmd {
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a kit name."));
+            plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_NAME.toString()).send(sender);
             return true;
         } else if (args.length == 1) {
-            sender.sendMessage(plugin.getUtils().colorize(String.format("&cPlease enter the action you want to execute on the kit's lore. Options: &7%s&f, &7%s&f, &7%s&f, &7%s", "add", "remove", "clear", "preview")));
+            plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_LORE_ACTION.toString()).send(sender);
             return true;
         }
 
@@ -30,29 +31,29 @@ public class SetKitLoreCmd extends Cmd {
         if (action.equals("add") || action.equals("remove")) {
             if (args.length == 2) {
                 // no value entered.
-                sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a lore line value."));
+                plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_LORE_LINE.toString()).send(sender);
                 return true;
             } else if (action.equals("remove")) {
                 // value entered, action is remove.
                 if (!plugin.getUtils().isInt(args[2])) {
-                    sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid lore line index (number)."));
+                    plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_LORE_INDEX_NUMBER.toString()).send(sender);
                     return true;
                 }
                 int index = Integer.parseInt(args[2]);
                 if (index < 1) {
-                    sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid lore line index (greater than 0)"));
+                    plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_LORE_INDEX_GREATER.toString()).send(sender);
                     return true;
                 }
             }
         } else if (!action.equals("clear") && !action.equals("preview")) {
-            sender.sendMessage(plugin.getUtils().colorize(String.format("&cPlease enter a valid lore edit action. Options: &7%s&f, &7%s&f, &7%s&f, &7%s", "add", "remove", "clear", "preview")));
+            plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_LORE_ACTION.toString()).send(sender);
             return true;
         }
 
         final String kitName = args[0];
         SWKit kit = plugin.getKitManager().getKitByName(kitName);
         if (kit == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere is no kit with that name."));
+            plugin.getMessages().getMessage(MessageProperties.KITS_DOESNT_EXIST.toString()).replace("%kit%", kitName).send(sender);
             return true;
         }
 
@@ -62,30 +63,34 @@ public class SetKitLoreCmd extends Cmd {
                 args = Arrays.copyOfRange(args, 2, args.length);
                 String value = String.join(" ", args);
                 lore.add(value);
-                sender.sendMessage(plugin.getUtils().colorize("&aA new lore line has been added to kit &e" + kitName + " &awith the value &e'" + value + "&e'&a!"));
+                plugin.getMessages().getMessage(MessageProperties.KITS_ADDED_LORE_LINE.toString()).replace("%kit%", kitName).replace("%value%", value).send(sender);
             }
             case "remove" -> {
                 int index = Integer.parseInt(args[2]);
                 if (index > lore.size()) {
                     // out of bounds
-                    sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid lore line index (max is " + lore.size() + ")"));
+                    plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_LORE_INDEX_INVALID.toString()).replace("%kit%", kitName).replace("%max%", lore.size() + "").send(sender);
                     return true;
                 }
                 lore.remove(index - 1);
-                sender.sendMessage(plugin.getUtils().colorize("&aThe lore line with index &e" + index + "&a has been &cremoved &afrom kit &e" + kitName + "&a!"));
+                plugin.getMessages().getMessage(MessageProperties.KITS_REMOVED_LORE_LINE.toString()).replace("%kit%", kitName).replace("%line%", index + "").send(sender);
             }
             case "clear" -> {
                 kit.setLore(new ArrayList<>());
-                sender.sendMessage(plugin.getUtils().colorize("&aThe lore of the kit &e" + kitName + "&a has been &ccleared&a!"));
+                plugin.getMessages().getMessage(MessageProperties.KITS_CLEARED_LORE.toString()).replace("%kit%", kitName).send(sender);
             }
             default -> {
                 // action is preview
-                sender.sendMessage(plugin.getUtils().colorize("&7Lore of kit &a&n" + kitName + "&r&7:"));
+                plugin.getMessages().getMessage(MessageProperties.KITS_PREVIEW_LORE_HEADER.toString()).replace("%kit%", kitName).send(sender);
                 if (lore.isEmpty()) {
-                    sender.sendMessage(plugin.getUtils().colorize("&cThis kit does not have any lore lines."));
+                    plugin.getMessages().getMessage(MessageProperties.KITS_PREVIEW_LORE_NO_LINES.toString()).replace("%kit%", kitName).send(sender);
                 } else {
                     for (int i = 0; i < lore.size(); i++) {
-                        sender.sendMessage(plugin.getUtils().colorize(String.format("&e%2d: &f%s", i + 1, lore.get(i))));
+                        plugin.getMessages().getMessage(MessageProperties.KITS_PREVIEW_LORE_LINE.toString())
+                                .replace("%kit%", kitName)
+                                .replace("%line%", (i + 1) + "")
+                                .replace("%value%", lore.get(i))
+                                .send(sender);
                     }
                 }
             }

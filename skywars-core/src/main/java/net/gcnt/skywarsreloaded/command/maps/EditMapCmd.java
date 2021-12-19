@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
@@ -22,19 +23,19 @@ public class EditMapCmd extends Cmd {
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a game template name."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_NAME.toString()).send(sender);
             return true;
         }
 
         if (plugin.getDataConfig().getCoord("lobby") == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cYou must have set the lobby spawn before you can continue with this! Use &7/sw setlobby&c to set it."));
+            plugin.getMessages().getMessage(MessageProperties.ERROR_LOBBY_SPAWN_NOT_SET.toString()).send(sender);
             return true;
         }
 
         final String templateName = args[0];
         GameTemplate template = plugin.getGameManager().getGameTemplateByName(templateName);
         if (template == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere is no game template with that name."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
             return true;
         }
         final SWPlayer player = (SWPlayer) sender;
@@ -42,18 +43,19 @@ public class EditMapCmd extends Cmd {
         List<GameWorld> worlds = plugin.getGameManager().getGameWorlds(template);
         for (GameWorld world : worlds) {
             if (world.isEditing()) {
-                player.sendMessage(plugin.getUtils().colorize("&7Teleporting you to the current existing map template to edit..."));
+                plugin.getMessages().getMessage(MessageProperties.MAPS_EDIT_EXISTING_WORLD.toString()).replace("%template%", template.getName()).send(sender);
                 world.readyForEditing();
                 player.teleport(world.getWorldName(), 0, 51, 0);
                 return true;
             } else if (world.getStatus() != GameStatus.DISABLED) {
-                player.sendMessage(plugin.getUtils().colorize("&cIt seems like there is a game running for the current game template. Please stop the all its games before editing the template."));
+                plugin.getMessages().getMessage(MessageProperties.ERROR_CANNOT_SET_LOBBYSPAWN_IN_GAMEWORLD.toString()).replace("%template%", template.getName()).send(sender);
                 return true;
             }
         }
 
-        sender.sendMessage(plugin.getUtils().colorize("&7Please hold while we generate the template world..."));
-        player.sendTitle(plugin.getUtils().colorize("&6Generating World..."), plugin.getUtils().colorize("&7Please hold while we generate the template world"), 20, 20 * 30, 20);
+
+        plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATING_WORLD.toString()).replace("%template%", template.getName()).send(sender);
+        plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_GENERATING_WORLD.toString()).replace("%template%", template.getName()).sendTitle(20, 600, 20, sender);
         GameWorld world = plugin.getGameManager().createGameWorld(template);
         world.setEditing(true);
 
@@ -62,7 +64,7 @@ public class EditMapCmd extends Cmd {
         try {
             templateExistsFuture = plugin.getWorldLoader().generateWorldInstance(world);
         } catch (IllegalArgumentException | IllegalStateException e) {
-            sender.sendMessage(plugin.getUtils().colorize("&cAn error occurred while generating the world, please check the server console for details."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATING_WORLD_FAIL.toString()).replace("%template%", template.getName()).send(sender);
             return true;
         }
 
@@ -78,11 +80,11 @@ public class EditMapCmd extends Cmd {
                     InternalProperties.MAP_CREATE_PLATFORM_X,
                     InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
                     InternalProperties.MAP_CREATE_PLATFORM_Z);
-            player.sendTitle(plugin.getUtils().colorize("&aGenerated World!"), plugin.getUtils().colorize("&7We completed generating the template world"), 0, 100, 20);
-            sender.sendMessage(plugin.getUtils().colorize("&aWe finished generating the template world! &7You can now start building within the world borders. We will automatically convert the world to a schematic file when you're done."));
 
+            plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_GENERATED_WORLD.toString()).replace("%template%", template.getName()).sendTitle(0, 100, 0, sender);
+            plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATED_WORLD.toString()).replace("%template%", template.getName()).send(sender);
             template.checkToDoList(sender);
-        });
+            });
         return true;
     }
 

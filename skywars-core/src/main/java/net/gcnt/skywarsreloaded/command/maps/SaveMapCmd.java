@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
@@ -24,7 +25,7 @@ public class SaveMapCmd extends Cmd {
         if (args.length == 0) {
             GameWorld world = plugin.getGameManager().getGameWorldFromWorldName(player.getLocation().world().getName());
             if (world == null || !world.isEditing() || world.getTemplate() == null) {
-                sender.sendMessage(plugin.getUtils().colorize("&cThe world you're in either isn't a SkyWars template world, or it's not in edit mode."));
+                plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
                 return true;
             }
             template = world.getTemplate();
@@ -32,7 +33,7 @@ public class SaveMapCmd extends Cmd {
             final String templateName = args[0];
             template = plugin.getGameManager().getGameTemplateByName(templateName);
             if (template == null) {
-                sender.sendMessage(plugin.getUtils().colorize("&cThere is no game template with that name."));
+                plugin.getMessages().getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
                 return true;
             }
         }
@@ -43,18 +44,18 @@ public class SaveMapCmd extends Cmd {
                 // schematic creating and saving
                 boolean successful = plugin.getSchematicManager().saveGameWorldToSchematic(world, plugin.getUtils().getWorldEditWorld(world.getWorldName()));
                 if (successful) {
-                    sender.sendMessage(plugin.getUtils().colorize("&dWorld template schematic saved! &aWe have successfully saved the template world you were editing to a WorldEdit schematic."));
+                    plugin.getMessages().getMessage(MessageProperties.MAPS_WORLD_SAVED.toString()).replace("%template%", template.getName()).send(sender);
                 } else {
-                    sender.sendMessage(plugin.getUtils().colorize("&c&lError while saving world template schematic! &r&cWe failed to save the template world you were editing to a WorldEdit schematic. Please check the console for more information."));
+                    plugin.getMessages().getMessage(MessageProperties.MAPS_WORLD_SAVED_FAIL.toString()).replace("%template%", template.getName()).send(sender);
                 }
                 break;
             }
         }
 
-        // todo check for incorrect / uncompleted setup steps here before saving game template.
-
         template.saveData();
-        sender.sendMessage(plugin.getUtils().colorize("&aThe data of template &e%s &ahas successfully been saved!".formatted(template.getName())));
+
+        plugin.getMessages().getMessage(MessageProperties.MAPS_SAVED.toString()).replace("%template%", template.getName()).send(sender);
+        template.checkToDoList(sender);
         return true;
     }
 

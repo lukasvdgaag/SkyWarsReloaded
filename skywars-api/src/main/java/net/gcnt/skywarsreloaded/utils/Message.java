@@ -8,6 +8,10 @@ public interface Message {
 
     Message replace(String search, String replace);
 
-    void send(SWCommandSender... sender);
+    void send(SWCommandSender... senders);
+
+    void sendTitle(SWCommandSender... senders);
+
+    void sendTitle(int in, int stay, int out, SWCommandSender... senders);
 
 }

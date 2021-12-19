@@ -2,9 +2,9 @@ package net.gcnt.skywarsreloaded.command.general;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
-import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
@@ -23,19 +23,19 @@ public class LobbySpawnCmd extends Cmd {
         SWCoord loc = player.getLocation();
 
         if (loc.world() == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThe world you're in was not recognized by SkyWars, so we couldn't set the lobby spawn!"));
+            plugin.getMessages().getMessage(MessageProperties.ERROR_WORLD_NOT_RECOGNIZED.toString()).send(sender);
             return true;
         }
         for (GameWorld gw : plugin.getGameManager().getGameWorlds()) {
             if (gw.getWorldName().equals(loc.world().getName())) {
-                sender.sendMessage(plugin.getUtils().colorize("&cYou can't set the lobby spawn in a game world!"));
+                plugin.getMessages().getMessage(MessageProperties.ERROR_CANNOT_SET_LOBBYSPAWN_IN_GAMEWORLD.toString()).send(sender);
                 return true;
             }
         }
 
         plugin.getDataConfig().set("lobby", loc.toString());
         plugin.getDataConfig().save();
-        sender.sendMessage(plugin.getUtils().colorize("&aSet the lobby spawn to your current location!"));
+        plugin.getMessages().getMessage(MessageProperties.CHAT_LOBBY_SPAWN_SET.toString()).send(sender);
         return true;
     }
 

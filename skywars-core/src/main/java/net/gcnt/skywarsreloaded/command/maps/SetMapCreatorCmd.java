@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.command.maps;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
@@ -18,24 +19,27 @@ public class SetMapCreatorCmd extends Cmd {
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a game template name."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_NAME.toString()).send(sender);
             return true;
         } else if (args.length == 1) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter the creator of the map."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_CREATOR.toString()).send(sender);
             return true;
         }
 
         final String templateName = args[0];
         GameTemplate template = plugin.getGameManager().getGameTemplateByName(templateName);
         if (template == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere is no game template with that name."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
             return true;
         }
 
         args = Arrays.copyOfRange(args, 1, args.length);
         String creator = String.join(" ", args);
         template.setCreator(creator);
-        sender.sendMessage(plugin.getUtils().colorize("&aThe creator of the map &e%s &ahas been changed to &e%s&a!".formatted(template.getName(), creator)));
+        plugin.getMessages().getMessage(MessageProperties.MAPS_SET_CREATOR.toString())
+                .replace("%template%", template.getName())
+                .replace("%creator%", creator)
+                .send(sender);
 
         template.checkToDoList(sender);
         return true;
