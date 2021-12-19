@@ -6,7 +6,9 @@ import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.types.SpawnType;
 import net.gcnt.skywarsreloaded.utils.AbstractItem;
+import net.gcnt.skywarsreloaded.utils.Message;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
@@ -22,22 +24,23 @@ public class SetSpawnCmd extends Cmd {
 
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
+        if (args.length == 0) {
+            plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_SPAWN_TYPE.toString()).send(sender);
+            return true;
+        }
+
         SWPlayer player = (SWPlayer) sender;
         GameWorld world = plugin.getGameManager().getGameWorldFromWorldName(player.getLocation().world().getName());
-        if (world == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cYou must be in a skywars game template world to execute this command."));
+        if (world == null || !world.isEditing()) {
+            plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
             return true;
         }
 
         GameTemplate template = world.getTemplate();
-        if (!world.isEditing()) {
-            sender.sendMessage(plugin.getUtils().colorize("&cYou are currently in a skywars game world for the arena &7%s&c that is not in editing mode. Use \"&c&o/swmap edit %s&c\" to edit this template.".formatted(template.getDisplayName(), template.getName())));
-            return true;
-        }
 
         SpawnType type = SpawnType.fromString(args[0]);
         if (type == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid spawn type. Options: &7%s&f, &7%s&f, &7%s".formatted("player", "lobby", "spectate")));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_SPAWN_TYPE.toString()).send(sender);
             return true;
         }
         int team = 1;
@@ -45,12 +48,12 @@ public class SetSpawnCmd extends Cmd {
         if (type == SpawnType.PLAYER) {
             if (template.getTeamSize() > 1) {
                 if (args.length == 1) {
-                    sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a team number."));
+                    plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_TEAM_NUMBER.toString()).send(sender);
                     return true;
                 }
                 //else
                 if (!plugin.getUtils().isInt(args[1])) {
-                    sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid team number (number)."));
+                    plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_TEAM_NUMBER_NUMBER.toString()).send(sender);
                     return true;
                 }
 
@@ -58,9 +61,8 @@ public class SetSpawnCmd extends Cmd {
             } else {
                 if (args.length > 1) {
                     // player entered a team number.
-                    player.sendTitle(plugin.getUtils().colorize("&c&lNOT A TEAM GAME!"), plugin.getUtils().colorize("&7You can only set team spawns for team games"));
-                    sender.sendMessage(plugin.getUtils().colorize("&7Not a team game template!&c You are currently editing a solo game template (with team size 1) which doesn't support adding a spawn to a specific team. If you wish to" +
-                            " make this template a team arena, please use the command \"&o/swmap teamsize %s <size>&r&c\".".formatted(template.getName())));
+                    plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_NO_TEAM_GAME.toString()).replace("%template%", template.getName()).sendTitle(sender);
+                    plugin.getMessages().getMessage(MessageProperties.MAPS_NO_TEAM_GAME.toString()).replace("%template%", template.getName()).send(sender);
                     return true;
                 }
             }
@@ -72,45 +74,62 @@ public class SetSpawnCmd extends Cmd {
         switch (type) {
             case LOBBY -> {
                 template.setWaitingLobbySpawn(location);
-                player.sendTitle(plugin.getUtils().colorize("&a&lSPAWN SET!"), plugin.getUtils().colorize("&7Successfully set the waiting lobby spawnpoint!"));
-                sender.sendMessage(plugin.getUtils().colorize("&aThe waiting spawn of the template &b%s &ahas been set to your current location.".formatted(template.getDisplayName())));
+                plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_SET_SPAWN_LOBBY.toString()).replace("%template%", template.getName()).sendTitle(player);
+                plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_LOBBY.toString()).replace("%template%", template.getName()).send(player);
             }
             case SPECTATE -> {
                 template.setSpectateSpawn(location);
-                player.sendTitle(plugin.getUtils().colorize("&a&lSPAWN SET!"), plugin.getUtils().colorize("&7Successfully set the spectator spawnpoint!"));
-                sender.sendMessage(plugin.getUtils().colorize("&aThe spectator spawn of the template &b%s &ahas been set to your current location.".formatted(template.getDisplayName())));
+                plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_SET_SPAWN_SPECTATE.toString()).replace("%template%", template.getName()).sendTitle(player);
+                plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_SPECTATE.toString()).replace("%template%", template.getName()).send(player);
             }
             case PLAYER -> {
                 final SWCoord blockLocation = location.asBlock();
                 SpawnAddResult result = template.addSpawn(teamIndex, blockLocation);
-                String message = switch (result) {
-                    case INDEX_TOO_LOW -> "&cPlease enter a valid team number (greater than 0)";
-                    case INDEX_TOO_HIGH -> "&cPlease enter a valid team number (max %d)".formatted(template.getTeamSpawnpoints().size() + 1);
-                    case SPAWN_ALREADY_EXISTS -> "&cThe location you're trying to set is already defined for another team.";
+                Message message = switch (result) {
+                    case INDEX_TOO_LOW -> plugin.getMessages().getMessage(MessageProperties.MAPS_SPAWN_INDEX_LOW.toString())
+                            .replace("%template%", template.getName());
+                    case INDEX_TOO_HIGH -> plugin.getMessages().getMessage(MessageProperties.MAPS_SPAWN_INDEX_HIGH.toString())
+                            .replace("%template%", template.getName()).replace("%max%", (template.getTeamSpawnpoints().size() + 1) + "");
+                    case SPAWN_ALREADY_EXISTS -> plugin.getMessages().getMessage(MessageProperties.MAPS_SPAWN_ALREADY_EXISTS.toString())
+                            .replace("%template%", template.getName());
                     case NEW_TEAM_ADDED -> {
                         if (template.getTeamSize() == 1) {
-                            yield "&aAdded player spawnpoint &b#%d &ato game template &b%s&a.".formatted(template.getTeamSpawnpoints().size(), template.getDisplayName());
+                            yield plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_SINGLES.toString())
+                                    .replace("%template%", template.getName())
+                                    .replace("%number%", template.getTeamSpawnpoints().size() + "");
                         } else {
                             int currentSpawns = template.getTeamSpawnpoints().get(teamIndex).size();
                             if (currentSpawns < template.getTeamSize()) {
-                                yield "&aAdded player spawnpoint &b#%d &ato team &b%d &afor game template &b%s&a. &e%d &aspawns left to set for this team.".formatted(currentSpawns, team, template.getDisplayName(), template.getTeamSize() - currentSpawns);
+                                yield plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_TEAM.toString())
+                                        .replace("%template%", template.getName())
+                                        .replace("%number%", currentSpawns + "")
+                                        .replace("%team%", team + "")
+                                        .replace("%left%", (template.getTeamSize() - currentSpawns) + "");
                             } else {
-                                yield "&aAdded the final player spawnpoint &b#%d &ato team &b%d &afor game template &b%s&a. &e0 &aleft to go.".formatted(currentSpawns, team, template.getDisplayName());
+                                yield plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_TEAM_FINAL.toString())
+                                        .replace("%template%", template.getName())
+                                        .replace("%number%", currentSpawns + "")
+                                        .replace("%team%", team + "");
                             }
                         }
                     }
-                    case TEAM_UPDATED -> "&aAdded player spawnpoint &b#%d &ato team &b%d &afor game template &b%s&a.".formatted(template.getTeamSpawnpoints().get(team - 1).size(), team, template.getDisplayName());
-                    case MAX_TEAM_SPAWNS_REACHED -> "&cTeam %d has reached its maximum player spawnpoints. You could increase the team size of this template with \"&o/swmap teamsize %s <size>&c\" if you wish to proceed.".formatted(team, template.getName());
+                    case TEAM_UPDATED -> plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_TEAM_FINAL.toString())
+                            .replace("%template%", template.getName())
+                            .replace("%number%", (template.getTeamSpawnpoints().get(team - 1).size()) + "")
+                            .replace("%team%", team + "");
+                    case MAX_TEAM_SPAWNS_REACHED -> plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_TEAM_MAX.toString())
+                            .replace("%template%", template.getName())
+                            .replace("%team%", team + "");
                 };
 
                 if (result.isSuccess()) {
-                    player.sendTitle(plugin.getUtils().colorize("&a&lSPAWN SET!"), plugin.getUtils().colorize("&7Successfully added a new player spawnpoint!"));
+                    plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_SET_SPAWN_PLAYER.toString()).replace("%template%", template.getName()).sendTitle(player);
                     location.world().setBlockAt(blockLocation, AbstractItem.getItem("BEACON"));
                     player.teleport(player.getLocation().add(0, 1, 0));
                 } else {
-                    player.sendTitle(plugin.getUtils().colorize("&c&lOH NO!"), plugin.getUtils().colorize("&7Couldn't add the player spawn (see chat)!"));
+                    plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_SET_SPAWN_PLAYER_FAIL.toString()).replace("%template%", template.getName()).sendTitle(player);
                 }
-                sender.sendMessage(plugin.getUtils().colorize(message));
+                message.send(sender);
             }
         }
 

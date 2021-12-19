@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
@@ -18,12 +19,12 @@ public class CreateMapCmd extends Cmd {
     public boolean run(SWCommandSender sender, String[] args) {
         // Sanity checks
         if (args.length == 0) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a game template name."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_NAME.toString()).send(sender);
             return true;
         }
 
         if (plugin.getDataConfig().getCoord("lobby") == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cYou must have set the lobby spawn before you can continue with this! Use &7/sw setlobby&c to set it."));
+            plugin.getMessages().getMessage(MessageProperties.ERROR_LOBBY_SPAWN_NOT_SET.toString()).send(sender);
             return true;
         }
 
@@ -31,16 +32,16 @@ public class CreateMapCmd extends Cmd {
         final String templateName = args[0];
         GameTemplate template = plugin.getGameManager().createGameTemplate(templateName);
         if (template == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere already is a game template with that name."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_ALREADY_EXIST.toString()).send(sender);
             return true;
         }
 
         final SWPlayer player = (SWPlayer) sender;
 
         // User progress feedback
-        sender.sendMessage(plugin.getUtils().colorize("&aA new game template with the name &e%s&a has successfully been created.".formatted(template.getName())));
-        sender.sendMessage(plugin.getUtils().colorize("&7Please hold while we generate the template world..."));
-        player.sendTitle(plugin.getUtils().colorize("&6Generating World..."), plugin.getUtils().colorize("&7Please hold while we generate the world"), 20, Integer.MAX_VALUE, 20);
+        plugin.getMessages().getMessage(MessageProperties.MAPS_TEMPLATE_CREATED.toString()).replace("%template%", template.getName()).send(sender);
+        plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATING_WORLD.toString()).replace("%template%", template.getName()).send(sender);
+        plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_GENERATING_WORLD.toString()).replace("%template%", template.getName()).sendTitle(20, 600, 20, sender);
 
         // Generate game instance to use as template editor
         GameWorld world = plugin.getGameManager().createGameWorld(template);
@@ -51,15 +52,16 @@ public class CreateMapCmd extends Cmd {
         try {
             templateExists = plugin.getWorldLoader().generateWorldInstance(world);
         } catch (IllegalArgumentException | IllegalStateException e) {
-            sender.sendMessage(plugin.getUtils().colorize("&cAn error occurred while generating the world, please check the server console for details."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATING_WORLD_FAIL.toString()).replace("%template%", template.getName()).send(sender);
             return true;
         }
 
         // Handle the initialization of a world if this was the creation of the template
         if (!templateExists) {
             plugin.getWorldLoader().createBasePlatform(world);
-            plugin.getWorldLoader().updateWorldBorder(world);
         }
+
+        world.readyForEditing();
 
         // Teleport the player onto the platform that was just created
         player.teleport(world.getWorldName(),
@@ -68,8 +70,8 @@ public class CreateMapCmd extends Cmd {
                 InternalProperties.MAP_CREATE_PLATFORM_Z);
 
         // User feedback
-        player.sendTitle(plugin.getUtils().colorize("&aGenerated World!"), plugin.getUtils().colorize("&7We completed generating the template world"), 0, 100, 20);
-        sender.sendMessage(plugin.getUtils().colorize("&aWe finished generating the template world! &7You can now start building within the world borders. We will automatically convert the world to a schematic file when you're done."));
+        plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_GENERATED_WORLD.toString()).replace("%template%", template.getName()).sendTitle(0, 100, 0, sender);
+        plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATED_WORLD.toString()).replace("%template%", template.getName()).send(sender);
         return true;
     }
 }

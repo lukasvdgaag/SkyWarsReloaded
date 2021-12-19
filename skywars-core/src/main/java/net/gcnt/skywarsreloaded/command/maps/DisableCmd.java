@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.command.maps;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
@@ -17,23 +18,23 @@ public class DisableCmd extends Cmd {
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a game template name."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_NAME.toString()).send(sender);
             return true;
         }
 
         final String templateName = args[0];
         GameTemplate template = plugin.getGameManager().getGameTemplateByName(templateName);
         if (template == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere is no game template with that name."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
             return true;
         }
         if (!template.isEnabled()) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThis template is already disabled."));
+            plugin.getMessages().getMessage(MessageProperties.MAPS_ALREADY_DISABLED.toString()).replace("%template%", template.getName()).send(sender);
             return true;
         }
 
         template.disable();
-        sender.sendMessage(plugin.getUtils().colorize("&aThe template &e%s &ahas successfully been &cdisabled&a!".formatted(template.getName())));
+        plugin.getMessages().getMessage(MessageProperties.MAPS_DISABLED.toString()).replace("%template%", template.getName()).send(sender);
         return true;
     }
 
