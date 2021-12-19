@@ -106,6 +106,7 @@ public class SetSpawnCmd extends Cmd {
                 if (result.isSuccess()) {
                     player.sendTitle(plugin.getUtils().colorize("&a&lSPAWN SET!"), plugin.getUtils().colorize("&7Successfully added a new player spawnpoint!"));
                     location.world().setBlockAt(blockLocation, AbstractItem.getItem("BEACON"));
+                    player.teleport(player.getLocation().add(0, 1, 0));
                 } else {
                     player.sendTitle(plugin.getUtils().colorize("&c&lOH NO!"), plugin.getUtils().colorize("&7Couldn't add the player spawn (see chat)!"));
                 }

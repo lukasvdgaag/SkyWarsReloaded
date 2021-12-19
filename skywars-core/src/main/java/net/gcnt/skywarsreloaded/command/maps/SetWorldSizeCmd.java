@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
@@ -12,34 +13,43 @@ import java.util.List;
 public class SetWorldSizeCmd extends Cmd {
 
     public SetWorldSizeCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "worldsize", "skywars.command.map.worldsize", true, "<map> <worldsize>", "Set the world size.", "ws");
+        super(plugin, "skywarsmap", "worldsize", "skywars.command.map.worldsize", true, "[map] <worldsize>", "Set the world size.", "ws");
     }
 
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
+        SWPlayer player = (SWPlayer) sender;
+        GameTemplate template;
+        int creatorArgStart = 1;
+
         if (args.length == 0) {
-            sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a game template name."));
-            return true;
-        } else if (args.length == 1) {
             sender.sendMessage(plugin.getUtils().colorize("&cPlease enter the world size."));
             return true;
+        } else if (args.length == 1) {
+            GameWorld world = plugin.getGameManager().getGameWorldFromWorldName(player.getLocation().world().getName());
+            if (world == null || !world.isEditing() || world.getTemplate() == null) {
+                sender.sendMessage(plugin.getUtils().colorize("&cThe world you're in either isn't a SkyWars template world, or it's not in edit mode."));
+                return true;
+            }
+            template = world.getTemplate();
+            creatorArgStart = 0;
+        } else {
+            final String templateName = args[0];
+            template = plugin.getGameManager().getGameTemplateByName(templateName);
+            if (template == null) {
+                sender.sendMessage(plugin.getUtils().colorize("&cThere is no game template with that name."));
+                return true;
+            }
         }
 
-        if (!plugin.getUtils().isInt(args[1])) {
+        if (!plugin.getUtils().isInt(args[creatorArgStart])) {
             sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid world size (number)."));
             return false;
         }
-        int size = Integer.parseInt(args[1]);
+        int size = Integer.parseInt(args[creatorArgStart]);
         if (size < 1) {
             sender.sendMessage(plugin.getUtils().colorize("&cPlease enter a valid world size (greater than 0)"));
             return false;
-        }
-
-        final String templateName = args[0];
-        GameTemplate template = plugin.getGameManager().getGameTemplateByName(templateName);
-        if (template == null) {
-            sender.sendMessage(plugin.getUtils().colorize("&cThere is no game template with that name."));
-            return true;
         }
 
         template.setBorderRadius(size);

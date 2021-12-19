@@ -48,7 +48,7 @@ public class SetMapCreatorCmd extends Cmd {
             plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
             return maps;
         } else if (args.length == 2) {
-            return null;
+            return new ArrayList<>();
         }
         return new ArrayList<>();
     }

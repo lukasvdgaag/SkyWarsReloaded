@@ -51,13 +51,15 @@ public class AbstractSWEventListener implements SWEventListener {
         } else if (event.getBlockTypeName().equalsIgnoreCase("BEACON")) {
             // player is removing a player spawnpoint.
             SpawnRemoveResult res = template.removeSpawn(event.getCoord());
+
             if (res.isSuccess()) {
+                int currentSpawns = res.getRemainingSpawns();
+
                 event.getPlayer().sendTitle(plugin.getUtils().colorize("&c&lSPAWN REMOVED"), plugin.getUtils().colorize("&7Removed a player spawn from the template!"), 5, 30, 5);
                 String message;
                 if (template.getTeamSize() == 1) {
                     message = String.format("&cRemoved player spawnpoint &7#%d &cfrom game template &b%s&a.", res.getTeam() + 1, template.getDisplayName());
                 } else {
-                    int currentSpawns = template.getTeamSpawnpoints().get(res.getTeam()).size();
                     message = String.format("&cRemoved player spawnpoint &7#%d &cfrom team &7%d &cfor game template &7%s&c. &e%d &cspawns left to set for this team.", res.getIndex() + 1, res.getTeam() + 1, template.getDisplayName(), template.getTeamSize() - currentSpawns);
                 }
                 event.getPlayer().sendMessage(plugin.getUtils().colorize(message));

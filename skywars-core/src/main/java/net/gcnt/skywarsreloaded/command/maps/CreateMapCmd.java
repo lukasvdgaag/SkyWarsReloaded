@@ -40,7 +40,7 @@ public class CreateMapCmd extends Cmd {
         // User progress feedback
         sender.sendMessage(plugin.getUtils().colorize("&aA new game template with the name &e%s&a has successfully been created.".formatted(template.getName())));
         sender.sendMessage(plugin.getUtils().colorize("&7Please hold while we generate the template world..."));
-        player.sendTitle(plugin.getUtils().colorize("&6Generating World..."), plugin.getUtils().colorize("&7Please hold while we generate the template world"), 20, Integer.MAX_VALUE, 20);
+        player.sendTitle(plugin.getUtils().colorize("&6Generating World..."), plugin.getUtils().colorize("&7Please hold while we generate the world"), 20, Integer.MAX_VALUE, 20);
 
         // Generate game instance to use as template editor
         GameWorld world = plugin.getGameManager().createGameWorld(template);
