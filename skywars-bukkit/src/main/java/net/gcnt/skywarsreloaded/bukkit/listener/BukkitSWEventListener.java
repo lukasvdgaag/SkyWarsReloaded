@@ -13,10 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 
 public class BukkitSWEventListener extends AbstractSWEventListener implements Listener {
 
@@ -100,6 +97,19 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
         // Update changes
         if (swEvent.isCancelled()) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent e) {
+        SWPlayer p = this.getPlayerFromBukkitPlayer(e.getPlayer());
+
+        SWAsyncPlayerChatEvent swEvent = new CoreSWAsyncPlayerChatEvent(p, e.getMessage());
+        this.onAsyncPlayerChat(swEvent);
+
+        e.setMessage(swEvent.getMessage());
+        if (swEvent.isCancelled()) {
+            e.setCancelled(true);
         }
     }
 

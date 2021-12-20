@@ -25,6 +25,11 @@ public class AbstractSWEventListener implements SWEventListener {
     }
 
     @Override
+    public void onAsyncPlayerChat(SWAsyncPlayerChatEvent event) {
+
+    }
+
+    @Override
     public void onPlayerQuit(SWPlayerQuitEvent event) {
         this.plugin.getPlayerManager().removePlayer(event.getPlayer());
     }

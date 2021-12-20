@@ -7,10 +7,10 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameWorld;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.utils.FileUtils;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
@@ -72,7 +72,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
         String schemFileName = gameWorld.getTemplate().getName() + ".schem";
 
         File schemFile = new File(schemFolder, schemFileName);
-        if (!schemFile.exists()) throw new IllegalArgumentException("Schematic file does not exist.");
+        if (!schemFile.exists()) return false;
 
         Clipboard clip = plugin.getSchematicManager().getSchematic(schemFolder, schemFileName);
         if (clip == null) return false; // todo throw error?

@@ -6,6 +6,8 @@ public interface SWEventListener {
 
     void onAsyncPlayerPreLogin(SWAsyncPlayerPreLoginEvent event);
 
+    void onAsyncPlayerChat(SWAsyncPlayerChatEvent event);
+
     void onPlayerJoin(SWPlayerJoinEvent event);
 
     void onPlayerQuit(SWPlayerQuitEvent event);

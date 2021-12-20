@@ -64,6 +64,8 @@ public class EditMapCmd extends Cmd {
         try {
             templateExistsFuture = plugin.getWorldLoader().generateWorldInstance(world);
         } catch (IllegalArgumentException | IllegalStateException e) {
+            plugin.getLogger().error(String.format("Failed to edit template %s. (%s)", template.getName(), e.getClass().getName() + ": " + e.getLocalizedMessage()));
+            e.printStackTrace();
             plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATING_WORLD_FAIL.toString()).replace("%template%", template.getName()).send(sender);
             return true;
         }
@@ -80,11 +82,12 @@ public class EditMapCmd extends Cmd {
                     InternalProperties.MAP_CREATE_PLATFORM_X,
                     InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
                     InternalProperties.MAP_CREATE_PLATFORM_Z);
+            player.setGameMode(1);
 
             plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_GENERATED_WORLD.toString()).replace("%template%", template.getName()).sendTitle(0, 100, 0, sender);
             plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATED_WORLD.toString()).replace("%template%", template.getName()).send(sender);
             template.checkToDoList(sender);
-            });
+        });
         return true;
     }
 

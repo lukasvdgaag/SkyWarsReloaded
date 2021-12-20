@@ -12,6 +12,7 @@ import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
+import net.gcnt.skywarsreloaded.protocol.NMS;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
@@ -117,6 +118,10 @@ public interface SkyWarsReloaded {
     void setLogger(SWLogger logger);
 
     void initCommands();
+
+    NMS getNMS();
+
+    void setNMS(NMS nms);
 
 
     // ---- Util ----

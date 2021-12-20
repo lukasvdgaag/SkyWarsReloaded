@@ -56,7 +56,8 @@ public class CoreSWCoord implements SWCoord {
         }
         if (length == 4 || length == 6) lenAdd = 1;
 
-        if (!plugin.getUtils().isDouble(arg0[lenAdd]) || !plugin.getUtils().isDouble(arg0[1 + lenAdd]) || !plugin.getUtils().isDouble(arg0[2 + lenAdd]) || (lenAdd == 1 && (!plugin.getUtils().isFloat(arg0[3 + lenAdd]) || !plugin.getUtils().isFloat(arg0[4 + lenAdd])))) {
+        if (!plugin.getUtils().isDouble(arg0[lenAdd]) || !plugin.getUtils().isDouble(arg0[1 + lenAdd]) || !plugin.getUtils().isDouble(arg0[2 + lenAdd]) ||
+                (length >= 5 && (!plugin.getUtils().isFloat(arg0[3 + lenAdd]) || !plugin.getUtils().isFloat(arg0[4 + lenAdd])))) {
             throw new NumberFormatException("One of the coord points seems to not be a number: " + input);
         }
 

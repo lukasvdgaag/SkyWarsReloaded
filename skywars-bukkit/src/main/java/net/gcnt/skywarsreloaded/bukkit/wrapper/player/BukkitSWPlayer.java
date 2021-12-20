@@ -7,10 +7,7 @@ import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.AbstractSWPlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -123,7 +120,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     @Override
     public SWCoord getLocation() {
         final Location location = player.getLocation();
-        return new CoreSWCoord(new BukkitSWWorld((BukkitSkyWarsReloaded) plugin, location.getWorld()), location.getBlockX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+        return new CoreSWCoord(new BukkitSWWorld((BukkitSkyWarsReloaded) plugin, location.getWorld()), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
     @Override
@@ -155,5 +152,15 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     public void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
         if (plugin.getUtils().getServerVersion() >= 11) player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
         else player.sendTitle(title, subtitle);
+    }
+
+    @Override
+    public void setGameMode(int gamemode) {
+        switch (gamemode) {
+            case 0 -> player.setGameMode(GameMode.SURVIVAL);
+            case 1 -> player.setGameMode(GameMode.CREATIVE);
+            case 2 -> player.setGameMode(GameMode.ADVENTURE);
+            case 3 -> player.setGameMode(GameMode.SPECTATOR);
+        }
     }
 }

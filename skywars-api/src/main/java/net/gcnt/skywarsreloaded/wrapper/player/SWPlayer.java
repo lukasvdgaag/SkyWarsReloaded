@@ -52,4 +52,16 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
 
     void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut);
 
+    /**
+     * Change the game mode of the player.
+     *
+     * @param gamemode <p>
+     *                 0 - survival
+     *                 1 - creative
+     *                 2 - adventure
+     *                 3 - spectate
+     *                 </p>
+     */
+    void setGameMode(int gamemode);
+
 }
