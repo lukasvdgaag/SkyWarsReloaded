@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.bukkit.game;
 
-import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.game.AbstractGameWorld;
@@ -17,7 +17,7 @@ import org.bukkit.inventory.Inventory;
 
 public class BukkitGameWorld extends AbstractGameWorld {
 
-    public BukkitGameWorld(SkyWarsReloaded plugin, String id, GameTemplate gameData) {
+    public BukkitGameWorld(BukkitSkyWarsReloaded plugin, String id, GameTemplate gameData) {
         super(plugin, id, gameData);
     }
 
@@ -27,7 +27,7 @@ public class BukkitGameWorld extends AbstractGameWorld {
 
     @Override
     public SWWorld getWorld() {
-        return new BukkitSWWorld(plugin, getBukkitWorld());
+        return new BukkitSWWorld((BukkitSkyWarsReloaded) plugin, getBukkitWorld());
     }
 
     @Override

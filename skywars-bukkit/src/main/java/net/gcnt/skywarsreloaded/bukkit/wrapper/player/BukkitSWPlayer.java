@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.bukkit.wrapper.player;
 
-import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
@@ -20,12 +20,12 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
 
     private final Player player;
 
-    public BukkitSWPlayer(SkyWarsReloaded plugin, Player playerIn, boolean online) {
+    public BukkitSWPlayer(BukkitSkyWarsReloaded plugin, Player playerIn, boolean online) {
         super(plugin, playerIn.getUniqueId(), online);
         this.player = playerIn;
     }
 
-    public BukkitSWPlayer(SkyWarsReloaded plugin, UUID uuid, boolean online) {
+    public BukkitSWPlayer(BukkitSkyWarsReloaded plugin, UUID uuid, boolean online) {
         this(plugin, Bukkit.getPlayer(uuid), online);
     }
 
@@ -123,7 +123,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     @Override
     public SWCoord getLocation() {
         final Location location = player.getLocation();
-        return new CoreSWCoord(new BukkitSWWorld(plugin, location.getWorld()), location.getBlockX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+        return new CoreSWCoord(new BukkitSWWorld((BukkitSkyWarsReloaded) plugin, location.getWorld()), location.getBlockX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
     @Override
@@ -146,18 +146,14 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     }
 
     @Override
-    public void teleport(SWCoord coord) {
-        this.teleport(coord.world().getName(), coord.x(), coord.y(), coord.z());
-    }
-
-    @Override
     public void sendTitle(String title, String subtitle) {
         sendTitle(title, subtitle, 20, 50, 20);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
-        // todo check for older versions that do not support the fade in, stay, and fade out.
-        player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+        if (plugin.getUtils().getServerVersion() >= 11) player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+        else player.sendTitle(title, subtitle);
     }
 }

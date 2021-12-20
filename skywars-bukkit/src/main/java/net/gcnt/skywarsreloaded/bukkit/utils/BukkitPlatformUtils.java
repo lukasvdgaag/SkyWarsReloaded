@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.bukkit.utils;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.world.World;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.utils.AbstractPlatformUtils;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
@@ -11,9 +12,9 @@ import org.bukkit.ChatColor;
 
 public class BukkitPlatformUtils extends AbstractPlatformUtils {
 
-    private final SkyWarsReloaded plugin;
+    private final BukkitSkyWarsReloaded plugin;
 
-    public BukkitPlatformUtils(SkyWarsReloaded plugin) {
+    public BukkitPlatformUtils(BukkitSkyWarsReloaded plugin) {
         this.plugin = plugin;
     }
 

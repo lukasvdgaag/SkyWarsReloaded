@@ -14,12 +14,11 @@ public abstract class BukkitWorldLoader extends AbstractWorldLoader {
     public BukkitWorldLoader(SkyWarsReloaded plugin) {
         super(plugin);
 
-        try {
-            voidBiome = Biome.valueOf("THE_VOID");
-        } catch (Exception e) {
-            voidBiome = Biome.valueOf("VOID");
-        }
+        final int version = plugin.getUtils().getServerVersion();
 
+        if (version >= 13) Biome.valueOf("THE_VOID");
+        else if (version >= 9) voidBiome = Biome.valueOf("VOID");
+        else voidBiome = Biome.valueOf("FOREST");
     }
 
     @Override

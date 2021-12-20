@@ -74,7 +74,7 @@ public class CoreMessage implements Message {
     public void sendTitle(int in, int stay, int out, SWCommandSender... senders) {
         if (lines.size() == 0) return;
         String s = parse(lines.get(0));
-        String[] split = s.split("\\\\n");
+        String[] split = s.split("\\n");
 
         String first = split.length == 2 ? split[0] : s;
         String second = split.length == 2 ? split[1] : "";

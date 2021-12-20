@@ -50,10 +50,16 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     public CompletableFuture<Boolean> generateWorldInstance(GameWorld gameWorld) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         this.plugin.getScheduler().runAsync(() -> {
+            this.createEmptyWorld(gameWorld);
             String templateName = gameWorld.getTemplate().getName();
             try {
                 // This method should be called asynchronously
-                SlimeWorld templateWorld = slimeWorldManagerPlugin.loadWorld(slimeLoader, templateName, true, templatePropertyMap.get(gameWorld));
+                SlimePropertyMap propertyMap;
+                synchronized (templatePropertyMap) {
+                    propertyMap = templatePropertyMap.get(gameWorld);
+                }
+
+                SlimeWorld templateWorld = slimeWorldManagerPlugin.loadWorld(slimeLoader, templateName, true, propertyMap);
                 SlimeWorld tmpWorld = templateWorld.clone(gameWorld.getId());
 
                 // This method must be called synchronously
@@ -95,6 +101,10 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
         properties.setInt(SlimeProperties.SPAWN_X, 0);
         properties.setInt(SlimeProperties.SPAWN_Y, 64);
         properties.setInt(SlimeProperties.SPAWN_Z, 0);
+        synchronized (templatePropertyMap) {
+            templatePropertyMap.put(gameWorld, properties);
+        }
+
     }
 
     @Override
