@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.utils;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,9 @@ public abstract class AbstractItem implements Item {
     public List<String> itemFlags;
     public short durability;
     public byte damage;
+
+    public Color color;
+    public String skullOwner;
 
     public AbstractItem(String material) {
         this.material = material;
@@ -125,6 +129,28 @@ public abstract class AbstractItem implements Item {
     @Override
     public void setDamage(byte damage) {
         this.damage = damage;
+        clearCachedItem();
+    }
+
+    @Override
+    public Color getColor() {
+        return color;
+    }
+
+    @Override
+    public void setColor(Color color) {
+        this.color = color;
+        clearCachedItem();
+    }
+
+    @Override
+    public String getSkullOwner() {
+        return skullOwner;
+    }
+
+    @Override
+    public void setSkullOwner(String owner) {
+        this.skullOwner = owner;
         clearCachedItem();
     }
 

@@ -33,6 +33,11 @@ public class BukkitSWKit extends AbstractSWKit {
     @Override
     public synchronized void loadData() {
         super.loadData();
+        updateItems();
+    }
+
+    @Override
+    public void updateItems() {
         this.helmet = getHelmet() == null ? null : ((BukkitItem) getHelmet()).getBukkitItem();
         this.chestplate = getChestplate() == null ? null : ((BukkitItem) getChestplate()).getBukkitItem();
         this.leggings = getLeggings() == null ? null : ((BukkitItem) getLeggings()).getBukkitItem();
@@ -49,22 +54,23 @@ public class BukkitSWKit extends AbstractSWKit {
     @Override
     public void giveToPlayer(SWPlayer swp) {
         final Player p = ((BukkitSWPlayer) swp).getPlayer();
-        final PlayerInventory inventory = p.getInventory();
+        final PlayerInventory playerInv = p.getInventory();
 
         // clearing inventory and effects.
-        inventory.setArmorContents(new ItemStack[4]);
-        inventory.clear();
+        playerInv.setArmorContents(new ItemStack[4]);
+        playerInv.clear();
         for (PotionEffectType value : PotionEffectType.values()) {
-            p.removePotionEffect(value);
+            if (value != null) p.removePotionEffect(value);
         }
 
-        inventory.setHelmet(this.helmet);
-        inventory.setChestplate(this.chestplate);
-        inventory.setLeggings(this.leggings);
-        inventory.setBoots(this.boots);
-        this.inventory.forEach(inventory::setItem);
+        playerInv.setHelmet(this.helmet);
+        playerInv.setChestplate(this.chestplate);
+        playerInv.setLeggings(this.leggings);
+        playerInv.setBoots(this.boots);
+        this.inventory.forEach(playerInv::setItem);
+
         if (plugin.getUtils().getServerVersion() >= 9) {
-            inventory.setItemInOffHand(this.offHand);
+            playerInv.setItemInOffHand(this.offHand);
         }
 
         effects.forEach(bukkitEffect -> {

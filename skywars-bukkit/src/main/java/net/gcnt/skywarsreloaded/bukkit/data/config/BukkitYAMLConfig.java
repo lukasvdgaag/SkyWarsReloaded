@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -134,6 +135,8 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
             if (!item.getEnchantments().isEmpty())
                 fileConfiguration.set(property + ".enchantments", item.getEnchantments());
             if (!item.getItemFlags().isEmpty()) fileConfiguration.set(property + ".item-flags", item.getItemFlags());
+            if (item.getSkullOwner() != null) fileConfiguration.set(property + ".owner", item.getSkullOwner());
+            if (item.getColor() != null) fileConfiguration.set(property + ".color", item.getColor().getRGB());
         } else {
             fileConfiguration.set(property, value);
         }
@@ -167,6 +170,17 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
             item.setDisplayName(section.getString("display-name", null));
             item.setLore(section.getStringList("lore"));
             item.setItemFlags(section.getStringList("item-flags"));
+            item.setSkullOwner(section.getString("owner", null));
+
+            Object val = section.get("color", null);
+            if (val != null) {
+                if (val instanceof String str && str.startsWith("#")) {
+                    item.setColor(Color.decode(str));
+                } else if (val instanceof Integer intg) {
+                    item.setColor(new Color(intg));
+                }
+            }
+
             try {
                 item.setDamage(Byte.parseByte(section.getString("damage")));
             } catch (Exception ignored) {

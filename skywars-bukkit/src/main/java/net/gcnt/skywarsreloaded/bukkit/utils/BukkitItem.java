@@ -2,11 +2,15 @@ package net.gcnt.skywarsreloaded.bukkit.utils;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.utils.AbstractItem;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
@@ -28,8 +32,9 @@ public class BukkitItem extends AbstractItem {
 
         BukkitItem item = new BukkitItem(plugin, itemStack.getType().name());
 
-        if (itemStack.hasItemMeta()) {
-            ItemMeta meta = itemStack.getItemMeta();
+        ItemMeta meta = itemStack.getItemMeta();
+        if (plugin.getUtils().getServerVersion() <= 12) item.setDamage(itemStack.getData().getData());
+        if (meta != null) {
             item.setLore(meta.getLore());
 
             final List<String> flags = new ArrayList<>();
@@ -41,10 +46,23 @@ public class BukkitItem extends AbstractItem {
             item.setEnchantments(enchantments);
 
             item.setDisplayName(meta.getDisplayName());
+
+            if (meta instanceof SkullMeta skullMeta) {
+                if (plugin.getUtils().getServerVersion() >= 12) {
+                    if (skullMeta.getOwningPlayer() != null) {
+                        item.setSkullOwner(skullMeta.getOwningPlayer().getUniqueId().toString());
+                    } else {
+                        item.setSkullOwner(skullMeta.getOwner());
+                    }
+                } else {
+                    item.setSkullOwner(skullMeta.getOwner());
+                }
+            } else if (meta instanceof LeatherArmorMeta armorMeta) {
+                item.setColor(new java.awt.Color(armorMeta.getColor().asRGB()));
+            }
         }
-        item.setDurability(item.getDurability());
-        item.setDamage(item.getDamage());
-        item.setAmount(item.getAmount());
+        item.setDurability(itemStack.getDurability());
+        item.setAmount(itemStack.getAmount());
 
         item.setItemStack(itemStack);
 
@@ -80,8 +98,8 @@ public class BukkitItem extends AbstractItem {
                 item.setDurability(durability);
             }
 
-            if (item.hasItemMeta()) {
-                ItemMeta meta = item.getItemMeta();
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
 
                 if (displayName != null) {
                     meta.setDisplayName(plugin.getUtils().colorize(displayName));
@@ -103,7 +121,7 @@ public class BukkitItem extends AbstractItem {
                     try {
                         meta.addItemFlags(ItemFlag.valueOf(flag.toUpperCase()));
                     } catch (Exception e) {
-                        plugin.getLogger().error(String.format("Failed to add enchantment %s to material %s. Ignoring it. (%s)", flag, material, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                        plugin.getLogger().error(String.format("Failed to add flag %s to material %s. Ignoring it. (%s)", flag, material, e.getClass().getName() + ": " + e.getLocalizedMessage()));
                     }
                 });
 
@@ -111,7 +129,28 @@ public class BukkitItem extends AbstractItem {
                 getLore().forEach(line -> lore.add(plugin.getUtils().colorize(line)));
                 meta.setLore(lore);
 
-                item.setItemMeta(meta);
+                if (skullOwner != null) {
+                    try {
+                        SkullMeta skullMeta = (SkullMeta) meta;
+                        if (plugin.getUtils().getServerVersion() >= 12) {
+                            skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(skullOwner));
+                        } else {
+                            skullMeta.setOwner(skullOwner);
+                        }
+                        item.setItemMeta(skullMeta);
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                if (color != null) {
+                    try {
+                        LeatherArmorMeta armorMeta = (LeatherArmorMeta) meta;
+                        armorMeta.setColor(Color.fromRGB(color.getRed(), color.getGreen(), color.getBlue()));
+                        item.setItemMeta(armorMeta);
+                    } catch (Exception ignored) {
+                        ignored.printStackTrace();
+                    }
+                } else item.setItemMeta(meta);
             }
 
             setItemStack(item);

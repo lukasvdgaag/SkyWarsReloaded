@@ -23,12 +23,10 @@ public class BukkitNMS implements NMS {
     private Class<?> packetPlayOutChat;
     private Class<Enum> chatMessageType;
 
-
     private Method chatSerializer;
     private Method getHandle;
     private Method sendPacket;
     private Field playerConnection;
-
 
     public BukkitNMS(SkyWarsReloaded plugin, String serverPackage) {
         this.plugin = plugin;
@@ -51,7 +49,6 @@ public class BukkitNMS implements NMS {
                 this.sendPacket = typePlayerConnection.getMethod("sendPacket", Class.forName("net.minecraft.network.protocol.Packet"));
                 this.packetPlayOutChat = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutChat");
                 this.chatMessageType = (Class<Enum>) Class.forName("net.minecraft.network.chat.ChatMessageType");
-
             } else {
                 // 1.8.8 - 1.16.4
                 Class<?> typeNMSPlayer = Class.forName("net.minecraft.server." + serverVersion + ".EntityPlayer");
@@ -109,7 +106,17 @@ public class BukkitNMS implements NMS {
 
         try {
             Object baseComponent = chatSerializer.invoke(null, message);
-            Object packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent).newInstance(baseComponent);
+
+            Object packet;
+            if (version < 12) {
+                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, byte.class).newInstance(baseComponent, (byte) 2);
+            } else if (version < 16) {
+                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, chatMessageType)
+                        .newInstance(baseComponent, Enum.valueOf(chatMessageType, "GAME_INFO"));
+            } else {
+                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, chatMessageType, UUID.class)
+                        .newInstance(baseComponent, Enum.valueOf(chatMessageType, "GAME_INFO"), player.getUuid());
+            }
 
             Object nmsPlayer = getHandle.invoke(bukkitSWPlayer.getPlayer());
             Object connection = playerConnection.get(nmsPlayer);

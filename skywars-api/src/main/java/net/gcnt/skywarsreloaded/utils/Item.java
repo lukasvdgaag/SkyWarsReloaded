@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.utils;
 
+import java.awt.*;
 import java.util.List;
 
 public interface Item {
@@ -36,8 +37,16 @@ public interface Item {
 
     void setDamage(byte damage);
 
+    Color getColor();
+
+    void setColor(Color color);
+
     void clearCachedItem();
 
     void cacheItem();
+
+    String getSkullOwner();
+
+    void setSkullOwner(String owner);
 
 }

@@ -1,5 +1,7 @@
 package net.gcnt.skywarsreloaded.utils;
 
+import java.util.UUID;
+
 public abstract class AbstractPlatformUtils implements PlatformUtils {
 
     @Override
@@ -29,6 +31,15 @@ public abstract class AbstractPlatformUtils implements PlatformUtils {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    @Override
+    public UUID getUUIDFromString(String arg0) {
+        try {
+            return UUID.fromString(arg0);
+        } catch (Exception e) {
+            return null;
         }
     }
 
