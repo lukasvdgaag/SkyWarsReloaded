@@ -36,7 +36,6 @@ public class BukkitSWKit extends AbstractSWKit {
         updateItems();
     }
 
-    @Override
     public void updateItems() {
         this.helmet = getHelmet() == null ? null : ((BukkitItem) getHelmet()).getBukkitItem();
         this.chestplate = getChestplate() == null ? null : ((BukkitItem) getChestplate()).getBukkitItem();
