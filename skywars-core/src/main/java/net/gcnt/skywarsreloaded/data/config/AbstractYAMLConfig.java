@@ -94,16 +94,22 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
         }
     }
 
-    public boolean copyDefaultFile() {
-        String location = defaultFilePath == null ? "/" + fileName : defaultFilePath;
-        InputStream internalFileStream = getClass().getResourceAsStream(location);
+    // Utils
+
+    protected BufferedReader getDefaultFileReader() {
+        this.defaultFilePath = this.defaultFilePath == null ? "/" + this.fileName : this.defaultFilePath;
+        InputStream internalFileStream = getClass().getResourceAsStream(this.defaultFilePath);
 
         if (internalFileStream == null) {
             plugin.getLogger().error("Failed to load the default file of " + fileName);
-            return false;
+            return null;
         }
         InputStreamReader isr = new InputStreamReader(internalFileStream);
-        BufferedReader bufferedReader = new BufferedReader(isr);
+        return new BufferedReader(isr);
+    }
+
+    public boolean copyDefaultFile() {
+        BufferedReader defaultFileReader = this.getDefaultFileReader();
 
         File dataFolder = plugin.getDataFolder();
 
@@ -120,7 +126,7 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
             String line;
-            while ((line = bufferedReader.readLine()) != null) {
+            while ((line = defaultFileReader.readLine()) != null) {
                 writer.write(line + "\n");
             }
 
@@ -131,6 +137,8 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
         }
         return true;
     }
+
+    // Getters
 
     @Override
     public String getId() {
@@ -157,5 +165,8 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
         return file;
     }
 
+    protected String getDefaultFilePath() {
+        return this.defaultFilePath;
+    }
 
 }

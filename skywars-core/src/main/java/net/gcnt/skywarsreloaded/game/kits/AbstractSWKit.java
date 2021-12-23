@@ -217,7 +217,7 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
         inventoryContents = new HashMap<>();
         if (!config.contains(KitProperties.CONTENTS.toString())) return;
         this.offHand = config.getItem(KitProperties.OFF_HAND.toString());
-        if (config.isset(KitProperties.ARMOR_CONTENTS.toString())) {
+        if (config.isSet(KitProperties.ARMOR_CONTENTS.toString())) {
             // armor init
             try {
                 this.helmet = config.getItem(KitProperties.HELMET.toString());
@@ -242,7 +242,7 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
         }
 
         String invContentsKey = KitProperties.INVENTORY_CONTENTS.toString();
-        if (config.isset(invContentsKey)) {
+        if (config.isSet(invContentsKey)) {
             config.getKeys(invContentsKey).forEach(slot1 -> {
                 try {
                     int number = Integer.parseInt(slot1);

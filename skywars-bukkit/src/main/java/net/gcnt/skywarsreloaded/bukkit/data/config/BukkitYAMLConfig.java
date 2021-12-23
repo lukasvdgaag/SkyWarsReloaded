@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -19,34 +20,37 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     private final Object reloadLock = new Object();
     private FileConfiguration fileConfiguration;
-
-    public BukkitYAMLConfig(AbstractSkyWarsReloaded skyWars, String id, @Nullable String directory, String fileName) {
-        super(skyWars, id, directory, fileName);
-
-        this.onSetup(this.getFile());
-    }
+    private FileConfiguration defaultFileConfiguration;
 
     public BukkitYAMLConfig(AbstractSkyWarsReloaded skyWars, String id, File directory, String fileName) {
         super(skyWars, id, directory, fileName);
 
-        this.onSetup(this.getFile());
+        this.onSetup();
     }
 
-    public BukkitYAMLConfig(AbstractSkyWarsReloaded skyWars, String id, @Nullable String directory, String fileName, String defaultFile) {
-        super(skyWars, id, directory, fileName, defaultFile);
+    public BukkitYAMLConfig(AbstractSkyWarsReloaded skyWars, String id, @Nullable String directory, String fileName) {
+        super(skyWars, id, directory, fileName);
 
-        this.onSetup(this.getFile());
+        this.onSetup();
     }
 
     public BukkitYAMLConfig(AbstractSkyWarsReloaded skyWars, String id, File directory, String fileName, String defaultFile) {
         super(skyWars, id, directory, fileName, defaultFile);
 
-        this.onSetup(this.getFile());
+        this.onSetup();
     }
 
-    protected boolean onSetup(File configFile) {
+    public BukkitYAMLConfig(AbstractSkyWarsReloaded skyWars, String id, @Nullable String directory, String fileName, String defaultFile) {
+        super(skyWars, id, directory, fileName, defaultFile);
+
+        this.onSetup();
+    }
+
+    protected boolean onSetup() {
         synchronized (reloadLock) {
-            this.fileConfiguration = YamlConfiguration.loadConfiguration(configFile);
+            this.fileConfiguration = YamlConfiguration.loadConfiguration(this.getFile());
+            BufferedReader defaultFileReader = this.getDefaultFileReader();
+            this.defaultFileConfiguration = YamlConfiguration.loadConfiguration(defaultFileReader);
             return true;
         }
     }
@@ -70,7 +74,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public String getString(String property) {
-        return getString(property, "");
+        return getString(property, this.defaultFileConfiguration.getString(property, ""));
     }
 
     @Override
@@ -80,7 +84,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public int getInt(String property) {
-        return getInt(property, 0);
+        return getInt(property, this.defaultFileConfiguration.getInt(property, 0));
     }
 
     @Override
@@ -90,7 +94,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public double getDouble(String property) {
-        return getDouble(property, 0);
+        return getDouble(property, this.defaultFileConfiguration.getDouble(property, 0));
     }
 
     @Override
@@ -105,7 +109,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public boolean getBoolean(String property) {
-        return getBoolean(property, false);
+        return getBoolean(property, this.defaultFileConfiguration.getBoolean(property, false));
     }
 
     @Override
@@ -115,7 +119,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public Object get(String property) {
-        return get(property, null);
+        return get(property, this.defaultFileConfiguration.get(property, null));
     }
 
     @Override
@@ -143,7 +147,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     }
 
     @Override
-    public boolean isset(String property) {
+    public boolean isSet(String property) {
         return fileConfiguration.isSet(property);
     }
 

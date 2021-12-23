@@ -42,7 +42,7 @@ public interface YAMLConfig {
 
     Object get(String property, Object defaultValue);
 
-    boolean isset(String property);
+    boolean isSet(String property);
 
     boolean contains(String property);
 

@@ -65,7 +65,7 @@ public abstract class AbstractSWChestType implements SWChestType {
         // Load inventory content
         HashMap<Integer, Item> gameTypeItems = new HashMap<>();
 
-        if (config.isset(configPath)) {
+        if (config.isSet(configPath)) {
             config.getKeys(configPath).forEach(slot1 -> {
                 try {
                     int number = Integer.parseInt(slot1);
