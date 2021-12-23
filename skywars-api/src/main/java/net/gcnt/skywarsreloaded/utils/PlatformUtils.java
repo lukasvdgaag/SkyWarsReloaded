@@ -16,13 +16,18 @@ public interface PlatformUtils {
     boolean isBoolean(String arg0);
 
     /**
-     * @param arg0 UUID string to parse.
+     * @param uuidString UUID string to parse.
      * @return UUID if valid, null if not.
      */
-    UUID getUUIDFromString(String arg0);
+    UUID getUUIDFromString(String uuidString);
 
-    String colorize(String arg0);
+    String colorize(String text);
 
+    /**
+     * Get the major sub-version-number of the current server's implementing minecraft release.
+     * For example: 1.8.8 -> 8, 1.17.1 -> 17
+     * @return An int representing the sub version of the current server's minecraft version.
+     */
     int getServerVersion();
 
     int getBuildLimit();

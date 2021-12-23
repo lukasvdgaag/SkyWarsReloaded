@@ -63,11 +63,16 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public void onEnable() {
         this.preEnable();
 
-        // utils
+        // Utils
         initLogger();
         initPlatformUtils();
         initScheduler();
-        initNMS();
+        try {
+            initNMS();
+        } catch (IllegalStateException ex) {
+            this.getLogger().error(ex.getMessage());
+            return;
+        }
 
         // Data and configs
         initYAMLManager();

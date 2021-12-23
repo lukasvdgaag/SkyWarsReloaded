@@ -28,7 +28,7 @@ public class BukkitNMS implements NMS {
     private Method sendPacket;
     private Field playerConnection;
 
-    public BukkitNMS(SkyWarsReloaded plugin, String serverPackage) {
+    public BukkitNMS(SkyWarsReloaded plugin, String serverPackage) throws IllegalStateException {
         this.plugin = plugin;
         String serverVersion = serverPackage.substring(serverPackage.lastIndexOf('.') + 1);
         this.version = plugin.getUtils().getServerVersion();
@@ -38,25 +38,38 @@ public class BukkitNMS implements NMS {
             Class<?> craftPlayer = Class.forName("org.bukkit.craftbukkit." + serverVersion + ".entity.CraftPlayer");
             this.getHandle = craftPlayer.getMethod("getHandle");
 
-            chatBaseComponent = Class.forName("net.minecraft.server." + serverVersion + ".IChatBaseComponent");
-            chatSerializer = chatBaseComponent.getDeclaredClasses()[0].getMethod("a", String.class);
-
-            if (version >= 17) {
-                // 1.17+
-                Class<?> typeNMSPlayer = Class.forName("net.minecraft.server.level.EntityPlayer");
-                Class<?> typePlayerConnection = Class.forName("net.minecraft.server.network.PlayerConnection");
-                this.playerConnection = typeNMSPlayer.getField("b");
-                this.sendPacket = typePlayerConnection.getMethod("sendPacket", Class.forName("net.minecraft.network.protocol.Packet"));
-                this.packetPlayOutChat = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutChat");
-                this.chatMessageType = (Class<Enum>) Class.forName("net.minecraft.network.chat.ChatMessageType");
-            } else {
+            if (version < 8) {
+                throw new IllegalStateException("Unsupported server version: " + serverVersion);
+            } else if (version <= 16) {
                 // 1.8.8 - 1.16.4
+                //Classes
                 Class<?> typeNMSPlayer = Class.forName("net.minecraft.server." + serverVersion + ".EntityPlayer");
                 Class<?> typePlayerConnection = Class.forName("net.minecraft.server." + serverVersion + ".PlayerConnection");
-                this.playerConnection = typeNMSPlayer.getField("playerConnection");
-                this.sendPacket = typePlayerConnection.getMethod("sendPacket", Class.forName("net.minecraft.server." + serverVersion + ".Packet"));
+                this.chatBaseComponent = Class.forName("net.minecraft.server." + serverVersion + ".IChatBaseComponent");
                 this.packetPlayOutChat = Class.forName("net.minecraft.server." + serverVersion + ".PacketPlayOutChat");
                 if (version >= 12) this.chatMessageType = (Class<Enum>) Class.forName("net.minecraft.server." + serverVersion + ".ChatMessageType");
+
+                // Fields
+                this.playerConnection = typeNMSPlayer.getField("playerConnection");
+
+                // Methods
+                this.chatSerializer = chatBaseComponent.getDeclaredClasses()[0].getMethod("a", String.class);
+                this.sendPacket = typePlayerConnection.getMethod("sendPacket", Class.forName("net.minecraft.server." + serverVersion + ".Packet"));
+            } else {
+                // 1.17+ (and default to this for any future version unless updated)
+                // Classes
+                Class<?> typeNMSPlayer = Class.forName("net.minecraft.server.level.EntityPlayer");
+                Class<?> typePlayerConnection = Class.forName("net.minecraft.server.network.PlayerConnection");
+                this.chatBaseComponent = Class.forName("net.minecraft.network.chat.IChatBaseComponent");
+                this.packetPlayOutChat = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutChat");
+                this.chatMessageType = (Class<Enum>) Class.forName("net.minecraft.network.chat.ChatMessageType");
+
+                // Fields
+                this.playerConnection = typeNMSPlayer.getField("b");
+
+                // Methods
+                this.chatSerializer = chatBaseComponent.getDeclaredClasses()[0].getMethod("a", String.class);
+                this.sendPacket = typePlayerConnection.getMethod("sendPacket", Class.forName("net.minecraft.network.protocol.Packet"));
             }
         } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException e) {
             e.printStackTrace();
