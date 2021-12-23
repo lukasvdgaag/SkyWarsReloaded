@@ -11,12 +11,12 @@ public class CoreSWAsyncPlayerPreLoginEvent implements SWAsyncPlayerPreLoginEven
     private Result result;
     private String message;
 
-    public CoreSWAsyncPlayerPreLoginEvent(UUID uuid, String name, InetAddress address, Result resultIn) {
+    public CoreSWAsyncPlayerPreLoginEvent(UUID uuid, String name, InetAddress address, Result resultIn, String kickMessageIn) {
         this.uuid = uuid;
         this.name = name;
         this.address = address;
         this.result = resultIn == null ? Result.ALLOWED : resultIn;
-        this.message = null;
+        this.message = kickMessageIn == null ? "" : kickMessageIn;
     }
 
     @Override

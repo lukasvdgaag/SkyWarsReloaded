@@ -27,12 +27,17 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
         SWAsyncPlayerPreLoginEvent.Result result = SWAsyncPlayerPreLoginEvent.Result.valueOf(event.getLoginResult().name());
 
         // Fire event
-        SWAsyncPlayerPreLoginEvent swEvent = new CoreSWAsyncPlayerPreLoginEvent(event.getUniqueId(), event.getName(), event.getAddress(), result);
+        SWAsyncPlayerPreLoginEvent swEvent = new CoreSWAsyncPlayerPreLoginEvent(event.getUniqueId(), event.getName(),
+                event.getAddress(), result, null);
         this.onAsyncPlayerPreLogin(swEvent);
 
         // Update changes
-        event.setLoginResult(AsyncPlayerPreLoginEvent.Result.valueOf(swEvent.getResult().name()));
-        event.setKickMessage(swEvent.getKickMessage());
+        SWAsyncPlayerPreLoginEvent.Result updatedResult = swEvent.getResult();
+        AsyncPlayerPreLoginEvent.Result updatedResultBukkit = AsyncPlayerPreLoginEvent.Result.valueOf(updatedResult.name());
+        event.setLoginResult(updatedResultBukkit);
+        if (!updatedResult.equals(SWAsyncPlayerPreLoginEvent.Result.ALLOWED)) {
+            event.setKickMessage(swEvent.getKickMessage());
+        }
     }
 
     @EventHandler
