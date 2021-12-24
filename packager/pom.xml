@@ -40,7 +40,7 @@
 
     <build>
         <directory>../target</directory>
-        <finalName>SWR-${project.version}</finalName>
+        <finalName>SkyWarsReloaded-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

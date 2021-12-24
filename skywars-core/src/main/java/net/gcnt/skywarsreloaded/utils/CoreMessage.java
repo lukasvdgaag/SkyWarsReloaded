@@ -1,6 +1,5 @@
 package net.gcnt.skywarsreloaded.utils;
 
-import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
@@ -15,23 +14,15 @@ public class CoreMessage implements Message {
     private final HashMap<String, String> replacements;
     private boolean colors;
 
-    public CoreMessage(SkyWarsReloaded plugin, List<String> lines, boolean colors) {
+    public CoreMessage(SkyWarsReloaded plugin, boolean colors, String... lines) {
         this.plugin = plugin;
-        this.lines = lines;
+        this.lines = List.of(lines);
         this.colors = colors;
         this.replacements = new HashMap<>();
     }
 
-    public CoreMessage(SkyWarsReloaded plugin, String line, boolean colors) {
-        this(plugin, Lists.newArrayList(line), colors);
-    }
-
-    public CoreMessage(SkyWarsReloaded plugin, String line) {
-        this(plugin, Lists.newArrayList(line), true);
-    }
-
-    public CoreMessage(SkyWarsReloaded plugin, List<String> lines) {
-        this(plugin, lines, true);
+    public CoreMessage(SkyWarsReloaded plugin, String... lines) {
+        this(plugin, true, lines);
     }
 
     @Override

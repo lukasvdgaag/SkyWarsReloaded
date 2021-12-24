@@ -186,16 +186,23 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
             }
 
             try {
-                item.setDamage(Byte.parseByte(section.getString("damage")));
+                int rawNumber = section.getInt("damage", 0);
+                assert rawNumber >= -128 && rawNumber <= 127;
+                byte castedByte = (byte) rawNumber;
+                item.setDamage(castedByte);
             } catch (Exception ignored) {
             }
             try {
-                item.setDurability(Short.parseShort(section.getString("durability")));
+                int rawNumber = section.getInt("durability", 0);
+                assert rawNumber >= -128 && rawNumber <= 127;
+                byte castedByte = (byte) rawNumber;
+                item.setDurability(castedByte);
             } catch (Exception ignored) {
             }
             return item;
         } catch (Exception e) {
-            plugin.getLogger().error(String.format("Failed to load item with material %s. Ignoring it. (%s)", section.getString("material"), e.getClass().getName() + ": " + e.getLocalizedMessage()));
+            plugin.getLogger().error(String.format("Failed to load item with material %s. Ignoring it. (%s)",
+                    section.getString("material"), e.getClass().getName() + ": " + e.getLocalizedMessage()));
         }
 
         return def;
@@ -219,14 +226,33 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Message getMessage(String property) {
-        if (!contains(property)) return null;
         Object res = get(property, null);
+        if (res == null) {
+            res = this.defaultFileConfiguration.get(property, null);
+        }
+
+        // Auto report if still null, the default config should catch this
+        if (res == null) {
+            String msg = "Return value of " + property + " is null";
+            SWLogger logger = this.plugin.getLogger();
+            logger.error(msg);
+            logger.reportException(new NullPointerException("Return value of " + property + " is null"));
+            return new CoreMessage(plugin, "<error, please check console and report this>");
+        }
+
         if (res instanceof String string) {
             return new CoreMessage(plugin, string);
-        } else if (res instanceof List stringList) {
-            return new CoreMessage(plugin, stringList);
+        } else if (res instanceof List list) {
+            // Sanity check
+            if (!list.isEmpty() && !(list.get(0) instanceof String)) {
+                this.plugin.getLogger().error("Invalid configuration message list for '" + property +
+                        "': the type of the first list item is a " + list.get(0).getClass().getTypeName() + ". " +
+                        "Please make sure the message is surrounded with quotes.");
+            }
+            @SuppressWarnings("unchecked")
+            List<String> stringList = list;
+            return new CoreMessage(plugin, stringList.toArray(new String[0]));
         }
         return null;
     }
@@ -239,8 +265,8 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public Message getMessage(String property, List<String> def) {
-        if (!contains(property)) return new CoreMessage(plugin, def);
-        return new CoreMessage(plugin, getStringList(property));
+        if (!contains(property)) return new CoreMessage(plugin, def.toArray(new String[0]));
+        return new CoreMessage(plugin, getStringList(property).toArray(new String[0]));
     }
 
     @Override
