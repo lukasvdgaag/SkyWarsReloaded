@@ -15,6 +15,7 @@ import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,14 +24,14 @@ import java.util.concurrent.CompletableFuture;
 
 public class SchemWorldLoader extends BukkitWorldLoader {
 
-    private Biome voidBiome;
+    private final Biome voidBiome;
 
     public SchemWorldLoader(SkyWarsReloaded plugin) {
         super(plugin);
 
         final int version = plugin.getUtils().getServerVersion();
 
-        if (version >= 13) Biome.valueOf("THE_VOID");
+        if (version >= 13) voidBiome = Biome.valueOf("THE_VOID");
         else if (version >= 9) voidBiome = Biome.valueOf("VOID");
         else voidBiome = Biome.valueOf("FOREST");
 
@@ -47,12 +48,13 @@ public class SchemWorldLoader extends BukkitWorldLoader {
         WorldCreator creator = new WorldCreator(gameWorld.getWorldName());
         creator.generateStructures(false);
         creator.generator(new ChunkGenerator() {
+            @NotNull
             @Override
-            public ChunkData generateChunkData(World world, Random random, int x, int z, BiomeGrid biome) {
+            public ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid biome) {
                 ChunkData chunkData = createChunkData(world);
-                for (int i = 0; i < 16; i++) {
-                    for (int j = 0; j < 16; j++) {
-                        biome.setBiome(i, j, voidBiome);
+                for (int x = 0; x < 16; x++) {
+                    for (int z = 0; z < 16; z++) {
+                        biome.setBiome(x, z, voidBiome);
                     }
                 }
                 return chunkData;
