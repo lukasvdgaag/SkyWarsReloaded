@@ -97,7 +97,7 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
     @Override
     public void initConsoleSender() {
-        setConsoleSender(new BukkitSWConsoleSender(this.getPlugin().getServer().getConsoleSender()));
+        setConsoleSender(new BukkitSWConsoleSender(this.getBukkitPlugin().getServer().getConsoleSender()));
     }
 
     @Override
@@ -127,7 +127,7 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
         setServer(new BukkitSWServer(this));
     }
 
-    public BukkitSkyWarsReloadedPlugin getPlugin() {
+    public BukkitSkyWarsReloadedPlugin getBukkitPlugin() {
         return this.plugin;
     }
 

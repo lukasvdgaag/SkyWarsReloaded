@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
 import net.gcnt.skywarsreloaded.wrapper.event.*;
+import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 public class AbstractSWEventListener implements SWEventListener {
 
@@ -41,7 +42,7 @@ public class AbstractSWEventListener implements SWEventListener {
 
     @Override
     public void onPlayerBlockBreak(SWBlockBreakEvent event) {
-        GameWorld gameWorld = plugin.getGameManager().getGameWorldFromWorldName(event.getCoord().world().getName());
+        GameWorld gameWorld = plugin.getGameManager().getGameWorldByName(event.getCoord().world().getName());
         if (gameWorld == null || !gameWorld.isEditing()) return;
         final GameTemplate template = gameWorld.getTemplate();
 
@@ -76,19 +77,36 @@ public class AbstractSWEventListener implements SWEventListener {
     @Override
     public void onPlayerBlockPlace(SWBlockPlaceEvent event) {
         // player is placing a chest
-        if (event.getBlockTypeName().equalsIgnoreCase("CHEST") || event.getBlockTypeName().equalsIgnoreCase("TRAPPED_CHEST")) {
-            GameWorld gameWorld = plugin.getGameManager().getGameWorldFromWorldName(event.getCoord().world().getName());
+        if (event.getBlockTypeName().equalsIgnoreCase("CHEST") ||
+                event.getBlockTypeName().equalsIgnoreCase("TRAPPED_CHEST"))
+        {
+            GameWorld gameWorld = plugin.getGameManager().getGameWorldByName(event.getCoord().world().getName());
             if (gameWorld == null || !gameWorld.isEditing()) return;
 
             final GameTemplate template = gameWorld.getTemplate();
             boolean res = template.addChest(event.getCoord().asBlock());
             if (res) {
-                event.getPlayer().sendTitle(plugin.getUtils().colorize("&a&lCHEST ADDED"), plugin.getUtils().colorize("&7Added a new chest to the template!"), 5, 30, 5);
-                event.getPlayer().sendMessage(plugin.getUtils().colorize(String.format("&aAdded a new chest (&b#%d&a) to game template &b%s&a.", template.getChests().size(), template.getDisplayName())));
+                event.getPlayer().sendTitle(plugin.getUtils().colorize("&a&lCHEST ADDED"),
+                        plugin.getUtils().colorize("&7Added a new chest to the template!"), 5, 30, 5);
+                event.getPlayer().sendMessage(plugin.getUtils().colorize(
+                        String.format("&aAdded a new chest (&b#%d&a) to game template &b%s&a.",
+                            template.getChests().size(), template.getDisplayName())));
                 template.checkToDoList(event.getPlayer());
             }
         }
 
     }
 
+    @Override
+    public void onChunkLoad(SWChunkLoadEvent swEvent) {
+
+    }
+
+    @Override
+    public void onWorldInit(SWWorldInitEvent swEvent) {
+        SWWorld world = swEvent.getWorld();
+        if (this.plugin.getGameManager().getGameTemplateByName(world.getName()) != null) {
+            world.setKeepSpawnLoaded(false);
+        }
+    }
 }

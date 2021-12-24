@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 
 public class CoreSchematicManager implements SchematicManager {
@@ -98,7 +100,8 @@ public class CoreSchematicManager implements SchematicManager {
             BlockArrayClipboard clipboard = new BlockArrayClipboard(reg);
             clipboard.setOrigin(BlockVector3.at(0, 0, 0));
 
-            EditSession session = WorldEdit.getInstance().newEditSession(world);
+            EditSession session = this.getNewEditSession(world);
+            if (session == null) return false;
             ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(session, reg, clipboard, reg.getMinimumPoint());
             Operations.complete(forwardExtentCopy);
             File folder = new File(plugin.getDataFolder(), FolderProperties.WORLD_SCHEMATICS_FOLDER.toString());
@@ -125,6 +128,37 @@ public class CoreSchematicManager implements SchematicManager {
     public void undoSchematicPaste(EditSession session) {
         session.undo(session);
         session.close();
+    }
+
+    // Internal tools
+
+    private EditSession getNewEditSession(World worldForEditing) {
+        // Get if using FAWE
+        Class<?> editSessionBuilderClass = null;
+        try {
+            editSessionBuilderClass = Class.forName("com.fastasyncworldedit.core.util.EditSessionBuilder");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        boolean isFAWE = editSessionBuilderClass != null;
+
+        if (isFAWE) {
+            try {
+
+                Object editSessionBuilderUtil = editSessionBuilderClass
+                        .getConstructor(com.sk89q.worldedit.world.World.class)
+                        .newInstance(worldForEditing);
+
+                Method buildMethod = editSessionBuilderClass.getMethod("build");
+                return (EditSession) buildMethod.invoke(editSessionBuilderUtil);
+
+            } catch (InvocationTargetException | InstantiationException | NoSuchMethodException | IllegalAccessException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            return WorldEdit.getInstance().newEditSession(worldForEditing);
+        }
     }
 
 }

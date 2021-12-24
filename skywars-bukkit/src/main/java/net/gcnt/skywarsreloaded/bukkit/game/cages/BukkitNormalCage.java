@@ -23,7 +23,7 @@ public class BukkitNormalCage extends AbstractNormalCage {
 
     @Override
     public CompletableFuture<Boolean> placeCage(String cage) {
-        Plugin skywarsPlugin = this.main.getPlugin();
+        Plugin skywarsPlugin = this.main.getBukkitPlugin();
 
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         skywarsPlugin.getServer().getScheduler().runTask(skywarsPlugin, () -> future.complete(placeCageNow(cage)));
@@ -53,7 +53,7 @@ public class BukkitNormalCage extends AbstractNormalCage {
 
     @Override
     public CompletableFuture<Boolean> removeCage(String cage) {
-        Plugin skywarsPlugin = this.main.getPlugin();
+        Plugin skywarsPlugin = this.main.getBukkitPlugin();
 
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         skywarsPlugin.getServer().getScheduler().runTask(skywarsPlugin, () -> future.complete(removeCageNow(cage)));

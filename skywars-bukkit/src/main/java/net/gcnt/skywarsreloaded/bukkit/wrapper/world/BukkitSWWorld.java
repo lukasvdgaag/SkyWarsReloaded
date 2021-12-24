@@ -26,27 +26,6 @@ public class BukkitSWWorld extends AbstractSWWorld {
     }
 
     @Override
-    public String getName() {
-        return bukkitWorld.getName();
-    }
-
-    @Override
-    public SWCoord getDefaultSpawnLocation() {
-        Location loc = this.bukkitWorld.getSpawnLocation();
-        return new CoreSWCoord(this, loc.getX(), loc.getY(), loc.getZ());
-    }
-
-    @Override
-    public void unload(boolean saveChunks) {
-        this.plugin.getPlugin().getServer().unloadWorld(this.bukkitWorld, saveChunks);
-    }
-
-    @Override
-    public boolean isLoaded() {
-        return bukkitWorld != null;
-    }
-
-    @Override
     public List<SWPlayer> getAllPlayers() {
         return this.bukkitWorld.getPlayers().stream().map(
                 (bPlayer) -> this.plugin.getPlayerManager().getPlayerByUUID(bPlayer.getUniqueId())
@@ -70,5 +49,31 @@ public class BukkitSWWorld extends AbstractSWWorld {
     @Override
     public void setBlockAt(SWCoord location, String blockName) {
         this.setBlockAt(location, new BukkitItem(this.plugin, blockName));
+    }
+
+    @Override
+    public String getName() {
+        return bukkitWorld.getName();
+    }
+
+    @Override
+    public SWCoord getDefaultSpawnLocation() {
+        Location loc = this.bukkitWorld.getSpawnLocation();
+        return new CoreSWCoord(this, loc.getX(), loc.getY(), loc.getZ());
+    }
+
+    @Override
+    public void unload(boolean saveChunks) {
+        this.plugin.getBukkitPlugin().getServer().unloadWorld(this.bukkitWorld, saveChunks);
+    }
+
+    @Override
+    public boolean isLoaded() {
+        return bukkitWorld != null;
+    }
+
+    @Override
+    public void setKeepSpawnLoaded(boolean keepSpawnLoaded) {
+        this.bukkitWorld.setKeepSpawnInMemory(keepSpawnLoaded);
     }
 }

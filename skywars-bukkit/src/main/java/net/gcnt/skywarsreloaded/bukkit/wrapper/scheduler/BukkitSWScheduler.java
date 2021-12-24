@@ -14,7 +14,7 @@ public class BukkitSWScheduler extends AbstractSWScheduler {
 
     public BukkitSWScheduler(final SkyWarsReloaded plugin) {
         super(plugin);
-        this.bukkitPlugin = ((BukkitSkyWarsReloaded) this.plugin).getPlugin();
+        this.bukkitPlugin = ((BukkitSkyWarsReloaded) this.plugin).getBukkitPlugin();
     }
 
     @Override

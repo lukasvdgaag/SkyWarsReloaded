@@ -68,5 +68,4 @@ public interface GameWorld {
      * Removes all the cages that are currently placed.
      */
     void removeCages();
-
 }

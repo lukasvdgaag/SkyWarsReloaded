@@ -1,5 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
+import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
+
 import java.util.List;
 
 public interface GameManager {
@@ -13,9 +15,17 @@ public interface GameManager {
      * Get a {@link GameTemplate} by its name/identifier.
      *
      * @param gameId Identifier of the template.
-     * @return GameTemplate if found, null otherwise.
+     * @return {#link GameTemplate} if found, null otherwise.
      */
     GameTemplate getGameTemplateByName(String gameId);
+
+    /**
+     * Get a {@link GameTemplate} by its wrapped world.
+     *
+     * @param swWorld The wrapped world object the game world is based on.
+     * @return GameTemplate if found, null otherwise.
+     */
+    GameWorld getGameWorldBySWWorld(SWWorld swWorld);
 
     /**
      * Delete a game template from the skywars registry and optionally from the active storage method
@@ -63,7 +73,7 @@ public interface GameManager {
      * @param worldName Name of the world to look up.
      * @return {@link GameWorld} if found, null otherwise.
      */
-    GameWorld getGameWorldFromWorldName(String worldName);
+    GameWorld getGameWorldByName(String worldName);
 
     /**
      * Get a list of all GameWorlds.

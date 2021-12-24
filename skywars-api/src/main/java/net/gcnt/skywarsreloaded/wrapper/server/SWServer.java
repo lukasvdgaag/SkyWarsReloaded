@@ -2,6 +2,8 @@ package net.gcnt.skywarsreloaded.wrapper.server;
 
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
+import java.util.UUID;
+
 public interface SWServer {
 
     /**
@@ -12,14 +14,17 @@ public interface SWServer {
     SWWorld getDefaultWorld();
 
     /**
-     * Get a world by it's name
+     * Get a world by its name
      *
      * @return The world with the name provided
      */
     SWWorld getWorld(String name);
 
     /**
-     * ...
+     * Register a world into the wrapper world cache
+     *
+     * @param world The world to register
      */
+    void registerWorld(UUID serverWorldUUID, SWWorld world);
 
 }

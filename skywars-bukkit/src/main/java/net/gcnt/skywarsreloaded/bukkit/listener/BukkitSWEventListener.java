@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.event.*;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -14,6 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.WorldInitEvent;
 
 public class BukkitSWEventListener extends AbstractSWEventListener implements Listener {
 
@@ -135,6 +138,28 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
         if (swEvent.isCancelled()) {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onChunkLoadEvent(ChunkLoadEvent event) {
+        // Get data
+        int x = event.getChunk().getX();
+        int z = event.getChunk().getZ();
+        SWWorld world = this.plugin.getServer().getWorld(event.getWorld().getName());
+
+        // Fire core event
+        SWChunkLoadEvent swEvent = new CoreSWChunkLoadEvent(world, x, z, event.isNewChunk());
+        this.onChunkLoad(swEvent);
+    }
+
+    @EventHandler
+    public void onWorldInitEvent(WorldInitEvent event) {
+        // Get data
+        SWWorld world = this.plugin.getServer().getWorld(event.getWorld().getName());
+
+        // Fire core event
+        SWWorldInitEvent swEvent = new CoreSWWorldInitEvent(world);
+        this.onWorldInit(swEvent);
     }
 
     // Utils

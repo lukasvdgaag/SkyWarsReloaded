@@ -83,6 +83,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         setStorage(new SQLiteStorage(this)); // requires config
 
         // Managers
+        initServer();
         initPlayerManager();
         initCommandManager();
         initGameManager();

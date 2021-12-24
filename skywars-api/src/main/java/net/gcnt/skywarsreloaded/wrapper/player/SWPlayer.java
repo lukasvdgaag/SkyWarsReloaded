@@ -5,6 +5,8 @@ import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * General data about a player that is independent of any running state of games or teams
  */
@@ -48,6 +50,8 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
 
     void teleport(String world, double x, double y, double z, float yaw, float pitch);
 
+    CompletableFuture<Boolean> teleportAsync(String world, double x, double y, double z);
+
     void sendTitle(String title, String subtitle);
 
     void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut);
@@ -63,5 +67,4 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
      *                 </p>
      */
     void setGameMode(int gamemode);
-
 }

@@ -58,4 +58,11 @@ public interface SWWorld {
      * @return If the world is loaded
      */
     boolean isLoaded();
+
+    /**
+     * Set whether spawn chunks should automatically be always loaded
+     *
+     * @param keepSpawnLoaded true if spawn chunk should always be loaded.
+     */
+    void setKeepSpawnLoaded(boolean keepSpawnLoaded);
 }

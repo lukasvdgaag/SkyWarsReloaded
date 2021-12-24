@@ -18,4 +18,7 @@ public interface SWEventListener {
 
     void onPlayerBlockPlace(SWBlockPlaceEvent event);
 
+    void onChunkLoad(SWChunkLoadEvent swEvent);
+
+    void onWorldInit(SWWorldInitEvent swEvent);
 }

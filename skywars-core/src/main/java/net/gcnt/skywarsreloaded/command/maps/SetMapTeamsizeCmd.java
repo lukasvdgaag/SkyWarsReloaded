@@ -27,7 +27,7 @@ public class SetMapTeamsizeCmd extends Cmd {
             plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_TEAM_SIZE.toString()).send(sender);
             return true;
         } else if (args.length == 1) {
-            GameWorld world = plugin.getGameManager().getGameWorldFromWorldName(player.getLocation().world().getName());
+            GameWorld world = plugin.getGameManager().getGameWorldByName(player.getLocation().world().getName());
             if (world == null || !world.isEditing() || world.getTemplate() == null) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
                 return true;

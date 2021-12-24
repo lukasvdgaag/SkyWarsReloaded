@@ -30,7 +30,7 @@ public class SetSpawnCmd extends Cmd {
         }
 
         SWPlayer player = (SWPlayer) sender;
-        GameWorld world = plugin.getGameManager().getGameWorldFromWorldName(player.getLocation().world().getName());
+        GameWorld world = plugin.getGameManager().getGameWorldByName(player.getLocation().world().getName());
         if (world == null || !world.isEditing()) {
             plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
             return true;
@@ -152,7 +152,7 @@ public class SetSpawnCmd extends Cmd {
             if (sender instanceof SWPlayer player) {
                 SpawnType type = SpawnType.fromString(args[0]);
                 if (type == SpawnType.PLAYER) {
-                    GameWorld world = plugin.getGameManager().getGameWorldFromWorldName(player.getLocation().world().getName());
+                    GameWorld world = plugin.getGameManager().getGameWorldByName(player.getLocation().world().getName());
                     if (world != null && world.isEditing() && world.getTemplate().getTeamSize() > 1) {
                         List<String> options = new ArrayList<>();
                         for (int i = 0; i < world.getTemplate().getTeamSpawnpoints().size() + 1; i++) {

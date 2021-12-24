@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
+import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,10 +58,19 @@ public abstract class CoreGameManager implements GameManager {
     }
 
     @Override
-    public GameWorld getGameWorldFromWorldName(String worldName) {
+    public GameWorld getGameWorldByName(String worldName) {
         if (worldName == null) return null;
         for (GameWorld gameWorld : getGameWorlds()) {
             if (gameWorld.getWorldName().equals(worldName)) return gameWorld;
+        }
+        return null;
+    }
+
+    @Override
+    public GameWorld getGameWorldBySWWorld(SWWorld swWorld) {
+        if (swWorld == null) return null;
+        for (GameWorld gameWorld : getGameWorlds()) {
+            if (gameWorld.getWorld().equals(swWorld)) return gameWorld;
         }
         return null;
     }
@@ -127,7 +137,7 @@ public abstract class CoreGameManager implements GameManager {
 
     // Internal util
 
-    protected void addWorld(GameTemplate temp, GameWorld world) {
+    protected void registerGameWorld(GameTemplate temp, GameWorld world) {
         List<GameWorld> worlds = this.gameWorlds.getOrDefault(temp, new ArrayList<>());
         worlds.add(world);
         this.gameWorlds.put(temp, worlds);

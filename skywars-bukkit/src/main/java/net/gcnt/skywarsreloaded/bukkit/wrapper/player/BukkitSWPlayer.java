@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.bukkit.wrapper.player;
 
+import io.papermc.lib.PaperLib;
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class BukkitSWPlayer extends AbstractSWPlayer {
 
@@ -130,16 +132,24 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
 
     @Override
     public void teleport(String world, double x, double y, double z) {
-        World bworld = Bukkit.getWorld(world);
-        if (bworld == null) return;
-        player.teleport(new Location(bworld, x, y, z));
+        World bukkitWorld = Bukkit.getWorld(world);
+        if (bukkitWorld == null) return;
+        player.teleport(new Location(bukkitWorld, x, y, z));
     }
 
     @Override
     public void teleport(String world, double x, double y, double z, float yaw, float pitch) {
-        World bworld = Bukkit.getWorld(world);
-        if (bworld == null) return;
-        player.teleport(new Location(bworld, x, y, z, yaw, pitch));
+        World bukkitWorld = Bukkit.getWorld(world);
+        if (bukkitWorld == null) return;
+        player.teleport(new Location(bukkitWorld, x, y, z, yaw, pitch));
+    }
+
+    @Override
+    public CompletableFuture<Boolean> teleportAsync(String world, double x, double y, double z) {
+        World bukkitWorld = Bukkit.getWorld(world);
+        if (bukkitWorld == null) return CompletableFuture.completedFuture(false);
+        return PaperLib.teleportAsync(player, new Location(bukkitWorld, x, y, z));
+
     }
 
     @Override

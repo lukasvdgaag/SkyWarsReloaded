@@ -19,8 +19,9 @@ public interface GameWorldLoader {
      * Create an empty world for the corresponding GameWorld.
      *
      * @param gameWorld {@link GameWorld} to create a void world for.
+     * @return {@link CompletableFuture<Void>} which completes when the world is finished creating.
      */
-    void createEmptyWorld(GameWorld gameWorld);
+    CompletableFuture<Void> createEmptyWorld(GameWorld gameWorld);
 
     /**
      * Delete the world instance for the {@link GameWorld} provided

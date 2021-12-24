@@ -50,7 +50,11 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     public CompletableFuture<Boolean> generateWorldInstance(GameWorld gameWorld) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         this.plugin.getScheduler().runAsync(() -> {
-            this.createEmptyWorld(gameWorld);
+            try {
+                this.createEmptyWorld(gameWorld).get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
             String templateName = gameWorld.getTemplate().getName();
             try {
                 // This method should be called asynchronously
@@ -93,7 +97,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public void createEmptyWorld(GameWorld gameWorld) {
+    public CompletableFuture<Void> createEmptyWorld(GameWorld gameWorld) {
         // Create a new and empty property map
         SlimePropertyMap properties = new SlimePropertyMap();
 
@@ -105,6 +109,8 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
             templatePropertyMap.put(gameWorld, properties);
         }
 
+        // This is run async anyway, there is no point executing it under another async task
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override

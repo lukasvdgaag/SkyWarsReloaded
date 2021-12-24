@@ -16,7 +16,7 @@ public class BukkitGameManager extends CoreGameManager {
     @Override
     public GameWorld createGameWorld(GameTemplate data) {
         GameWorld world = new BukkitGameWorld((BukkitSkyWarsReloaded) plugin, UUID.randomUUID().toString(), data);
-        addWorld(data, world);
+        this.registerGameWorld(data, world);
         return world;
     }
 }

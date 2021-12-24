@@ -41,6 +41,11 @@ public class BukkitSWServer extends AbstractSWServer {
         return this.getWorld(bukkitWorld);
     }
 
+    @Override
+    public void registerWorld(UUID serverWorldUUID, SWWorld world) {
+        this.worldCache.put(serverWorldUUID, world);
+    }
+
     public SWWorld getWorld(World bukkitWorld) {
         // Get world from cache
         UUID uuid = bukkitWorld.getUID();
@@ -49,7 +54,7 @@ public class BukkitSWServer extends AbstractSWServer {
         // Create wrapper and cache if not yet present
         if (swWorld == null) {
             swWorld = new BukkitSWWorld(this.plugin, bukkitWorld);
-            this.worldCache.put(uuid, swWorld);
+            this.registerWorld(uuid, swWorld);
         }
 
         return swWorld;
