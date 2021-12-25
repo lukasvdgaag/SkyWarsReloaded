@@ -47,6 +47,7 @@ public class SetMapTeamsizeCmd extends Cmd {
             plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_TEAM_SIZE_NUMBER.toString()).send(sender);
             return false;
         }
+
         int size = Integer.parseInt(args[creatorArgStart]);
         if (size < 1) {
             plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_TEAM_SIZE_GREATER.toString()).send(sender);
@@ -66,11 +67,14 @@ public class SetMapTeamsizeCmd extends Cmd {
 
     @Override
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
+        List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
-            List<String> maps = new ArrayList<>();
-            plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
-            return maps;
+            for (int i = 1; i < 5; i++) {
+                suggestions.add(String.valueOf(i));
+            }
+        } else if (args.length == 2) {
+            plugin.getGameManager().getGameTemplates().forEach(template -> suggestions.add(template.getName()));
         }
-        return new ArrayList<>();
+        return suggestions;
     }
 }
