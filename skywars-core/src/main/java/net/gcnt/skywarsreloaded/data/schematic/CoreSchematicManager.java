@@ -66,7 +66,7 @@ public class CoreSchematicManager implements SchematicManager {
         EditSession editSession = null;
 
         try {
-            editSession = WorldEdit.getInstance().newEditSession(world);
+            editSession = this.getNewEditSession(world);
 
             Operation operation = new ClipboardHolder(schem)
                     .createPaste(editSession)
