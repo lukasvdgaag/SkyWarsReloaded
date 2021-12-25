@@ -90,6 +90,11 @@ public class EditMapCmd extends Cmd {
             return true;
         }
 
+        plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATING_WORLD_STAGE2.toString())
+                .replace("%template%", template.getName())
+                .replace("%millis%", String.valueOf(timeDiffCreation))
+                .send(sender);
+
         templateExistsFuture.thenAccept(templateExists -> {
             // Handle the initialization of a world if this was the creation of the template
             if (!templateExists) {
@@ -98,27 +103,31 @@ public class EditMapCmd extends Cmd {
 
             world.readyForEditing();
 
-            player.teleport(world.getWorldName(),
-                    InternalProperties.MAP_CREATE_PLATFORM_X,
-                    InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
-                    InternalProperties.MAP_CREATE_PLATFORM_Z);
-            player.setGameMode(1);
+            // Teleport the player onto the platform that was just created
+            player.teleportAsync(world.getWorldName(),
+                            InternalProperties.MAP_CREATE_PLATFORM_X + 0.5,
+                            InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
+                            InternalProperties.MAP_CREATE_PLATFORM_Z + 0.5)
+                    .thenRun(() -> {
+                            player.setGameMode(1);
+                            // User feedback
+                            // Not going to use more than 24 days =P
+                            int timeDiffChunkLoad = (int) (System.currentTimeMillis() - preGenMillis);
+                            int timeDiffLoadSec = timeDiffChunkLoad / 1000;
+                            int timeDiffLoadDecimal = timeDiffChunkLoad / 100 - timeDiffLoadSec * 10;
 
-            // User feedback
-            // Not going to use more than 24 days =P
-            int timeDiffChunkLoad = (int) (System.currentTimeMillis() - preGenMillis);
-            int timeDiffLoadSec = timeDiffChunkLoad / 1000;
-            int timeDiffLoadDecimal = timeDiffChunkLoad / 100 - timeDiffLoadSec * 10;
+                            plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_GENERATED_WORLD.toString())
+                                    .replace("%template%", template.getName())
+                                    .sendTitle(0, 100, 0, sender);
+                            plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATED_WORLD.toString())
+                                    .replace("%template%", template.getName())
+                                    .replace("%seconds%", timeDiffLoadSec + "." + timeDiffLoadDecimal)
+                                    .send(sender);
 
-            msgConfig.getMessage(MessageProperties.TITLES_MAPS_GENERATED_WORLD.toString())
-                    .replace("%template%", template.getName())
-                    .sendTitle(0, 100, 0, sender);
-            msgConfig.getMessage(MessageProperties.MAPS_GENERATED_WORLD.toString())
-                    .replace("%template%", template.getName())
-                    .replace("%seconds%", timeDiffLoadSec + "." + timeDiffLoadDecimal)
-                    .send(sender);
+                        template.checkToDoList(sender);
+                        }
+                    );
 
-            template.checkToDoList(sender);
         });
         return true;
     }
