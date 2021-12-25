@@ -72,7 +72,7 @@ maps:
   template-created: "&aA new game template with the name &e%template%&a has successfully been created."
   generating-world: "&7Please hold while we generate the template world..."
   generating-world-fail: "&cAn error occurred while generating the world, please check the server console for details."
-  generating-world-stage2: "&7&oCreated the template world in %millis%ms! Loading spawn chunks..."
+  generating-world-stage2: "&7&oCreated the world in %millis%ms! Loading spawn chunks..."
   generated-world: "&aWe finished loading the world in %seconds%s! &7You can now start building within the world borders. We will automatically convert the world to a schematic file when you're done."
   already-disabled: "&cThis template is already disabled."
   disabled: "&aThe template &e%template% &ahas successfully been &cdisabled&a!"
