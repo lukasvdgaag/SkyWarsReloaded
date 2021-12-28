@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class CoreGameManager implements GameManager {
 
@@ -100,7 +101,7 @@ public abstract class CoreGameManager implements GameManager {
 
     @Override
     public List<GameTemplate> getGameTemplates() {
-        return this.templates.values().stream().toList();
+        return new ArrayList<>(this.templates.values());
     }
 
     @Override

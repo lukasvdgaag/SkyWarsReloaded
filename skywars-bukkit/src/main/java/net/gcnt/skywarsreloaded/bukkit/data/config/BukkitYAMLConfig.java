@@ -129,7 +129,8 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public void set(String property, Object value) {
-        if (value instanceof BukkitItem item) {
+        if (value instanceof BukkitItem) {
+            BukkitItem item = (BukkitItem) value;
             fileConfiguration.set(property + ".material", item.getMaterial());
             if (item.getAmount() != 1) fileConfiguration.set(property + ".amount", item.getAmount());
             if (item.getDamage() != 0) fileConfiguration.set(property + ".damage", item.getDamage());
@@ -178,10 +179,11 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
             Object val = section.get("color", null);
             if (val != null) {
-                if (val instanceof String str && str.startsWith("#")) {
-                    item.setColor(Color.decode(str));
-                } else if (val instanceof Integer intg) {
-                    item.setColor(new Color(intg));
+                if (val instanceof String) {
+                    String str = (String) val;
+                    if (str.startsWith("#")) item.setColor(Color.decode(str));
+                } else if (val instanceof Integer) {
+                    item.setColor(new Color((Integer) val));
                 }
             }
 
@@ -241,17 +243,20 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
             return new CoreMessage(plugin, "<error, please check console and report this>");
         }
 
-        if (res instanceof String string) {
-            return new CoreMessage(plugin, string);
-        } else if (res instanceof List list) {
+        if (res instanceof String) {
+            return new CoreMessage(plugin, (String) res);
+        } else if (res instanceof List) {
             // Sanity check
+
+            @SuppressWarnings("rawtypes")
+            List list = (List) res;
             if (!list.isEmpty() && !(list.get(0) instanceof String)) {
                 this.plugin.getLogger().error("Invalid configuration message list for '" + property +
                         "': the type of the first list item is a " + list.get(0).getClass().getTypeName() + ". " +
                         "Please make sure the message is surrounded with quotes.");
             }
             @SuppressWarnings("unchecked")
-            List<String> stringList = list;
+            List<String> stringList = (List<String>) list;
             return new CoreMessage(plugin, stringList.toArray(new String[0]));
         }
         return null;

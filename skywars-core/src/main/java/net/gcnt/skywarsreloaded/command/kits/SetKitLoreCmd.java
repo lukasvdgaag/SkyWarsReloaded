@@ -59,13 +59,13 @@ public class SetKitLoreCmd extends Cmd {
 
         final List<String> lore = kit.getLore();
         switch (action) {
-            case "add" -> {
+            case "add":
                 args = Arrays.copyOfRange(args, 2, args.length);
                 String value = String.join(" ", args);
                 lore.add(value);
                 plugin.getMessages().getMessage(MessageProperties.KITS_ADDED_LORE_LINE.toString()).replace("%kit%", kitName).replace("%value%", value).send(sender);
-            }
-            case "remove" -> {
+                break;
+            case "remove":
                 int index = Integer.parseInt(args[2]);
                 if (index > lore.size()) {
                     // out of bounds
@@ -74,26 +74,22 @@ public class SetKitLoreCmd extends Cmd {
                 }
                 lore.remove(index - 1);
                 plugin.getMessages().getMessage(MessageProperties.KITS_REMOVED_LORE_LINE.toString()).replace("%kit%", kitName).replace("%line%", index + "").send(sender);
-            }
-            case "clear" -> {
+                break;
+            case "clear":
                 kit.setLore(new ArrayList<>());
                 plugin.getMessages().getMessage(MessageProperties.KITS_CLEARED_LORE.toString()).replace("%kit%", kitName).send(sender);
-            }
-            default -> {
+                break;
+            default:
                 // action is preview
                 plugin.getMessages().getMessage(MessageProperties.KITS_PREVIEW_LORE_HEADER.toString()).replace("%kit%", kitName).send(sender);
                 if (lore.isEmpty()) {
                     plugin.getMessages().getMessage(MessageProperties.KITS_PREVIEW_LORE_NO_LINES.toString()).replace("%kit%", kitName).send(sender);
                 } else {
                     for (int i = 0; i < lore.size(); i++) {
-                        plugin.getMessages().getMessage(MessageProperties.KITS_PREVIEW_LORE_LINE.toString())
-                                .replace("%kit%", kitName)
-                                .replace("%line%", (i + 1) + "")
-                                .replace("%value%", lore.get(i))
-                                .send(sender);
+                        plugin.getMessages().getMessage(MessageProperties.KITS_PREVIEW_LORE_LINE.toString()).replace("%kit%", kitName).replace("%line%", (i + 1) + "").replace("%value%", lore.get(i)).send(sender);
                     }
                 }
-            }
+                break;
         }
         kit.saveData();
         return true;

@@ -137,9 +137,9 @@ public class CoreSchematicManager implements SchematicManager {
         Class<?> editSessionBuilderClass = null;
         try {
             editSessionBuilderClass = Class.forName("com.fastasyncworldedit.core.util.EditSessionBuilder");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException ignored) {
         }
+
         boolean isFAWE = editSessionBuilderClass != null;
 
         if (isFAWE) {

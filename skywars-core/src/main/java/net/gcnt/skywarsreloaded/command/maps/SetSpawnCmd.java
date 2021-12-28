@@ -72,55 +72,66 @@ public class SetSpawnCmd extends Cmd {
         final int teamIndex = team - 1;
 
         switch (type) {
-            case LOBBY -> {
+            case LOBBY:
                 template.setWaitingLobbySpawn(location);
                 plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_SET_SPAWN_LOBBY.toString()).replace("%template%", template.getName()).sendTitle(player);
                 plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_LOBBY.toString()).replace("%template%", template.getName()).send(player);
-            }
-            case SPECTATE -> {
+                break;
+            case SPECTATE:
                 template.setSpectateSpawn(location);
                 plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_SET_SPAWN_SPECTATE.toString()).replace("%template%", template.getName()).sendTitle(player);
                 plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_SPECTATE.toString()).replace("%template%", template.getName()).send(player);
-            }
-            case PLAYER -> {
+                break;
+            case PLAYER:
                 final SWCoord blockLocation = location.asBlock();
                 SpawnAddResult result = template.addSpawn(teamIndex, blockLocation);
-                Message message = switch (result) {
-                    case INDEX_TOO_LOW -> plugin.getMessages().getMessage(MessageProperties.MAPS_SPAWN_INDEX_LOW.toString())
-                            .replace("%template%", template.getName());
-                    case INDEX_TOO_HIGH -> plugin.getMessages().getMessage(MessageProperties.MAPS_SPAWN_INDEX_HIGH.toString())
-                            .replace("%template%", template.getName()).replace("%max%", (template.getTeamSpawnpoints().size() + 1) + "");
-                    case SPAWN_ALREADY_EXISTS -> plugin.getMessages().getMessage(MessageProperties.MAPS_SPAWN_ALREADY_EXISTS.toString())
-                            .replace("%template%", template.getName());
-                    case NEW_TEAM_ADDED -> {
+                Message message = null;
+                switch (result) {
+                    case INDEX_TOO_LOW:
+                        plugin.getMessages().getMessage(MessageProperties.MAPS_SPAWN_INDEX_LOW.toString())
+                                .replace("%template%", template.getName());
+                        break;
+                    case INDEX_TOO_HIGH:
+                        plugin.getMessages().getMessage(MessageProperties.MAPS_SPAWN_INDEX_HIGH.toString())
+                                .replace("%template%", template.getName()).replace("%max%", (template.getTeamSpawnpoints().size() + 1) + "");
+                        break;
+                    case SPAWN_ALREADY_EXISTS:
+                        plugin.getMessages().getMessage(MessageProperties.MAPS_SPAWN_ALREADY_EXISTS.toString())
+                                .replace("%template%", template.getName());
+                        break;
+                    case NEW_TEAM_ADDED:
                         if (template.getTeamSize() == 1) {
-                            yield plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_SINGLES.toString())
+                            message = plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_SINGLES.toString())
                                     .replace("%template%", template.getName())
                                     .replace("%number%", template.getTeamSpawnpoints().size() + "");
                         } else {
                             int currentSpawns = template.getTeamSpawnpoints().get(teamIndex).size();
                             if (currentSpawns < template.getTeamSize()) {
-                                yield plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_TEAM.toString())
+                                message = plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_TEAM.toString())
                                         .replace("%template%", template.getName())
                                         .replace("%number%", currentSpawns + "")
                                         .replace("%team%", team + "")
                                         .replace("%left%", (template.getTeamSize() - currentSpawns) + "");
                             } else {
-                                yield plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_TEAM_FINAL.toString())
+                                message = plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_TEAM_FINAL.toString())
                                         .replace("%template%", template.getName())
                                         .replace("%number%", currentSpawns + "")
                                         .replace("%team%", team + "");
                             }
                         }
-                    }
-                    case TEAM_UPDATED -> plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_TEAM_FINAL.toString())
-                            .replace("%template%", template.getName())
-                            .replace("%number%", (template.getTeamSpawnpoints().get(team - 1).size()) + "")
-                            .replace("%team%", team + "");
-                    case MAX_TEAM_SPAWNS_REACHED -> plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_TEAM_MAX.toString())
-                            .replace("%template%", template.getName())
-                            .replace("%team%", team + "");
-                };
+                        break;
+                    case TEAM_UPDATED:
+                        plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_TEAM_FINAL.toString())
+                                .replace("%template%", template.getName())
+                                .replace("%number%", (template.getTeamSpawnpoints().get(team - 1).size()) + "")
+                                .replace("%team%", team + "");
+                        break;
+                    case MAX_TEAM_SPAWNS_REACHED:
+                        plugin.getMessages().getMessage(MessageProperties.MAPS_SET_SPAWN_PLAYER_TEAM_MAX.toString())
+                                .replace("%template%", template.getName())
+                                .replace("%team%", team + "");
+                        break;
+                }
 
                 if (result.isSuccess()) {
                     plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_SET_SPAWN_PLAYER.toString()).replace("%template%", template.getName()).sendTitle(player);
@@ -129,8 +140,8 @@ public class SetSpawnCmd extends Cmd {
                 } else {
                     plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_SET_SPAWN_PLAYER_FAIL.toString()).replace("%template%", template.getName()).sendTitle(player);
                 }
-                message.send(sender);
-            }
+                if (message != null) message.send(sender);
+                break;
         }
 
         template.checkToDoList(sender);
@@ -149,10 +160,10 @@ public class SetSpawnCmd extends Cmd {
             }
             return options;
         } else if (args.length == 2) {
-            if (sender instanceof SWPlayer player) {
+            if (sender instanceof SWPlayer) {
                 SpawnType type = SpawnType.fromString(args[0]);
                 if (type == SpawnType.PLAYER) {
-                    GameWorld world = plugin.getGameManager().getGameWorldByName(player.getLocation().world().getName());
+                    GameWorld world = plugin.getGameManager().getGameWorldByName(((SWPlayer) sender).getLocation().world().getName());
                     if (world != null && world.isEditing() && world.getTemplate().getTeamSize() > 1) {
                         List<String> options = new ArrayList<>();
                         for (int i = 0; i < world.getTemplate().getTeamSpawnpoints().size() + 1; i++) {

@@ -5,8 +5,10 @@ import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractChestManager implements ChestManager {
 
@@ -83,7 +85,7 @@ public abstract class AbstractChestManager implements ChestManager {
 
     @Override
     public List<SWChestType> getChestTypes() {
-        return chests.values().stream().toList();
+        return new ArrayList<>(chests.values());
     }
 
     @Override

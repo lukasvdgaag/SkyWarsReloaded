@@ -167,10 +167,18 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     @Override
     public void setGameMode(int gamemode) {
         switch (gamemode) {
-            case 0 -> player.setGameMode(GameMode.SURVIVAL);
-            case 1 -> player.setGameMode(GameMode.CREATIVE);
-            case 2 -> player.setGameMode(GameMode.ADVENTURE);
-            case 3 -> player.setGameMode(GameMode.SPECTATOR);
+            case 0:
+                player.setGameMode(GameMode.SURVIVAL);
+                break;
+            case 1:
+                player.setGameMode(GameMode.CREATIVE);
+                break;
+            case 2:
+                player.setGameMode(GameMode.ADVENTURE);
+                break;
+            case 3:
+                player.setGameMode(GameMode.SPECTATOR);
+                break;
         }
     }
 }

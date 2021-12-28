@@ -52,24 +52,22 @@ public class MySQLStorage implements Storage {
 
         try (Connection connection = getConnection()) {
             connection.createStatement().executeUpdate("CREATE DATABASE IF NOT EXISTS " + database);
-            connection.createStatement().executeUpdate("""
-                    CREATE TABLE IF NOT EXISTS `sw_player_data` (
-                     `uuid`   VARCHAR(255)  NOT NULL UNIQUE,
-                     `solo_wins`  INT(6) DEFAULT 0,
-                     `solo_kills` INT(10) DEFAULT 0,
-                     `solo_games` INT(10) DEFAULT 0,
-                     `team_wins` INT(10) DEFAULT 0,
-                     `team_kills` INT(10) DEFAULT 0,
-                     `team_games` INT(10) DEFAULT 0,
-                     `selected_solo_cage` VARCHAR(100) DEFAULT NULL,
-                     `selected_team_cage` VARCHAR(100) DEFAULT NULL,
-                     `selected_particle` VARCHAR(100) DEFAULT NULL,
-                     `selected_kill_effect` VARCHAR(100) DEFAULT NULL,
-                     `selected_win_effect` VARCHAR(100) DEFAULT NULL,
-                     `selected_projectile_effect` VARCHAR(100) DEFAULT NULL,
-                     `selected_kill_messages_theme` VARCHAR(100) DEFAULT NULL,
-                     KEY  (`uuid`)
-                    )""");
+            connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS `sw_player_data` (" +
+                    "`uuid`   VARCHAR(255)  NOT NULL UNIQUE," +
+                    "`solo_wins`  INT(6) DEFAULT 0," +
+                    "`solo_kills` INT(10) DEFAULT 0," +
+                    "`solo_games` INT(10) DEFAULT 0," +
+                    "`team_wins` INT(10) DEFAULT 0," +
+                    "`team_kills` INT(10) DEFAULT 0," +
+                    "`team_games` INT(10) DEFAULT 0," +
+                    "`selected_solo_cage` VARCHAR(100) DEFAULT NULL," +
+                    "`selected_team_cage` VARCHAR(100) DEFAULT NULL," +
+                    "`selected_particle` VARCHAR(100) DEFAULT NULL," +
+                    "`selected_kill_effect` VARCHAR(100) DEFAULT NULL," +
+                    "`selected_win_effect` VARCHAR(100) DEFAULT NULL," +
+                    "`selected_projectile_effect` VARCHAR(100) DEFAULT NULL," +
+                    "`selected_kill_messages_theme` VARCHAR(100) DEFAULT NULL," +
+                    "KEY  (`uuid`))");
         } catch (SQLException e) {
             plugin.getLogger().error("SkyWarsReloaded failed to connect to the MySQL database with the following hostname: '" + hostname + ":" + port + "'. Do you have access?");
             plugin.getLogger().error("Here's the mysql URI we used: " + uri);
@@ -120,10 +118,10 @@ public class MySQLStorage implements Storage {
             PreparedStatement ps = conn.prepareStatement("UPDATE `sw_player_data` SET ?=? WHERE `uuid`=?");
             ps.setString(1, property);
 
-            if (value instanceof Integer val) ps.setInt(2, val);
-            else if (value instanceof Double val) ps.setDouble(2, val);
-            else if (value instanceof Boolean val) ps.setBoolean(2, val);
-            else if (value instanceof Float val) ps.setFloat(2, val);
+            if (value instanceof Integer) ps.setInt(2, (Integer) value);
+            else if (value instanceof Double) ps.setDouble(2, (Double) value);
+            else if (value instanceof Boolean) ps.setBoolean(2, (Boolean) value);
+            else if (value instanceof Float) ps.setFloat(2, (Float) value);
             else ps.setString(2, value.toString());
 
             ps.setString(3, player.getUuid().toString());

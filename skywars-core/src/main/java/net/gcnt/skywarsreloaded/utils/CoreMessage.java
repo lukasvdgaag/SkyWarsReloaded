@@ -71,7 +71,7 @@ public class CoreMessage implements Message {
         String second = split.length == 2 ? split[1] : "";
 
         for (SWCommandSender sender : senders) {
-            if (sender instanceof SWPlayer player) player.sendTitle(first, second, in, stay, out);
+            if (sender instanceof SWPlayer) ((SWPlayer) sender).sendTitle(first, second, in, stay, out);
         }
     }
 }

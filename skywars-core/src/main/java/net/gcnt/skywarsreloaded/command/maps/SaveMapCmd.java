@@ -31,6 +31,7 @@ public class SaveMapCmd extends Cmd {
             template = world.getTemplate();
         } else {
             final String templateName = args[0];
+            sender.sendMessage(templateName);
             template = plugin.getGameManager().getGameTemplateByName(templateName);
             if (template == null) {
                 plugin.getMessages().getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
@@ -42,6 +43,7 @@ public class SaveMapCmd extends Cmd {
         for (GameWorld world : worlds) {
             if (world.isEditing()) {
                 // schematic creating and saving
+                // todo: make this save the world to SlimeWorld if enabled isntead of WorldEDit schematics.
                 boolean successful = plugin.getSchematicManager().saveGameWorldToSchematic(world, plugin.getUtils().getWorldEditWorld(world.getWorldName()));
                 if (successful) {
                     plugin.getMessages().getMessage(MessageProperties.MAPS_WORLD_SAVED.toString()).replace("%template%", template.getName()).send(sender);

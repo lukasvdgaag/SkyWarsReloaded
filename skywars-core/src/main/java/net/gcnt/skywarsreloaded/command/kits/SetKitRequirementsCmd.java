@@ -45,19 +45,19 @@ public class SetKitRequirementsCmd extends Cmd {
         String value;
         boolean checkInt = false;
         switch (requirement) {
-            case "cost" -> {
+            case "cost":
                 // value entered, checking if it's an int.
                 value = args[2];
                 checkInt = true;
-            }
-            case "permission" -> {
+                break;
+            case "permission":
                 value = args[2].toLowerCase();
                 if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")) {
                     plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_KIT_REQUIREMENT_VALUE_BOOLEAN.toString()).send(sender);
                     return true;
                 }
-            }
-            case "stats" -> {
+                break;
+            case "stats":
                 if (args.length == 3) {
                     plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_KIT_REQUIREMENT_VALUE.toString()).send(sender);
                     return true;
@@ -74,11 +74,10 @@ public class SetKitRequirementsCmd extends Cmd {
                         return true;
                     }
                 }
-            }
-            default -> {
+                break;
+            default:
                 plugin.getMessages().getMessage(MessageProperties.KITS_ENTER_KIT_REQUIREMENT.toString()).send(sender);
                 return true;
-            }
         }
 
         if (checkInt) {
@@ -103,9 +102,15 @@ public class SetKitRequirementsCmd extends Cmd {
         Unlockable unlockable = (Unlockable) kit;
 
         switch (requirement) {
-            case "cost" -> unlockable.setCost(Integer.parseInt(value));
-            case "permission" -> unlockable.setRequirePermission(Boolean.parseBoolean(value));
-            default -> unlockable.addMinimumStat(PlayerStat.fromString(requirement), Integer.parseInt(value));
+            case "cost":
+                unlockable.setCost(Integer.parseInt(value));
+                break;
+            case "permission":
+                unlockable.setRequirePermission(Boolean.parseBoolean(value));
+                break;
+            default:
+                unlockable.addMinimumStat(PlayerStat.fromString(requirement), Integer.parseInt(value));
+                break;
         }
 
         kit.saveData();

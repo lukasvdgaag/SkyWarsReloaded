@@ -117,7 +117,10 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
             if (!dataFolder.exists()) {
                 dataFolder.mkdirs();
             }
-        } catch (SecurityException ex) {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        } catch (SecurityException | IOException ex) {
             ex.printStackTrace();
             return false;
         }

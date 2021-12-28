@@ -35,8 +35,8 @@ public class BukkitSWWorld extends AbstractSWWorld {
     @Override
     public void setBlockAt(SWCoord location, Item item) {
         Block block = bukkitWorld.getBlockAt(location.x(), location.y(), location.z());
-        if (item instanceof BukkitItem bukkitItem) {
-            block.setType(bukkitItem.getBukkitItem().getType());
+        if (item instanceof BukkitItem) {
+            block.setType(((BukkitItem) item).getBukkitItem().getType());
         } else {
             try {
                 block.setType(Material.valueOf(item.getMaterial().toUpperCase()));

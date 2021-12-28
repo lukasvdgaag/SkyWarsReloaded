@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game.cages;
 
-import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public enum NormalCageShape {
 
     private void loadLocations(NormalCageShape shape) {
         switch (shape) {
-            case DEFAULT -> {
+            case DEFAULT:
                 locations.add(new CoreSWCoord(0, 0, 0));
                 locations.add(new CoreSWCoord(0, 1, 1));
                 locations.add(new CoreSWCoord(0, 1, -1));
@@ -45,8 +45,8 @@ public enum NormalCageShape {
                 locations.add(new CoreSWCoord(1, 3, 0));
                 locations.add(new CoreSWCoord(-1, 3, 0));
                 locations.add(new CoreSWCoord(0, 4, 0));
-            }
-            case CUBE -> {
+                break;
+            case CUBE:
                 locations.add(new CoreSWCoord(0, 0, 0));
                 locations.add(new CoreSWCoord(0, 0, 1));
                 locations.add(new CoreSWCoord(0, 0, -1));
@@ -79,8 +79,8 @@ public enum NormalCageShape {
                 locations.add(new CoreSWCoord(-1, 4, 0));
                 locations.add(new CoreSWCoord(-1, 4, 1));
                 locations.add(new CoreSWCoord(-1, 4, -1));
-            }
-            case DOME -> {
+                break;
+            case DOME:
                 locations.add(new CoreSWCoord(0, 0, 0));
                 locations.add(new CoreSWCoord(4, 0, 0));
                 locations.add(new CoreSWCoord(3, 0, 0));
@@ -165,8 +165,8 @@ public enum NormalCageShape {
                 locations.add(new CoreSWCoord(1, 4, 0));
                 locations.add(new CoreSWCoord(1, 4, 1));
                 locations.add(new CoreSWCoord(0, 4, 1));
-            }
-            case PYRAMID -> {
+                break;
+            case PYRAMID:
                 locations.add(new CoreSWCoord(0, 0, 0));
                 locations.add(new CoreSWCoord(1, 0, 0));
                 locations.add(new CoreSWCoord(1, 0, 1));
@@ -233,8 +233,8 @@ public enum NormalCageShape {
                 locations.add(new CoreSWCoord(0, 4, 1));
                 locations.add(new CoreSWCoord(0, 4, -1));
                 locations.add(new CoreSWCoord(0, 5, 0));
-            }
-            case SPHERE -> {
+                break;
+            case SPHERE:
                 locations.add(new CoreSWCoord(0, 0, 0));
                 locations.add(new CoreSWCoord(1, 0, 0));
                 locations.add(new CoreSWCoord(1, 0, 1));
@@ -305,7 +305,7 @@ public enum NormalCageShape {
                 locations.add(new CoreSWCoord(1, 6, 0));
                 locations.add(new CoreSWCoord(1, 6, 1));
                 locations.add(new CoreSWCoord(0, 6, 1));
-            }
+                break;
         }
     }
 

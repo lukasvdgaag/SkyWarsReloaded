@@ -35,23 +35,21 @@ public class SQLiteStorage implements Storage {
 
         try (Connection connection = getConnection()) {
             if (connection != null) {
-                connection.createStatement().executeUpdate("""
-                        CREATE TABLE IF NOT EXISTS `sw_player_data` (
-                         uuid TEXT NOT NULL UNIQUE PRIMARY KEY,
-                         solo_wins  INT DEFAULT 0,
-                         solo_kills INT DEFAULT 0,
-                         solo_games INT DEFAULT 0,
-                         team_wins INT DEFAULT 0,
-                         team_kills INT DEFAULT 0,
-                         team_games INT DEFAULT 0,
-                         selected_solo_cage TEXT DEFAULT NULL,
-                         selected_team_cage TEXT DEFAULT NULL,
-                         selected_particle TEXT DEFAULT NULL,
-                         selected_kill_effect TEXT DEFAULT NULL,
-                         selected_win_effect TEXT DEFAULT NULL,
-                         selected_projectile_effect TEXT DEFAULT NULL,
-                         selected_kill_messages_theme TEXT DEFAULT NULL
-                        )""");
+                connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS `sw_player_data` (" +
+                        "uuid TEXT NOT NULL UNIQUE PRIMARY KEY," +
+                        "solo_wins  INT DEFAULT 0," +
+                        "solo_kills INT DEFAULT 0," +
+                        "solo_games INT DEFAULT 0," +
+                        "team_wins INT DEFAULT 0," +
+                        "team_kills INT DEFAULT 0," +
+                        "team_games INT DEFAULT 0," +
+                        "selected_solo_cage TEXT DEFAULT NULL," +
+                        "selected_team_cage TEXT DEFAULT NULL," +
+                        "selected_particle TEXT DEFAULT NULL," +
+                        "selected_kill_effect TEXT DEFAULT NULL," +
+                        "selected_win_effect TEXT DEFAULT NULL," +
+                        "selected_projectile_effect TEXT DEFAULT NULL," +
+                        "selected_kill_messages_theme TEXT DEFAULT NULL" + ")");
             } else {
                 plugin.getLogger().error("SkyWarsReloaded failed to connect to SQLite database file for player data.");
             }
@@ -105,10 +103,10 @@ public class SQLiteStorage implements Storage {
             PreparedStatement ps = conn.prepareStatement("UPDATE `sw_player_data` SET ?=? WHERE `uuid`=?");
             ps.setString(1, property);
 
-            if (value instanceof Integer val) ps.setInt(2, val);
-            else if (value instanceof Double val) ps.setDouble(2, val);
-            else if (value instanceof Boolean val) ps.setBoolean(2, val);
-            else if (value instanceof Float val) ps.setFloat(2, val);
+            if (value instanceof Integer) ps.setInt(2, (Integer) value);
+            else if (value instanceof Double) ps.setDouble(2, (Double) value);
+            else if (value instanceof Boolean) ps.setBoolean(2, (Boolean) value);
+            else if (value instanceof Float) ps.setFloat(2, (Float) value);
             else ps.setString(2, value.toString());
 
             ps.setString(3, player.getUuid().toString());

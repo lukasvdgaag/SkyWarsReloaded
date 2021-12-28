@@ -20,9 +20,9 @@ public class BukkitSWCommandExecutor implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String name, String[] args) {
         SWCommandSender swSender;
 
-        if (sender instanceof Player player)
+        if (sender instanceof Player)
             // creating the player if not existing.
-            swSender = main.getPlayerManager().initPlayer(player.getUniqueId());
+            swSender = main.getPlayerManager().initPlayer(((Player) sender).getUniqueId());
         else if (sender instanceof ConsoleCommandSender)
             swSender = main.getConsoleSender();
         else return true;
@@ -35,9 +35,9 @@ public class BukkitSWCommandExecutor implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] args) {
         SWCommandSender swSender;
 
-        if (sender instanceof Player player)
+        if (sender instanceof Player)
             // creating the player if not existing.
-            swSender = main.getPlayerManager().initPlayer(player.getUniqueId());
+            swSender = main.getPlayerManager().initPlayer(((Player) sender).getUniqueId());
         else if (sender instanceof ConsoleCommandSender)
             swSender = main.getConsoleSender();
         else return new ArrayList<>();

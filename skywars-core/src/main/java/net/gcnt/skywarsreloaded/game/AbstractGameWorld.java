@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public abstract class AbstractGameWorld implements GameWorld {
 
@@ -107,12 +108,12 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public List<GamePlayer> getAlivePlayers() {
-        return players.stream().filter(GamePlayer::isAlive).toList();
+        return players.stream().filter(GamePlayer::isAlive).collect(Collectors.toList());
     }
 
     @Override
     public List<GamePlayer> getSpectators() {
-        return players.stream().filter(GamePlayer::isSpectating).toList();
+        return players.stream().filter(GamePlayer::isSpectating).collect(Collectors.toList());
     }
 
     @Override

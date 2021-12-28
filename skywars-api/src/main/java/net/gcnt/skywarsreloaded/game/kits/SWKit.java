@@ -70,4 +70,6 @@ public interface SWKit {
 
     void giveToPlayer(SWPlayer sp);
 
+    void updateItems();
+
 }

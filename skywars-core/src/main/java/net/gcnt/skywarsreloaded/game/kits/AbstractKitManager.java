@@ -6,8 +6,10 @@ import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractKitManager implements KitManager {
 
@@ -61,7 +63,7 @@ public abstract class AbstractKitManager implements KitManager {
 
     @Override
     public List<SWKit> getKits() {
-        return kits.values().stream().toList();
+        return new ArrayList<>(kits.values());
     }
 
     @Override

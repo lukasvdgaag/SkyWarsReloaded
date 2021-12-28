@@ -47,7 +47,8 @@ public class BukkitItem extends AbstractItem {
 
             item.setDisplayName(meta.getDisplayName());
 
-            if (meta instanceof SkullMeta skullMeta) {
+            if (meta instanceof SkullMeta) {
+                SkullMeta skullMeta = (SkullMeta) meta;
                 if (plugin.getUtils().getServerVersion() >= 12) {
                     if (skullMeta.getOwningPlayer() != null) {
                         item.setSkullOwner(skullMeta.getOwningPlayer().getUniqueId().toString());
@@ -57,8 +58,8 @@ public class BukkitItem extends AbstractItem {
                 } else {
                     item.setSkullOwner(skullMeta.getOwner());
                 }
-            } else if (meta instanceof LeatherArmorMeta armorMeta) {
-                item.setColor(new java.awt.Color(armorMeta.getColor().asRGB()));
+            } else if (meta instanceof LeatherArmorMeta) {
+                item.setColor(new java.awt.Color(((LeatherArmorMeta) meta).getColor().asRGB()));
             }
         }
         item.setDurability(itemStack.getDurability());

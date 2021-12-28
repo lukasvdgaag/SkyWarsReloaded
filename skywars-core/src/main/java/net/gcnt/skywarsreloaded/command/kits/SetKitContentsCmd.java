@@ -49,6 +49,7 @@ public class SetKitContentsCmd extends Cmd {
         }
 
         kit.saveData();
+        kit.updateItems();
         plugin.getMessages().getMessage(MessageProperties.KITS_SET_CONTENTS.toString()).replace("%kit%", kitName).send(sender);
         return true;
     }

@@ -87,7 +87,8 @@ public class BukkitNMS implements NMS {
 
     @Override
     public void sendActionbar(SWPlayer player, String message) {
-        if (!(player instanceof BukkitSWPlayer bukkitSWPlayer)) return;
+        if (!(player instanceof BukkitSWPlayer)) return;
+        BukkitSWPlayer bukkitSWPlayer = (BukkitSWPlayer) player;
 
         try {
             Object baseComponent = chatSerializer.invoke(null, "{\"text\": \"" + message + "\"}");
@@ -115,7 +116,8 @@ public class BukkitNMS implements NMS {
 
     @Override
     public void sendJSONMessage(SWPlayer player, String message) {
-        if (!(player instanceof BukkitSWPlayer bukkitSWPlayer)) return;
+        if (!(player instanceof BukkitSWPlayer)) return;
+        BukkitSWPlayer bukkitSWPlayer = (BukkitSWPlayer) player;
 
         try {
             Object baseComponent = chatSerializer.invoke(null, message);

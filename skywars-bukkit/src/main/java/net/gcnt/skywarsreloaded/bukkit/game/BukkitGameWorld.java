@@ -44,8 +44,8 @@ public class BukkitGameWorld extends AbstractGameWorld {
 
         Item[] items = generateChestLoot();
 
-        if (block.getState() instanceof Chest chest) {
-            Inventory inventory = chest.getBlockInventory();
+        if (block.getState() instanceof Chest) {
+            Inventory inventory = ((Chest) block.getState()).getBlockInventory();
             inventory.clear();
             for (int i = 0; i < items.length; i++) {
                 inventory.setItem(i, ((BukkitItem) items[i]).getBukkitItem());
