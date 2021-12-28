@@ -8,7 +8,7 @@ public interface SWScoreboard {
 
     void setLine(int number, String value);
 
-    ArrayList<String> convertIntoPieces(String input, int charsCount);
+    String[] convertIntoPieces(String input);
 
     int getLineCount();
 

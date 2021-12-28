@@ -36,7 +36,6 @@ public class BukkitGameWorld extends AbstractGameWorld {
         if (world == null) return;
         Block block = world.getBlockAt(coord.x(), coord.y(), coord.z());
         if (block == null) return;
-        // todo load chunk if not yet loaded?
         if (!block.getChunk().isLoaded()) {
             block.getChunk().load();
             return;

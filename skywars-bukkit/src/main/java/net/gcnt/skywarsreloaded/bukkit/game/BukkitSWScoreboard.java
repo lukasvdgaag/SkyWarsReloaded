@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.bukkit.game;
 
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
 import net.gcnt.skywarsreloaded.game.AbstractSWScoreboard;
 import org.bukkit.Bukkit;
@@ -10,21 +11,23 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class BukkitSWScoreboard extends AbstractSWScoreboard {
 
+    private final SkyWarsReloaded plugin;
+    private final Scoreboard board;
     private final BukkitSWPlayer player;
     private final Objective objective;
     private final int linecount;
-    private final HashMap<Integer, String> cache = new HashMap<>();
-    public Scoreboard board;
 
-    public BukkitSWScoreboard(BukkitSWPlayer player, int linecount) {
+    private final HashMap<Integer, String> cache = new HashMap<>();
+
+    public BukkitSWScoreboard(SkyWarsReloaded plugin, BukkitSWPlayer player, int linecount) {
+        this.plugin = plugin;
         this.player = player;
         this.linecount = linecount;
-        this.board = Bukkit.getScoreboardManager().getNewScoreboard();
+        this.board = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
         this.objective = this.board.registerNewObjective("sb1", "sb2");
         this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         this.objective.setDisplayName("...");
@@ -39,7 +42,6 @@ public class BukkitSWScoreboard extends AbstractSWScoreboard {
         this.player.getPlayer().setScoreboard(this.board); // sets the player scoreboard
     }
 
-    @Override
     public void setTitle(String arg0) {
         if (arg0 == null) arg0 = ""; // title null, making it empty
 
@@ -49,7 +51,6 @@ public class BukkitSWScoreboard extends AbstractSWScoreboard {
         objective.setDisplayName(arg0); // sets the title of the scoreboard
     }
 
-    @Override
     public void setLine(int arg0, String arg1) {
         Team arg2 = board.getTeam("plus-" + arg0 + ""); // Get the team we need
         if (arg1 == null) arg1 = ""; // Line null, making it empty
@@ -62,46 +63,59 @@ public class BukkitSWScoreboard extends AbstractSWScoreboard {
         if (arg1.contains("{") && arg1.contains("}") && Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
             arg1 = be.maximvdw.placeholderapi.PlaceholderAPI.replacePlaceholders(player.getPlayer(), arg1);
         }
+        arg1 = plugin.getUtils().colorize(arg1);
 
         if (cache.containsKey(arg0) && cache.get(arg0).equals(arg1)) return; // Line hasn't changed
         cache.remove(arg0); // remove the old line
         cache.put(arg0, arg1); // add the new line
 
-        ArrayList<String> arg3;
-        // todo check if new version (1.13+)
-        if (true) arg3 = convertIntoPieces(arg1, 64);
-        else arg3 = convertIntoPieces(arg1, 16);
+        String[] arg3 = convertIntoPieces(arg1);
 
-        arg2.setPrefix((arg3.get(0)));
-        arg2.setSuffix((arg3.get(1)));
+        arg2.setPrefix(arg3[0]);
+        arg2.setSuffix(arg3[1]);
     }
 
     @Override
-    public ArrayList<String> convertIntoPieces(String arg0, int arg1) {
-        ArrayList<String> arg2 = new ArrayList<>();
+    public String[] convertIntoPieces(String string) {
+        if (string == null || string.trim().isEmpty()) return new String[]{" ", " "};
 
-        if (arg0.length() <= arg1) {
-            arg2.add(arg0);
-            arg2.add("");
-        } else {
-            if (!ChatColor.getLastColors(arg0.substring(arg1 - 2, arg1)).equals("")) {
-                arg2.add(arg0.substring(0, arg1 - 2));
-                arg2.add(arg0.substring(arg1 - 2));
-            } else if (!ChatColor.getLastColors(arg0.substring(arg1 - 1, arg1 + 1)).equals("")) {
-                arg2.add(arg0.substring(0, arg1 - 1));
-                arg2.add(arg0.substring(arg1 - 1));
-            } else {
-                arg2.add(arg0.substring(0, arg1));
-                String arg3 = ChatColor.getLastColors(arg2.get(0));
-                arg2.add(arg3 + arg0.substring(arg1));
+        // check if it's a legacy version < 12 for splitting.
+        if (plugin.getUtils().getServerVersion() >= 13) {
+            return new String[]{string, ""};
+        }
+
+        int prefixLength = 16;
+        int suffixLength = 16;
+        StringBuilder prefix = new StringBuilder(string.substring(0, Math.min(string.length(), prefixLength)));
+        StringBuilder suffix = new StringBuilder(string.length() > prefixLength ? string.substring(prefixLength) : "");
+
+        if (prefix.charAt(prefixLength - 1) == '§') {
+            // if the string was cut off in the middle of a color code, remove it from the prefix and append to the start of the suffix.
+            suffix = suffix.insert(0, '§');
+            prefix.deleteCharAt(prefix.length() - 1);
+        }
+        if (suffix.length() > 0) {
+            // if prefix-suffix was cut off in the middle of a color code, copy the last colors from the prefix into the suffix.
+            boolean applyColor = true;
+            if (suffix.charAt(0) == '§' && suffix.length() >= 2) {
+                ChatColor chatColor = ChatColor.getByChar(suffix.charAt(1));
+                applyColor = chatColor == null || chatColor.isFormat();
             }
-
-            if (arg2.get(1).length() > arg1) {
-                arg2.set(1, arg2.get(1).substring(0, arg1));
+            if (applyColor) {
+                String colors = ChatColor.getLastColors(prefix.toString());
+                suffix.insert(0, colors);
             }
         }
 
-        return arg2;
+        if (suffix.length() >= suffixLength) {
+            // cut off string if it exceeds the max lengths.
+            suffix = new StringBuilder(suffix.substring(0, suffixLength));
+            if (suffix.charAt(suffix.length() - 1) == '§') {
+                suffix.deleteCharAt(suffix.length() - 1);
+            }
+        }
+
+        return new String[]{prefix.toString(), suffix.toString()};
     }
 
     @Override
