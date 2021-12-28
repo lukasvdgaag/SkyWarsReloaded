@@ -177,4 +177,10 @@ public class SchemWorldLoader extends BukkitWorldLoader {
         ).setType(Material.STONE);
     }
 
+    @Override
+    public CompletableFuture<Boolean> save(GameWorld gameWorld) {
+        boolean successful = plugin.getSchematicManager().saveGameWorldToSchematic(gameWorld, plugin.getUtils()
+                .getWorldEditWorld(gameWorld.getWorldName()));
+        return CompletableFuture.completedFuture(successful);
+    }
 }

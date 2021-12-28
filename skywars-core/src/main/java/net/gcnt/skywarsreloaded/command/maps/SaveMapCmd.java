@@ -10,6 +10,7 @@ import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class SaveMapCmd extends Cmd {
 
@@ -40,24 +41,30 @@ public class SaveMapCmd extends Cmd {
         }
 
         List<GameWorld> worlds = plugin.getGameManager().getGameWorlds(template);
+        CompletableFuture<Boolean> savingFuture = null;
         for (GameWorld world : worlds) {
             if (world.isEditing()) {
-                // schematic creating and saving
-                // todo: make this save the world to SlimeWorld if enabled isntead of WorldEDit schematics.
-                boolean successful = plugin.getSchematicManager().saveGameWorldToSchematic(world, plugin.getUtils().getWorldEditWorld(world.getWorldName()));
-                if (successful) {
-                    plugin.getMessages().getMessage(MessageProperties.MAPS_WORLD_SAVED.toString()).replace("%template%", template.getName()).send(sender);
-                } else {
-                    plugin.getMessages().getMessage(MessageProperties.MAPS_WORLD_SAVED_FAIL.toString()).replace("%template%", template.getName()).send(sender);
-                }
+                // world creating and saving
+                savingFuture = plugin.getWorldLoader().save(world);
                 break;
             }
         }
 
-        template.saveData();
+        if (savingFuture == null) {
+            this.sendMapSaveFail(template, sender);
+            return true;
+        }
 
-        plugin.getMessages().getMessage(MessageProperties.MAPS_SAVED.toString()).replace("%template%", template.getName()).send(sender);
-        template.checkToDoList(sender);
+        savingFuture.thenAccept(successful -> {
+            if (successful) this.sendWorldSaved(template, sender);
+            else this.sendMapSaveFail(template, sender);
+
+            template.saveData();
+            this.sendMapSaved(template, sender);
+
+            template.checkToDoList(sender);
+        });
+
         return true;
     }
 
@@ -69,5 +76,20 @@ public class SaveMapCmd extends Cmd {
             return maps;
         }
         return new ArrayList<>();
+    }
+
+    protected void sendWorldSaved(GameTemplate template, SWCommandSender sender) {
+        plugin.getMessages().getMessage(MessageProperties.MAPS_WORLD_SAVED.toString())
+            .replace("%template%", template.getName()).send(sender);
+    }
+
+    protected void sendMapSaved(GameTemplate template, SWCommandSender sender) {
+        plugin.getMessages().getMessage(MessageProperties.MAPS_SAVED.toString())
+                .replace("%template%", template.getName()).send(sender);
+    }
+
+    protected void sendMapSaveFail(GameTemplate template, SWCommandSender sender) {
+        plugin.getMessages().getMessage(MessageProperties.MAPS_WORLD_SAVED_FAIL.toString())
+                .replace("%template%", template.getName()).send(sender);
     }
 }
