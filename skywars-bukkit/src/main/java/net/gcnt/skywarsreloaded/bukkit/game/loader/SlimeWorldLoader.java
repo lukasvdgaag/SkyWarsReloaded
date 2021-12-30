@@ -10,6 +10,7 @@ import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameWorld;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
@@ -33,6 +34,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     private final String slimeLoaderType;
 
     private final HashMap<GameWorld, SlimePropertyMap> templatePropertyMap;
+    private final HashMap<GameWorld, SlimeWorld> slimeWorldMap;
 
     public SlimeWorldLoader(SkyWarsReloaded plugin) {
         super(plugin);
@@ -44,6 +46,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
         slimeLoader = slimeWorldManagerPlugin.getLoader(slimeLoaderType);
 
         this.templatePropertyMap = new HashMap<>();
+        this.slimeWorldMap = new HashMap<>();
     }
 
     @Override
@@ -72,6 +75,10 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
                     future.complete(true);
                     return null;
                 }).get();
+
+                synchronized (slimeWorldMap) {
+                    slimeWorldMap.put(gameWorld, tmpWorld);
+                }
 
             } catch (UnknownWorldException ex) {
                 plugin.getLogger().error(String.format("Attempted to load template '%s$' from SWM but doesn't exist! (loader: %s$)", templateName, slimeLoaderType));
@@ -150,5 +157,27 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
         } catch (UnknownWorldException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public CompletableFuture<Boolean> save(GameWorld gameWorld) {
+        boolean successful = true;
+        try {
+            assert gameWorld instanceof BukkitGameWorld;
+            SlimeWorld slimeWorld;
+            synchronized (slimeWorldMap) {
+                slimeWorld = this.slimeWorldMap.get(gameWorld);
+            }
+
+            if (slimeWorld.isReadOnly()) {
+                successful = false;
+            } else {
+                ((BukkitGameWorld) gameWorld).getBukkitWorld().save();
+            }
+
+        } catch (Exception e) {
+            successful = false;
+        }
+        return CompletableFuture.completedFuture(successful);
     }
 }

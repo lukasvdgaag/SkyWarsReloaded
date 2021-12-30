@@ -51,4 +51,9 @@ public interface GameWorldLoader {
      */
     void updateWorldBorder(GameWorld gameWorld);
 
+    /**
+     * Save the current world to disk for future use when creating instances of the map.
+     */
+    CompletableFuture<Boolean> save(GameWorld gameWorld);
+
 }
