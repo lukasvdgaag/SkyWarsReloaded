@@ -26,6 +26,7 @@ public interface PlatformUtils {
     /**
      * Get the major sub-version-number of the current server's implementing minecraft release.
      * For example: 1.8.8 -> 8, 1.17.1 -> 17
+     *
      * @return An int representing the sub version of the current server's minecraft version.
      */
     int getServerVersion();

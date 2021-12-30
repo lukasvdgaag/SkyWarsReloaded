@@ -15,4 +15,6 @@ public interface NMS {
 
     void sendJSONMessage(SWPlayer player, String message);
 
+    void setChestOpen(SWCoord loc);
+
 }
