@@ -89,10 +89,11 @@ public class SchemWorldLoader extends BukkitWorldLoader {
         World createdWorld = creator.createWorld();
         assert createdWorld != null;
         CompletableFuture<Void> future = new CompletableFuture<>();
-        PaperLib.getChunkAtAsync(createdWorld.getSpawnLocation()).thenAccept(chunk -> {
-                    chunk.addPluginChunkTicket(plugin.getBukkitPlugin());
-                    future.complete(null);
-                });
+        // todo fix this for 1.16<
+//        PaperLib.getChunkAtAsync(createdWorld.getSpawnLocation()).thenAccept(chunk -> {
+//                    chunk.addPluginChunkTicket(plugin.getBukkitPlugin());
+//                    future.complete(null);
+//                });
         return future;
     }
 

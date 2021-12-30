@@ -8,8 +8,8 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class AbstractNormalCage implements TeamCage {
 
-    private final AbstractSkyWarsReloaded main;
-    private final TeamSpawn spawn;
+    protected final AbstractSkyWarsReloaded main;
+    protected final TeamSpawn spawn;
 
     private boolean placed;
 
@@ -27,7 +27,7 @@ public abstract class AbstractNormalCage implements TeamCage {
     @Override
     public abstract CompletableFuture<Boolean> placeCage(String cageId);
 
-    public abstract boolean placeCageNow(String cage);
+    public abstract boolean placeCageNow(String cage, String material);
 
     @Override
     public abstract CompletableFuture<Boolean> removeCage(String cage);

@@ -1,12 +1,19 @@
 package net.gcnt.skywarsreloaded.bukkit.protocol;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.protocol.NMS;
+import net.gcnt.skywarsreloaded.utils.Item;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -139,6 +146,20 @@ public class BukkitNMS implements NMS {
             sendPacket.invoke(connection, packet);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void setBlock(SWCoord loc, Item item) {
+        if (loc.world() == null || !(loc.world() instanceof BukkitSWWorld) || !(item instanceof BukkitItem)) return;
+        World world = ((BukkitSWWorld) loc.world()).getBukkitWorld();
+        ItemStack itemStack = ((BukkitItem) item).getBukkitItem();
+
+        Block block = world.getBlockAt(loc.x(), loc.y(), loc.z());
+        block.setType(itemStack.getType());
+        if (version < 13) {
+            block.setData(item.getDamage());
         }
     }
 }

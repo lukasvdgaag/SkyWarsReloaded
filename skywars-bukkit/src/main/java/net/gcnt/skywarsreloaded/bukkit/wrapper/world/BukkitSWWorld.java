@@ -76,4 +76,8 @@ public class BukkitSWWorld extends AbstractSWWorld {
     public void setKeepSpawnLoaded(boolean keepSpawnLoaded) {
         this.bukkitWorld.setKeepSpawnInMemory(keepSpawnLoaded);
     }
+
+    public World getBukkitWorld() {
+        return bukkitWorld;
+    }
 }
