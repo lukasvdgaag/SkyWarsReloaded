@@ -13,12 +13,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.craftbukkit.v1_18_R1.block.CraftChest;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.UUID;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class BukkitNMS implements NMS {
@@ -52,7 +52,7 @@ public class BukkitNMS implements NMS {
 
             if (version < 8) {
                 throw new IllegalStateException("Unsupported server version: " + serverVersion);
-            } else if (version <= 16) {
+            } else if (version <= 15) {
                 // 1.8.8 - 1.16.4
                 //Classes
                 Class<?> typeNMSPlayer = Class.forName("net.minecraft.server." + serverVersion + ".EntityPlayer");
@@ -73,28 +73,22 @@ public class BukkitNMS implements NMS {
                 // Methods
                 this.chatSerializer = chatBaseComponent.getDeclaredClasses()[0].getMethod("a", String.class);
                 this.sendPacket = typePlayerConnection.getMethod("sendPacket", Class.forName("net.minecraft.server." + serverVersion + ".Packet"));
-            } else {
-                // 1.17+ (and default to this for any future version unless updated)
-                // Classes
-                Class<?> typeNMSPlayer = Class.forName("net.minecraft.server.level.EntityPlayer");
-                Class<?> typePlayerConnection = Class.forName("net.minecraft.server.network.PlayerConnection");
-                this.chatBaseComponent = Class.forName("net.minecraft.network.chat.IChatBaseComponent");
-                this.packetPlayOutChat = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutChat");
-                this.chatMessageType = (Class<Enum>) Class.forName("net.minecraft.network.chat.ChatMessageType");
-
-                this.blockPosition = Class.forName("net.minecraft.core.BlockPosition");
-                this.craftWorld = Class.forName("org.bukkit.craftbukkit." + serverVersion + ".CraftWorld");
-                this.worldServer = Class.forName("net.minecraft.server.level.WorldServer");
-                this.tileEntityChest = Class.forName("net.minecraft.server.level.block.entity.TileEntityChest");
-                this.block = Class.forName("net.minecraft.server.world.level.block.Block");
-
-                // Fields
-                this.playerConnection = typeNMSPlayer.getField("b");
-
-                // Methods
-                this.chatSerializer = chatBaseComponent.getDeclaredClasses()[0].getMethod("a", String.class);
-                this.sendPacket = typePlayerConnection.getMethod("sendPacket", Class.forName("net.minecraft.network.protocol.Packet"));
             }
+            /* else {
+                Class<?> typeNMSPlayer = Class.forName("net.minecraft.server.level.EntityPlayer");
+                this.playerConnection = typeNMSPlayer.getField("b");
+                Class<?> typePlayerConnection = Class.forName("net.minecraft.server.network.PlayerConnection");
+                this.sendPacket = typePlayerConnection.getMethod("sendPacket", Class.forName("net.minecraft.network.protocol.Packet"));
+
+                this.block = Class.forName("net.minecraft.world.level.block.Block");
+                this.tileEntityChest = Class.forName("net.minecraft.world.level.block.entity.TileEntityChest");
+                this.worldServer = Class.forName("net.minecraft.server.level.WorldServer");
+                this.blockPosition = Class.forName("net.minecraft.core.BlockPosition");
+                this.chatMessageType = (Class<Enum>) Class.forName("net.minecraft.network.chat.ChatMessageType");
+                this.packetPlayOutChat = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutChat");
+                this.chatBaseComponent = Class.forName("net.minecraft.network.chat.IChatBaseComponent");
+                this.chatSerializer = chatBaseComponent.getDeclaredClasses()[0].getMethod("a", String.class);
+            }*/
         } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException e) {
             e.printStackTrace();
         }
@@ -115,24 +109,22 @@ public class BukkitNMS implements NMS {
         BukkitSWPlayer bukkitSWPlayer = (BukkitSWPlayer) player;
 
         try {
-            Object baseComponent = chatSerializer.invoke(null, "{\"text\": \"" + message + "\"}");
-
             Object packet;
-            if (version < 12) {
-                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, byte.class).newInstance(baseComponent, (byte) 2);
-            } else if (version < 16) {
-                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, chatMessageType)
-                        .newInstance(baseComponent, Enum.valueOf(chatMessageType, "CHAT"));
+            if (version >= 16) {
+                ((BukkitSWPlayer) player).getPlayer().spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, player.getUuid(), new net.md_5.bungee.api.chat.TextComponent(message));
+                return;
+            } else if (version >= 12) {
+                Object baseComponent = chatSerializer.invoke(null, "{\"text\": \"" + message + "\"}");
+                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, chatMessageType).newInstance(baseComponent, Enum.valueOf(chatMessageType, "CHAT"));
             } else {
-                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, chatMessageType, UUID.class)
-                        .newInstance(baseComponent, Enum.valueOf(chatMessageType, "CHAT"), player.getUuid());
+                Object baseComponent = chatSerializer.invoke(null, "{\"text\": \"" + message + "\"}");
+                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, byte.class).newInstance(baseComponent, (byte) 2);
             }
-
 
             Object nmsPlayer = getHandle.invoke(bukkitSWPlayer.getPlayer());
             Object connection = playerConnection.get(nmsPlayer);
-
             sendPacket.invoke(connection, packet);
+
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
             e.printStackTrace();
         }
@@ -144,22 +136,21 @@ public class BukkitNMS implements NMS {
         BukkitSWPlayer bukkitSWPlayer = (BukkitSWPlayer) player;
 
         try {
-            Object baseComponent = chatSerializer.invoke(null, message);
 
             Object packet;
-            if (version < 12) {
-                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, byte.class).newInstance(baseComponent, (byte) 2);
-            } else if (version < 16) {
-                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, chatMessageType)
-                        .newInstance(baseComponent, Enum.valueOf(chatMessageType, "GAME_INFO"));
+            if (version >= 16) {
+                ((BukkitSWPlayer) player).getPlayer().spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.SYSTEM, new net.md_5.bungee.api.chat.TextComponent(message));
+                return;
+            } else if (version >= 12) {
+                Object baseComponent = chatSerializer.invoke(null, message);
+                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, chatMessageType).newInstance(baseComponent, Enum.valueOf(chatMessageType, "SYSTEM"));
             } else {
-                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, chatMessageType, UUID.class)
-                        .newInstance(baseComponent, Enum.valueOf(chatMessageType, "GAME_INFO"), player.getUuid());
+                Object baseComponent = chatSerializer.invoke(null, message);
+                packet = packetPlayOutChat.getDeclaredConstructor(chatBaseComponent, byte.class).newInstance(baseComponent, (byte) 2);
             }
 
             Object nmsPlayer = getHandle.invoke(bukkitSWPlayer.getPlayer());
             Object connection = playerConnection.get(nmsPlayer);
-
             sendPacket.invoke(connection, packet);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
             e.printStackTrace();
@@ -176,31 +167,36 @@ public class BukkitNMS implements NMS {
         bukkitBlock.setType(itemStack.getType());
         if (version < 13) {
             try {
-                block.getMethod("setData", Byte.class).invoke(bukkitBlock, item.getDamage());
+                block.getMethod("setData", byte.class).invoke(bukkitBlock, item.getDamage());
             } catch (Exception ignored) {
             }
         }
     }
 
     @Override
-    public void setChestOpen(SWCoord loc) {
+    public void setChestOpen(SWCoord loc, boolean open) {
         if (loc.world() == null || !(loc.world() instanceof BukkitSWWorld)) return;
         World world = ((BukkitSWWorld) loc.world()).getBukkitWorld();
 
         try {
             if (version >= 16) {
                 Block block = world.getBlockAt(loc.x(), loc.y(), loc.z());
-                Chest chest = (Chest) block;
-                chest.open();
+                Chest chest = (Chest) block.getState();
+                if (open) chest.open();
+                else chest.close();
             } else {
-                Object position = blockPosition.getDeclaredConstructor(Integer.class, Integer.class, Integer.class).newInstance(loc.x(), loc.y(), loc.z());
+                Object position = blockPosition.getDeclaredConstructor(int.class, int.class, int.class).newInstance(loc.x(), loc.y(), loc.z());
                 Object serverWorld = craftWorld.getMethod("getHandle").invoke(craftWorld.cast(world));
-                Object tileChest = tileEntityChest.cast(worldServer.getMethod("getTileEntity", blockPosition).invoke(serverWorld, position));
-                Object blockData = tileEntityChest.getMethod("getBlock").invoke(tileChest);
-                Object tileBlock = blockData.getClass().getMethod("getBlock").invoke(blockData);
-                worldServer.getMethod("playBlockAction", blockPosition, block, Integer.class, Integer.class).invoke(serverWorld, position, tileBlock, 1, 1);
+                Object chestBlock = worldServer.getMethod("getTileEntity", blockPosition).invoke(serverWorld, position);
+                Object tileChest = tileEntityChest.cast(chestBlock);
+
+                Object blockChest = tileEntityChest.getMethod(version == 8 ? "w" : "getBlock").invoke(tileChest);
+                Object tileBlock = blockChest.getClass().getMethod("getBlockData").invoke(blockChest);
+                Object blockThing = tileBlock.getClass().getMethod("getBlock").invoke(tileBlock);
+                worldServer.getMethod("playBlockAction", blockPosition, block, int.class, int.class).invoke(serverWorld, position, blockThing, 1, open ? 1 : 0);
             }
-        } catch (Exception ignored) {
+        } catch (Exception error) {
+            error.printStackTrace();
         }
     }
 

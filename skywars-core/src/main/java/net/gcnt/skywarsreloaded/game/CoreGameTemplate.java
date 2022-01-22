@@ -333,11 +333,11 @@ public class CoreGameTemplate implements GameTemplate {
             int teamNumber = i + 1;
             if (coords.size() < teamSize) {
                 int spawnsLeft = teamSize - coords.size();
-                player.sendMessage(plugin.getUtils().colorize("&a&lLet's set %d more spawn(s) for team %d! &7Use &e/swm spawn player %d &7to add a spawn.".formatted(spawnsLeft, teamNumber, teamNumber)));
+                player.sendMessage(plugin.getUtils().colorize(String.format("&a&lLet's set %d more spawn(s) for team %d! &7Use &e/swm spawn player %d &7to add a spawn.", spawnsLeft, teamNumber, teamNumber)));
                 return false;
             } else if (coords.size() > teamSize) {
                 int spawnsLeft = coords.size() - teamSize;
-                player.sendMessage(plugin.getUtils().colorize("&c&lTeam %d has too many spawns! &7Remove %d spawn(s) from this team by breaking one of its beacons.".formatted(teamNumber, spawnsLeft)));
+                player.sendMessage(plugin.getUtils().colorize(String.format("&c&lTeam %d has too many spawns! &7Remove %d spawn(s) from this team by breaking one of its beacons.", teamNumber, spawnsLeft)));
                 return false;
             }
             found += coords.size();
