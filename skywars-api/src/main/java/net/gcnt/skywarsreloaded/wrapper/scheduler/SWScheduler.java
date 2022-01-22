@@ -31,7 +31,7 @@ public interface SWScheduler {
      * Schedule runnable to run synchronously later.
      *
      * @param runnable Skywars runnable
-     * @param ticks Delay in ticks
+     * @param ticks    Delay in ticks
      */
     void runSyncLater(Runnable runnable, int ticks);
 
@@ -39,7 +39,7 @@ public interface SWScheduler {
      * Schedule runnable to run asynchronously later.
      *
      * @param runnable Skywars runnable
-     * @param ticks Delay in ticks
+     * @param ticks    Delay in ticks
      */
     void runAsyncLater(Runnable runnable, int ticks);
 
@@ -47,17 +47,17 @@ public interface SWScheduler {
      * Schedule runnable to run synchronously on a timer
      *
      * @param runnable Skywars runnable
-     * @param ticks Delay in ticks
-     * @param period Period in ticks
+     * @param ticks    Delay in ticks
+     * @param period   Period in ticks
      */
-    void runSyncTimer(Runnable runnable, int ticks, int period);
+    SWRunnable runSyncTimer(SWRunnable runnable, int ticks, int period);
 
     /**
      * Schedule runnable to run asynchronously on a timer
      *
      * @param runnable Skywars runnable
-     * @param ticks Delay in ticks
-     * @param period Period in ticks
+     * @param ticks    Delay in ticks
+     * @param period   Period in ticks
      */
-    void runAsyncTimer(Runnable runnable, int ticks, int period);
+    SWRunnable runAsyncTimer(SWRunnable runnable, int ticks, int period);
 }

@@ -6,4 +6,8 @@ public interface SWRunnable extends Runnable {
 
     boolean isCancelled();
 
+    int getTaskId();
+
+    void setTaskId(int taskId);
+
 }

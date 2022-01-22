@@ -3,9 +3,13 @@ package net.gcnt.skywarsreloaded.bukkit.wrapper.scheduler;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.AbstractSWScheduler;
+import net.gcnt.skywarsreloaded.wrapper.scheduler.CoreSWRunnable;
+import net.gcnt.skywarsreloaded.wrapper.scheduler.SWRunnable;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BukkitSWScheduler extends AbstractSWScheduler {
@@ -47,12 +51,16 @@ public class BukkitSWScheduler extends AbstractSWScheduler {
     }
 
     @Override
-    public void runSyncTimer(Runnable runnable, int ticks, int period) {
-        bukkitPlugin.getServer().getScheduler().runTaskTimer(bukkitPlugin, runnable, ticks, period);
+    public SWRunnable runSyncTimer(SWRunnable runnable, int ticks, int period) {
+        BukkitTask task = bukkitPlugin.getServer().getScheduler().runTaskTimer(bukkitPlugin, runnable, ticks, period);
+        runnable.setTaskId(task.getTaskId());
+        return runnable;
     }
 
     @Override
-    public void runAsyncTimer(Runnable runnable, int ticks, int period) {
-        bukkitPlugin.getServer().getScheduler().runTaskTimerAsynchronously(bukkitPlugin, runnable, ticks, period);
+    public SWRunnable runAsyncTimer(SWRunnable runnable, int ticks, int period) {
+        BukkitTask task = bukkitPlugin.getServer().getScheduler().runTaskTimerAsynchronously(bukkitPlugin, runnable, ticks, period);
+        runnable.setTaskId(task.getTaskId());
+        return runnable;
     }
 }

@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 public interface GamePlayer {
@@ -53,5 +54,9 @@ public interface GamePlayer {
      * @return Team that the player is in.
      */
     GameTeam getTeam();
+
+    SWScoreboard getScoreboard();
+
+    void setScoreboard(SWScoreboard scoreboard);
 
 }
