@@ -37,7 +37,12 @@ public class AbstractSWEventListener implements SWEventListener {
 
     @Override
     public void onPlayerInteract(SWPlayerInteractEvent event) {
-
+        if (event.getClickedBlockType().toLowerCase().contains("chest")) {
+            if (event.getAction() == SWPlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
+                event.getPlayer().sendMessage("opening chest.");
+                plugin.getNMS().setChestOpen(event.getClickedBlockLocation(), true);
+            }
+        }
     }
 
     @Override
@@ -78,8 +83,7 @@ public class AbstractSWEventListener implements SWEventListener {
     public void onPlayerBlockPlace(SWBlockPlaceEvent event) {
         // player is placing a chest
         if (event.getBlockTypeName().equalsIgnoreCase("CHEST") ||
-                event.getBlockTypeName().equalsIgnoreCase("TRAPPED_CHEST"))
-        {
+                event.getBlockTypeName().equalsIgnoreCase("TRAPPED_CHEST")) {
             GameWorld gameWorld = plugin.getGameManager().getGameWorldByName(event.getCoord().world().getName());
             if (gameWorld == null || !gameWorld.isEditing()) return;
 
@@ -90,7 +94,7 @@ public class AbstractSWEventListener implements SWEventListener {
                         plugin.getUtils().colorize("&7Added a new chest to the template!"), 5, 30, 5);
                 event.getPlayer().sendMessage(plugin.getUtils().colorize(
                         String.format("&aAdded a new chest (&b#%d&a) to game template &b%s&a.",
-                            template.getChests().size(), template.getDisplayName())));
+                                template.getChests().size(), template.getDisplayName())));
                 template.checkToDoList(event.getPlayer());
             }
         }
