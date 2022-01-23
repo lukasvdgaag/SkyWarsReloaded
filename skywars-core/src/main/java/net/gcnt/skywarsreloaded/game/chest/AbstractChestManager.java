@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class AbstractChestManager implements ChestManager {
 
@@ -32,13 +31,25 @@ public abstract class AbstractChestManager implements ChestManager {
         this.chests.clear();
 
         // Load all from directory
+        this.loadAllChestTypesFromDir(dir, 0, 1, "");
+    }
+
+    private void loadAllChestTypesFromDir(File dir, int depth, int maxDepth, String currentPrefix) {
+        // Sanity checks
+        if (depth > maxDepth) return;
+
         File[] files = dir.listFiles();
         if (files == null) return;
 
         for (File file : files) {
 
             // Sanity checks
-            if (file.isDirectory() || !file.getName().endsWith(".yml")) continue;
+            if (file.isDirectory()) {
+                String updatedPrefix = currentPrefix + file.getName() + "/";
+                this.loadAllChestTypesFromDir(file, depth + 1, maxDepth, updatedPrefix);
+                continue;
+            } else if (!file.getName().endsWith(".yml")) continue;
+
             String name = file.getName().replace(".yml", "");
             if (getChestTypeByName(name) != null) continue;
 
