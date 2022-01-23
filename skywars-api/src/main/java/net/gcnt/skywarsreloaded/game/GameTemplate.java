@@ -1,12 +1,14 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
+import net.gcnt.skywarsreloaded.game.chest.SWChestType;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
 import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.List;
+import java.util.Map;
 
 public interface GameTemplate {
 
@@ -126,13 +128,26 @@ public interface GameTemplate {
     void saveData();
 
     /**
+     * Get the list of enabled chest types for this template
+     * @return List of enabled chest types
+     */
+    List<SWChestType> enabledChestTypes();
+
+    /**
+     * Set a chest type to be enabled for this template
+     * @param chestType The chest type to enable
+     */
+    void enableChestType(SWChestType chestType);
+
+    /**
      * Add a new chest to the template.
      * This method will return false if there already was a chest at the target location.
      *
      * @param loc Location of the new chest.
+     * @param chestType The {@link SWChestType} of the chest being added
      * @return true if added, false if not added.
      */
-    boolean addChest(SWCoord loc);
+    boolean addChest(SWCoord loc, SWChestType chestType);
 
     /**
      * Remove an existing chest from the template.
@@ -148,7 +163,7 @@ public interface GameTemplate {
      *
      * @return List of chest locations.
      */
-    List<SWCoord> getChests();
+    Map<SWCoord, SWChestType> getChests();
 
     /**
      * Add a new player spawnpoint a team.

@@ -1,11 +1,13 @@
 package net.gcnt.skywarsreloaded.game;
 
+import net.gcnt.skywarsreloaded.game.chest.SWChestType;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface GameWorld {
@@ -25,6 +27,8 @@ public interface GameWorld {
     boolean isSpawnAvailable();
 
     boolean isEditing();
+
+    Map<UUID, SWChestType> getSelectedChestTypes();
 
     void setEditing(boolean edit);
 
@@ -55,17 +59,22 @@ public interface GameWorld {
      *
      * @return String array with all slots and their ItemStack values as strings.
      */
-    Item[] generateChestLoot();
+    Item[] generateChestLoot(SWChestType chestType);
 
     /**
      * Fill the chest with the given coord.
      *
      * @param coord Location of the chest
      */
-    void fillChest(SWCoord coord);
+    void fillChest(SWCoord coord, SWChestType chestType);
 
     /**
      * Removes all the cages that are currently placed.
      */
     void removeCages();
+
+    /**
+     * Fill all the registered chests in the world
+     */
+    void fillChests();
 }

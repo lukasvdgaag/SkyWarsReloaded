@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.craftbukkit.v1_18_R1.block.CraftChest;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;

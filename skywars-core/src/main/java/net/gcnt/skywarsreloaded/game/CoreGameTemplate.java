@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.game;
 import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
+import net.gcnt.skywarsreloaded.game.chest.SWChestType;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
@@ -12,7 +13,9 @@ import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CoreGameTemplate implements GameTemplate {
@@ -20,16 +23,26 @@ public class CoreGameTemplate implements GameTemplate {
     private final SkyWarsReloaded plugin;
     private final YAMLConfig config;
     private final String name;
+
+    // Properties
     private String displayName;
     private String creator;
+
+    // Player / Team data
     private SWCoord spectateSpawn;
     private SWCoord lobbySpawn;
     private int teamSize;
     private int minPlayers;
-    private List<SWCoord> chests;
-    private List<SWCoord> signs;
     private List<List<SWCoord>> teamSpawnLocations;
+
+    // Map Data
     private int borderRadius;
+    private Map<SWCoord, SWChestType> chests;
+    private final Object chestsLock;
+    private List<SWChestType> enabledChestTypes;
+    private List<SWCoord> signs;
+
+    // State
     private boolean enabled;
     private boolean isTeamsizeSetup;
 
@@ -37,7 +50,8 @@ public class CoreGameTemplate implements GameTemplate {
         this.plugin = plugin;
         this.config = plugin.getYAMLManager().loadConfig("gamedata-" + name, FolderProperties.TEMPLATE_FOLDER.toString(), name + ".yml", "/mapdata.yml");
         this.name = name;
-        this.chests = new ArrayList<>();
+        this.chests = new HashMap<>();
+        this.chestsLock = new Object();
         this.signs = new ArrayList<>();
         this.teamSpawnLocations = new ArrayList<>();
         this.displayName = name;
@@ -145,6 +159,12 @@ public class CoreGameTemplate implements GameTemplate {
         this.minPlayers = config.getInt(MapDataProperties.MIN_PLAYERS.toString(), 4);
         this.borderRadius = config.getInt(MapDataProperties.BORDER_RADIUS.toString(), 100);
         this.enabled = config.getBoolean(MapDataProperties.ENABLED.toString(), false);
+        List<String> swChestTypeIds = config.getStringList(MapDataProperties.ENABLED_CHESTTYPES.toString());
+        List<SWChestType> enabledChestTypesTmp = new ArrayList<>();
+        for (String swChestTypeId : swChestTypeIds) {
+            enabledChestTypesTmp.add(this.plugin.getChestManager().getChestTypeByName(swChestTypeId));
+        }
+        this.enabledChestTypes = enabledChestTypesTmp;
 
         this.isTeamsizeSetup = config.getBoolean(MapDataProperties.IS_TEAMSIZE_SETUP.toString(), false);
 
@@ -153,10 +173,10 @@ public class CoreGameTemplate implements GameTemplate {
         this.lobbySpawn = lspawn == null ? null : new CoreSWCoord(plugin, lspawn);
         this.spectateSpawn = sspawn == null ? null : new CoreSWCoord(plugin, sspawn);
 
-        this.chests = new ArrayList<>();
-        for (String chestLoc : config.getStringList(MapDataProperties.CHESTS.toString())) {
-            SWCoord loc = new CoreSWCoord(plugin, chestLoc);
-            this.chests.add(loc);
+        this.chests = new HashMap<>();
+        for (Map.Entry<String, String> chestEntry : config.getStringMap(MapDataProperties.CHESTS.toString()).entrySet()) {
+            SWCoord loc = new CoreSWCoord(plugin, chestEntry.getKey());
+            this.chests.put(loc, this.plugin.getChestManager().getChestTypeByName(chestEntry.getValue()));
         }
         this.signs = new ArrayList<>();
         for (String signLoc : config.getStringList(MapDataProperties.SIGNS.toString())) {
@@ -192,13 +212,15 @@ public class CoreGameTemplate implements GameTemplate {
         config.set(MapDataProperties.MIN_PLAYERS.toString(), minPlayers);
         config.set(MapDataProperties.ENABLED.toString(), enabled);
         config.set(MapDataProperties.BORDER_RADIUS.toString(), borderRadius);
+        config.set(MapDataProperties.ENABLED_CHESTTYPES.toString(), enabledChestTypes);
 
         config.set(MapDataProperties.IS_TEAMSIZE_SETUP.toString(), isTeamsizeSetup);
 
         config.set(MapDataProperties.LOBBY_SPAWN.toString(), lobbySpawn == null ? null : lobbySpawn.toString());
         config.set(MapDataProperties.SPECTATE_SPAWN.toString(), spectateSpawn == null ? null : spectateSpawn.toString());
 
-        config.set(MapDataProperties.CHESTS.toString(), chests.stream().map(SWCoord::toString).collect(Collectors.toList()));
+        config.set(MapDataProperties.CHESTS.toString(), chests.entrySet().stream().collect(
+                Collectors.toMap((entry) -> entry.getKey().toString(), (entry) -> entry.getValue().getName())));
         config.set(MapDataProperties.SIGNS.toString(), signs.stream().map(SWCoord::toString).collect(Collectors.toList()));
 
         List<List<String>> spawnPoints = new ArrayList<>();
@@ -210,17 +232,29 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
-    public synchronized boolean addChest(SWCoord loc) {
-        for (SWCoord chest : this.chests) {
-            if (chest.equals(loc)) return false;
+    public List<SWChestType> enabledChestTypes() {
+        return this.enabledChestTypes;
+    }
+
+    @Override
+    public void enableChestType(SWChestType chestType) {
+        if (!this.enabledChestTypes.contains(chestType)) this.enabledChestTypes.add(chestType);
+    }
+
+    @Override
+    public boolean addChest(SWCoord loc, SWChestType chestType) {
+        synchronized (this.chestsLock) {
+            for (SWCoord chest : this.chests.keySet()) {
+                if (chest.equals(loc)) return false;
+            }
+            this.chests.put(loc, chestType);
         }
-        this.chests.add(loc);
         return true;
     }
 
     @Override
     public synchronized boolean removeChest(SWCoord loc) {
-        for (SWCoord chest : this.chests) {
+        for (SWCoord chest : this.chests.keySet()) {
             if (chest.equals(loc)) {
                 this.chests.remove(chest);
                 return true;
@@ -230,7 +264,7 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
-    public List<SWCoord> getChests() {
+    public Map<SWCoord, SWChestType> getChests() {
         return this.chests;
     }
 

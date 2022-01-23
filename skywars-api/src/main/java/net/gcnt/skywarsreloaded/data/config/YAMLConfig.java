@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.utils.SWCoord;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface YAMLConfig {
@@ -29,6 +30,8 @@ public interface YAMLConfig {
     int getInt(String property, int defaultValue);
 
     List<String> getStringList(String property);
+
+    Map<String, String> getStringMap(String toString);
 
     double getDouble(String property);
 
@@ -76,5 +79,4 @@ public interface YAMLConfig {
      */
     @Deprecated
     void save();
-
 }

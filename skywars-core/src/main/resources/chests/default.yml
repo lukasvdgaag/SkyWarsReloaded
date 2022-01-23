@@ -1,16 +1,17 @@
 display-name: 'Default'
 
-basic:
-  contents:
-    '0':
-      material: STONE
+difficulties:
+  basic:
+    contents:
+      '0':
+        material: STONE
 
-normal:
-  contents:
-    '0':
-      material: IRON_BLOCK
+  normal:
+    contents:
+      '0':
+        material: IRON_BLOCK
 
-insane:
-  contents:
-    '0':
-      material: DIAMOND_BLOCK
+  insane:
+    contents:
+      '0':
+        material: DIAMOND_BLOCK

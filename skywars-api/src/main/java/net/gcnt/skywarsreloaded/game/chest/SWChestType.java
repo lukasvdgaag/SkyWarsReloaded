@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.game.chest;
 
-import net.gcnt.skywarsreloaded.game.types.GameType;
+import net.gcnt.skywarsreloaded.game.types.GameDifficulty;
 import net.gcnt.skywarsreloaded.utils.Item;
 
 import java.util.HashMap;
@@ -15,6 +15,6 @@ public interface SWChestType {
 
     String getDisplayName();
 
-    HashMap<GameType, HashMap<Integer, Item>> getAllContents();
+    HashMap<GameDifficulty, HashMap<Integer, Item>> getAllContents();
 
 }

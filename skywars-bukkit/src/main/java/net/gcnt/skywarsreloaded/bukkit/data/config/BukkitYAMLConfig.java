@@ -13,7 +13,9 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class BukkitYAMLConfig extends AbstractYAMLConfig {
@@ -105,6 +107,17 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     @Override
     public List<String> getStringList(String property) {
         return fileConfiguration.getStringList(property);
+    }
+
+    @Override
+    public Map<String, String> getStringMap(String property) {
+        ConfigurationSection section = this.fileConfiguration.getConfigurationSection(property);
+        if (section == null) return null;
+        HashMap<String, String> convertedMap = new HashMap<>();
+        for (Map.Entry<String, Object> entry : section.getValues(false).entrySet()) {
+            convertedMap.put(entry.getKey(), entry.getValue().toString());
+        }
+        return convertedMap;
     }
 
     @Override

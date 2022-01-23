@@ -8,6 +8,7 @@ public enum MapDataProperties {
     MIN_PLAYERS("min-players"),
     ENABLED("enabled"),
     BORDER_RADIUS("border-radius"),
+    ENABLED_CHESTTYPES("enabled-chesttypes"),
 
     IS_TEAMSIZE_SETUP("checks.teamsize-setup"),
 

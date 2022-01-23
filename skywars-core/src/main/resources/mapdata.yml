@@ -3,6 +3,10 @@ team-size: 2
 min-players: 4
 enabled: false
 border-radius: 100
+enabled-chesttypes:
+  - basic
+  - normal
+  - insane
 
 default-chest-type: NORMAL
 default-health: TEN

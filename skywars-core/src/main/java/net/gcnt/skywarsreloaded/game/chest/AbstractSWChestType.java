@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.game.chest;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
-import net.gcnt.skywarsreloaded.game.types.GameType;
+import net.gcnt.skywarsreloaded.game.types.GameDifficulty;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.properties.ChestProperties;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
@@ -17,7 +17,7 @@ public abstract class AbstractSWChestType implements SWChestType {
 
     private String displayName;
 
-    private HashMap<GameType, HashMap<Integer, Item>> inventoryContents;
+    private HashMap<GameDifficulty, HashMap<Integer, Item>> inventoryContents;
 
     public AbstractSWChestType(SkyWarsReloaded plugin, String nameIn) {
         this.plugin = plugin;
@@ -42,7 +42,7 @@ public abstract class AbstractSWChestType implements SWChestType {
     }
 
     @Override
-    public HashMap<GameType, HashMap<Integer, Item>> getAllContents() {
+    public HashMap<GameDifficulty, HashMap<Integer, Item>> getAllContents() {
         return inventoryContents;
     }
 
@@ -51,15 +51,14 @@ public abstract class AbstractSWChestType implements SWChestType {
         // Basic chest type info init
         this.displayName = config.getString(ChestProperties.DISPLAY_NAME.toString(), name);
 
-        for (GameType type : GameType.values()) {
-            loadDataFromGameType(type);
-        }
+        config.getKeys(ChestProperties.DIFFICULTIES.toString()).stream().map(GameDifficulty::getById)
+                .forEach(this::loadDataFromGameType);
 
     }
 
-    private void loadDataFromGameType(GameType gameType) {
+    private void loadDataFromGameType(GameDifficulty gameDifficulty) {
         // Init data
-        String gameTypeConfigSectionName = gameType.name().toLowerCase();
+        String gameTypeConfigSectionName = gameDifficulty.getId();
         String configPath = gameTypeConfigSectionName + ChestProperties.CONTENTS;
 
         // Load inventory content
@@ -79,7 +78,7 @@ public abstract class AbstractSWChestType implements SWChestType {
         }
 
         // Apply it to the data map
-        inventoryContents.put(gameType, gameTypeItems);
+        inventoryContents.put(gameDifficulty, gameTypeItems);
     }
 
     @Override
@@ -87,8 +86,8 @@ public abstract class AbstractSWChestType implements SWChestType {
         config.set(ChestProperties.DISPLAY_NAME.toString(), displayName);
 
         getAllContents().forEach(
-                (gameType, contents) -> {
-                    String gameTypeConfigSectionName = gameType.name().toLowerCase();
+                (gameDifficulty, contents) -> {
+                    String gameTypeConfigSectionName = gameDifficulty.getId();
                     contents.forEach((slot, item) ->
                             config.set(gameTypeConfigSectionName + "." + ChestProperties.CONTENTS + "." + slot, item));
                 }
