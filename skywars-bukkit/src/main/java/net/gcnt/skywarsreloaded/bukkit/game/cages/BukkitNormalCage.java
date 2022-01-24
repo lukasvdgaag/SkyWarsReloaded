@@ -61,7 +61,7 @@ public class BukkitNormalCage extends AbstractNormalCage {
         for (SWCoord toAdd : shape.getLocations()) {
             SWCoord loc = baseCoord.clone().add(toAdd);
 
-            main.getNMS().setBlock(loc, new BukkitItem(main, material));
+            main.getNMSManager().getNMS().setBlock(loc, new BukkitItem(main, material));
             // todo get cage material from config?
         }
 

@@ -11,16 +11,15 @@ import net.gcnt.skywarsreloaded.bukkit.game.loader.SchemWorldLoader;
 import net.gcnt.skywarsreloaded.bukkit.game.loader.SlimeWorldLoader;
 import net.gcnt.skywarsreloaded.bukkit.listener.BukkitSWEventListener;
 import net.gcnt.skywarsreloaded.bukkit.managers.BukkitPlayerManager;
-import net.gcnt.skywarsreloaded.bukkit.protocol.BukkitNMS;
+import net.gcnt.skywarsreloaded.bukkit.protocol.BukkitNMSManager;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitPlatformUtils;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitSWLogger;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.scheduler.BukkitSWScheduler;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.sender.BukkitSWConsoleSender;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.server.BukkitSWServer;
 import net.gcnt.skywarsreloaded.command.CoreSWCommandManager;
-import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
-import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -36,13 +35,66 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     // Internal Utils
 
     @Override
+    public void initChestManager() {
+        setChestManager(new BukkitChestManager(this));
+    }
+
+    @Override
+    public void initCommandManager() {
+        setCommandManager(new CoreSWCommandManager(this));
+    }
+
+    @Override
+    public void initCommands() {
+        BukkitSWCommandExecutor ex = new BukkitSWCommandExecutor(this);
+
+        PluginCommand plCmdSW = plugin.getCommand("skywars");
+        if (plCmdSW != null) {
+            plCmdSW.setExecutor(ex);
+            plCmdSW.setTabCompleter(ex);
+        }
+        PluginCommand plCmdSWMap = plugin.getCommand("skywarsmap");
+        if (plCmdSWMap != null) {
+            plCmdSWMap.setExecutor(ex);
+            plCmdSWMap.setTabCompleter(ex);
+        }
+        PluginCommand plCmdSWKit = plugin.getCommand("skywarskit");
+        if (plCmdSWKit != null) {
+            plCmdSWKit.setExecutor(ex);
+            plCmdSWKit.setTabCompleter(ex);
+        }
+    }
+
+    @Override
+    public void initConsoleSender() {
+        setConsoleSender(new BukkitSWConsoleSender(this.getBukkitPlugin().getServer().getConsoleSender()));
+    }
+
+    @Override
+    public void initEventListener() {
+        BukkitSWEventListener bukkitEventListener = new BukkitSWEventListener(this);
+        this.plugin.getServer().getPluginManager().registerEvents(bukkitEventListener, this.plugin);
+        setEventListener(bukkitEventListener);
+    }
+
+    @Override
+    public void initGameManager() {
+        setGameManager(new BukkitGameManager(this));
+    }
+
+    @Override
+    public void initKitManager() {
+        setKitManager(new BukkitKitManager(this));
+    }
+
+    @Override
     public void initLogger() {
         setLogger(new BukkitSWLogger(this, this.plugin.getLogger(), false));
     }
 
     @Override
-    protected void initScheduler() {
-        setScheduler(new BukkitSWScheduler(this));
+    public void initNMSManager() {
+        setNMSManager(new BukkitNMSManager(this));
     }
 
     @Override
@@ -51,18 +103,23 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     }
 
     @Override
-    public void initYAMLManager() {
-        setYAMLManager(new BukkitYAMLManager(this));
-    }
-
-    @Override
     public void initPlayerDataManager() {
         setPlayerDataManager(new BukkitSWPlayerDataManager(this));
     }
 
     @Override
-    public void initCommandManager() {
-        setCommandManager(new CoreSWCommandManager(this));
+    public void initPlayerManager() {
+        setPlayerManager(new BukkitPlayerManager(this));
+    }
+
+    @Override
+    protected void initScheduler() {
+        setScheduler(new BukkitSWScheduler(this));
+    }
+
+    @Override
+    public void initServer() {
+        setServer(new BukkitSWServer(this));
     }
 
     @Override
@@ -80,51 +137,8 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     }
 
     @Override
-    public void initCommands() {
-        BukkitSWCommandExecutor ex = new BukkitSWCommandExecutor(this);
-        plugin.getCommand("skywars").setExecutor(ex);
-        plugin.getCommand("skywars").setTabCompleter(ex);
-        plugin.getCommand("skywarsmap").setExecutor(ex);
-        plugin.getCommand("skywarsmap").setTabCompleter(ex);
-        plugin.getCommand("skywarskit").setExecutor(ex);
-        plugin.getCommand("skywarskit").setTabCompleter(ex);
-    }
-
-    @Override
-    public void initGameManager() {
-        setGameManager(new BukkitGameManager(this));
-    }
-
-    @Override
-    public void initConsoleSender() {
-        setConsoleSender(new BukkitSWConsoleSender(this.getBukkitPlugin().getServer().getConsoleSender()));
-    }
-
-    @Override
-    public void initKitManager() {
-        setKitManager(new BukkitKitManager(this));
-    }
-
-    @Override
-    public void initChestManager() {
-        setChestManager(new BukkitChestManager(this));
-    }
-
-    @Override
-    public void initEventListener() {
-        BukkitSWEventListener bukkitEventListener = new BukkitSWEventListener(this);
-        this.plugin.getServer().getPluginManager().registerEvents(bukkitEventListener, this.plugin);
-        setEventListener(bukkitEventListener);
-    }
-
-    @Override
-    public void initPlayerManager() {
-        setPlayerManager(new BukkitPlayerManager(this));
-    }
-
-    @Override
-    public void initServer() {
-        setServer(new BukkitSWServer(this));
+    public void initYAMLManager() {
+        setYAMLManager(new BukkitYAMLManager(this));
     }
 
     public BukkitSkyWarsReloadedPlugin getBukkitPlugin() {
@@ -136,11 +150,6 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     public File getDataFolder() {
         return plugin.getDataFolder();
-    }
-
-    @Override
-    public void setSchematicManager(SchematicManager schematicManager) {
-        super.setSchematicManager(schematicManager);
     }
 
     @Override
@@ -157,11 +166,6 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     public String getPlatformVersion() {
         // todo not sure if this is correct, TBD
         return this.plugin.getServer().getClass().getPackage().getImplementationVersion();
-    }
-
-    @Override
-    public void initNMS() {
-        setNMS(new BukkitNMS(this, Bukkit.getServer().getClass().getPackage().getName()));
     }
 
     @Override

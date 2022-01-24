@@ -15,7 +15,7 @@ import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
-import net.gcnt.skywarsreloaded.protocol.NMS;
+import net.gcnt.skywarsreloaded.protocol.NMSManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
@@ -32,7 +32,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private PlatformUtils platformUtils;
     private SWScheduler scheduler;
     private SWServer server;
-    private NMS nms;
+    private NMSManager nmsManager;
 
     // Data
     private Storage storage;
@@ -68,7 +68,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         initPlatformUtils();
         initScheduler();
         try {
-            initNMS();
+            initNMSManager();
         } catch (IllegalStateException ex) {
             this.getLogger().error(ex.getMessage());
             return;
@@ -143,36 +143,37 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public void postEnable() {
     }
 
+    protected abstract void initChestManager();
 
-    public abstract void initLogger();
+    protected abstract void initCommandManager();
+
+    protected abstract void initCommands();
+
+    protected abstract void initConsoleSender();
+
+    protected abstract void initEventListener();
+
+    protected abstract void initGameManager();
+
+    protected abstract void initKitManager();
+
+    protected abstract void initLogger();
+
+    protected abstract void initNMSManager();
+
+    protected abstract void initPlatformUtils();
+
+    protected abstract void initPlayerDataManager();
+
+    protected abstract void initPlayerManager();
 
     protected abstract void initScheduler();
 
-    public abstract void initPlatformUtils();
+    protected abstract void initServer();
 
-    public abstract void initYAMLManager();
+    protected abstract void initWorldLoader();
 
-    public abstract void initPlayerManager();
-
-    public abstract void initPlayerDataManager();
-
-    public abstract void initCommandManager();
-
-    public abstract void initConsoleSender();
-
-    public abstract void initKitManager();
-
-    public abstract void initChestManager();
-
-    public abstract void initNMS();
-
-    public abstract void initEventListener();
-
-    public abstract void initWorldLoader();
-
-    public abstract void initGameManager();
-
-    public abstract void initServer();
+    protected abstract void initYAMLManager();
 
     // Getters & Setters
 
@@ -365,12 +366,12 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public NMS getNMS() {
-        return this.nms;
+    public NMSManager getNMSManager() {
+        return this.nmsManager;
     }
 
     @Override
-    public void setNMS(NMS nms) {
-        this.nms = nms;
+    public void setNMSManager(NMSManager nmsManagerIn) {
+        this.nmsManager = nmsManagerIn;
     }
 }

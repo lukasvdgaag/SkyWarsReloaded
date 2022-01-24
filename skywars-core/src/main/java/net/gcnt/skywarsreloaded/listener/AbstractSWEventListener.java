@@ -40,7 +40,7 @@ public class AbstractSWEventListener implements SWEventListener {
         if (event.getClickedBlockType().toLowerCase().contains("chest")) {
             if (event.getAction() == SWPlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
                 event.getPlayer().sendMessage("opening chest.");
-                plugin.getNMS().setChestOpen(event.getClickedBlockLocation(), true);
+                plugin.getNMSManager().getNMS().setChestOpen(event.getClickedBlockLocation(), true);
             }
         }
     }

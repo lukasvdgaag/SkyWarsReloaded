@@ -8,6 +8,7 @@ import net.gcnt.skywarsreloaded.protocol.NMS;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.server.SWGameRule;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -22,6 +23,7 @@ import java.lang.reflect.Method;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class BukkitNMS implements NMS {
 
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final SkyWarsReloaded plugin;
     private final int version;
 
@@ -95,11 +97,10 @@ public class BukkitNMS implements NMS {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void setGameRule(SWWorld world, String rule, String value) {
+    public void setGameRule(SWWorld world, SWGameRule rule, Object value) {
         World bukkitWorld = Bukkit.getWorld(world.getName());
         if (bukkitWorld == null) return;
-        // todo make this use the non-deprecated method
-        bukkitWorld.setGameRuleValue(rule, value);
+        bukkitWorld.setGameRuleValue(rule.getMinecraftId(), value.toString());
     }
 
     @Override
