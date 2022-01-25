@@ -71,6 +71,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
             initNMSManager();
         } catch (IllegalStateException ex) {
             this.getLogger().error(ex.getMessage());
+            this.onDisable();
             return;
         }
 
@@ -124,8 +125,10 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     @Override
     public void onDisable() {
-        for (GameWorld world : getGameManager().getGameWorlds()) {
-            getWorldLoader().deleteWorldInstance(world);
+        if (getGameManager() != null) {
+            for (GameWorld world : getGameManager().getGameWorlds()) {
+                getWorldLoader().deleteWorldInstance(world);
+            }
         }
     }
 
@@ -159,7 +162,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     protected abstract void initLogger();
 
-    protected abstract void initNMSManager();
+    protected abstract void initNMSManager() throws IllegalStateException;
 
     protected abstract void initPlatformUtils();
 

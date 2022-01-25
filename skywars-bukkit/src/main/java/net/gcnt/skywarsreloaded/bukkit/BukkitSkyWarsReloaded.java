@@ -93,7 +93,7 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     }
 
     @Override
-    public void initNMSManager() {
+    public void initNMSManager() throws IllegalStateException {
         setNMSManager(new BukkitNMSManager(this));
     }
 
