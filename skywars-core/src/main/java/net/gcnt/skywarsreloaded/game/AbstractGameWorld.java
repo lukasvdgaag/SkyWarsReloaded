@@ -117,7 +117,8 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public void addPlayers(GamePlayer... players) {
-        // Handle editing join
+        // Select the default chest type to be placed if the player is joining a map
+        // that is being edited.
         SWChestType defaultChestType = null;
         if (this.editing) {
             Collection<SWChestType> chests = this.gameTemplate.getChests().values();
@@ -130,10 +131,13 @@ public abstract class AbstractGameWorld implements GameWorld {
         }
 
         for (GamePlayer player : players) {
+            // Apply the default chest type to the player
             if (this.editing) {
                 this.selectedChestTypes.put(player.getSWPlayer().getUuid(), defaultChestType);
             }
+            // Add the player to the game
             this.players.add(player);
+            player.getSWPlayer().setGameWorld(this);
         }
     }
 

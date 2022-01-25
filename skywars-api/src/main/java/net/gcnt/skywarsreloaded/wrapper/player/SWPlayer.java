@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.wrapper.player;
 
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
+import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
@@ -15,6 +16,10 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
     SWPlayerData getPlayerData();
 
     void setPlayerData(SWPlayerData playerData);
+
+    GameWorld getGameWorld();
+
+    void setGameWorld(GameWorld world);
 
     Item getItemInHand(boolean offHand);
 
