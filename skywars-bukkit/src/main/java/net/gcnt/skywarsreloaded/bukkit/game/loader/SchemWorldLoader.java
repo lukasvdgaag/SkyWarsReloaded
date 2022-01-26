@@ -74,6 +74,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
 
         // Override world generator
         creator.generator(new ChunkGenerator() {
+            // todo check these methods on older and newer versions, and possibly use non-deprecated methods.
             @NotNull
             @Override
             public ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid biome) {
@@ -86,14 +87,17 @@ public class SchemWorldLoader extends BukkitWorldLoader {
                 return chunkData;
             }
         });
+
         World createdWorld = creator.createWorld();
         assert createdWorld != null;
         CompletableFuture<Void> future = new CompletableFuture<>();
         // todo fix this for 1.16<
-//        PaperLib.getChunkAtAsync(createdWorld.getSpawnLocation()).thenAccept(chunk -> {
-//                    chunk.addPluginChunkTicket(plugin.getBukkitPlugin());
-//                    future.complete(null);
-//                });
+        PaperLib.getChunkAtAsync(createdWorld.getSpawnLocation()).thenAccept(chunk -> {
+            if (plugin.getUtils().getServerVersion() >= 16) {
+                chunk.addPluginChunkTicket(plugin.getBukkitPlugin());
+            }
+            future.complete(null);
+        });
         return future;
     }
 

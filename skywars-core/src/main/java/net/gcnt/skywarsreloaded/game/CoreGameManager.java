@@ -113,6 +113,7 @@ public abstract class CoreGameManager implements GameManager {
         GameTemplate template = new CoreGameTemplate(plugin, gameId);
         template.loadData();
         template.saveData();
+        this.templates.put(gameId, template);
         return template;
     }
 

@@ -28,13 +28,16 @@ public interface GameWorld {
 
     boolean isEditing();
 
-    Map<UUID, SWChestType> getSelectedChestTypes();
-
     void setEditing(boolean edit);
 
-    /** This method is to be run async since it could perform long operations
+    Map<UUID, SWChestType> getSelectedChestTypes();
+
+    void setChestTypeSelected(UUID player, SWChestType type);
+
+    /**
+     * This method is to be run async since it could perform long operations
      *
-     * @param uuid UUID of the player to add
+     * @param uuid                  UUID of the player to add
      * @param ignoreAvailableSpawns true if the player should be added anyway if there is no available spawn points
      * @return A {@link GamePlayer} object if the player was added, null otherwise
      */

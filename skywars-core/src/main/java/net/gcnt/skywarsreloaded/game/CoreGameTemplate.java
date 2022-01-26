@@ -23,22 +23,19 @@ public class CoreGameTemplate implements GameTemplate {
     private final SkyWarsReloaded plugin;
     private final YAMLConfig config;
     private final String name;
-
+    private final Object chestsLock;
     // Properties
     private String displayName;
     private String creator;
-
     // Player / Team data
     private SWCoord spectateSpawn;
     private SWCoord lobbySpawn;
     private int teamSize;
     private int minPlayers;
     private List<List<SWCoord>> teamSpawnLocations;
-
     // Map Data
     private int borderRadius;
     private Map<SWCoord, SWChestType> chests;
-    private final Object chestsLock;
     private List<SWChestType> enabledChestTypes;
     private List<SWCoord> signs;
 
@@ -51,6 +48,7 @@ public class CoreGameTemplate implements GameTemplate {
         this.config = plugin.getYAMLManager().loadConfig("gamedata-" + name, FolderProperties.TEMPLATE_FOLDER.toString(), name + ".yml", "/mapdata.yml");
         this.name = name;
         this.chests = new HashMap<>();
+        this.enabledChestTypes = new ArrayList<>();
         this.chestsLock = new Object();
         this.signs = new ArrayList<>();
         this.teamSpawnLocations = new ArrayList<>();
@@ -212,15 +210,30 @@ public class CoreGameTemplate implements GameTemplate {
         config.set(MapDataProperties.MIN_PLAYERS.toString(), minPlayers);
         config.set(MapDataProperties.ENABLED.toString(), enabled);
         config.set(MapDataProperties.BORDER_RADIUS.toString(), borderRadius);
-        config.set(MapDataProperties.ENABLED_CHESTTYPES.toString(), enabledChestTypes);
+
+        System.out.println("enabledChestTypes is null ? " + (enabledChestTypes == null));
+        for (SWChestType enabledChestType : enabledChestTypes) {
+            System.out.println("enabledChestType = " + enabledChestType);
+        }
+
+        config.set(MapDataProperties.ENABLED_CHESTTYPES.toString(), enabledChestTypes.stream().map(SWChestType::getName).collect(Collectors.toList()));
 
         config.set(MapDataProperties.IS_TEAMSIZE_SETUP.toString(), isTeamsizeSetup);
 
         config.set(MapDataProperties.LOBBY_SPAWN.toString(), lobbySpawn == null ? null : lobbySpawn.toString());
         config.set(MapDataProperties.SPECTATE_SPAWN.toString(), spectateSpawn == null ? null : spectateSpawn.toString());
 
-        config.set(MapDataProperties.CHESTS.toString(), chests.entrySet().stream().collect(
-                Collectors.toMap((entry) -> entry.getKey().toString(), (entry) -> entry.getValue().getName())));
+        final Map<String, String> collect = chests.entrySet().stream().collect(
+                Collectors.toMap((entry) -> entry.getKey().toString(), (entry) -> entry.getValue().getName()));
+
+        plugin.getLogger().info(collect.size() + " // " + chests.size());
+        plugin.getLogger().info("something even before that");
+        chests.forEach((swCoord, swChestType) -> plugin.getLogger().info(swCoord.toString() + ":" + swChestType.getName()));
+        plugin.getLogger().info("something before");
+        collect.forEach((s, s2) -> plugin.getLogger().info(s + ":" + s2));
+        plugin.getLogger().info("something after");
+
+        config.set(MapDataProperties.CHESTS.toString(), collect);
         config.set(MapDataProperties.SIGNS.toString(), signs.stream().map(SWCoord::toString).collect(Collectors.toList()));
 
         List<List<String>> spawnPoints = new ArrayList<>();
@@ -232,7 +245,7 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
-    public List<SWChestType> enabledChestTypes() {
+    public List<SWChestType> getEnabledChestTypes() {
         return this.enabledChestTypes;
     }
 

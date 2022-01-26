@@ -9,6 +9,9 @@ public enum ConfigProperties {
     STORAGE_DATABASE("storage.database"),
     STORAGE_USE_SSL("storage.use-ssl"),
 
+    GAME_INSTANCES("game-instances"),
+    GAME_INSTANCES_DEFAULT("game-instances.default"),
+
     ENABLE_SLIME_WORLD_MANAGER("world-loader.enable-swm"),
     SLIME_WORLD_LOADER("world-loader.swm-loader");
 

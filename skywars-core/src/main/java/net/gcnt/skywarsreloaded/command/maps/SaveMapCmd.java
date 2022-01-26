@@ -59,7 +59,11 @@ public class SaveMapCmd extends Cmd {
             if (successful) this.sendWorldSaved(template, sender);
             else this.sendMapSaveFail(template, sender);
 
-            template.saveData();
+            try {
+                template.saveData();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             this.sendMapSaved(template, sender);
 
             template.checkToDoList(sender);
@@ -80,7 +84,7 @@ public class SaveMapCmd extends Cmd {
 
     protected void sendWorldSaved(GameTemplate template, SWCommandSender sender) {
         plugin.getMessages().getMessage(MessageProperties.MAPS_WORLD_SAVED.toString())
-            .replace("%template%", template.getName()).send(sender);
+                .replace("%template%", template.getName()).send(sender);
     }
 
     protected void sendMapSaved(GameTemplate template, SWCommandSender sender) {

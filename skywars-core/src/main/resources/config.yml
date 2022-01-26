@@ -1,4 +1,7 @@
 storage:
+  # The type of storage to use for player data.
+  # Could be: YAML, MySQL*, MongoDB*
+  # * extension required
   type: MySQL
   hostname: localhost
   username: user
@@ -6,6 +9,12 @@ storage:
   database: skywarsreloaded
   use-ssl: true
 
+# the number of instances of a map template that will be loaded when the server starts.
+game-instances:
+  default: 1
+  # map1: 2
+  # map2: 1
+
 world-loader:
-  # awtoamticaly use slime worlds if SlimeWorldManager (SWM) was detected.
+  # automatically use slime worlds if SlimeWorldManager (SWM) was detected.
   enable-swm: true

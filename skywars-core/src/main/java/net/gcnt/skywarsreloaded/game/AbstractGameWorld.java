@@ -22,13 +22,11 @@ public abstract class AbstractGameWorld implements GameWorld {
     // Player data
     private final List<GamePlayer> players;
     private final List<GameTeam> teams;
-
+    private final HashMap<UUID, SWChestType> selectedChestTypes;
     // Map data
     private GameDifficulty gameDifficulty;
-
     // States
     private boolean editing;
-    private final HashMap<UUID, SWChestType> selectedChestTypes;
     private GameStatus status;
     private int timer;
 
@@ -64,12 +62,12 @@ public abstract class AbstractGameWorld implements GameWorld {
         return worldName;
     }
 
-    public void setGameDifficulty(GameDifficulty gameDifficultyIn) {
-        this.gameDifficulty = gameDifficultyIn;
-    }
-
     public GameDifficulty getGameDifficulty() {
         return this.gameDifficulty;
+    }
+
+    public void setGameDifficulty(GameDifficulty gameDifficultyIn) {
+        this.gameDifficulty = gameDifficultyIn;
     }
 
     @Override
@@ -78,13 +76,18 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     @Override
+    public void setEditing(boolean editing) {
+        this.editing = editing;
+    }
+
+    @Override
     public Map<UUID, SWChestType> getSelectedChestTypes() {
         return this.selectedChestTypes;
     }
 
     @Override
-    public void setEditing(boolean editing) {
-        this.editing = editing;
+    public void setChestTypeSelected(UUID player, SWChestType type) {
+        this.selectedChestTypes.put(player, type);
     }
 
     @Override
@@ -199,4 +202,6 @@ public abstract class AbstractGameWorld implements GameWorld {
             this.fillChest(chest.getKey(), chest.getValue());
         }
     }
+
+
 }

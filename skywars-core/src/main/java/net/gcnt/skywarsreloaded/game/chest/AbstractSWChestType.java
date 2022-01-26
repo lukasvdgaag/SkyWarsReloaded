@@ -51,9 +51,13 @@ public abstract class AbstractSWChestType implements SWChestType {
         // Basic chest type info init
         this.displayName = config.getString(ChestProperties.DISPLAY_NAME.toString(), name);
 
-        config.getKeys(ChestProperties.DIFFICULTIES.toString()).stream().map(GameDifficulty::getById)
-                .forEach(this::loadDataFromGameType);
+        try {
+            config.getKeys(ChestProperties.DIFFICULTIES.toString()).stream().map(GameDifficulty::getById)
+                    .forEach(this::loadDataFromGameType);
 
+        } catch (Exception e) {
+            plugin.getLogger().error(String.format("Failed to load chest type with id %s. Ignoring it. (%s)", name, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+        }
     }
 
     private void loadDataFromGameType(GameDifficulty gameDifficulty) {

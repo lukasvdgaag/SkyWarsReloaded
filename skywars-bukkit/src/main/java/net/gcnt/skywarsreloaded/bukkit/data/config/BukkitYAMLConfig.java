@@ -112,7 +112,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     @Override
     public Map<String, String> getStringMap(String property) {
         ConfigurationSection section = this.fileConfiguration.getConfigurationSection(property);
-        if (section == null) return null;
+        if (section == null) return new HashMap<>();
         HashMap<String, String> convertedMap = new HashMap<>();
         for (Map.Entry<String, Object> entry : section.getValues(false).entrySet()) {
             convertedMap.put(entry.getKey(), entry.getValue().toString());

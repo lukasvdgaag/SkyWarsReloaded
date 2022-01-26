@@ -16,6 +16,11 @@ public class BukkitNMS_16_18 extends BukkitNMS_13_15 {
     }
 
     @Override
+    public void init() {
+
+    }
+
+    @Override
     public void sendActionbar(SWPlayer player, String message) {
         if (!(player instanceof BukkitSWPlayer)) return;
         BukkitSWPlayer bukkitSWPlayer = (BukkitSWPlayer) player;

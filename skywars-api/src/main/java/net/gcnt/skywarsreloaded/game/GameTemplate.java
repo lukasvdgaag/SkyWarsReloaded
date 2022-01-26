@@ -129,12 +129,14 @@ public interface GameTemplate {
 
     /**
      * Get the list of enabled chest types for this template
+     *
      * @return List of enabled chest types
      */
-    List<SWChestType> enabledChestTypes();
+    List<SWChestType> getEnabledChestTypes();
 
     /**
      * Set a chest type to be enabled for this template
+     *
      * @param chestType The chest type to enable
      */
     void enableChestType(SWChestType chestType);
@@ -143,7 +145,7 @@ public interface GameTemplate {
      * Add a new chest to the template.
      * This method will return false if there already was a chest at the target location.
      *
-     * @param loc Location of the new chest.
+     * @param loc       Location of the new chest.
      * @param chestType The {@link SWChestType} of the chest being added
      * @return true if added, false if not added.
      */

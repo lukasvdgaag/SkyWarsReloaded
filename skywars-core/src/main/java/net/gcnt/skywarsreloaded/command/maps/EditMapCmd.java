@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.chest.SWChestType;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
@@ -12,6 +13,7 @@ import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -103,29 +105,42 @@ public class EditMapCmd extends Cmd {
 
             world.readyForEditing();
 
+            SWChestType defaultChestType = null;
+            Collection<SWChestType> chests = template.getEnabledChestTypes();
+            // todo fix this.
+            chests.forEach(System.out::println);
+            if (!chests.isEmpty()) {
+                for (SWChestType chest : chests) {
+                    defaultChestType = chest;
+                    break;
+                }
+            }
+            System.out.println("defaultChestType = " + defaultChestType);
+            world.setChestTypeSelected(player.getUuid(), defaultChestType);
+
             // Teleport the player onto the platform that was just created
             player.teleportAsync(world.getWorldName(),
                             InternalProperties.MAP_CREATE_PLATFORM_X + 0.5,
                             InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
                             InternalProperties.MAP_CREATE_PLATFORM_Z + 0.5)
                     .thenRun(() -> {
-                            player.setGameMode(1);
-                            // User feedback
-                            // Not going to use more than 24 days =P
-                            int timeDiffChunkLoad = (int) (System.currentTimeMillis() - preGenMillis);
-                            int timeDiffLoadSec = timeDiffChunkLoad / 1000;
-                            int timeDiffLoadDecimal = timeDiffChunkLoad / 100 - timeDiffLoadSec * 10;
+                                player.setGameMode(1);
+                                // User feedback
+                                // Not going to use more than 24 days =P
+                                int timeDiffChunkLoad = (int) (System.currentTimeMillis() - preGenMillis);
+                                int timeDiffLoadSec = timeDiffChunkLoad / 1000;
+                                int timeDiffLoadDecimal = timeDiffChunkLoad / 100 - timeDiffLoadSec * 10;
 
-                            plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_GENERATED_WORLD.toString())
-                                    .replace("%template%", template.getName())
-                                    .sendTitle(0, 100, 0, sender);
-                            plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATED_WORLD.toString())
-                                    .replace("%template%", template.getName())
-                                    .replace("%seconds%", timeDiffLoadSec + "." + timeDiffLoadDecimal)
-                                    .send(sender);
+                                plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_GENERATED_WORLD.toString())
+                                        .replace("%template%", template.getName())
+                                        .sendTitle(0, 100, 0, sender);
+                                plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATED_WORLD.toString())
+                                        .replace("%template%", template.getName())
+                                        .replace("%seconds%", timeDiffLoadSec + "." + timeDiffLoadDecimal)
+                                        .send(sender);
 
-                        template.checkToDoList(sender);
-                        }
+                                template.checkToDoList(sender);
+                            }
                     );
 
         });

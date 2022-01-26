@@ -4,16 +4,16 @@ import java.util.HashMap;
 
 public class GameDifficulty {
 
-    public static final GameDifficulty BASIC = new GameDifficulty("basic");
-    public static final GameDifficulty NORMAL = new GameDifficulty("normal");
-    public static final GameDifficulty INSANE = new GameDifficulty("insane");
+    public static final GameDifficulty BASIC;
+    public static final GameDifficulty NORMAL;
+    public static final GameDifficulty INSANE;
+    private static final HashMap<String, GameDifficulty> difficulties;
 
-    private static final HashMap<String, GameDifficulty> difficulties = new HashMap<>();
-
-    public static GameDifficulty getById(String key) {
-        GameDifficulty difficulty = difficulties.get(key);
-        if (difficulty == null) return new GameDifficulty(key);
-        return difficulty;
+    static {
+        difficulties = new HashMap<>();
+        BASIC = new GameDifficulty("basic");
+        NORMAL = new GameDifficulty("normal");
+        INSANE = new GameDifficulty("insane");
     }
 
     // Instance
@@ -22,6 +22,12 @@ public class GameDifficulty {
     private GameDifficulty(String idIn) {
         this.id = idIn;
         if (!difficulties.containsKey(this.id)) difficulties.put(this.id, this);
+    }
+
+    public static GameDifficulty getById(String key) {
+        GameDifficulty difficulty = difficulties.get(key);
+        if (difficulty == null) return new GameDifficulty(key);
+        return difficulty;
     }
 
     public String getId() {
