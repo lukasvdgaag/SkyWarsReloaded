@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.command;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.command.general.JoinCmd;
 import net.gcnt.skywarsreloaded.command.general.LobbySpawnCmd;
 import net.gcnt.skywarsreloaded.command.general.MainCmd;
 import net.gcnt.skywarsreloaded.command.kits.*;
@@ -24,6 +25,7 @@ public class CoreSWCommandManager implements SWCommandManager {
     public void registerBaseCommands() {
         this.registerCommand(new MainCmd(this.main));
         this.registerCommand(new LobbySpawnCmd(this.main));
+        this.registerCommand(new JoinCmd(this.main));
     }
 
     @Override
@@ -40,6 +42,7 @@ public class CoreSWCommandManager implements SWCommandManager {
         this.registerCommand(new SetSpawnCmd(this.main));
         this.registerCommand(new EnableCmd(this.main));
         this.registerCommand(new DisableCmd(this.main));
+        this.registerCommand(new HostCmd(this.main));
     }
 
     @Override

@@ -7,6 +7,7 @@ import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
+import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
@@ -30,7 +31,7 @@ public class CreateMapCmd extends Cmd {
             return true;
         }
 
-        if (plugin.getDataConfig().getCoord("lobby") == null) {
+        if (plugin.getDataConfig().getCoord(RuntimeDataProperties.LOBBY_SPAWN.toString()) == null) {
             msgConfig.getMessage(MessageProperties.ERROR_LOBBY_SPAWN_NOT_SET.toString()).send(sender);
             return true;
         }
@@ -93,25 +94,25 @@ public class CreateMapCmd extends Cmd {
 
             // Teleport the player onto the platform that was just created
             player.teleportAsync(world.getWorldName(),
-                    InternalProperties.MAP_CREATE_PLATFORM_X + 0.5,
-                    InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
-                    InternalProperties.MAP_CREATE_PLATFORM_Z + 0.5)
-                .thenRun(() -> {
-                    // User feedback
-                    // Not going to use more than 24 days =P
-                    int timeDiffChunkLoad = (int) (System.currentTimeMillis() - preGenMillis);
-                    int timeDiffLoadSec = timeDiffChunkLoad / 1000;
-                    int timeDiffLoadDecimal = timeDiffChunkLoad / 100 - timeDiffLoadSec * 10;
+                            InternalProperties.MAP_CREATE_PLATFORM_X + 0.5,
+                            InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
+                            InternalProperties.MAP_CREATE_PLATFORM_Z + 0.5)
+                    .thenRun(() -> {
+                                // User feedback
+                                // Not going to use more than 24 days =P
+                                int timeDiffChunkLoad = (int) (System.currentTimeMillis() - preGenMillis);
+                                int timeDiffLoadSec = timeDiffChunkLoad / 1000;
+                                int timeDiffLoadDecimal = timeDiffChunkLoad / 100 - timeDiffLoadSec * 10;
 
-                    plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_GENERATED_WORLD.toString())
-                            .replace("%template%", template.getName())
-                            .sendTitle(0, 100, 0, sender);
-                    plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATED_WORLD.toString())
-                            .replace("%template%", template.getName())
-                            .replace("%seconds%", timeDiffLoadSec + "." + timeDiffLoadDecimal)
-                            .send(sender);
-                    }
-            );
+                                plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_GENERATED_WORLD.toString())
+                                        .replace("%template%", template.getName())
+                                        .sendTitle(0, 100, 0, sender);
+                                plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATED_WORLD.toString())
+                                        .replace("%template%", template.getName())
+                                        .replace("%seconds%", timeDiffLoadSec + "." + timeDiffLoadDecimal)
+                                        .send(sender);
+                            }
+                    );
         });
 
         return true;

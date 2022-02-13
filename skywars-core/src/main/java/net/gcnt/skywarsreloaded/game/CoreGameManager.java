@@ -121,6 +121,19 @@ public abstract class CoreGameManager implements GameManager {
     public abstract GameWorld createGameWorld(GameTemplate data);
 
     @Override
+    public void deleteGameWorld(GameWorld world) {
+        plugin.getWorldLoader().deleteWorldInstance(world);
+        for (GameTemplate template : gameWorlds.keySet()) {
+            List<GameWorld> worlds = gameWorlds.get(template);
+            if (worlds.contains(world)) {
+                worlds.remove(world);
+                gameWorlds.put(template, worlds);
+                return;
+            }
+        }
+    }
+
+    @Override
     public List<GameWorld> getGameWorlds(GameTemplate data) {
         return gameWorlds.getOrDefault(data, new ArrayList<>());
     }

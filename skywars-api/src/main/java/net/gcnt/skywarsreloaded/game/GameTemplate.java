@@ -244,4 +244,11 @@ public interface GameTemplate {
      */
     boolean checkToDoList(SWCommandSender player);
 
+    /**
+     * Get the maximum amount of players that can join this game.
+     *
+     * @return number of players that can fit this game.
+     */
+    int getMaxPlayers();
+
 }

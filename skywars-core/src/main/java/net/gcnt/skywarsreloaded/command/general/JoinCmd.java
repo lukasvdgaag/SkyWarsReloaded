@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class JoinCmd extends Cmd {
 
     public JoinCmd(SkyWarsReloaded plugin) {
-        super(plugin, "skywarsmap", "host", "skywars.command.map.host", true, "<map>", "Host a game.", "h");
+        super(plugin, "skywars", "join", "skywars.command.join", true, "", "Join a game.", "j");
     }
 
     @Override
@@ -36,8 +36,10 @@ public class JoinCmd extends Cmd {
         GameWorld world = worlds.get(0);
         GamePlayer gamePlayer = world.preparePlayerJoin(((SWPlayer) sender).getUuid(), false);
         boolean joined = world.addPlayers(gamePlayer);
-        // todo check if player joined successfully.
-
+        if (!joined) {
+            plugin.getMessages().getMessage(MessageProperties.GAMES_JOIN_FAILED.toString()).send(sender);
+            return true;
+        }
         return true;
     }
 

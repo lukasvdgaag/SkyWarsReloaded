@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
+import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
@@ -33,7 +34,7 @@ public class LobbySpawnCmd extends Cmd {
             }
         }
 
-        plugin.getDataConfig().set("lobby", loc.toString());
+        plugin.getDataConfig().set(RuntimeDataProperties.LOBBY_SPAWN.toString(), loc.toString());
         plugin.getDataConfig().save();
         plugin.getMessages().getMessage(MessageProperties.CHAT_LOBBY_SPAWN_SET.toString()).send(sender);
         return true;

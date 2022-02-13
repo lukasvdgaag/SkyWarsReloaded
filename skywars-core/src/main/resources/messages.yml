@@ -72,7 +72,7 @@ maps:
   template-created: "&aA new game template with the name &e%template%&a has successfully been created."
   generating-world: "&7Please hold while we generate the template world..."
   generating-world-fail: "&cAn error occurred while generating the world, please check the server console for details."
-  generating-world-stage2: "&7&oCreated the world in %millis%ms! Loading spawn chunks..."
+  generating-world-stage2: "&e&oCreated the world in &7%millis%ms&e! Loading spawn chunks..."
   generated-world: "&aWe finished loading the world in %seconds%s! &7You can now start building within the world borders. We will automatically convert the world to a schematic file when you're done."
   already-disabled: "&cThis template is already disabled."
   disabled: "&aThe template &e%template% &ahas successfully been &cdisabled&a!"
@@ -85,6 +85,7 @@ maps:
   maps-list-header: "&e&lTemplate&r &7&nCreator&r &b&nGame Count&r"
   maps-list-line: "&e%template%&r  &7%creator%  &b%count%"
   maps-list-empty: "&cThere are no templates."
+  saving-start: "&7Saving the data of this template. This may take a while..."
   world-saved: "&dWorld template schematic saved! &aWe have successfully saved the template world you were editing to a WorldEdit schematic."
   world-saved-fail: "&c&lError while saving world template schematic! &r&cWe failed to save the template world you were editing to a WorldEdit schematic. Please check the console for more information."
   saved: "&aThe data of template &e%template% &ahas successfully been saved!"
@@ -103,10 +104,11 @@ maps:
   spawn-index-low: "&cPlease enter a valid team number (greater than 0)"
   spawn-index-high: "&cPlease enter a valid team number (max %max%)"
   all-set-up: "&aTemplate &e%template% &ais all set up!"
-  hosted: "&aA new game world with id &e%gameworld% has been hosted for the template &e%template%&a."
+  hosted: "&aA new game world with id &e%gameworld%&a has been hosted for the template &e%template%&a."
 
 games:
   none-available: "&cThere are currently no games available to join!"
+  join-failed: "&cWe failed to put you in this game, please try again later!"
   player-joined: "&7%player% &ehas joined (&b%players%&e/&b%maxplayers%&e)!"
   player-left: "&7%player% &ehas quit!"
 

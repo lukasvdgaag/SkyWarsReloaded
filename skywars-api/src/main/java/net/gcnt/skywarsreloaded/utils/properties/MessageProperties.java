@@ -77,6 +77,7 @@ public enum MessageProperties {
     MAPS_LIST_EMPTY("maps.maps-list-empty"),
     MAPS_WORLD_SAVED("maps.world-saved"),
     MAPS_WORLD_SAVED_FAIL("maps.saved-fail"),
+    MAPS_SAVING_START("maps.saving-start"),
     MAPS_SAVED("maps.saved"),
     MAPS_SET_CREATOR("maps.set-creator"),
     MAPS_SET_TEAM_SIZE("maps.set-team-size"),
@@ -98,6 +99,7 @@ public enum MessageProperties {
     GAMES_NONE_AVAILABLE("games.none-available"),
     GAMES_PLAYER_JOINED("games.player-joined"),
     GAMES_PLAYER_LEFT("games.player-left"),
+    GAMES_JOIN_FAILED("games.join-failed"),
 
     TITLES_MAPS_GENERATING_WORLD("titles.maps.generating-world"),
     TITLES_MAPS_GENERATED_WORLD("titles.maps.generated-world"),

@@ -165,6 +165,11 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     }
 
     @Override
+    public String getName() {
+        return player.getName();
+    }
+
+    @Override
     public void setGameMode(int gamemode) {
         switch (gamemode) {
             case 0:

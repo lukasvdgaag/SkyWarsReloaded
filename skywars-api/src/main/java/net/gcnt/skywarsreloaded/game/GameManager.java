@@ -1,6 +1,5 @@
 package net.gcnt.skywarsreloaded.game;
 
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 import java.util.List;
@@ -59,6 +58,13 @@ public interface GameManager {
      * @return The newly created {@link GameWorld}.
      */
     GameWorld createGameWorld(GameTemplate data);
+
+    /**
+     * Remove a game world from running.
+     *
+     * @param world GameWorld to remove.
+     */
+    void deleteGameWorld(GameWorld world);
 
     /**
      * Get a list of {@link GameWorld} from its template.

@@ -230,7 +230,10 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public SWCoord getCoord(String property, SWCoord def) {
-        if (!contains(property)) return null;
+        if (!contains(property)) {
+
+            return null;
+        }
 
         return new CoreSWCoord(plugin, fileConfiguration.getString(property));
     }
