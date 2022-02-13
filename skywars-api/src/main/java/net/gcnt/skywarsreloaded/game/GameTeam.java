@@ -30,11 +30,11 @@ public interface GameTeam {
     boolean isMember(SWPlayer player);
 
     /**
-     * Add players to a team.
+     * Add a player to a team.
      *
-     * @param players Players to add
+     * @param player Player to add
      */
-    void addPlayers(SWPlayer... players);
+    TeamSpawn addPlayer(GamePlayer player);
 
     /**
      * Remove a player from the team.
@@ -93,6 +93,8 @@ public interface GameTeam {
      * @return if the team is eliminated.
      */
     boolean isEliminated();
+
+    boolean canJoin();
 
     /**
      * Get a list of spawns for this team.

@@ -4,7 +4,9 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.chest.SWChestType;
 import net.gcnt.skywarsreloaded.game.types.GameDifficulty;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
+import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.utils.Item;
+import net.gcnt.skywarsreloaded.utils.Message;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
@@ -18,11 +20,11 @@ public abstract class AbstractGameWorld implements GameWorld {
     private final String id;
     private final GameTemplate gameTemplate;
     private final String worldName;
-
     // Player data
     private final List<GamePlayer> players;
     private final List<GameTeam> teams;
     private final HashMap<UUID, SWChestType> selectedChestTypes;
+    private GameScheduler scheduler;
     // Map data
     private GameDifficulty gameDifficulty;
     // States
@@ -40,6 +42,7 @@ public abstract class AbstractGameWorld implements GameWorld {
         this.status = GameStatus.DISABLED;
         this.timer = 0;
         this.worldName = "swr-" + id;
+        loadTeams();
     }
 
     @Override
@@ -71,6 +74,17 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     @Override
+    public void startScheduler() {
+        this.scheduler = new CoreGameScheduler(plugin, this);
+        this.scheduler.start();
+    }
+
+    @Override
+    public GameScheduler getScheduler() {
+        return scheduler;
+    }
+
+    @Override
     public boolean isEditing() {
         return editing;
     }
@@ -92,8 +106,7 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public boolean canJoin() {
-        if (!this.status.isJoinable()) return false;
-        return true;
+        return this.status.isJoinable() && isSpawnAvailable();
     }
 
     @Override
@@ -119,7 +132,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     @Override
-    public void addPlayers(GamePlayer... players) {
+    public boolean addPlayers(GamePlayer... players) {
         // Select the default chest type to be placed if the player is joining a map
         // that is being edited.
         SWChestType defaultChestType = null;
@@ -133,15 +146,44 @@ public abstract class AbstractGameWorld implements GameWorld {
             }
         }
 
-        for (GamePlayer player : players) {
-            // Apply the default chest type to the player
+        // Get list of available games to join ordered from lowest - highest players.
+        List<GameTeam> gameTeams = teams.stream()
+                .filter(GameTeam::canJoin)
+                .sorted((team1, team2) -> team2.getPlayerCount() - team1.getPlayerCount()) // reverse sort
+                .collect(Collectors.toList());
+
+        if (gameTeams.size() == 0) return false;
+
+        int index = 0;
+        for (GamePlayer gamePlayer : players) {
+            if (!canJoin()) return false;
+
+            // Apply the default chest type to the gamePlayer
+            final SWPlayer player = gamePlayer.getSWPlayer();
             if (this.editing) {
-                this.selectedChestTypes.put(player.getSWPlayer().getUuid(), defaultChestType);
+                this.selectedChestTypes.put(player.getUuid(), defaultChestType);
             }
-            // Add the player to the game
-            this.players.add(player);
-            player.getSWPlayer().setGameWorld(this);
+            // Add the gamePlayer to the game
+            this.players.add(gamePlayer);
+            player.setGameWorld(this);
+
+            if (shouldSendPlayerToCages()) {
+                GameTeam team = gameTeams.get(index);
+                TeamSpawn spawn = team.addPlayer(gamePlayer);
+
+                player.teleport(spawn.getLocation());
+
+                if (!team.canJoin()) index++;
+            } else {
+                player.teleport(this.gameTemplate.getWaitingLobbySpawn());
+            }
+
+            // todo send join message here.
+
+            // todo give vote and other game items here.
+            // todo teleport gamePlayer to team spawn / waiting spawn here.
         }
+        return true;
     }
 
     @Override
@@ -203,5 +245,52 @@ public abstract class AbstractGameWorld implements GameWorld {
         }
     }
 
+    @Override
+    public void loadTeams() {
+        int index = 0;
+        final TeamColor[] colors = TeamColor.values();
 
+        for (List<SWCoord> locations : this.gameTemplate.getTeamSpawnpoints()) {
+            if (index >= colors.length) index = 0;
+
+            TeamColor color = colors[index];
+            GameTeam team = new CoreGameTeam(this, (index + 1) + "", color, locations);
+            this.teams.add(team);
+
+            index++;
+        }
+    }
+
+    @Override
+    public void announce(String message) {
+        for (GamePlayer player : players) {
+            if (!player.getSWPlayer().isOnline()) continue;
+            player.getSWPlayer().sendMessage(message);
+        }
+    }
+
+    @Override
+    public void announce(Message message) {
+        for (GamePlayer player : players) {
+            if (!player.getSWPlayer().isOnline()) continue;
+            message.send(player.getSWPlayer());
+        }
+    }
+
+    @Override
+    public void announceTitle(Message message) {
+        announceTitle(message, 20, 50, 20);
+    }
+
+    @Override
+    public void announceTitle(Message message, int fadeIn, int stay, int fadeOut) {
+        for (GamePlayer player : players) {
+            if (!player.getSWPlayer().isOnline()) continue;
+            message.sendTitle(fadeIn, stay, fadeOut, player.getSWPlayer());
+        }
+    }
+
+    private boolean shouldSendPlayerToCages() {
+        return this.gameTemplate.getTeamSize() == 1 || this.status == GameStatus.WAITING_CAGES || this.status == GameStatus.COUNTDOWN;
+    }
 }

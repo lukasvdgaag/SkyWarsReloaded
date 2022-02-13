@@ -3,7 +3,9 @@ package net.gcnt.skywarsreloaded.game;
 import net.gcnt.skywarsreloaded.game.chest.SWChestType;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
 import net.gcnt.skywarsreloaded.utils.Item;
+import net.gcnt.skywarsreloaded.utils.Message;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 import java.util.List;
@@ -30,7 +32,19 @@ public interface GameWorld {
 
     void setEditing(boolean edit);
 
+    void startScheduler();
+
+    GameScheduler getScheduler();
+
     Map<UUID, SWChestType> getSelectedChestTypes();
+
+    void announce(Message message);
+
+    void announce(String message);
+
+    void announceTitle(Message message);
+
+    void announceTitle(Message message, int fadeIn, int stay, int fadeOut);
 
     void setChestTypeSelected(UUID player, SWChestType type);
 
@@ -43,7 +57,7 @@ public interface GameWorld {
      */
     GamePlayer preparePlayerJoin(UUID uuid, boolean ignoreAvailableSpawns);
 
-    void addPlayers(GamePlayer... players);
+    boolean addPlayers(GamePlayer... players);
 
     void removePlayer(GamePlayer player);
 
@@ -86,4 +100,7 @@ public interface GameWorld {
      * Fill all the registered chests in the world
      */
     void fillChests();
+
+    void loadTeams();
+
 }

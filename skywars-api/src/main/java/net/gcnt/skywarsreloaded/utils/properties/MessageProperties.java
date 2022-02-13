@@ -68,6 +68,7 @@ public enum MessageProperties {
     MAPS_DISABLED("maps.disabled"),
     MAPS_ALREADY_ENABLED("maps.already-enabled"),
     MAPS_ENABLED("maps.enabled"),
+    MAPS_NOT_ENABLED("maps.not-enabled"),
     MAPS_EDIT_EXISTING_WORLD("maps.edit-existing-world"),
     MAPS_CANNOT_EDIT_GAME_RUNNING("maps.cannot-edit-game-running"),
     MAPS_CANNOT_ENABLE_INCOMPLETE_SETUP("maps.cannot-enable-incomplete-setup"),
@@ -92,6 +93,11 @@ public enum MessageProperties {
     MAPS_SPAWN_INDEX_HIGH("maps.spawn-index.high"),
     MAPS_SET_WORLD_SIZE("maps.set-world-size"),
     MAPS_ALL_SET_UP("maps.all-set-up"),
+    MAPS_HOSTED("maps.hosted"),
+
+    GAMES_NONE_AVAILABLE("games.none-available"),
+    GAMES_PLAYER_JOINED("games.player-joined"),
+    GAMES_PLAYER_LEFT("games.player-left"),
 
     TITLES_MAPS_GENERATING_WORLD("titles.maps.generating-world"),
     TITLES_MAPS_GENERATED_WORLD("titles.maps.generated-world"),

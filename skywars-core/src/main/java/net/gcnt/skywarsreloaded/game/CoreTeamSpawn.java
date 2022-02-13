@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.ArrayList;
@@ -11,13 +12,13 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CoreTeamSpawn implements TeamSpawn {
 
     private final GameTeam team;
-    private final CoreSWCoord location;
+    private final SWCoord location;
     private TeamCage cage;
     private List<GamePlayer> players;
     private String oldCageDesign;
     private String cageDesign;
 
-    public CoreTeamSpawn(GameTeam team, CoreSWCoord location) {
+    public CoreTeamSpawn(GameTeam team, SWCoord location) {
         this.team = team;
         this.location = location;
         this.players = new ArrayList<>();
@@ -31,7 +32,7 @@ public class CoreTeamSpawn implements TeamSpawn {
     }
 
     @Override
-    public CoreSWCoord getLocation() {
+    public SWCoord getLocation() {
         return location;
     }
 
@@ -50,6 +51,8 @@ public class CoreTeamSpawn implements TeamSpawn {
 
         players.add(player);
         determineCageDesign();
+
+        // teleport?
         // todo update cage here?
     }
 

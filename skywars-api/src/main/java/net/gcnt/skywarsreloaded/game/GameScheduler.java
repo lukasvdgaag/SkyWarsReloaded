@@ -16,6 +16,8 @@ public interface GameScheduler {
 
     int getTicksSinceGameStart();
 
+    int getTicksSinceStart();
+
     int getSecondsSinceGameStart();
 
     void updateScoreboards();

@@ -7,7 +7,7 @@ import net.gcnt.skywarsreloaded.wrapper.scheduler.SWRunnable;
 
 import java.util.function.Consumer;
 
-public abstract class CoreGameScheduler implements GameScheduler {
+public class CoreGameScheduler implements GameScheduler {
 
     protected final SkyWarsReloaded plugin;
     protected final GameWorld gameWorld;
@@ -47,6 +47,16 @@ public abstract class CoreGameScheduler implements GameScheduler {
     @Override
     public void addTimer(Consumer<SWRunnable> consumer, int timer) {
 
+    }
+
+    @Override
+    public void updateScoreboards() {
+
+    }
+
+    @Override
+    public int getTicksSinceStart() {
+        return this.ticksRun;
     }
 
     @Override

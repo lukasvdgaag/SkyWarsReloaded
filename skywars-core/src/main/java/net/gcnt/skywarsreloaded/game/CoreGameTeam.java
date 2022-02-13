@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
-import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.ArrayList;
@@ -16,14 +16,14 @@ public class CoreGameTeam implements GameTeam {
     private final List<CoreTeamSpawn> spawns;
     private List<GamePlayer> players;
 
-    public CoreGameTeam(GameWorld game, String name, TeamColor color, List<CoreSWCoord> spawns) {
+    public CoreGameTeam(GameWorld game, String name, TeamColor color, List<SWCoord> spawns) {
         this.game = game;
         this.name = name;
         this.color = color;
         this.spawns = new ArrayList<>();
         this.players = new ArrayList<>();
 
-        for (CoreSWCoord coord : spawns) {
+        for (SWCoord coord : spawns) {
             this.spawns.add(new CoreTeamSpawn(this, coord));
         }
     }
@@ -47,11 +47,17 @@ public class CoreGameTeam implements GameTeam {
     }
 
     @Override
-    public void addPlayers(SWPlayer... players) {
-        if (players == null) return;
+    public TeamSpawn addPlayer(GamePlayer player) {
+        if (players == null || !canJoin()) return null;
 
-        // todo add the players.
-        // todo add better support for multiple players fitting in the same team.
+        this.players.add(player);
+        for (TeamSpawn spawn : spawns) {
+            if (spawn.isOccupied()) continue;
+
+            spawn.addPlayer(player);
+            return spawn;
+        }
+        return null;
     }
 
     @Override
@@ -96,6 +102,11 @@ public class CoreGameTeam implements GameTeam {
     @Override
     public boolean isEliminated() {
         return this.getAlivePlayers().isEmpty();
+    }
+
+    @Override
+    public boolean canJoin() {
+        return this.players.size() < game.getTemplate().getTeamSize();
     }
 
     @Override

@@ -78,6 +78,7 @@ maps:
   disabled: "&aThe template &e%template% &ahas successfully been &cdisabled&a!"
   already-enabled: "&cThis template is already enabled."
   enabled: "&aThe template &e%template% &ahas successfully been &denabled&a!"
+  not-enabled: "&cThis template must be enabled before you can do this."
   cannot-enable-incomplete-setup: "&cCould not enable template &e%template%&c because it was set up incorrectly. See the message above for more information."
   edit-existing-world: "&7Teleporting you to the current existing map template to edit..."
   cannot-edit-game-running: "&cIt seems like there is a game running for the current game template. Please stop the all its games before editing the template."
@@ -102,7 +103,12 @@ maps:
   spawn-index-low: "&cPlease enter a valid team number (greater than 0)"
   spawn-index-high: "&cPlease enter a valid team number (max %max%)"
   all-set-up: "&aTemplate &e%template% &ais all set up!"
+  hosted: "&aA new game world with id &e%gameworld% has been hosted for the template &e%template%&a."
 
+games:
+  none-available: "&cThere are currently no games available to join!"
+  player-joined: "&7%player% &ehas joined (&b%players%&e/&b%maxplayers%&e)!"
+  player-left: "&7%player% &ehas quit!"
 
 scoreboards:
   lobby:
