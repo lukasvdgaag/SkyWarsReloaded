@@ -60,6 +60,13 @@ public interface GameTeam {
     List<GamePlayer> getPlayers();
 
     /**
+     * Get the number of players part of that team
+     *
+     * @return Count of members in the team
+     */
+    int getPlayerCount();
+
+    /**
      * Get a list of alive players in the team
      *
      * @return Alive players.

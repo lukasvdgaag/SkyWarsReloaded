@@ -76,6 +76,11 @@ public class CoreGameTeam implements GameTeam {
     }
 
     @Override
+    public int getPlayerCount() {
+        return this.getPlayers().size();
+    }
+
+    @Override
     public GameWorld getGameWorld() {
         return this.game;
     }
