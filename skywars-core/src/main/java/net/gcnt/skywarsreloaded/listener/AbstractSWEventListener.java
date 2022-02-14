@@ -114,4 +114,12 @@ public class AbstractSWEventListener implements SWEventListener {
             world.setKeepSpawnLoaded(false);
         }
     }
+
+    @Override
+    public void onPlayerMove(SWPlayerMoveEvent swEvent) {
+        if (swEvent.getPlayer().isFrozen()) {
+            swEvent.setCancelled(true);
+            return;
+        }
+    }
 }

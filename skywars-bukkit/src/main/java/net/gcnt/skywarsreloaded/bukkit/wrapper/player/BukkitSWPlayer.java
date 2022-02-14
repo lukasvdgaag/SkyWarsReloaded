@@ -4,46 +4,49 @@ import io.papermc.lib.PaperLib;
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
-import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
-import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.*;
 import net.gcnt.skywarsreloaded.wrapper.player.AbstractSWPlayer;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class BukkitSWPlayer extends AbstractSWPlayer {
 
-    private final Player player;
+    @Nullable
+    private Player player;
+
+    public BukkitSWPlayer(BukkitSkyWarsReloaded plugin, UUID uuid, boolean online) {
+        super(plugin, uuid, online);
+    }
 
     public BukkitSWPlayer(BukkitSkyWarsReloaded plugin, Player playerIn, boolean online) {
-        super(plugin, playerIn.getUniqueId(), online);
+        this(plugin, playerIn.getUniqueId(), online);
         this.player = playerIn;
     }
 
-    public BukkitSWPlayer(BukkitSkyWarsReloaded plugin, UUID uuid, boolean online) {
-        this(plugin, Bukkit.getPlayer(uuid), online);
-    }
-
+    @Nullable
     public Player getPlayer() {
-        return player;
+        return this.player;
     }
 
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(String message) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         player.sendMessage(message);
     }
 
     @Override
-    public boolean hasPermission(String permission) {
+    public boolean hasPermission(String permission) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         return player.hasPermission(permission);
     }
 
     @Override
-    public Item getItemInHand(boolean offHand) {
+    public Item getItemInHand(boolean offHand) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         ItemStack item;
         if (this.plugin.getUtils().getServerVersion() >= 9) {
             if (offHand) item = player.getInventory().getItemInOffHand();
@@ -54,7 +57,8 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     }
 
     @Override
-    public Item[] getInventory() {
+    public Item[] getInventory() throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         final ItemStack[] contents = player.getInventory().getContents();
         Item[] items = new Item[contents.length];
         for (int i = 0; i < 36; i++) {
@@ -65,62 +69,74 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     }
 
     @Override
-    public void setSlot(int slot, Item item) {
+    public void setSlot(int slot, Item item) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         player.getInventory().setItem(slot, ((BukkitItem) item).getBukkitItem());
     }
 
     @Override
-    public Item getSlot(int slot) {
+    public Item getSlot(int slot) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         return BukkitItem.fromBukkit(plugin, player.getInventory().getItem(slot));
     }
 
     @Override
-    public Item getHelmet() {
+    public Item getHelmet() throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         return BukkitItem.fromBukkit(plugin, player.getInventory().getHelmet());
     }
 
     @Override
-    public void setHelmet(Item helmet) {
+    public void setHelmet(Item helmet) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         player.getInventory().setHelmet(((BukkitItem) helmet).getBukkitItem());
     }
 
     @Override
-    public Item getChestplate() {
+    public Item getChestplate() throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         return BukkitItem.fromBukkit(plugin, player.getInventory().getChestplate());
     }
 
     @Override
-    public void setChestplate(Item chestplate) {
+    public void setChestplate(Item chestplate) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         player.getInventory().setHelmet(((BukkitItem) chestplate).getBukkitItem());
     }
 
     @Override
-    public Item getLeggings() {
+    public Item getLeggings() throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         return BukkitItem.fromBukkit(plugin, player.getInventory().getLeggings());
     }
 
     @Override
-    public void setLeggings(Item leggings) {
+    public void setLeggings(Item leggings) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         player.getInventory().setHelmet(((BukkitItem) leggings).getBukkitItem());
     }
 
     @Override
-    public Item getBoots() {
+    public Item getBoots() throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         return BukkitItem.fromBukkit(plugin, player.getInventory().getBoots());
     }
 
     @Override
-    public void setBoots(Item boots) {
+    public void setBoots(Item boots) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         player.getInventory().setHelmet(((BukkitItem) boots).getBukkitItem());
     }
 
     @Override
-    public void clearInventory() {
+    public void clearInventory() throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         player.getInventory().clear();
     }
 
     @Override
-    public SWCoord getLocation() {
+    public SWCoord getLocation() throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         final Location location = player.getLocation();
         return new CoreSWCoord(new BukkitSWWorld((BukkitSkyWarsReloaded) plugin, location.getWorld()), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
@@ -131,24 +147,36 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     }
 
     @Override
-    public void teleport(String world, double x, double y, double z) {
+    public void teleport(String world, double x, double y, double z) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         World bukkitWorld = Bukkit.getWorld(world);
         if (bukkitWorld == null) return;
         player.teleport(new Location(bukkitWorld, x, y, z));
     }
 
     @Override
-    public void teleport(String world, double x, double y, double z, float yaw, float pitch) {
+    public void teleport(String world, double x, double y, double z, float yaw, float pitch) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         World bukkitWorld = Bukkit.getWorld(world);
         if (bukkitWorld == null) return;
         player.teleport(new Location(bukkitWorld, x, y, z, yaw, pitch));
     }
 
     @Override
-    public CompletableFuture<Boolean> teleportAsync(String world, double x, double y, double z) {
+    public SWCompletableFuture<Boolean> teleportAsync(SWCoord coord) {
+        return this.teleportAsync(coord.world().getName(), coord.xPrecise(), coord.yPrecise(), coord.zPrecise());
+    }
+
+    @Override
+    public SWCompletableFuture<Boolean> teleportAsync(String world, double x, double y, double z) {
         World bukkitWorld = Bukkit.getWorld(world);
-        if (bukkitWorld == null) return CompletableFuture.completedFuture(false);
-        return PaperLib.teleportAsync(player, new Location(bukkitWorld, x, y, z));
+        CoreSWCCompletableFuture<Boolean> successFuture = new CoreSWCCompletableFuture<>(this.plugin);
+        if (bukkitWorld == null || player == null) {
+            successFuture.complete(false);
+            return successFuture;
+        }
+        PaperLib.teleportAsync(player, new Location(bukkitWorld, x, y, z)).thenAccept(successFuture::complete);
+        return successFuture;
 
     }
 
@@ -159,13 +187,15 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) {
+    public void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         if (plugin.getUtils().getServerVersion() >= 11) player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
         else player.sendTitle(title, subtitle);
     }
 
     @Override
-    public void setGameMode(int gamemode) {
+    public void setGameMode(int gamemode) throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
         switch (gamemode) {
             case 0:
                 player.setGameMode(GameMode.SURVIVAL);
@@ -180,5 +210,21 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
                 player.setGameMode(GameMode.SPECTATOR);
                 break;
         }
+    }
+
+    @Override
+    public void freeze() throws NullPointerException {
+        super.freeze();
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        this.player.setAllowFlight(true);
+        this.player.setFlying(true);
+    }
+
+    @Override
+    public void unfreeze() throws NullPointerException {
+        super.unfreeze();
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        this.player.setAllowFlight(true);
+        this.player.setFlying(true);
     }
 }

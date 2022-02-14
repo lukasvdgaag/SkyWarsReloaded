@@ -12,3 +12,4 @@ default-health: TEN
 default-time: DAY
 default-weather: CLEAR
 default-modifier: NONE
+allow-dispersed-parties: "default"

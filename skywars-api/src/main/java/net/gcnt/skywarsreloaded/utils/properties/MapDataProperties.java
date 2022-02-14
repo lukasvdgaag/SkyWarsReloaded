@@ -23,7 +23,9 @@ public enum MapDataProperties {
     SIGNS("signs"),
 
     LOBBY_SPAWN("lobby-spawn"),
-    SPECTATE_SPAWN("spectate-spawn");
+    SPECTATE_SPAWN("spectate-spawn"),
+
+    ALLOW_DISPERSED_PARTIES("allow-dispersed-parties");
 
     private final String value;
 

@@ -21,4 +21,6 @@ public interface SWEventListener {
     void onChunkLoad(SWChunkLoadEvent swEvent);
 
     void onWorldInit(SWWorldInitEvent swEvent);
+
+    void onPlayerMove(SWPlayerMoveEvent swEvent);
 }

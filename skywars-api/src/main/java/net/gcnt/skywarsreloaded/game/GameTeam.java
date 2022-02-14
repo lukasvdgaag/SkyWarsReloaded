@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface GameTeam {
 
@@ -34,7 +35,7 @@ public interface GameTeam {
      *
      * @param player Player to add
      */
-    TeamSpawn addPlayer(GamePlayer player);
+    void addPlayer(GamePlayer player);
 
     /**
      * Remove a player from the team.
@@ -101,7 +102,36 @@ public interface GameTeam {
      */
     boolean isEliminated();
 
+    /**
+     * Get whether a new player can be added to the team.
+     *
+     * @return true if a new player can join the team
+     */
     boolean canJoin();
+
+    /**
+     * Get whether the player can be added to the team.
+     *
+     * @param uuid UUID of the player to check
+     * @return true if a new player can join the team
+     */
+    boolean canJoin(UUID uuid);
+
+    /**
+     * Get the spawn a player was asigned to. If not found return null
+     *
+     * @param player Player to get the spawn for
+     * @return the {@link TeamSpawn} that the player was assigned to
+     */
+    TeamSpawn getSpawn(GamePlayer player);
+
+    /**
+     * Assign spawn to a player. If there are no available spawns, return null
+     *
+     * @param player Player to assign the spawn to
+     * @return the {@link TeamSpawn} that the player was assigned to
+     */
+    TeamSpawn assignSpawn(GamePlayer player);
 
     /**
      * Get a list of spawns for this team.
@@ -115,5 +145,26 @@ public interface GameTeam {
      */
     void resetData();
 
+    /**
+     * Get the number of reserved slots for this team.
+     *
+     * @return Reserved slots
+     */
+    int getValidReservationCount();
+
+    /**
+     * Add a reservation to the team.
+     *
+     * @param uuid The UUID of the player
+     * @param expireTime The time at which the reservation should become invalid
+     */
+    void addReservation(UUID uuid, long expireTime);
+
+    /**
+     * Get the reservation for a player if they have one.
+     *
+     * @return A Long representing the time at which the reservation expires or null if they don't have one.
+     */
+    Long getReservation(UUID uuid);
 
 }

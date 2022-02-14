@@ -1,7 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
-import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
@@ -28,12 +27,12 @@ public class CoreTeamSpawn implements TeamSpawn {
 
     @Override
     public boolean isOccupied() {
-        return players.size() < this.team.getGameWorld().getTemplate().getTeamSize();
+        return this.players.size() >= this.team.getGameWorld().getTemplate().getTeamSize();
     }
 
     @Override
     public SWCoord getLocation() {
-        return location;
+        return this.location;
     }
 
     /*
@@ -42,15 +41,15 @@ public class CoreTeamSpawn implements TeamSpawn {
 
     @Override
     public List<GamePlayer> getPlayers() {
-        return players;
+        return this.players;
     }
 
     @Override
     public void addPlayer(GamePlayer player) {
         if (isOccupied()) return;
 
-        players.add(player);
-        determineCageDesign();
+        this.players.add(player);
+        this.determineCageDesign();
 
         // teleport?
         // todo update cage here?

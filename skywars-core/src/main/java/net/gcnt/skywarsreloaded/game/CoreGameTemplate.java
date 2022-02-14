@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.game.chest.SWChestType;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MapDataProperties;
 import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
@@ -400,5 +401,12 @@ public class CoreGameTemplate implements GameTemplate {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean isAllowedDispersedParties() {
+        Object obj = config.get(MapDataProperties.ALLOW_DISPERSED_PARTIES.toString(), null);
+        if (obj instanceof Boolean) return (boolean) obj;
+        return this.plugin.getConfig().getBoolean(ConfigProperties.PARTIES_ALLOW_DISPERSED_PARTIES.toString());
     }
 }

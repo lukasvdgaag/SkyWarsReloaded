@@ -18,3 +18,6 @@ game-instances:
 world-loader:
   # automatically use slime worlds if SlimeWorldManager (SWM) was detected.
   enable-swm: true
+
+parties:
+  allow-dispersed-parties: true

@@ -5,7 +5,6 @@ import net.gcnt.skywarsreloaded.game.types.GameStatus;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.Message;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 import java.util.List;
@@ -24,7 +23,7 @@ public interface GameWorld {
 
     String getWorldName();
 
-    boolean canJoin();
+    boolean canJoinGame();
 
     boolean isSpawnAvailable();
 
@@ -57,6 +56,12 @@ public interface GameWorld {
      */
     GamePlayer preparePlayerJoin(UUID uuid, boolean ignoreAvailableSpawns);
 
+    /**
+     * If this method doesn't return true, the calling method is expected to handle kicking the player(s) which
+     * have not made it into a team.
+     * @param players List of player to try adding to the game
+     * @return true if all players were added to the game
+     */
     boolean addPlayers(GamePlayer... players);
 
     void removePlayer(GamePlayer player);

@@ -162,6 +162,30 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
         this.onWorldInit(swEvent);
     }
 
+    @EventHandler
+    public void onPlayerMoveEvent(PlayerMoveEvent event) {
+        // Get data
+        SWPlayer p = this.getPlayerFromBukkitPlayer(event.getPlayer());
+        Location from = event.getFrom();
+        Location to = event.getTo();
+
+        if (from.getWorld() == null || to == null || to.getWorld() == null) return;
+
+        SWCoord coordFrom = new CoreSWCoord(plugin.getUtils().getSWWorld(from.getWorld().getName()),
+                from.getBlockX(), from.getBlockY(), from.getBlockZ());
+        SWCoord coordTo = new CoreSWCoord(plugin.getUtils().getSWWorld(to.getWorld().getName()),
+                to.getBlockX(), to.getBlockY(), to.getBlockZ());
+
+        // Fire core event
+        SWPlayerMoveEvent swEvent = new CoreSWPlayerMoveEvent(p, coordFrom, coordTo);
+        this.onPlayerMove(swEvent);
+
+        // Update changes
+        if (swEvent.isCancelled()) {
+            event.setCancelled(true);
+        }
+    }
+
     // Utils
 
     private SWPlayer getPlayerFromBukkitPlayer(Player player) {

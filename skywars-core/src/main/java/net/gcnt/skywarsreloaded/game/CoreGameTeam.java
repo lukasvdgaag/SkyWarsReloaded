@@ -6,6 +6,9 @@ import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class CoreGameTeam implements GameTeam {
@@ -15,6 +18,7 @@ public class CoreGameTeam implements GameTeam {
     private final TeamColor color;
     private final List<CoreTeamSpawn> spawns;
     private List<GamePlayer> players;
+    private final Map<UUID, Long> reservations;
 
     public CoreGameTeam(GameWorld game, String name, TeamColor color, List<SWCoord> spawns) {
         this.game = game;
@@ -22,6 +26,7 @@ public class CoreGameTeam implements GameTeam {
         this.color = color;
         this.spawns = new ArrayList<>();
         this.players = new ArrayList<>();
+        this.reservations = new ConcurrentHashMap<>();
 
         for (SWCoord coord : spawns) {
             this.spawns.add(new CoreTeamSpawn(this, coord));
@@ -47,17 +52,10 @@ public class CoreGameTeam implements GameTeam {
     }
 
     @Override
-    public TeamSpawn addPlayer(GamePlayer player) {
-        if (players == null || !canJoin()) return null;
+    public void addPlayer(GamePlayer player) {
+        if (players == null || !canJoin()) return;
 
         this.players.add(player);
-        for (TeamSpawn spawn : spawns) {
-            if (spawn.isOccupied()) continue;
-
-            spawn.addPlayer(player);
-            return spawn;
-        }
-        return null;
     }
 
     @Override
@@ -100,22 +98,85 @@ public class CoreGameTeam implements GameTeam {
     }
 
     @Override
-    public List<? extends TeamSpawn> getSpawns() {
-        return this.spawns;
-    }
-
-    @Override
     public boolean isEliminated() {
         return this.getAlivePlayers().isEmpty();
     }
 
     @Override
     public boolean canJoin() {
-        return this.players.size() < game.getTemplate().getTeamSize();
+        return this.players.size() + this.getValidReservationCount() < game.getTemplate().getTeamSize();
+    }
+
+    @Override
+    public boolean canJoin(UUID uuid) {
+        // Get values
+        int playerCount = this.players.size();
+        int reservationCount = this.getValidReservationCount();
+        int teamSize = game.getTemplate().getTeamSize();
+
+        // Check if team is already full
+        if (playerCount >= teamSize) return false;
+
+        // Check with reservations
+        if (playerCount + reservationCount >= teamSize) {
+            Long reservationExpireTime = this.reservations.get(uuid);
+
+            // Check if player has a reservation
+            if (reservationExpireTime == null) return false;
+
+            // If player's reservation is expired, return false and remove it
+            if (reservationExpireTime > System.currentTimeMillis()) {
+                this.reservations.remove(uuid);
+                return false;
+            }
+
+            // Else, fall through to true
+        }
+        return true;
+    }
+
+    @Override
+    public TeamSpawn getSpawn(GamePlayer player) {
+        for (TeamSpawn spawn : spawns) {
+            if (spawn.getPlayers().contains(player)) return spawn;
+        }
+        return null;
+    }
+
+    @Override
+    public TeamSpawn assignSpawn(GamePlayer player) {
+        for (TeamSpawn spawn : spawns) {
+            if (spawn.isOccupied()) continue;
+
+            spawn.addPlayer(player);
+            return spawn;
+        }
+        return null;
+    }
+
+    @Override
+    public List<? extends TeamSpawn> getSpawns() {
+        return this.spawns;
     }
 
     @Override
     public void resetData() {
         players = new ArrayList<>();
+    }
+
+    @Override
+    public int getValidReservationCount() {
+        long now = System.currentTimeMillis();
+        return (int) this.reservations.values().stream().filter(timestamp -> timestamp < now).count();
+    }
+
+    @Override
+    public void addReservation(UUID uuid, long expireTime) {
+        this.reservations.put(uuid, expireTime);
+    }
+
+    @Override
+    public Long getReservation(UUID uuid) {
+        return this.reservations.get(uuid);
     }
 }

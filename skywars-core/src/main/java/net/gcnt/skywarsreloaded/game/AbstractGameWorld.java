@@ -5,8 +5,10 @@ import net.gcnt.skywarsreloaded.game.chest.SWChestType;
 import net.gcnt.skywarsreloaded.game.types.GameDifficulty;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
+import net.gcnt.skywarsreloaded.party.SWParty;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.Message;
+import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
@@ -105,7 +107,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     @Override
-    public boolean canJoin() {
+    public boolean canJoinGame() {
         return this.status.isJoinable() && isSpawnAvailable();
     }
 
@@ -117,7 +119,7 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public GamePlayer preparePlayerJoin(UUID uuid, boolean ignoreAvailableSpawns) {
-        if (!canJoin()) throw new IllegalStateException("Game is not joinable, the main skywars plugins or extensions " +
+        if (!canJoinGame()) throw new IllegalStateException("Game is not joinable, the main skywars plugins or extensions " +
                 "should always check if the instance is joinable before calling this method. (user id: " + uuid +
                 " | game id: " + this.id + ")");
 
@@ -133,57 +135,109 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public boolean addPlayers(GamePlayer... players) {
-        // Select the default chest type to be placed if the player is joining a map
-        // that is being edited.
-        SWChestType defaultChestType = null;
-        if (this.editing) {
-            Collection<SWChestType> chests = this.gameTemplate.getChests().values();
-            if (!chests.isEmpty()) {
-                for (SWChestType chest : chests) {
-                    defaultChestType = chest;
-                    break;
-                }
-            }
-        }
+        // Select the default chest type to be placed if the player is joining a map that is being edited.
+        SWChestType defaultChestType = getDefaultChestType();
 
-        // Get list of available games to join ordered from lowest - highest players.
-        List<GameTeam> gameTeams = teams.stream()
-                .filter(GameTeam::canJoin)
-                .sorted((team1, team2) -> team2.getPlayerCount() - team1.getPlayerCount()) // reverse sort
-                .collect(Collectors.toList());
-
-        if (gameTeams.size() == 0) return false;
-
+        boolean successState = true;
         int index = 0;
         for (GamePlayer gamePlayer : players) {
-            if (!canJoin()) return false;
+            // todo handle reservations - check if specific player can join if reserved
+            if (!canJoinGame()) {
+                successState = false;
+                continue;
+            }
 
             // Apply the default chest type to the gamePlayer
-            final SWPlayer player = gamePlayer.getSWPlayer();
+            final SWPlayer swPlayer = gamePlayer.getSWPlayer();
             if (this.editing) {
-                this.selectedChestTypes.put(player.getUuid(), defaultChestType);
+                this.selectedChestTypes.put(swPlayer.getUuid(), defaultChestType);
+
+                // Add the gamePlayer to the game
+                this.players.add(gamePlayer);
+                swPlayer.setGameWorld(this);
+
+                continue;
             }
+
+            // Get list of available games to join ordered from lowest - highest players.
+            // Re-calculate this every time to make sure the emptiest teams are picked most.
+            List<GameTeam> gameTeams = getTeamsOrderedByPlayerCountIncreasing();
+
+            if (gameTeams.size() == 0) {
+                successState = false;
+                continue;
+            }
+
+            // Get team best suited for the player
+            GameTeam gameTeam = findPreferredTeam(swPlayer, gameTeams);
+
+            if (gameTeam == null) {
+                successState = false;
+                continue;
+            }
+
             // Add the gamePlayer to the game
             this.players.add(gamePlayer);
-            player.setGameWorld(this);
+            gameTeam.addPlayer(gamePlayer);
+            TeamSpawn spawn = gameTeam.getSpawn(gamePlayer);
+            if (spawn == null) spawn = gameTeam.assignSpawn(gamePlayer);
+            swPlayer.setGameWorld(this);
 
-            if (shouldSendPlayerToCages()) {
-                GameTeam team = gameTeams.get(index);
-                TeamSpawn spawn = team.addPlayer(gamePlayer);
+            // Teleport player to next available spawn
+            swPlayer.freeze();
+            teleportPlayerToLobbyOrTeamSpawn(swPlayer, spawn)
+                    .thenRunSync(swPlayer::unfreeze);
 
-                player.teleport(spawn.getLocation());
-
-                if (!team.canJoin()) index++;
-            } else {
-                player.teleport(this.gameTemplate.getWaitingLobbySpawn());
-            }
 
             // todo send join message here.
 
             // todo give vote and other game items here.
             // todo teleport gamePlayer to team spawn / waiting spawn here.
         }
-        return true;
+        return successState;
+    }
+
+    public GameTeam findPreferredTeam(SWPlayer swPlayer, List<GameTeam> gameTeams) {
+        SWParty party = swPlayer.getParty();
+
+        // Try to find corresponding team with players in the same party
+        if (party != null) {
+            boolean teamExistsForParty = false;
+            for (GameTeam gameTeam : gameTeams) {
+                for (GamePlayer gamePlayer : gameTeam.getPlayers()) {
+                    if (gamePlayer.getSWPlayer().getParty() == party) {
+                        teamExistsForParty = true;
+                        if (gameTeam.canJoin(swPlayer.getUuid())) {
+                            return gameTeam;
+                        }
+                    }
+                }
+            }
+            if (!this.gameTemplate.isAllowedDispersedParties() && teamExistsForParty) return null;
+        }
+
+        // Try to find the team with the least players that also has slots that are not reserved
+        for (GameTeam gameTeam : gameTeams) {
+            if (gameTeam.canJoin(swPlayer.getUuid())) {
+                return gameTeam;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Teleport the player to the game. This will choose whether the player should be placed
+     * in the waiting lobby or directly in the cage automatically.
+     * @param swPlayer The player to teleport.
+     * @param spawn The spawn to teleport the player to if the player shouldn't be sent to the map's lobby
+     */
+    public SWCompletableFuture<Boolean> teleportPlayerToLobbyOrTeamSpawn(SWPlayer swPlayer, TeamSpawn spawn) {
+        if (shouldSendPlayerToCages()) {
+            return swPlayer.teleportAsync(spawn.getLocation());
+        } else {
+            return swPlayer.teleportAsync(this.gameTemplate.getWaitingLobbySpawn());
+        }
     }
 
     @Override
@@ -288,6 +342,26 @@ public abstract class AbstractGameWorld implements GameWorld {
             if (!player.getSWPlayer().isOnline()) continue;
             message.sendTitle(fadeIn, stay, fadeOut, player.getSWPlayer());
         }
+    }
+
+    // Private utils
+
+    private SWChestType getDefaultChestType() {
+        if (this.editing) {
+            Collection<SWChestType> chests = this.gameTemplate.getChests().values();
+            if (!chests.isEmpty()) {
+                for (SWChestType chest : chests) {
+                    return chest;
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<GameTeam> getTeamsOrderedByPlayerCountIncreasing() {
+        return teams.stream().filter(GameTeam::canJoin)
+                .sorted((team1, team2) -> team2.getPlayerCount() - team1.getPlayerCount()) // reverse sort
+                .collect(Collectors.toList());
     }
 
     private boolean shouldSendPlayerToCages() {

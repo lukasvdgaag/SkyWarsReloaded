@@ -244,4 +244,10 @@ public interface GameTemplate {
      */
     boolean checkToDoList(SWCommandSender player);
 
+    /**
+     * Get whether this template should allow parties to be dispersed across multiple teams during a game.
+     *
+     * @return true if parties can be dispersed
+     */
+    boolean isAllowedDispersedParties();
 }

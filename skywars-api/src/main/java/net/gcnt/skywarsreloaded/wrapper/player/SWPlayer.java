@@ -2,11 +2,12 @@ package net.gcnt.skywarsreloaded.wrapper.player;
 
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.party.SWParty;
 import net.gcnt.skywarsreloaded.utils.Item;
+import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
-
-import java.util.concurrent.CompletableFuture;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * General data about a player that is independent of any running state of games or teams
@@ -55,7 +56,9 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
 
     void teleport(String world, double x, double y, double z, float yaw, float pitch);
 
-    CompletableFuture<Boolean> teleportAsync(String world, double x, double y, double z);
+    SWCompletableFuture<Boolean> teleportAsync(SWCoord coord);
+
+    SWCompletableFuture<Boolean> teleportAsync(String world, double x, double y, double z);
 
     void sendTitle(String title, String subtitle);
 
@@ -72,4 +75,35 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
      *                 </p>
      */
     void setGameMode(int gamemode);
+
+    /**
+     * Get the current party of the player
+     * @return The player's party
+     */
+    @Nullable
+    SWParty getParty();
+
+    /**
+     * Set the player's party
+     * @param party The party to assign the player to
+     */
+    void setParty(@Nullable SWParty party);
+
+    /**
+     * Freeze the player in place until unfrozen.
+     * This will allow the player to fly to avoid being kicked, but will restrict all movement.
+     */
+    void freeze();
+
+    /**
+     * Unfreeze the player.
+     */
+    void unfreeze();
+
+    /**
+     * Get if the player is frozen
+     *
+     * @return true if the player is frozen
+     */
+    boolean isFrozen();
 }

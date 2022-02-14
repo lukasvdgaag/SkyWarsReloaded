@@ -3,7 +3,6 @@ package net.gcnt.skywarsreloaded.command.general;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
-import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
@@ -23,7 +22,7 @@ public class JoinCmd extends Cmd {
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
         List<GameWorld> worlds = plugin.getGameManager().getGameWorlds().stream()
-                .filter(GameWorld::canJoin)
+                .filter(GameWorld::canJoinGame)
                 .sorted(Comparator.comparingInt(o -> o.getAlivePlayers().size()))
                 .collect(Collectors.toList());
 
