@@ -10,6 +10,7 @@ import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.Message;
 import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.*;
@@ -189,6 +190,10 @@ public abstract class AbstractGameWorld implements GameWorld {
                     .thenRunSync(swPlayer::unfreeze);
 
 
+            announce(plugin.getMessages().getMessage(MessageProperties.GAMES_PLAYER_JOINED.toString())
+                    .replace("%player%", gamePlayer.getSWPlayer().getName())
+                    .replace("%players%", getAlivePlayers().size() + "")
+                    .replace("%maxplayers%", this.gameTemplate.getMaxPlayers() + ""));
             // todo send join message here.
 
             // todo give vote and other game items here.

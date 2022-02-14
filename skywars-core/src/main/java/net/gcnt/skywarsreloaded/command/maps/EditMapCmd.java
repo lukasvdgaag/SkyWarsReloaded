@@ -9,6 +9,7 @@ import net.gcnt.skywarsreloaded.game.chest.SWChestType;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
+import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
@@ -34,7 +35,7 @@ public class EditMapCmd extends Cmd {
             return true;
         }
 
-        if (plugin.getDataConfig().getCoord("lobby") == null) {
+        if (plugin.getDataConfig().getCoord(RuntimeDataProperties.LOBBY_SPAWN.toString()) == null) {
             msgConfig.getMessage(MessageProperties.ERROR_LOBBY_SPAWN_NOT_SET.toString()).send(sender);
             return true;
         }
@@ -105,8 +106,8 @@ public class EditMapCmd extends Cmd {
 
             world.readyForEditing();
 
-            SWChestType defaultChestType = null;
-            Collection<SWChestType> chests = template.getEnabledChestTypes();
+            SWChestType defaultChestType = plugin.getChestManager().getChestTypeByName("normal");
+            /*Collection<SWChestType> chests = template.getEnabledChestTypes();
             // todo fix this.
             chests.forEach(System.out::println);
             if (!chests.isEmpty()) {
@@ -115,7 +116,7 @@ public class EditMapCmd extends Cmd {
                     break;
                 }
             }
-            System.out.println("defaultChestType = " + defaultChestType);
+            System.out.println("defaultChestType = " + defaultChestType);*/
             world.setChestTypeSelected(player.getUuid(), defaultChestType);
 
             // Teleport the player onto the platform that was just created

@@ -38,7 +38,9 @@ public class TodoMapCmd extends Cmd {
         }
 
         if (template.checkToDoList(sender)) {
-            plugin.getMessages().getMessage(MessageProperties.MAPS_ALL_SET_UP.toString()).send(sender);
+            plugin.getMessages().getMessage(MessageProperties.MAPS_ALL_SET_UP.toString())
+                    .replace("%template%", template.getName())
+                    .send(sender);
         }
         return true;
     }

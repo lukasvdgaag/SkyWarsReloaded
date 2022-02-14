@@ -194,6 +194,12 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     }
 
     @Override
+    public String getName() throws NullPointerException {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        return player.getName();
+    }
+
+    @Override
     public void setGameMode(int gamemode) throws NullPointerException {
         if (this.player == null) throw new NullPointerException("Bukkit player is null");
         switch (gamemode) {

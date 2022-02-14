@@ -4,6 +4,8 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.types.GameStatus;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
@@ -35,6 +37,8 @@ public class HostCmd extends Cmd {
         }
 
         GameWorld gameWorld = plugin.getGameManager().createGameWorld(template);
+        plugin.getWorldLoader().generateWorldInstance(gameWorld);
+        gameWorld.setStatus(template.getTeamSize() >= 2 ? GameStatus.WAITING_LOBBY : GameStatus.WAITING_CAGES); // todo make this configurable for separate cages.
         gameWorld.startScheduler();
 
         plugin.getMessages().getMessage(MessageProperties.MAPS_HOSTED.toString())

@@ -245,6 +245,13 @@ public interface GameTemplate {
     boolean checkToDoList(SWCommandSender player);
 
     /**
+     * Get the maximum amount of players that can join this game.
+     *
+     * @return number of players that can fit this game.
+     */
+    int getMaxPlayers();
+
+    /**
      * Get whether this template should allow parties to be dispersed across multiple teams during a game.
      *
      * @return true if parties can be dispersed

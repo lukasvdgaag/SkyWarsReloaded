@@ -39,6 +39,7 @@ public class CoreGameTemplate implements GameTemplate {
     private Map<SWCoord, SWChestType> chests;
     private List<SWChestType> enabledChestTypes;
     private List<SWCoord> signs;
+    private int maxPlayers;
 
     // State
     private boolean enabled;
@@ -57,6 +58,7 @@ public class CoreGameTemplate implements GameTemplate {
         this.creator = "GCNT";
         this.teamSize = 1;
         this.minPlayers = 4;
+        this.maxPlayers = 0;
         this.borderRadius = 100;
     }
 
@@ -161,7 +163,10 @@ public class CoreGameTemplate implements GameTemplate {
         List<String> swChestTypeIds = config.getStringList(MapDataProperties.ENABLED_CHESTTYPES.toString());
         List<SWChestType> enabledChestTypesTmp = new ArrayList<>();
         for (String swChestTypeId : swChestTypeIds) {
-            enabledChestTypesTmp.add(this.plugin.getChestManager().getChestTypeByName(swChestTypeId));
+            final SWChestType chestType = this.plugin.getChestManager().getChestTypeByName(swChestTypeId);
+            if (chestType == null) {
+                plugin.getLogger().error("Invalid chest type found in the configuration of the template '" + name + "': " + swChestTypeId + ". Ignoring it.");
+            } else enabledChestTypesTmp.add(chestType);
         }
         this.enabledChestTypes = enabledChestTypesTmp;
 
@@ -199,6 +204,7 @@ public class CoreGameTemplate implements GameTemplate {
             plugin.getLogger().error("SkyWarsReloaded failed to load the spawnpoints of the game named '" + name + "'.");
             e.printStackTrace();
         }
+        updateMaxPlayers();
 
         // todo load default voting options.
     }
@@ -224,15 +230,11 @@ public class CoreGameTemplate implements GameTemplate {
         config.set(MapDataProperties.LOBBY_SPAWN.toString(), lobbySpawn == null ? null : lobbySpawn.toString());
         config.set(MapDataProperties.SPECTATE_SPAWN.toString(), spectateSpawn == null ? null : spectateSpawn.toString());
 
-        final Map<String, String> collect = chests.entrySet().stream().collect(
-                Collectors.toMap((entry) -> entry.getKey().toString(), (entry) -> entry.getValue().getName()));
-
-        plugin.getLogger().info(collect.size() + " // " + chests.size());
-        plugin.getLogger().info("something even before that");
-        chests.forEach((swCoord, swChestType) -> plugin.getLogger().info(swCoord.toString() + ":" + swChestType.getName()));
-        plugin.getLogger().info("something before");
-        collect.forEach((s, s2) -> plugin.getLogger().info(s + ":" + s2));
-        plugin.getLogger().info("something after");
+        SWChestType defaultChest = plugin.getChestManager().getChestTypeByName("normal"); // todo make this configurable?
+        System.out.println("defaultChest = " + defaultChest);
+        chests.replaceAll((swCoord, swChestType) -> swChestType == null ? defaultChest : swChestType);
+        final Map<String, String> collect = chests.entrySet().stream()
+                .collect(Collectors.toMap((entry) -> entry.getKey().toString(), (entry) -> entry.getValue().getName()));
 
         config.set(MapDataProperties.CHESTS.toString(), collect);
         config.set(MapDataProperties.SIGNS.toString(), signs.stream().map(SWCoord::toString).collect(Collectors.toList()));
@@ -320,6 +322,7 @@ public class CoreGameTemplate implements GameTemplate {
 
         // adding spawn to team.
         this.teamSpawnLocations.get(team).add(loc);
+        updateMaxPlayers();
         return SpawnAddResult.TEAM_UPDATED;
     }
 
@@ -336,6 +339,7 @@ public class CoreGameTemplate implements GameTemplate {
                 }
             }
         }
+        updateMaxPlayers();
         return new SpawnRemoveResult(false, 0, 0, 0);
     }
 
@@ -401,6 +405,15 @@ public class CoreGameTemplate implements GameTemplate {
         }
 
         return true;
+    }
+
+    private void updateMaxPlayers() {
+        this.maxPlayers = this.getTeamSpawnpoints().stream().mapToInt(List::size).sum();
+    }
+
+    @Override
+    public int getMaxPlayers() {
+        return this.maxPlayers;
     }
 
     @Override

@@ -5,7 +5,7 @@ import org.bukkit.command.ConsoleCommandSender;
 
 public class BukkitSWCommandSender extends AbstractSWCommandSender {
 
-    private ConsoleCommandSender sender;
+    private final ConsoleCommandSender sender;
 
     public BukkitSWCommandSender(ConsoleCommandSender senderIn) {
         this.sender = senderIn;
@@ -19,5 +19,10 @@ public class BukkitSWCommandSender extends AbstractSWCommandSender {
     @Override
     public boolean hasPermission(String permission) {
         return sender.hasPermission(permission);
+    }
+
+    @Override
+    public String getName() {
+        return sender.getName();
     }
 }

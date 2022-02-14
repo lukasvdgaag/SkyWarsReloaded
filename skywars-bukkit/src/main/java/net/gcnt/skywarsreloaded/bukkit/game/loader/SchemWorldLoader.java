@@ -12,6 +12,8 @@ import net.gcnt.skywarsreloaded.utils.FileUtils;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
+import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
@@ -135,16 +137,17 @@ public class SchemWorldLoader extends BukkitWorldLoader {
 
     @Override
     public void deleteWorldInstance(GameWorld gameWorld) {
+        if (gameWorld.getScheduler() != null) gameWorld.getScheduler().end();
+
         World world = ((BukkitGameWorld) gameWorld).getBukkitWorld();
         if (world == null) {
             return;
         }
 
-        final SWCoord loc = plugin.getDataConfig().getCoord("lobby");
-        final Location bukkitLoc = (loc != null && loc.world() != null) ? new Location(Bukkit.getWorld(loc.world().getName()), loc.xPrecise(), loc.yPrecise(), loc.zPrecise(), loc.yaw(), loc.pitch()) : new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
+        final SWCoord loc = plugin.getDataConfig().getCoord(RuntimeDataProperties.LOBBY_SPAWN.toString());
 
-        for (Player player : world.getPlayers()) {
-            player.teleport(bukkitLoc);
+        for (SWPlayer player : gameWorld.getWorld().getAllPlayers()) {
+            player.teleport(loc);
         }
 
         Bukkit.unloadWorld(world, false);

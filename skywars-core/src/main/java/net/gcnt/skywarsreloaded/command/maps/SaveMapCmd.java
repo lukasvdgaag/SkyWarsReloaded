@@ -4,7 +4,9 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
+import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
@@ -42,9 +44,12 @@ public class SaveMapCmd extends Cmd {
 
         List<GameWorld> worlds = plugin.getGameManager().getGameWorlds(template);
         CompletableFuture<Boolean> savingFuture = null;
+        GameWorld gameWorld = null;
         for (GameWorld world : worlds) {
             if (world.isEditing()) {
                 // world creating and saving
+                gameWorld = world;
+                plugin.getMessages().getMessage(MessageProperties.MAPS_SAVING_START.toString()).send(sender);
                 savingFuture = plugin.getWorldLoader().save(world);
                 break;
             }
@@ -55,18 +60,26 @@ public class SaveMapCmd extends Cmd {
             return true;
         }
 
+        GameWorld finalGameWorld = gameWorld;
         savingFuture.thenAccept(successful -> {
-            if (successful) this.sendWorldSaved(template, sender);
-            else this.sendMapSaveFail(template, sender);
-
             try {
+                if (successful) this.sendWorldSaved(template, sender);
+                else this.sendMapSaveFail(template, sender);
+
                 template.saveData();
+
+                final SWCoord coord = plugin.getDataConfig().getCoord(RuntimeDataProperties.LOBBY_SPAWN.toString());
+                for (SWPlayer swp : finalGameWorld.getWorld().getAllPlayers()) {
+                    swp.teleport(coord);
+                }
+                plugin.getGameManager().deleteGameWorld(finalGameWorld);
+
+                this.sendMapSaved(template, sender);
+                template.checkToDoList(sender);
             } catch (Exception e) {
                 e.printStackTrace();
+                this.sendMapSaveFail(template, sender);
             }
-            this.sendMapSaved(template, sender);
-
-            template.checkToDoList(sender);
         });
 
         return true;

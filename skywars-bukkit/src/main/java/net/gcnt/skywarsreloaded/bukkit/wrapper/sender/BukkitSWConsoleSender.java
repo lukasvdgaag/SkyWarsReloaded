@@ -16,8 +16,4 @@ public class BukkitSWConsoleSender extends AbstractSWConsoleSender {
         consoleSender.sendMessage(message);
     }
 
-    @Override
-    public boolean hasPermission(String permission) {
-        return true;
-    }
 }

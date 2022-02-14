@@ -127,7 +127,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public void onDisable() {
         if (getGameManager() != null) {
             for (GameWorld world : getGameManager().getGameWorlds()) {
-                getWorldLoader().deleteWorldInstance(world);
+                getGameManager().deleteGameWorld(world);
             }
         }
     }

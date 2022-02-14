@@ -6,4 +6,6 @@ public interface SWCommandSender {
 
     boolean hasPermission(String permission);
 
+    String getName();
+
 }
