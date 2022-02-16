@@ -61,12 +61,27 @@ public class SQLiteStorage implements Storage {
         }
     }
 
+    private void createDefault(SWPlayer player, Connection conn) throws SQLException {
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO `sw_player_data`(`uuid`) VALUES (?)");
+        ps.setString(1, player.getUuid().toString());
+        ps.executeUpdate();
+
+        SWPlayerData swpd = this.plugin.getPlayerDataManager().createSWPlayerDataInstance();
+        swpd.initData(0, 0, 0, 0, 0, 0, null, null, null, null, null, null, null);
+        player.setPlayerData(swpd);
+    }
+
     @Override
     public void loadData(SWPlayer player) {
         try (Connection conn = getConnection()) {
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM `sw_player_data` WHERE `uuid`=?");
             ps.setString(1, player.getUuid().toString());
             ResultSet res = ps.executeQuery();
+
+            if (!res.next()) {
+                createDefault(player, conn);
+                return;
+            }
 
             SWPlayerData swpd = this.plugin.getPlayerDataManager().createSWPlayerDataInstance();
             swpd.initData(

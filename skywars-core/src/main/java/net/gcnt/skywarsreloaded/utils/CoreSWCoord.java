@@ -165,4 +165,10 @@ public class CoreSWCoord implements SWCoord {
     public SWCoord clone() {
         return new CoreSWCoord(x, y, z);
     }
+
+    @Override
+    public SWCoord setWorld(SWWorld world) {
+        this.world = world;
+        return this;
+    }
 }

@@ -20,20 +20,20 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     // Static properties
     protected final SkyWarsReloaded plugin;
-    private final String id;
-    private final GameTemplate gameTemplate;
-    private final String worldName;
+    protected final String id;
+    protected final GameTemplate gameTemplate;
+    protected final String worldName;
     // Player data
-    private final List<GamePlayer> players;
-    private final List<GameTeam> teams;
-    private final HashMap<UUID, SWChestType> selectedChestTypes;
-    private GameScheduler scheduler;
+    protected final List<GamePlayer> players;
+    protected final List<GameTeam> teams;
+    protected final HashMap<UUID, SWChestType> selectedChestTypes;
+    protected GameScheduler scheduler;
     // Map data
-    private GameDifficulty gameDifficulty;
+    protected GameDifficulty gameDifficulty;
     // States
-    private boolean editing;
-    private GameStatus status;
-    private int timer;
+    protected boolean editing;
+    protected GameStatus status;
+    protected int timer;
 
     public AbstractGameWorld(SkyWarsReloaded plugin, String id, GameTemplate gameTemplate) {
         this.plugin = plugin;
@@ -183,6 +183,9 @@ public abstract class AbstractGameWorld implements GameWorld {
             TeamSpawn spawn = gameTeam.getSpawn(gamePlayer);
             if (spawn == null) spawn = gameTeam.assignSpawn(gamePlayer);
             swPlayer.setGameWorld(this);
+
+            // Start placing the cage
+            SWCompletableFuture<Boolean> cagePlaceFuture = spawn.updateCage();
 
             // Teleport player to next available spawn
             swPlayer.freeze();

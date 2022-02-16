@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.game.kits;
 import net.gcnt.skywarsreloaded.data.player.PlayerStat;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public interface Unlockable {
 
@@ -14,7 +15,7 @@ public interface Unlockable {
 
     void setCost(int cost);
 
-    HashMap<PlayerStat, Integer> getMinimumStats();
+    Map<PlayerStat, Integer> getMinimumStats();
 
     void addMinimumStat(PlayerStat stat, int value);
 

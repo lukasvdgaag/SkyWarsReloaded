@@ -44,6 +44,7 @@ public class CoreGamePlayer implements GamePlayer {
     @Override
     public void setSpectating(boolean spectating) {
         this.spectating = spectating;
+        this.alive = false;
         // todo do things?
     }
 

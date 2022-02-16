@@ -1,13 +1,15 @@
 package net.gcnt.skywarsreloaded.data.player;
 
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 public class CoreSWPlayerDataManager implements SWPlayerDataManager {
 
-    private AbstractSkyWarsReloaded skyWars;
+    private final SkyWarsReloaded plugin;
 
     public CoreSWPlayerDataManager(AbstractSkyWarsReloaded skyWarsIn) {
-        this.skyWars = skyWarsIn;
+        this.plugin = skyWarsIn;
     }
 
     @Override

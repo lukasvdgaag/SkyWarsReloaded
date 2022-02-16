@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.game.AbstractGameWorld;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.chest.SWChestType;
+import net.gcnt.skywarsreloaded.game.types.GameStatus;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
@@ -50,6 +51,13 @@ public class BukkitGameWorld extends AbstractGameWorld {
                 inventory.setItem(i, ((BukkitItem) items[i]).getBukkitItem());
             }
         }
+    }
+
+    @Override
+    public void readyForGame() {
+        gameTemplate.getTeamSpawnpoints().forEach(swCoords -> swCoords.forEach(swCoord -> getWorld().setBlockAt(swCoord, (Item) null)));
+        setStatus(gameTemplate.getTeamSize() >= 2 ? GameStatus.WAITING_LOBBY : GameStatus.WAITING_CAGES); // todo make this configurable for separate cages.
+        startScheduler();
     }
 
     @Override

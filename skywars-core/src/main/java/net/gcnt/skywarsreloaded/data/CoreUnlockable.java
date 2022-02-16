@@ -1,19 +1,29 @@
-package net.gcnt.skywarsreloaded.game.kits;
+package net.gcnt.skywarsreloaded.data;
 
 import net.gcnt.skywarsreloaded.data.player.PlayerStat;
+import net.gcnt.skywarsreloaded.game.kits.Unlockable;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class CoreUnlockable implements Unlockable {
 
     private boolean requirePermission;
     private int cost;
-    private HashMap<PlayerStat, Integer> minimumStats;
+    private final Map<PlayerStat, Integer> minimumStats;
 
     public CoreUnlockable() {
-        this.minimumStats = new HashMap<>();
-        this.cost = 0;
-        this.requirePermission = false;
+        this(false, 0);
+    }
+
+    public CoreUnlockable(boolean requirePermission, int cost) {
+        this(requirePermission, cost, null);
+    }
+
+    public CoreUnlockable(boolean requirePermission, int cost, Map<PlayerStat, Integer> minimumStats) {
+        this.requirePermission = requirePermission;
+        this.cost = cost;
+        this.minimumStats = minimumStats == null ? new HashMap<>() : minimumStats;
     }
 
     @Override
@@ -37,7 +47,7 @@ public abstract class CoreUnlockable implements Unlockable {
     }
 
     @Override
-    public HashMap<PlayerStat, Integer> getMinimumStats() {
+    public Map<PlayerStat, Integer> getMinimumStats() {
         return minimumStats;
     }
 

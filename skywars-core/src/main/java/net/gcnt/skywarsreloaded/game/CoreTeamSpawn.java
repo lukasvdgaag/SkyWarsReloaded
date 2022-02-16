@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CoreTeamSpawn implements TeamSpawn {
@@ -88,15 +89,19 @@ public class CoreTeamSpawn implements TeamSpawn {
         }
 
         if (chooseCageFrom.isEmpty()) this.cageDesign = "default";
-        this.cageDesign = chooseCageFrom.get(ThreadLocalRandom.current().nextInt(chooseCageFrom.size()));
+        else this.cageDesign = chooseCageFrom.get(ThreadLocalRandom.current().nextInt(chooseCageFrom.size()));
+
+        // todo load cage object from memory from some kind of cage manager.
+
     }
 
     @Override
-    public void updateCage() {
+    public SWCompletableFuture<Boolean> updateCage() {
+        determineCageDesign();
         // this could cause issues if the shape of a normal cage is different from the previously placed cage.
         if (oldCageDesign != null && !oldCageDesign.equals(cageDesign)) cage.removeCage(this.oldCageDesign);
         // todo check if cage should be placed already.
-        cage.placeCage(this.cageDesign);
+        return cage.placeCage(this.cageDesign);
     }
 
     @Override

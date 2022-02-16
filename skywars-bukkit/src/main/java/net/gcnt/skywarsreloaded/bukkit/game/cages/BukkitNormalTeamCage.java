@@ -5,35 +5,37 @@ import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameWorld;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
 import net.gcnt.skywarsreloaded.game.TeamSpawn;
-import net.gcnt.skywarsreloaded.game.cages.AbstractNormalCage;
+import net.gcnt.skywarsreloaded.game.cages.AbstractNormalTeamCage;
 import net.gcnt.skywarsreloaded.game.cages.NormalCageShape;
+import net.gcnt.skywarsreloaded.utils.CoreSWCCompletableFuture;
+import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class BukkitNormalCage extends AbstractNormalCage {
+public class BukkitNormalTeamCage extends AbstractNormalTeamCage {
 
-    private final BukkitSkyWarsReloaded main;
+    private final BukkitSkyWarsReloaded plugin;
 
-    public BukkitNormalCage(BukkitSkyWarsReloaded mainIn, TeamSpawn spawn) {
+    public BukkitNormalTeamCage(BukkitSkyWarsReloaded mainIn, TeamSpawn spawn) {
         super(mainIn, spawn);
-        this.main = mainIn;
+        this.plugin = mainIn;
     }
 
     @Override
-    public CompletableFuture<Boolean> placeCage(String cage) {
-        Plugin skywarsPlugin = this.main.getBukkitPlugin();
+    public SWCompletableFuture<Boolean> placeCage(String cage) {
+        Plugin skywarsPlugin = this.plugin.getBukkitPlugin();
 
         HashMap<UUID, String> cages = new HashMap<>();
         spawn.getPlayers().forEach(gamePlayer -> {
-            final SWPlayer playerByUUID = main.getPlayerManager().getPlayerByUUID(gamePlayer.getSWPlayer().getUuid());
+            final SWPlayer playerByUUID = plugin.getPlayerManager().getPlayerByUUID(gamePlayer.getSWPlayer().getUuid());
             final SWPlayerData playerData = playerByUUID.getPlayerData();
             cages.put(playerByUUID.getUuid(), spawn.getTeam().getGameWorld().getTemplate().getTeamSize() == 1 ? playerData.getSoloCage() : playerData.getTeamCage());
         });
@@ -42,7 +44,7 @@ public class BukkitNormalCage extends AbstractNormalCage {
         if (selected == null) selected = "GLASS";
         // todo get cage object from cage identifier (selected).
 
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        SWCompletableFuture<Boolean> future = new CoreSWCCompletableFuture<>(plugin);
         String finalSelected = selected;
         skywarsPlugin.getServer().getScheduler().runTask(skywarsPlugin, () -> future.complete(placeCageNow(cage, finalSelected)));
 
@@ -57,11 +59,12 @@ public class BukkitNormalCage extends AbstractNormalCage {
         if (shape == null) return false;
 
         final SWCoord baseCoord = getSpawn().getLocation();
+        final SWWorld world = spawn.getTeam().getGameWorld().getWorld();
 
         for (SWCoord toAdd : shape.getLocations()) {
             SWCoord loc = baseCoord.clone().add(toAdd);
 
-            main.getNMSManager().getNMS().setBlock(loc, new BukkitItem(main, material));
+            world.setBlockAt(loc, new BukkitItem(plugin, material));
             // todo get cage material from config?
         }
 
@@ -70,10 +73,10 @@ public class BukkitNormalCage extends AbstractNormalCage {
     }
 
     @Override
-    public CompletableFuture<Boolean> removeCage(String cage) {
-        Plugin skywarsPlugin = this.main.getBukkitPlugin();
+    public SWCompletableFuture<Boolean> removeCage(String cage) {
+        Plugin skywarsPlugin = this.plugin.getBukkitPlugin();
 
-        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        SWCompletableFuture<Boolean> future = new CoreSWCCompletableFuture<>(plugin);
         skywarsPlugin.getServer().getScheduler().runTask(skywarsPlugin, () -> future.complete(removeCageNow(cage)));
 
         return future;

@@ -35,4 +35,6 @@ public interface SWCoord {
 
     SWCoord clone();
 
+    SWCoord setWorld(SWWorld world);
+
 }

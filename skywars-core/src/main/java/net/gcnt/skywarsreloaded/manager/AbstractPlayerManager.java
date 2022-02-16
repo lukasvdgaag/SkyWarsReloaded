@@ -33,6 +33,7 @@ public abstract class AbstractPlayerManager implements SWPlayerManager {
         if (swp != null) return swp;
 
         swp = this.createSWPlayerForPlatform(uuid);
+        // load data
         players.add(swp);
         return swp;
     }

@@ -178,9 +178,12 @@ public class CoreGameTemplate implements GameTemplate {
         this.spectateSpawn = sspawn == null ? null : new CoreSWCoord(plugin, sspawn);
 
         this.chests = new HashMap<>();
-        for (Map.Entry<String, String> chestEntry : config.getStringMap(MapDataProperties.CHESTS.toString()).entrySet()) {
-            SWCoord loc = new CoreSWCoord(plugin, chestEntry.getKey());
-            this.chests.put(loc, this.plugin.getChestManager().getChestTypeByName(chestEntry.getValue()));
+        for (String chestType : config.getKeys(MapDataProperties.CHESTS.toString())) {
+            final List<String> coordsList = config.getStringList(MapDataProperties.CHESTS + "." + chestType);
+            for (String coordStr : coordsList) {
+                SWCoord loc = new CoreSWCoord(plugin, coordStr);
+                this.chests.put(loc, this.plugin.getChestManager().getChestTypeByName(chestType));
+            }
         }
         this.signs = new ArrayList<>();
         for (String signLoc : config.getStringList(MapDataProperties.SIGNS.toString())) {

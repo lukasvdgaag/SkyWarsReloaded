@@ -59,6 +59,7 @@ public interface GameWorld {
     /**
      * If this method doesn't return true, the calling method is expected to handle kicking the player(s) which
      * have not made it into a team.
+     *
      * @param players List of player to try adding to the game
      * @return true if all players were added to the game
      */
@@ -69,6 +70,8 @@ public interface GameWorld {
     List<GamePlayer> getPlayersCopy();
 
     List<GamePlayer> getAlivePlayers();
+
+    List<GamePlayer> getWaitingPlayers();
 
     List<GamePlayer> getSpectators();
 
@@ -108,4 +111,5 @@ public interface GameWorld {
 
     void loadTeams();
 
+    void readyForGame();
 }

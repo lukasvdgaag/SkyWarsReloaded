@@ -8,12 +8,12 @@ import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.TeamCage;
 import net.gcnt.skywarsreloaded.game.TeamSpawn;
+import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 
 import java.io.File;
-import java.util.concurrent.CompletableFuture;
 
-public abstract class AbstractSchematicCage implements TeamCage {
+public abstract class AbstractSchematicTeamCage implements TeamCage {
 
     private final AbstractSkyWarsReloaded main;
     private final TeamSpawn spawn;
@@ -21,7 +21,7 @@ public abstract class AbstractSchematicCage implements TeamCage {
     private EditSession editSession;
     private boolean placed;
 
-    public AbstractSchematicCage(AbstractSkyWarsReloaded mainIn, TeamSpawn spawn) {
+    public AbstractSchematicTeamCage(AbstractSkyWarsReloaded mainIn, TeamSpawn spawn) {
         this.main = mainIn;
         this.spawn = spawn;
         this.placed = false;
@@ -33,7 +33,7 @@ public abstract class AbstractSchematicCage implements TeamCage {
     }
 
     @Override
-    public abstract CompletableFuture<Boolean> placeCage(String cageId);
+    public abstract SWCompletableFuture<Boolean> placeCage(String cageId);
 
     public boolean placeCageNow(String cageId) {
         // In the case that the cage already exists, remove the old one
@@ -60,7 +60,7 @@ public abstract class AbstractSchematicCage implements TeamCage {
     }
 
     @Override
-    public abstract CompletableFuture<Boolean> removeCage(String cage);
+    public abstract SWCompletableFuture<Boolean> removeCage(String cage);
 
     public boolean removeCageNow() {
         if (editSession == null) return false;

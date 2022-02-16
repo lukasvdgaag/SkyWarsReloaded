@@ -37,9 +37,19 @@ public class HostCmd extends Cmd {
         }
 
         GameWorld gameWorld = plugin.getGameManager().createGameWorld(template);
-        plugin.getWorldLoader().generateWorldInstance(gameWorld);
-        gameWorld.setStatus(template.getTeamSize() >= 2 ? GameStatus.WAITING_LOBBY : GameStatus.WAITING_CAGES); // todo make this configurable for separate cages.
-        gameWorld.startScheduler();
+        plugin.getWorldLoader().generateWorldInstance(gameWorld).thenAccept((result) -> {
+            if (result) {
+                gameWorld.readyForGame();
+
+                plugin.getMessages().getMessage(MessageProperties.MAPS_HOSTED.toString())
+                        .replace("%template%", template.getName())
+                        .replace("%gameworld%", gameWorld.getId())
+                        .send(sender);
+            } else {
+                plugin.getLogger().error("Could not create instance!");// todo send error
+                sender.sendMessage("Internal server has occurred!");
+            }
+        });
 
         plugin.getMessages().getMessage(MessageProperties.MAPS_HOSTED.toString())
                 .replace("%template%", template.getName())

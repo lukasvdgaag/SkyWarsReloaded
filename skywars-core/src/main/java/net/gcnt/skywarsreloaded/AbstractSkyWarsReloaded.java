@@ -82,6 +82,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         setMessages(getYAMLManager().loadConfig("messages", getDataFolder(), "messages.yml")); // requires yaml mgr
 
         setStorage(new SQLiteStorage(this)); // requires config
+        getStorage().setup();
 
         // Managers
         initServer();

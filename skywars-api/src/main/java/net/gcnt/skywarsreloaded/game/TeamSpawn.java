@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.game;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface TeamSpawn {
 
@@ -55,8 +56,10 @@ public interface TeamSpawn {
 
     /**
      * Update the TeamCage with new data.
+     *
+     * @return A {@link SWCompletableFuture} which completes when the cage has been successfully placed.
      */
-    void updateCage();
+    SWCompletableFuture<Boolean> updateCage();
 
     /**
      * Remove the TeamCage.

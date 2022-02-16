@@ -31,23 +31,32 @@ public class CoreSWPlayerData implements SWPlayerData {
     }
 
     @Override
-    public void initData(int solo_wins_in,
-                         int solo_kills_in,
-                         int solo_games_in,
-                         int team_wins_in,
-                         int team_kills_in,
-                         int team_games_in,
-                         String selected_solo_cage_in,
-                         String selected_team_cage_in,
-                         String selected_particle_in,
-                         String selected_kill_effect_in,
-                         String selected_win_effect_in,
-                         String selected_projectile_effect_in,
-                         String kill_messages_theme_in) {
-        this.solo_wins = solo_wins_in;
-        this.solo_kills = solo_kills_in;
-        this.solo_games = solo_games_in;
-        // todo
+    public void initData(int soloWinsIn,
+                         int soloKillsIn,
+                         int soloGamesIn,
+                         int teamWinsIn,
+                         int teamKillsIn,
+                         int teamGamesIn,
+                         String selectedSoloCageIn,
+                         String selectedTeamCageIn,
+                         String selectedParticleIn,
+                         String selectedKillEffectIn,
+                         String selectedWinEffectIn,
+                         String selectedProjectileEffectIn,
+                         String killMessagesThemeIn) {
+        this.soloWins = soloWinsIn;
+        this.soloKills = soloKillsIn;
+        this.soloGames = soloGamesIn;
+        this.teamWins = teamWinsIn;
+        this.teamKills = teamKillsIn;
+        this.teamGames = teamGamesIn;
+        this.selectedSoloCage = selectedSoloCageIn;
+        this.selectedTeamCage = selectedTeamCageIn;
+        this.selectedParticle = selectedParticleIn;
+        this.selectedKillEffect = selectedKillEffectIn;
+        this.selectedWinEffect = selectedWinEffectIn;
+        this.selectedProjectileEffect = selectedProjectileEffectIn;
+        this.killMessagesTheme = killMessagesThemeIn;
     }
 
     @Override
