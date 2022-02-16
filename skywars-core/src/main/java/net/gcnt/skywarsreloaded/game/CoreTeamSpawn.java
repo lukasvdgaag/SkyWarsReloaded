@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
+import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 

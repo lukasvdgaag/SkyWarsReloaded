@@ -14,4 +14,6 @@ public interface SWPlayerManager {
     List<SWPlayer> getPlayers();
 
     void removePlayer(SWPlayer player);
+
+    void initAllPlayers();
 }

@@ -16,4 +16,12 @@ public class CoreSWPlayerDataManager implements SWPlayerDataManager {
     public SWPlayerData createSWPlayerDataInstance() {
         return new CoreSWPlayerData();
     }
+
+    @Override
+    public void loadAllPlayerData() {
+        final Storage storage = this.plugin.getStorage();
+        for (SWPlayer player : this.plugin.getPlayerManager().getPlayers()) {
+            storage.loadData(player);
+        }
+    }
 }

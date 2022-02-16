@@ -233,4 +233,9 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
         this.player.setAllowFlight(true);
         this.player.setFlying(true);
     }
+
+    @Override
+    public void fetchParentPlayer() {
+        this.player = Bukkit.getPlayer(this.getUuid());
+    }
 }

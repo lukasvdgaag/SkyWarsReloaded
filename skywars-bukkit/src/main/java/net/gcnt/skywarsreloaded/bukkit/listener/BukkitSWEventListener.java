@@ -189,7 +189,7 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
     // Utils
 
     private SWPlayer getPlayerFromBukkitPlayer(Player player) {
-        return this.plugin.getPlayerManager().initPlayer(player.getUniqueId());
+        return this.plugin.getPlayerManager().getPlayerByUUID(player.getUniqueId());
     }
 
 }

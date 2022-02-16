@@ -7,19 +7,19 @@ public class CoreSWPlayerData implements SWPlayerData {
 
     private boolean initialized;
 
-    private int solo_wins;
-    private int solo_kills;
-    private int solo_games;
-    private int team_wins;
-    private int team_kills;
-    private int team_games;
-    private String selected_solo_cage;
-    private String selected_team_cage;
-    private String selected_particle;
-    private String selected_kill_effect;
-    private String selected_win_effect;
-    private String selected_projectile_effect;
-    private String kill_messages_theme;
+    private int soloWins;
+    private int soloKills;
+    private int soloGames;
+    private int teamWins;
+    private int teamKills;
+    private int teamGames;
+    private String selectedSoloCage;
+    private String selectedTeamCage;
+    private String selectedParticle;
+    private String selectedKillEffect;
+    private String selectedWinEffect;
+    private String selectedProjectileEffect;
+    private String killMessagesTheme;
 
     public CoreSWPlayerData() {
         this.initialized = false;
@@ -61,131 +61,131 @@ public class CoreSWPlayerData implements SWPlayerData {
 
     @Override
     public int getSoloWins() {
-        return solo_wins;
+        return soloWins;
     }
 
     @Override
     public void setSoloWins(int amount) {
-        solo_wins = amount;
+        soloWins = amount;
     }
 
     @Override
     public int getSoloKills() {
-        return solo_kills;
+        return soloKills;
     }
 
     @Override
     public void setSoloKills(int amount) {
-        solo_kills = amount;
+        soloKills = amount;
     }
 
     @Override
     public int getSoloGamesPlayed() {
-        return solo_games;
+        return soloGames;
     }
 
     @Override
     public void setSoloGamesPlayed(int amount) {
-        solo_games = amount;
+        soloGames = amount;
     }
 
     @Override
     public int getTeamWins() {
-        return team_wins;
+        return teamWins;
     }
 
     @Override
     public void setTeamWins(int amount) {
-        team_wins = amount;
+        teamWins = amount;
     }
 
     @Override
     public int getTeamKills() {
-        return team_kills;
+        return teamKills;
     }
 
     @Override
     public void setTeamKills(int amount) {
-        team_kills = amount;
+        teamKills = amount;
     }
 
     @Override
     public int getTeamGamesPlayed() {
-        return team_games;
+        return teamGames;
     }
 
     @Override
     public void setTeamGamesPlayed(int amount) {
-        team_games = amount;
+        teamGames = amount;
     }
 
     @Override
     public String getSoloCage() {
-        return selected_solo_cage;
+        return selectedSoloCage;
     }
 
     @Override
     public void setSoloCage(String value) {
-        selected_solo_cage = value;
+        selectedSoloCage = value;
     }
 
     @Override
     public String getTeamCage() {
-        return selected_team_cage;
+        return selectedTeamCage;
     }
 
     @Override
     public void setTeamCage(String value) {
-        selected_team_cage = value;
+        selectedTeamCage = value;
     }
 
     @Override
     public String getParticle() {
-        return selected_particle;
+        return selectedParticle;
     }
 
     @Override
     public void setParticle(String value) {
-        selected_particle = value;
+        selectedParticle = value;
     }
 
     @Override
     public String getKillEffect() {
-        return selected_kill_effect;
+        return selectedKillEffect;
     }
 
     @Override
     public void setKillEffect(String value) {
-        selected_kill_effect = value;
+        selectedKillEffect = value;
     }
 
     @Override
     public String getWinEffect() {
-        return selected_win_effect;
+        return selectedWinEffect;
     }
 
     @Override
     public void setWinEffect(String value) {
-        selected_win_effect = value;
+        selectedWinEffect = value;
     }
 
     @Override
     public String getProjectileParticle() {
-        return selected_projectile_effect;
+        return selectedProjectileEffect;
     }
 
     @Override
     public void setProjectileParticle(String value) {
-        selected_projectile_effect = value;
+        selectedProjectileEffect = value;
     }
 
     @Override
     public String getKillMessagesTheme() {
-        return kill_messages_theme;
+        return killMessagesTheme;
     }
 
     @Override
     public void setKillMessagesTheme(String value) {
-        kill_messages_theme = value;
+        killMessagesTheme = value;
     }
 }

@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
 import net.gcnt.skywarsreloaded.wrapper.event.*;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 public class AbstractSWEventListener implements SWEventListener {
@@ -17,12 +18,13 @@ public class AbstractSWEventListener implements SWEventListener {
 
     @Override
     public void onAsyncPlayerPreLogin(SWAsyncPlayerPreLoginEvent event) {
-
+        SWPlayer player = this.plugin.getPlayerManager().initPlayer(event.getUUID());
+        this.plugin.getStorage().loadData(player);
     }
 
     @Override
     public void onPlayerJoin(SWPlayerJoinEvent event) {
-
+        event.getPlayer().fetchParentPlayer();
     }
 
     @Override

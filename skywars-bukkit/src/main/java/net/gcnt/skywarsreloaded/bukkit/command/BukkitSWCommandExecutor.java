@@ -21,8 +21,7 @@ public class BukkitSWCommandExecutor implements CommandExecutor, TabCompleter {
         SWCommandSender swSender;
 
         if (sender instanceof Player)
-            // creating the player if not existing.
-            swSender = main.getPlayerManager().initPlayer(((Player) sender).getUniqueId());
+            swSender = main.getPlayerManager().getPlayerByUUID(((Player) sender).getUniqueId());
         else if (sender instanceof ConsoleCommandSender)
             swSender = main.getConsoleSender();
         else return true;
@@ -37,7 +36,7 @@ public class BukkitSWCommandExecutor implements CommandExecutor, TabCompleter {
 
         if (sender instanceof Player)
             // creating the player if not existing.
-            swSender = main.getPlayerManager().initPlayer(((Player) sender).getUniqueId());
+            swSender = main.getPlayerManager().getPlayerByUUID(((Player) sender).getUniqueId());
         else if (sender instanceof ConsoleCommandSender)
             swSender = main.getConsoleSender();
         else return new ArrayList<>();

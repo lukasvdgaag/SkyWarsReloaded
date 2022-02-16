@@ -51,10 +51,6 @@ public class HostCmd extends Cmd {
             }
         });
 
-        plugin.getMessages().getMessage(MessageProperties.MAPS_HOSTED.toString())
-                .replace("%template%", template.getName())
-                .replace("%gameworld%", gameWorld.getId())
-                .send(sender);
         return true;
     }
 

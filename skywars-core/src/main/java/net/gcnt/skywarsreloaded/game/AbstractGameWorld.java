@@ -14,6 +14,7 @@ import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public abstract class AbstractGameWorld implements GameWorld {
@@ -128,7 +129,7 @@ public abstract class AbstractGameWorld implements GameWorld {
             throw new IllegalStateException("No spawns are available");
 
         SWPlayer swp = plugin.getPlayerManager().getPlayerByUUID(uuid);
-        if (swp == null) swp = plugin.getPlayerManager().initPlayer(uuid);
+        if (swp == null) swp = plugin.getPlayerManager().getPlayerByUUID(uuid);
         if (swp == null) return null;
 
         return new CoreGamePlayer(swp, this);
@@ -190,12 +191,12 @@ public abstract class AbstractGameWorld implements GameWorld {
             // Teleport player to next available spawn
             swPlayer.freeze();
             teleportPlayerToLobbyOrTeamSpawn(swPlayer, spawn)
-                    .thenRunSync(swPlayer::unfreeze);
+                    .thenRun(() -> cagePlaceFuture.thenRunSync(swPlayer::unfreeze));
 
 
             announce(plugin.getMessages().getMessage(MessageProperties.GAMES_PLAYER_JOINED.toString())
                     .replace("%player%", gamePlayer.getSWPlayer().getName())
-                    .replace("%players%", getAlivePlayers().size() + "")
+                    .replace("%players%", getWaitingPlayers().size() + "")
                     .replace("%maxplayers%", this.gameTemplate.getMaxPlayers() + ""));
             // todo send join message here.
 
@@ -237,14 +238,17 @@ public abstract class AbstractGameWorld implements GameWorld {
     /**
      * Teleport the player to the game. This will choose whether the player should be placed
      * in the waiting lobby or directly in the cage automatically.
+     *
      * @param swPlayer The player to teleport.
-     * @param spawn The spawn to teleport the player to if the player shouldn't be sent to the map's lobby
+     * @param spawn    The spawn to teleport the player to if the player shouldn't be sent to the map's lobby
      */
     public SWCompletableFuture<Boolean> teleportPlayerToLobbyOrTeamSpawn(SWPlayer swPlayer, TeamSpawn spawn) {
         if (shouldSendPlayerToCages()) {
-            return swPlayer.teleportAsync(spawn.getLocation());
+            SWCoord coord = spawn.getLocation().clone().setWorld(this.getWorld());
+            return swPlayer.teleportAsync(coord);
         } else {
-            return swPlayer.teleportAsync(this.gameTemplate.getWaitingLobbySpawn());
+            SWCoord coord = this.gameTemplate.getWaitingLobbySpawn().setWorld(this.getWorld());
+            return swPlayer.teleportAsync(coord);
         }
     }
 
@@ -261,6 +265,11 @@ public abstract class AbstractGameWorld implements GameWorld {
     @Override
     public List<GamePlayer> getAlivePlayers() {
         return players.stream().filter(GamePlayer::isAlive).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GamePlayer> getWaitingPlayers() {
+        return players.stream().filter(Predicate.not(GamePlayer::isSpectating)).collect(Collectors.toList());
     }
 
     @Override

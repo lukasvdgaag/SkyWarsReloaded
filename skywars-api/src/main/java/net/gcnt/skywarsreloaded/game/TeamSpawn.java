@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
+import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 
 import java.util.List;

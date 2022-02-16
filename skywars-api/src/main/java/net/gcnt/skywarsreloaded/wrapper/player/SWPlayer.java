@@ -78,6 +78,7 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
 
     /**
      * Get the current party of the player
+     *
      * @return The player's party
      */
     @Nullable
@@ -85,6 +86,7 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
 
     /**
      * Set the player's party
+     *
      * @param party The party to assign the player to
      */
     void setParty(@Nullable SWParty party);
@@ -106,4 +108,10 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
      * @return true if the player is frozen
      */
     boolean isFrozen();
+
+    /**
+     * Update the internal parent player object. This uses the UUID stored in the {@link SWPlayer} object to
+     * find the parent player from the platform.
+     */
+    void fetchParentPlayer();
 }

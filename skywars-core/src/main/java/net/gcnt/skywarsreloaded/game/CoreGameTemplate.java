@@ -233,13 +233,25 @@ public class CoreGameTemplate implements GameTemplate {
         config.set(MapDataProperties.LOBBY_SPAWN.toString(), lobbySpawn == null ? null : lobbySpawn.toString());
         config.set(MapDataProperties.SPECTATE_SPAWN.toString(), spectateSpawn == null ? null : spectateSpawn.toString());
 
+        // Chests
         SWChestType defaultChest = plugin.getChestManager().getChestTypeByName("normal"); // todo make this configurable?
         System.out.println("defaultChest = " + defaultChest);
+        // Make sure chest types are valid before storing the data
         chests.replaceAll((swCoord, swChestType) -> swChestType == null ? defaultChest : swChestType);
-        final Map<String, String> collect = chests.entrySet().stream()
-                .collect(Collectors.toMap((entry) -> entry.getKey().toString(), (entry) -> entry.getValue().getName()));
+        // Store chest coords under each respective type
+        final Map<String, List<String>> chestCoordsByType = new HashMap<>();
+        this.chests.forEach((coord, type) -> {
+            String chestName = type.getName();
+            List<String> coords = chestCoordsByType.get(chestName);
+            if (coord == null) {
+                coords = new ArrayList<>();
+                chestCoordsByType.put(chestName, coords);
+            }
+            assert coord != null;
+            coords.add(coord.toString());
+        });
 
-        config.set(MapDataProperties.CHESTS.toString(), collect);
+        config.set(MapDataProperties.CHESTS.toString(), chestCoordsByType);
         config.set(MapDataProperties.SIGNS.toString(), signs.stream().map(SWCoord::toString).collect(Collectors.toList()));
 
         List<List<String>> spawnPoints = new ArrayList<>();
