@@ -242,13 +242,9 @@ public class CoreGameTemplate implements GameTemplate {
         final Map<String, List<String>> chestCoordsByType = new HashMap<>();
         this.chests.forEach((coord, type) -> {
             String chestName = type.getName();
-            List<String> coords = chestCoordsByType.get(chestName);
-            if (coord == null) {
-                coords = new ArrayList<>();
-                chestCoordsByType.put(chestName, coords);
-            }
-            assert coord != null;
+            List<String> coords = chestCoordsByType.getOrDefault(chestName, new ArrayList<>());
             coords.add(coord.toString());
+            chestCoordsByType.put(chestName, coords);
         });
 
         config.set(MapDataProperties.CHESTS.toString(), chestCoordsByType);
