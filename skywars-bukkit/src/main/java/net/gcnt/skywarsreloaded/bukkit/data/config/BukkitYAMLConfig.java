@@ -172,7 +172,9 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public Set<String> getKeys(String property) {
-        return fileConfiguration.getConfigurationSection(property).getKeys(false);
+        final ConfigurationSection sect = fileConfiguration.getConfigurationSection(property);
+        if (sect == null) return null;
+        return sect.getKeys(false);
     }
 
     @Override

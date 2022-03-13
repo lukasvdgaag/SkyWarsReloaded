@@ -32,10 +32,9 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
 
         file = new File(directory, fileName);
 
-        if (!directory.exists() || !file.exists()) {
-            if (!this.copyDefaultFile()) {
-                return;
-            }
+        if (directory.exists()) directory.mkdirs();
+        if (!file.exists() && !this.copyDefaultFile()) {
+            return;
         }
     }
 
@@ -56,10 +55,9 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
 
         file = new File(directory, fileName);
 
-        if (!directory.exists() || !file.exists()) {
-            if (!this.copyDefaultFile()) {
-                return;
-            }
+        if (directory.exists()) directory.mkdirs();
+        if (!file.exists() && !this.copyDefaultFile()) {
+            return;
         }
     }
 
@@ -71,10 +69,9 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
         this.directoryName = directory.getName();
         this.file = new File(directory, fileName);
 
-        if (!directory.exists() || !file.exists()) {
-            if (!this.copyDefaultFile()) {
-                return;
-            }
+        if (directory.exists()) directory.mkdirs();
+        if (!file.exists() && !this.copyDefaultFile()) {
+            return;
         }
     }
 
@@ -87,10 +84,9 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
         this.file = new File(directory, fileName);
         this.defaultFilePath = defaultFilePath;
 
-        if (!directory.exists() || !file.exists()) {
-            if (!this.copyDefaultFile()) {
-                return;
-            }
+        if (directory.exists()) directory.mkdirs();
+        if (!file.exists() && !this.copyDefaultFile()) {
+            return;
         }
     }
 

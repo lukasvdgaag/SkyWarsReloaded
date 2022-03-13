@@ -7,6 +7,8 @@ enabled-chesttypes:
   - normal
   - center
 
+chests: [ ]
+
 default-chest-type: NORMAL
 default-health: TEN
 default-time: DAY
