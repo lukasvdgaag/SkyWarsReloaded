@@ -67,7 +67,9 @@ public class SQLiteStorage implements Storage {
         ps.executeUpdate();
 
         SWPlayerData swpd = this.plugin.getPlayerDataManager().createSWPlayerDataInstance();
-        swpd.initData(0, 0, 0, 0, 0, 0, null, null, null, null, null, null, null);
+        SWPlayerStats swps = this.plugin.getPlayerDataManager().createSWPlayerStatsInstance();
+        swps.initData(0, 0, 0, 0, 0, 0);
+        swpd.initData(swps, null, null, null, null, null, null, null);
         player.setPlayerData(swpd);
     }
 

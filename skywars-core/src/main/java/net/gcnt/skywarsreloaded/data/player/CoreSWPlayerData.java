@@ -7,12 +7,8 @@ public class CoreSWPlayerData implements SWPlayerData {
 
     private boolean initialized;
 
-    private int soloWins;
-    private int soloKills;
-    private int soloGames;
-    private int teamWins;
-    private int teamKills;
-    private int teamGames;
+    private SWPlayerStats stats;
+
     private String selectedSoloCage;
     private String selectedTeamCage;
     private String selectedParticle;
@@ -31,12 +27,7 @@ public class CoreSWPlayerData implements SWPlayerData {
     }
 
     @Override
-    public void initData(int soloWinsIn,
-                         int soloKillsIn,
-                         int soloGamesIn,
-                         int teamWinsIn,
-                         int teamKillsIn,
-                         int teamGamesIn,
+    public void initData(SWPlayerStats statsIn,
                          String selectedSoloCageIn,
                          String selectedTeamCageIn,
                          String selectedParticleIn,
@@ -44,12 +35,7 @@ public class CoreSWPlayerData implements SWPlayerData {
                          String selectedWinEffectIn,
                          String selectedProjectileEffectIn,
                          String killMessagesThemeIn) {
-        this.soloWins = soloWinsIn;
-        this.soloKills = soloKillsIn;
-        this.soloGames = soloGamesIn;
-        this.teamWins = teamWinsIn;
-        this.teamKills = teamKillsIn;
-        this.teamGames = teamGamesIn;
+        this.stats = statsIn;
         this.selectedSoloCage = selectedSoloCageIn;
         this.selectedTeamCage = selectedTeamCageIn;
         this.selectedParticle = selectedParticleIn;
@@ -57,66 +43,12 @@ public class CoreSWPlayerData implements SWPlayerData {
         this.selectedWinEffect = selectedWinEffectIn;
         this.selectedProjectileEffect = selectedProjectileEffectIn;
         this.killMessagesTheme = killMessagesThemeIn;
+        this.initialized = true;
     }
 
     @Override
-    public int getSoloWins() {
-        return soloWins;
-    }
-
-    @Override
-    public void setSoloWins(int amount) {
-        soloWins = amount;
-    }
-
-    @Override
-    public int getSoloKills() {
-        return soloKills;
-    }
-
-    @Override
-    public void setSoloKills(int amount) {
-        soloKills = amount;
-    }
-
-    @Override
-    public int getSoloGamesPlayed() {
-        return soloGames;
-    }
-
-    @Override
-    public void setSoloGamesPlayed(int amount) {
-        soloGames = amount;
-    }
-
-    @Override
-    public int getTeamWins() {
-        return teamWins;
-    }
-
-    @Override
-    public void setTeamWins(int amount) {
-        teamWins = amount;
-    }
-
-    @Override
-    public int getTeamKills() {
-        return teamKills;
-    }
-
-    @Override
-    public void setTeamKills(int amount) {
-        teamKills = amount;
-    }
-
-    @Override
-    public int getTeamGamesPlayed() {
-        return teamGames;
-    }
-
-    @Override
-    public void setTeamGamesPlayed(int amount) {
-        teamGames = amount;
+    public SWPlayerStats getStats() {
+        return stats;
     }
 
     @Override

@@ -4,12 +4,7 @@ public interface SWPlayerData {
 
     boolean isInitialized();
 
-    void initData(int solo_wins,
-                  int solo_kills,
-                  int solo_games,
-                  int team_wins,
-                  int team_kills,
-                  int team_games,
+    void initData(SWPlayerStats stats,
                   String selected_solo_cage,
                   String selected_team_cage,
                   String selected_particle,
@@ -18,29 +13,7 @@ public interface SWPlayerData {
                   String selected_projectile_particle,
                   String kill_messages_theme);
 
-    int getSoloWins();
-
-    void setSoloWins(int amount);
-
-    int getSoloKills();
-
-    void setSoloKills(int amount);
-
-    int getSoloGamesPlayed();
-
-    void setSoloGamesPlayed(int amount);
-
-    int getTeamWins();
-
-    void setTeamWins(int amount);
-
-    int getTeamKills();
-
-    void setTeamKills(int amount);
-
-    int getTeamGamesPlayed();
-
-    void setTeamGamesPlayed(int amount);
+    SWPlayerStats getStats();
 
     String getSoloCage();
 

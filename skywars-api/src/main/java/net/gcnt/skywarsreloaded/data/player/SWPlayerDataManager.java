@@ -4,5 +4,7 @@ public interface SWPlayerDataManager {
 
     SWPlayerData createSWPlayerDataInstance();
 
+    SWPlayerStats createSWPlayerStatsInstance();
+
     void loadAllPlayerData();
 }
