@@ -20,7 +20,7 @@
     <repositories>
         <repository>
             <id>bukkitmc</id>
-            <url>http://nexus.gaagjescraft.net/repository/bukkit/</url>
+            <url>https://nexuslite.gcnt.net/repos/bukkit/</url>
         </repository>
     </repositories>
 

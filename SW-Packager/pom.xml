@@ -155,7 +155,7 @@
                 </executions>
                 <configuration>
                     <serverId>swr-nexus</serverId>
-                    <nexusUrl>http://nexus.gaagjescraft.net/repository/gaagjescraft/</nexusUrl>
+                    <nexusUrl>https://nexuslite.gcnt.net/repository/gaagjescraft/</nexusUrl>
                     <skipStaging>true</skipStaging>
                 </configuration>
             </plugin>
