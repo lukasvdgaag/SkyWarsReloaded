@@ -106,7 +106,7 @@ public class SetKitRequirementsCmd extends Cmd {
                 unlockable.setCost(Integer.parseInt(value));
                 break;
             case "permission":
-                unlockable.setRequirePermission(Boolean.parseBoolean(value));
+                unlockable.setNeedPermission(Boolean.parseBoolean(value));
                 break;
             default:
                 unlockable.addMinimumStat(PlayerStat.fromString(requirement), Integer.parseInt(value));

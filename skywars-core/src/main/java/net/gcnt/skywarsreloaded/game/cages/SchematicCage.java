@@ -23,4 +23,14 @@ public class SchematicCage extends CoreUnlockable implements Cage {
     public File getFile() {
         return file;
     }
+
+    @Override
+    public String getPermissionPrefix() {
+        return "sw.kit.";
+    }
+
+    @Override
+    public String getType() {
+        return "schematic";
+    }
 }

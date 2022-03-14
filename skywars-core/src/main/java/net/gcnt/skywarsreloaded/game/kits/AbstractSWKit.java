@@ -202,7 +202,7 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
         this.slot = config.getInt(KitProperties.SLOT.toString(), -1);
 
         // kit requirement init
-        setRequirePermission(config.getBoolean(KitProperties.REQUIREMENTS_PERMISSION.toString(), false));
+        setNeedPermission(config.getBoolean(KitProperties.REQUIREMENTS_PERMISSION.toString(), false));
         setCost(config.getInt(KitProperties.REQUIREMENTS_COST.toString(), 0));
         if (config.contains(KitProperties.REQUIREMENTS_STATS.toString())) {
             config.getKeys(KitProperties.REQUIREMENTS_STATS.toString()).forEach(stat -> {
@@ -266,7 +266,7 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
         config.set(KitProperties.EFFECTS.toString(), effects);
         config.set(KitProperties.SLOT.toString(), slot);
 
-        config.set(KitProperties.REQUIREMENTS_PERMISSION.toString(), requiresPermission());
+        config.set(KitProperties.REQUIREMENTS_PERMISSION.toString(), needsPermission());
         config.set(KitProperties.REQUIREMENTS_COST.toString(), getCost());
 
         // clearing required stats from current file

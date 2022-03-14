@@ -20,8 +20,17 @@ public class MaterialCage extends CoreUnlockable implements Cage {
         return this.id;
     }
 
+    @Override
+    public String getType() {
+        return "material";
+    }
+
     public List<String> getMaterials() {
         return this.materials;
     }
 
+    @Override
+    public String getPermissionPrefix() {
+        return "sw.kit.";
+    }
 }
