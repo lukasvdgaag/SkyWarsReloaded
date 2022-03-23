@@ -10,6 +10,23 @@ Check out the extension: [SkyWarsReloaded Extension](https://gaagjescraft.net/sw
 
 *Want to see what we are working on or planning to add? Check out the [SkyWarsReloaded project board](https://github.com/users/lukasvdgaag/projects/2)!
 
+## Maven dependency
+**Repository**  
+```xml
+<repositories>
+    <repository>
+        <id>gcnt</id>
+        <url>https://nexuslite.gcnt.net/repos/gcnt</url>
+    </repository>
+</repositories>```
+**Dependency**
+```xml
+<dependency>
+    <groupId>net.gcnt</groupId>
+    <artifactId>skywarsreloaded</artifactId>
+    <version>5.6.1</version>
+</dependency>```
+
 ## Installation
 
 1. Head over to the download page.
