@@ -18,14 +18,16 @@ Check out the extension: [SkyWarsReloaded Extension](https://gaagjescraft.net/sw
         <id>gcnt</id>
         <url>https://nexuslite.gcnt.net/repos/gcnt</url>
     </repository>
-</repositories>```
+</repositories>
+```
 **Dependency**
 ```xml
 <dependency>
     <groupId>net.gcnt</groupId>
     <artifactId>skywarsreloaded</artifactId>
     <version>5.6.1</version>
-</dependency>```
+</dependency>
+```
 
 ## Installation
 
