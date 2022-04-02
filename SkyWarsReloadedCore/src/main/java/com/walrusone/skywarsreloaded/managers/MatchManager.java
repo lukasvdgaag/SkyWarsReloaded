@@ -620,6 +620,24 @@ public class MatchManager {
 
             // Make sure winners are placed #1
             winners.setPlace(1);
+
+            // Losers
+            for (TeamCard teamCard : gameMap.getTeamCards()) {
+                if (teamCard != winners) {
+                    for (PlayerCard pCard : teamCard.getPlayerCards()) {
+                        Player pLoser = pCard.getPlayer();
+
+                        if (pLoser != null) {
+                            final PlayerStat loserData = PlayerStat.getPlayerStats(pLoser.getUniqueId().toString());
+                            if (loserData != null) {
+                                loserData.setLosts(loserData.getLosses() + 1);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Winners
             for (PlayerCard pCard : winners.getPlayerCards()) {
                 Player pWinner = pCard.getPlayer();
 
