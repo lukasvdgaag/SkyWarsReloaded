@@ -17,7 +17,6 @@ import com.walrusone.skywarsreloaded.managers.worlds.SWMWorldManager;
 import com.walrusone.skywarsreloaded.managers.worlds.WorldManager;
 import com.walrusone.skywarsreloaded.matchevents.*;
 import com.walrusone.skywarsreloaded.menus.ArenaMenu;
-import com.walrusone.skywarsreloaded.menus.ArenasMenu;
 import com.walrusone.skywarsreloaded.menus.TeamSelectionMenu;
 import com.walrusone.skywarsreloaded.menus.TeamSpectateMenu;
 import com.walrusone.skywarsreloaded.menus.gameoptions.*;
@@ -49,10 +48,6 @@ import java.util.logging.Level;
 public class GameMap {
 
     private static ArrayList<GameMap> arenas;
-
-    static {
-        new ArenasMenu();
-    }
 
     static {
         GameMap.arenas = new ArrayList<>();

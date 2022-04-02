@@ -270,6 +270,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         // LOAD BEFORE HOLO - Holo needs server to be loaded to update correctly
         load();
 
+        // Requires IM - aka load()
+        new ArenasMenu();
+
         // Holograms
         if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
             hu = null;
