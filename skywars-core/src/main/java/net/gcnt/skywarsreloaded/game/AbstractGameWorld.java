@@ -190,9 +190,11 @@ public abstract class AbstractGameWorld implements GameWorld {
 
             // Teleport player to next available spawn
             swPlayer.freeze();
-            teleportPlayerToLobbyOrTeamSpawn(swPlayer, spawn)
-                    .thenRun(() -> cagePlaceFuture.thenRunSync(swPlayer::unfreeze));
-
+            TeamSpawn finalSpawn = spawn;
+            cagePlaceFuture.thenRunSync(() -> teleportPlayerToLobbyOrTeamSpawn(swPlayer, finalSpawn).thenRunSync(swPlayer::unfreeze));
+//
+//            teleportPlayerToLobbyOrTeamSpawn(swPlayer, spawn)
+//                    .thenRun(() -> cagePlaceFuture.thenRunSync(swPlayer::unfreeze));
 
             announce(plugin.getMessages().getMessage(MessageProperties.GAMES_PLAYER_JOINED.toString())
                     .replace("%player%", gamePlayer.getSWPlayer().getName())
@@ -245,10 +247,10 @@ public abstract class AbstractGameWorld implements GameWorld {
     public SWCompletableFuture<Boolean> teleportPlayerToLobbyOrTeamSpawn(SWPlayer swPlayer, TeamSpawn spawn) {
         if (shouldSendPlayerToCages()) {
             SWCoord coord = spawn.getLocation().clone().setWorld(this.getWorld());
-            return swPlayer.teleportAsync(coord);
+            return swPlayer.teleportAsync(coord.add(0.5, 0.5, 0.5));
         } else {
             SWCoord coord = this.gameTemplate.getWaitingLobbySpawn().setWorld(this.getWorld());
-            return swPlayer.teleportAsync(coord);
+            return swPlayer.teleportAsync(coord.add(0, 0.5, 0));
         }
     }
 
