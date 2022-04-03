@@ -109,11 +109,7 @@ public class CoreTeamSpawn implements TeamSpawn {
         Cage cage = plugin.getCageManager().getCageById(this.cageDesign);
         if (cage == null) cage = plugin.getCageManager().getCageById("default");
 
-        System.out.println("oldCageDesign = " + oldCageDesign);
-        System.out.println("cageDesign = " + cageDesign);
-        System.out.println("cage = " + cage);
         if (this.cageDesign.equals(this.oldCageDesign) && teamCage != null) {
-            System.out.println("cagedesigns are the same");
             return CoreSWCCompletableFuture.completedFuture(plugin, true);
         }
 
@@ -131,7 +127,6 @@ public class CoreTeamSpawn implements TeamSpawn {
         // After cage removal
         final Cage finalCage = cage;
         removeFuture.thenRun(() -> {
-            System.out.println("removeFuture.thenRun");
             if (finalCage instanceof SchematicCage) {
                 this.teamCage = new CoreSchematicTeamCage(plugin, this, (SchematicCage) finalCage);
             } else if (finalCage instanceof MaterialCage) {
@@ -140,15 +135,11 @@ public class CoreTeamSpawn implements TeamSpawn {
                 System.out.println("NOT ANY OF THE TYPES " + finalCage.getClass().getName());
             }
 
-            System.out.println("placeFuture PRE call");
-            System.out.println("teamCage = " + teamCage);
             System.out.println(this.teamCage.getClass().getName());
             SWCompletableFuture<Boolean> placeFuture = this.teamCage.placeCage();
-            System.out.println("placeFuture POST call");
 
             // Release players' freeze & complete after the cage is placed
             placeFuture.thenRunSync(() -> {
-                System.out.println("placeFuture.thenRun");
                 this.players.forEach((player) -> player.getSWPlayer().unfreeze());
 
                 // END

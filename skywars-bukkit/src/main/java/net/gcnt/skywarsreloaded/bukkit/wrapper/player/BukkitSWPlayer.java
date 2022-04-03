@@ -175,7 +175,13 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
             successFuture.complete(false);
             return successFuture;
         }
-        PaperLib.teleportAsync(player, new Location(bukkitWorld, x, y, z)).thenAccept(successFuture::complete);
+        final Location location = new Location(bukkitWorld, x, y, z);
+        System.out.println("teleporting to = " + location.getX() + ":" + location.getY() + ":" + location.getZ());
+        System.out.println("before player.getLocation().getX() = " + player.getLocation().getX() + ":" + player.getLocation().getY() + ":" + player.getLocation().getZ());
+        PaperLib.teleportAsync(player, location).thenAccept((bool) -> {
+            System.out.println("after player.getLocation().getX() = " + player.getLocation().getX() + ":" + player.getLocation().getY() + ":" + player.getLocation().getZ());
+            successFuture.complete(bool);
+        });
         return successFuture;
 
     }
@@ -220,18 +226,18 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
 
     @Override
     public void freeze() throws NullPointerException {
-        super.freeze();
+        /*super.freeze();
         if (this.player == null) throw new NullPointerException("Bukkit player is null");
         this.player.setAllowFlight(true);
-        this.player.setFlying(true);
+        this.player.setFlying(true);*/
     }
 
     @Override
     public void unfreeze() throws NullPointerException {
-        super.unfreeze();
+        /*super.unfreeze(); todo uncomment this
         if (this.player == null) throw new NullPointerException("Bukkit player is null");
         this.player.setAllowFlight(true);
-        this.player.setFlying(true);
+        this.player.setFlying(true);*/
     }
 
     @Override

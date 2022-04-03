@@ -246,8 +246,12 @@ public abstract class AbstractGameWorld implements GameWorld {
      */
     public SWCompletableFuture<Boolean> teleportPlayerToLobbyOrTeamSpawn(SWPlayer swPlayer, TeamSpawn spawn) {
         if (shouldSendPlayerToCages()) {
+            System.out.println("spawn.getLocation() = " + spawn.getLocation());
             SWCoord coord = spawn.getLocation().clone().setWorld(this.getWorld());
-            return swPlayer.teleportAsync(coord.add(0.5, 0.5, 0.5));
+            System.out.println("coord = " + coord);
+            final SWCoord add = coord.add(0.5, 0.5, 0.5);
+            System.out.println("add = " + add);
+            return swPlayer.teleportAsync(add);
         } else {
             SWCoord coord = this.gameTemplate.getWaitingLobbySpawn().setWorld(this.getWorld());
             return swPlayer.teleportAsync(coord.add(0, 0.5, 0));

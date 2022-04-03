@@ -164,7 +164,7 @@ public class CoreSWCoord implements SWCoord {
 
     @Override
     public SWCoord clone() {
-        return new CoreSWCoord(x, y, z);
+        return new CoreSWCoord(world, x, y, z, yaw, pitch);
     }
 
     @Override
