@@ -18,7 +18,6 @@ public enum NormalCageShape {
 
     NormalCageShape() {
         locations = new ArrayList<>();
-        System.out.println("this = " + this);
     }
 
     public static NormalCageShape fromString(String input) {

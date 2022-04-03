@@ -18,9 +18,7 @@ public class BukkitPlayerManager extends AbstractPlayerManager {
 
     @Override
     public SWPlayer createSWPlayerForPlatform(UUID uuid) {
-        System.out.println(uuid.toString());
         Player player = Bukkit.getPlayer(uuid);
-        System.out.println(player);
         if (player == null) return new BukkitSWPlayer((BukkitSkyWarsReloaded) plugin, uuid, true);
         else return this.createSWPlayerForPlatform(player);
     }

@@ -132,10 +132,10 @@ public class CoreTeamSpawn implements TeamSpawn {
             } else if (finalCage instanceof MaterialCage) {
                 this.teamCage = new CoreMaterialTeamCage(plugin, this, (MaterialCage) finalCage);
             } else {
+                // todo: debug
                 System.out.println("NOT ANY OF THE TYPES " + finalCage.getClass().getName());
             }
 
-            System.out.println(this.teamCage.getClass().getName());
             SWCompletableFuture<Boolean> placeFuture = this.teamCage.placeCage();
 
             // Release players' freeze & complete after the cage is placed

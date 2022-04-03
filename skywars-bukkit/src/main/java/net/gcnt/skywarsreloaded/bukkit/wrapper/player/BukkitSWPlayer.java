@@ -176,10 +176,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
             return successFuture;
         }
         final Location location = new Location(bukkitWorld, x, y, z);
-        System.out.println("teleporting to = " + location.getX() + ":" + location.getY() + ":" + location.getZ());
-        System.out.println("before player.getLocation().getX() = " + player.getLocation().getX() + ":" + player.getLocation().getY() + ":" + player.getLocation().getZ());
         PaperLib.teleportAsync(player, location).thenAccept((bool) -> {
-            System.out.println("after player.getLocation().getX() = " + player.getLocation().getX() + ":" + player.getLocation().getY() + ":" + player.getLocation().getZ());
             successFuture.complete(bool);
         });
         return successFuture;

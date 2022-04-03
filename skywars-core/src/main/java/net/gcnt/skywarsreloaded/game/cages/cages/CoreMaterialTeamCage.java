@@ -39,31 +39,25 @@ public class CoreMaterialTeamCage implements TeamCage {
 
     @Override
     public SWCompletableFuture<Boolean> placeCage() {
-        System.out.println("placing cage (placeCaeg)");
         HashMap<UUID, String> cages = new HashMap<>();
         spawn.getPlayers().forEach(gamePlayer -> {
-            System.out.println("placing cage (placeCaeg) player: " + gamePlayer.getSWPlayer().getName());
             final SWPlayer playerByUUID = plugin.getPlayerManager().getPlayerByUUID(gamePlayer.getSWPlayer().getUuid());
             final SWPlayerData playerData = playerByUUID.getPlayerData();
 
-            System.out.println("1");
             String selectedCage = spawn.getTeam().getGameWorld().getTemplate().getTeamSize() == 1 ? playerData.getSoloCage() : playerData.getTeamCage();
             if (selectedCage == null || selectedCage.isEmpty()) selectedCage = "default";
 
             cages.put(playerByUUID.getUuid(), selectedCage);
         });
 
-        System.out.println("2");
         String selected = (String) cages.values().toArray()[ThreadLocalRandom.current().nextInt(cages.size())];
         if (selected == null) selected = "GLASS";
         // todo get cage object from cage identifier (selected).
 
-        System.out.println("3");
         SWCompletableFuture<Boolean> future = new CoreSWCCompletableFuture<>(plugin);
         String finalSelected = selected;
 
         plugin.getScheduler().runSync(() -> {
-            System.out.println("completing cage placement for " + spawn.getTeam().getName() + " with " + finalSelected);
             future.complete(placeCageNow());
         });
         return future;
@@ -72,14 +66,12 @@ public class CoreMaterialTeamCage implements TeamCage {
     public boolean placeCageNow() {
         NormalCageShape shape = cage.getShape();
         if (shape == null) {
-            System.out.println("shape is null");
             return false;
         }
 
         final SWCoord baseCoord = getSpawn().getLocation();
         baseCoord.setWorld(spawn.getTeam().getGameWorld().getWorld());
 
-        System.out.println("placing cage at " + baseCoord);
         plugin.getCageManager().placeCage(this.cage, baseCoord);
 
         setPlaced(true);

@@ -6,10 +6,7 @@ import net.gcnt.skywarsreloaded.game.types.GameDifficulty;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.party.SWParty;
-import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.utils.Message;
-import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.*;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
@@ -246,14 +243,12 @@ public abstract class AbstractGameWorld implements GameWorld {
      */
     public SWCompletableFuture<Boolean> teleportPlayerToLobbyOrTeamSpawn(SWPlayer swPlayer, TeamSpawn spawn) {
         if (shouldSendPlayerToCages()) {
-            System.out.println("spawn.getLocation() = " + spawn.getLocation());
             SWCoord coord = spawn.getLocation().clone().setWorld(this.getWorld());
-            System.out.println("coord = " + coord);
-            final SWCoord add = coord.add(0.5, 0.5, 0.5);
-            System.out.println("add = " + add);
-            return swPlayer.teleportAsync(add);
+            final SWCoord add = coord.add(0.5, 1, 0.5);
+            swPlayer.teleport(coord);
+            return CoreSWCCompletableFuture.completedFuture(this.plugin, true);
         } else {
-            SWCoord coord = this.gameTemplate.getWaitingLobbySpawn().setWorld(this.getWorld());
+            SWCoord coord = this.gameTemplate.getWaitingLobbySpawn().clone().setWorld(this.getWorld());
             return swPlayer.teleportAsync(coord.add(0, 0.5, 0));
         }
     }
