@@ -18,7 +18,7 @@ public enum NormalCageShape {
 
     NormalCageShape() {
         locations = new ArrayList<>();
-        loadLocations(this);
+        System.out.println("this = " + this);
     }
 
     public static NormalCageShape fromString(String input) {
@@ -28,8 +28,8 @@ public enum NormalCageShape {
         return null;
     }
 
-    private void loadLocations(NormalCageShape shape) {
-        switch (shape) {
+    public void loadLocations() {
+        switch (this) {
             case DEFAULT:
                 locations.add(new CoreSWCoord(0, 0, 0));
                 locations.add(new CoreSWCoord(0, 1, 1));

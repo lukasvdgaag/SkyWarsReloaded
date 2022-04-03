@@ -86,7 +86,8 @@ public class BukkitNMS_8_11 implements NMS {
         bukkitBlock.setType(itemStack.getType());
         try {
             block.getMethod("setData", byte.class).invoke(bukkitBlock, item.getDamage());
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     @Override

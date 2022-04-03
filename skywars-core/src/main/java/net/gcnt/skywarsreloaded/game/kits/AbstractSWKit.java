@@ -17,7 +17,6 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
 
     public final SkyWarsReloaded plugin;
     private final String id;
-    private final String permission;
     private final YAMLConfig config;
 
     private String displayName;
@@ -40,13 +39,17 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
         super();
         this.plugin = plugin;
         this.id = id;
-        this.permission = "sw.kit." + id;
         this.displayName = id;
         this.description = "Kit " + id;
         this.inventoryContents = new HashMap<>();
         this.effects = new ArrayList<>();
         this.lore = new ArrayList<>();
         this.config = plugin.getYAMLManager().loadConfig("kit-" + id, FolderProperties.KITS_FOLDER.toString(), id + ".yml", "/kits/default.yml");
+    }
+
+    @Override
+    public String getPermissionPrefix() {
+        return "sw.kit.";
     }
 
     @Override
@@ -106,7 +109,7 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
 
     @Override
     public String getPermission() {
-        return permission;
+        return getPermissionPrefix() + id;
     }
 
     @Override

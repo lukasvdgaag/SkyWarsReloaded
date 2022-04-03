@@ -10,10 +10,12 @@ import net.gcnt.skywarsreloaded.data.schematic.CoreSchematicManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.cages.NormalCageShape;
 import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
+import net.gcnt.skywarsreloaded.manager.CageManager;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.protocol.NMSManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
@@ -49,6 +51,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SWPlayerManager playerManager;
     private KitManager kitManager;
     private ChestManager chestManager;
+    private CageManager cageManager;
     private SWEventListener eventListener;
     private GameWorldLoader worldLoader;
 
@@ -92,6 +95,9 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         initPlayerDataManager();
         initKitManager();
         initChestManager();
+        initCageManager();
+        getCageManager().loadAllCages();
+
         setSchematicManager(new CoreSchematicManager(this));
 
         // Player data
@@ -379,5 +385,15 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void setNMSManager(NMSManager nmsManagerIn) {
         this.nmsManager = nmsManagerIn;
+    }
+
+    @Override
+    public CageManager getCageManager() {
+        return cageManager;
+    }
+
+    @Override
+    public void setCageManager(CageManager cageManager) {
+        this.cageManager = cageManager;
     }
 }

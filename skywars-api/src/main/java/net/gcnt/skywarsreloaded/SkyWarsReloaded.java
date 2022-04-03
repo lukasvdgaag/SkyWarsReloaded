@@ -11,6 +11,7 @@ import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
+import net.gcnt.skywarsreloaded.manager.CageManager;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.protocol.NMSManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
@@ -76,6 +77,10 @@ public interface SkyWarsReloaded {
     SWPlayerManager getPlayerManager();
 
     void setPlayerManager(SWPlayerManager playerManager);
+
+    CageManager getCageManager();
+
+    void setCageManager(CageManager cageManager);
 
     // Console
 
@@ -160,12 +165,14 @@ public interface SkyWarsReloaded {
 
     /**
      * Get the NMS manager
+     *
      * @return The NMS manager
      */
     NMSManager getNMSManager();
 
     /**
      * Set the NMS manager
+     *
      * @param nmsManager The NMS manager
      */
     void setNMSManager(NMSManager nmsManager);

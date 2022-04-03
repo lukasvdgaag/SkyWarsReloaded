@@ -9,6 +9,7 @@ public class MaterialCage extends CoreUnlockable implements Cage {
 
     private final String id;
     private final List<String> materials;
+    private final NormalCageShape shape;
 
     public MaterialCage(String id, List<String> materials) {
         this.id = id;

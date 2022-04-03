@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
 import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
@@ -12,6 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class CoreTeamSpawn implements TeamSpawn {
 
+    private final SkyWarsReloaded plugin;
     private final GameTeam team;
     private final SWCoord location;
     private TeamCage cage;
@@ -19,7 +21,8 @@ public class CoreTeamSpawn implements TeamSpawn {
     private String oldCageDesign;
     private String cageDesign;
 
-    public CoreTeamSpawn(GameTeam team, SWCoord location) {
+    public CoreTeamSpawn(SkyWarsReloaded plugin, GameTeam team, SWCoord location) {
+        this.plugin = plugin;
         this.team = team;
         this.location = location;
         this.players = new ArrayList<>();
@@ -85,15 +88,11 @@ public class CoreTeamSpawn implements TeamSpawn {
             // todo probably also check if the cage exists here.
             if (cage == null || cage.isEmpty()) cage = "default";
 
-            // todo maybe check if cage isn't already in the list? idk, prob not
             chooseCageFrom.add(cage);
         }
 
         if (chooseCageFrom.isEmpty()) this.cageDesign = "default";
         else this.cageDesign = chooseCageFrom.get(ThreadLocalRandom.current().nextInt(chooseCageFrom.size()));
-
-        // todo load cage object from memory from some kind of cage manager.
-
     }
 
     @Override

@@ -1,13 +1,13 @@
 package net.gcnt.skywarsreloaded.data.config;
 
-import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 
 public abstract class AbstractYAMLConfig implements YAMLConfig {
 
-    protected final AbstractSkyWarsReloaded plugin;
+    protected final SkyWarsReloaded plugin;
 
     private final String id;
     private final File file;
@@ -16,7 +16,7 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
     private final String directoryName;
     private String defaultFilePath;
 
-    public AbstractYAMLConfig(AbstractSkyWarsReloaded pluginIn, String id, @Nullable String directoryName, String fileName) {
+    public AbstractYAMLConfig(SkyWarsReloaded pluginIn, String id, @Nullable String directoryName, String fileName) {
         this.id = id;
         this.plugin = pluginIn;
         this.fileName = fileName;
@@ -38,7 +38,7 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
         }
     }
 
-    public AbstractYAMLConfig(AbstractSkyWarsReloaded pluginIn, String id, @Nullable String directoryName, String fileName, String defaultFilePath) {
+    public AbstractYAMLConfig(SkyWarsReloaded pluginIn, String id, @Nullable String directoryName, String fileName, String defaultFilePath) {
         this.id = id;
         this.plugin = pluginIn;
         this.fileName = fileName;
@@ -61,7 +61,7 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
         }
     }
 
-    public AbstractYAMLConfig(AbstractSkyWarsReloaded pluginIn, String id, File directory, String fileName) {
+    public AbstractYAMLConfig(SkyWarsReloaded pluginIn, String id, File directory, String fileName) {
         this.id = id;
         this.plugin = pluginIn;
         this.fileName = fileName;
@@ -75,7 +75,7 @@ public abstract class AbstractYAMLConfig implements YAMLConfig {
         }
     }
 
-    public AbstractYAMLConfig(AbstractSkyWarsReloaded pluginIn, String id, File directory, String fileName, String defaultFilePath) {
+    public AbstractYAMLConfig(SkyWarsReloaded pluginIn, String id, File directory, String fileName, String defaultFilePath) {
         this.id = id;
         this.plugin = pluginIn;
         this.fileName = fileName;

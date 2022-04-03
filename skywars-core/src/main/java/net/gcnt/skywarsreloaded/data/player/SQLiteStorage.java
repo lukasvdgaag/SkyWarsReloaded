@@ -86,13 +86,16 @@ public class SQLiteStorage implements Storage {
             }
 
             SWPlayerData swpd = this.plugin.getPlayerDataManager().createSWPlayerDataInstance();
-            swpd.initData(
+            SWPlayerStats swps = this.plugin.getPlayerDataManager().createSWPlayerStatsInstance();
+            swps.initData(
                     res.getInt("solo_wins"),
                     res.getInt("solo_kills"),
                     res.getInt("solo_games"),
                     res.getInt("team_wins"),
                     res.getInt("team_kills"),
-                    res.getInt("team_games"),
+                    res.getInt("team_games")
+            );
+            swpd.initData(swps,
                     res.getString("selected_solo_cage"),
                     res.getString("selected_team_cage"),
                     res.getString("selected_particle"),

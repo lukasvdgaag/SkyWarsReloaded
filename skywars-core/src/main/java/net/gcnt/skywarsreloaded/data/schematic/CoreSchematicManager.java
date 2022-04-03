@@ -35,16 +35,13 @@ public class CoreSchematicManager implements SchematicManager {
         this.plugin = plugin;
     }
 
-    @Override
-    public Clipboard getSchematic(File subFolder, String schemName) {
-        File schemFile = new File(subFolder, schemName);
-
+    public Clipboard getSchematic(File file) {
         Clipboard clipboard;
-        ClipboardFormat format = ClipboardFormats.findByFile(schemFile);
+        ClipboardFormat format = ClipboardFormats.findByFile(file);
         ClipboardReader reader = null;
 
         try {
-            reader = format.getReader(new FileInputStream(schemFile));
+            reader = format.getReader(new FileInputStream(file));
             clipboard = reader.read();
             reader.close();
         } catch (IOException | NullPointerException ex) {
