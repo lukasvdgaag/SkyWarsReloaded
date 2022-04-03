@@ -1,23 +1,37 @@
-identifier: test
-  type: SCHEMATIC / MATERIAL
-  material: GOLD_BLOCK
-  file-name: cage.schem # if schematic and in the cages folder
-  requirements:
-    # if must-buy && need-permission-to-unlock = true, then they need the perm and stats to buy.
-    # if must-buy = true, then they need the stats to buy.
-    # if need-permission-to-unlock = true, then they need the permission to unlock (using stats or buy).
-    # if both are false, then they just need the stats or buy.
+cages:
+  default:
+    # Can be SCHEMATIC or MATERIAL
+    type: MATERIAL
+    # Can be any block name (must use all CAPS)
+    material: GLASS
+    # Can be DEFAULT, ...
+    shape: DEFAULT
+    # If it's a schematic and this file exists in the cages folder
+    file-name: cage.schem
+    requirements:
+      # if need-stats && need-permission-to-unlock = true, then they need the perm and stats to buy.
+      # if need-stats = true, then they need the stats to buy.
+      # if need-permission-to-unlock = true, then they need the permission to unlock (using stats or buy).
+      # if both are false, then they just need the stats or buy.
+      # if need-permission-to-unlock = false & the player has the permission anyway, they automatically can select the cage
 
-    # How to "unlock":
-    # if there is no cost but there is stats, then they just need stats.
-    # if there is a cost but there is no stats, then they just need to buy.
-    # if there is no cost or stats, then it's free.
+      # How to "unlock":
+      # if there is no cost but there is stats, then they just need stats.
+      # if there is a cost but there is no stats, then they just need to buy.
+      # if there is no cost or stats, then it's free.
 
-    # if there is a nuclear war, you select the quantum middle state of true and false on both options -> pc go boom
-    need-permission-to-unlock: false # needs permission to buy/unlock: sw.kit.identifier
-    must-buy: false # true -> need stats (if applicable) and needs to buy.
-    stats: # needs at least the following stats # TODO: check that player has perm to use cage they have selected on join arena
-      kills: 100
-      wins: 100
-    cost: 1000 # or needs to pay 1k cash
+      # If there is a nuclear war, you select the quantum middle state of true and false on both options -> pc go boom
+      # ...
+
+      # If true -> needs permission to buy/unlock: sw.kit.identifier (recommended: false)
+      need-permission-to-unlock: false
+      # If true -> need stats (if applicable) and needs to buy (if cost present).
+      need-stats: false
+      # Needs at least the following stats
+      # TODO: check that player has perm to use cage they have selected on join arena
+      stats:
+        kills: 100
+        wins: 100
+      # Or needs to pay 1k cash
+      cost: 1000
 

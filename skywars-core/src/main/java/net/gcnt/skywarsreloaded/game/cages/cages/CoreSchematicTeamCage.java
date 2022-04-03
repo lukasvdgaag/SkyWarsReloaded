@@ -8,7 +8,8 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.TeamCage;
 import net.gcnt.skywarsreloaded.game.TeamSpawn;
-import net.gcnt.skywarsreloaded.game.cages.AbstractSchematicTeamCage;
+import net.gcnt.skywarsreloaded.game.cages.Cage;
+import net.gcnt.skywarsreloaded.game.cages.SchematicCage;
 import net.gcnt.skywarsreloaded.utils.CoreSWCCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
@@ -65,7 +66,7 @@ public class CoreSchematicTeamCage implements TeamCage {
     public SWCompletableFuture<Boolean> removeCage() {
 
         SWCompletableFuture<Boolean> future = new CoreSWCCompletableFuture<>(plugin);
-        skywarsPlugin.getServer().getScheduler().runTask(skywarsPlugin, () -> future.complete(removeCageNow()));
+        plugin.getScheduler().runSync(() -> future.complete(removeCageNow()));
 
         return future;
     }

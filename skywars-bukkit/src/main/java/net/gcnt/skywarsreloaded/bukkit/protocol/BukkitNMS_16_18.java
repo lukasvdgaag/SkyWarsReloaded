@@ -45,8 +45,8 @@ public class BukkitNMS_16_18 extends BukkitNMS_13_15 {
 
     @Override
     public void setChestOpen(SWCoord loc, boolean open) {
-        if (loc.world() == null || !(loc.world() instanceof BukkitSWWorld)) return;
-        World world = ((BukkitSWWorld) loc.world()).getBukkitWorld();
+        if (loc.getWorld() == null || !(loc.getWorld() instanceof BukkitSWWorld)) return;
+        World world = ((BukkitSWWorld) loc.getWorld()).getBukkitWorld();
 
         Block block = world.getBlockAt(loc.x(), loc.y(), loc.z());
         Chest chest = (Chest) block.getState();

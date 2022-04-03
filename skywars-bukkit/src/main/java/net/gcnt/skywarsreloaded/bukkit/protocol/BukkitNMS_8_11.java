@@ -78,8 +78,8 @@ public class BukkitNMS_8_11 implements NMS {
 
     @Override
     public void setBlock(SWCoord loc, Item item) {
-        if (loc.world() == null || !(loc.world() instanceof BukkitSWWorld) || !(item instanceof BukkitItem)) return;
-        World world = ((BukkitSWWorld) loc.world()).getBukkitWorld();
+        if (loc.getWorld() == null || !(loc.getWorld() instanceof BukkitSWWorld) || !(item instanceof BukkitItem)) return;
+        World world = ((BukkitSWWorld) loc.getWorld()).getBukkitWorld();
         ItemStack itemStack = ((BukkitItem) item).getBukkitItem();
 
         Block bukkitBlock = world.getBlockAt(loc.x(), loc.y(), loc.z());
@@ -135,8 +135,8 @@ public class BukkitNMS_8_11 implements NMS {
 
     @Override
     public void setChestOpen(SWCoord loc, boolean open) {
-        if (loc.world() == null || !(loc.world() instanceof BukkitSWWorld)) return;
-        World world = ((BukkitSWWorld) loc.world()).getBukkitWorld();
+        if (loc.getWorld() == null || !(loc.getWorld() instanceof BukkitSWWorld)) return;
+        World world = ((BukkitSWWorld) loc.getWorld()).getBukkitWorld();
 
         try {
             Object position = blockPosition.getDeclaredConstructor(int.class, int.class, int.class)

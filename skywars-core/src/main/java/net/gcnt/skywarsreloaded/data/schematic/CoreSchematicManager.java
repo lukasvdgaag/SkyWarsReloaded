@@ -59,6 +59,19 @@ public class CoreSchematicManager implements SchematicManager {
     }
 
     @Override
+    public Clipboard getSchematic(File subFolder, String schemName) {
+        return getSchematic(new File(subFolder, schemName));
+    }
+
+    @Override
+    public EditSession pasteSchematic(Clipboard schem, SWCoord loc, boolean ignoreAir) {
+        final World world = plugin.getUtils().getWorldEditWorld(loc.getWorld().getName());
+        final BlockVector3 locationVec = BlockVector3.at(loc.x(), loc.y(), loc.z());
+
+        return pasteSchematic(schem, world, locationVec, ignoreAir);
+    }
+
+    @Override
     public EditSession pasteSchematic(Clipboard schem, World world, BlockVector3 location, boolean ignoreAir) {
         EditSession editSession = null;
 

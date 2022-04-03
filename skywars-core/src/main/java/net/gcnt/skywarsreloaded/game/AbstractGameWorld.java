@@ -325,7 +325,7 @@ public abstract class AbstractGameWorld implements GameWorld {
             if (index >= colors.length) index = 0;
 
             TeamColor color = colors[index];
-            GameTeam team = new CoreGameTeam(this, (index + 1) + "", color, locations);
+            GameTeam team = new CoreGameTeam(this.plugin, this, (index + 1) + "", color, locations);
             this.teams.add(team);
 
             index++;

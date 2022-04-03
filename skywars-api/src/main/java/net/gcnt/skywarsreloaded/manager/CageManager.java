@@ -18,6 +18,6 @@ public interface CageManager {
 
     List<Cage> getAllCages();
 
-    void deleteCage(Cage cage);
+    EditSession placeCage(Cage cage, SWCoord location);
 
 }

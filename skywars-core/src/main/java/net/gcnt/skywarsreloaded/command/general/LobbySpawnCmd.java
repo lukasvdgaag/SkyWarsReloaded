@@ -23,12 +23,12 @@ public class LobbySpawnCmd extends Cmd {
         SWPlayer player = (SWPlayer) sender;
         SWCoord loc = player.getLocation();
 
-        if (loc.world() == null) {
+        if (loc.getWorld() == null) {
             plugin.getMessages().getMessage(MessageProperties.ERROR_WORLD_NOT_RECOGNIZED.toString()).send(sender);
             return true;
         }
         for (GameWorld gw : plugin.getGameManager().getGameWorlds()) {
-            if (gw.getWorldName().equals(loc.world().getName())) {
+            if (gw.getWorldName().equals(loc.getWorld().getName())) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_CANNOT_SET_LOBBYSPAWN_IN_GAMEWORLD.toString()).send(sender);
                 return true;
             }

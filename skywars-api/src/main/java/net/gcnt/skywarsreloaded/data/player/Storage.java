@@ -18,7 +18,7 @@ public interface Storage {
     /**
      * Saves all cache data to storage (MySQL/MongoDB/YAML).
      */
-    void saveData();
+    void saveData(SWPlayer player);
 
     /**
      * Sets a property for a player

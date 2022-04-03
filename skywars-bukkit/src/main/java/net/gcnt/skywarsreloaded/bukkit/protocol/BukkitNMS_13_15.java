@@ -57,8 +57,8 @@ public class BukkitNMS_13_15 extends BukkitNMS_12 {
 
     @Override
     public void setBlock(SWCoord loc, Item item) {
-        if (loc.world() == null || !(loc.world() instanceof BukkitSWWorld) || !(item instanceof BukkitItem)) return;
-        World world = ((BukkitSWWorld) loc.world()).getBukkitWorld();
+        if (loc.getWorld() == null || !(loc.getWorld() instanceof BukkitSWWorld) || !(item instanceof BukkitItem)) return;
+        World world = ((BukkitSWWorld) loc.getWorld()).getBukkitWorld();
         ItemStack itemStack = ((BukkitItem) item).getBukkitItem();
 
         Block bukkitBlock = world.getBlockAt(loc.x(), loc.y(), loc.z());

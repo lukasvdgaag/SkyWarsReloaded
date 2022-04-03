@@ -49,7 +49,7 @@ public class AbstractSWEventListener implements SWEventListener {
 
     @Override
     public void onPlayerBlockBreak(SWBlockBreakEvent event) {
-        GameWorld gameWorld = plugin.getGameManager().getGameWorldByName(event.getCoord().world().getName());
+        GameWorld gameWorld = plugin.getGameManager().getGameWorldByName(event.getCoord().getWorld().getName());
         if (gameWorld == null || !gameWorld.isEditing()) return;
         final GameTemplate template = gameWorld.getTemplate();
 
@@ -86,7 +86,7 @@ public class AbstractSWEventListener implements SWEventListener {
         // player is placing a chest
         if (event.getBlockTypeName().equalsIgnoreCase("CHEST") ||
                 event.getBlockTypeName().equalsIgnoreCase("TRAPPED_CHEST")) {
-            GameWorld gameWorld = plugin.getGameManager().getGameWorldByName(event.getCoord().world().getName());
+            GameWorld gameWorld = plugin.getGameManager().getGameWorldByName(event.getCoord().getWorld().getName());
             if (gameWorld == null || !gameWorld.isEditing()) return;
 
             final GameTemplate template = gameWorld.getTemplate();

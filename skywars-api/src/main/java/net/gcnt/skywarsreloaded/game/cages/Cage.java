@@ -6,4 +6,5 @@ public interface Cage extends Unlockable {
 
     String getType();
 
+
 }

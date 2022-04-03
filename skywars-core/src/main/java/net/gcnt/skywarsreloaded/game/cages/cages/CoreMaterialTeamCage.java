@@ -45,13 +45,20 @@ public class CoreMaterialTeamCage implements TeamCage {
             System.out.println("placing cage (placeCaeg) player: " + gamePlayer.getSWPlayer().getName());
             final SWPlayer playerByUUID = plugin.getPlayerManager().getPlayerByUUID(gamePlayer.getSWPlayer().getUuid());
             final SWPlayerData playerData = playerByUUID.getPlayerData();
-            cages.put(playerByUUID.getUuid(), spawn.getTeam().getGameWorld().getTemplate().getTeamSize() == 1 ? playerData.getSoloCage() : playerData.getTeamCage());
+
+            System.out.println("1");
+            String selectedCage = spawn.getTeam().getGameWorld().getTemplate().getTeamSize() == 1 ? playerData.getSoloCage() : playerData.getTeamCage();
+            if (selectedCage == null || selectedCage.isEmpty()) selectedCage = "default";
+
+            cages.put(playerByUUID.getUuid(), selectedCage);
         });
 
+        System.out.println("2");
         String selected = (String) cages.values().toArray()[ThreadLocalRandom.current().nextInt(cages.size())];
         if (selected == null) selected = "GLASS";
         // todo get cage object from cage identifier (selected).
 
+        System.out.println("3");
         SWCompletableFuture<Boolean> future = new CoreSWCCompletableFuture<>(plugin);
         String finalSelected = selected;
 
@@ -90,7 +97,7 @@ public class CoreMaterialTeamCage implements TeamCage {
 
     public boolean removeCageNow() {
         if (!isPlaced()) return false;
-        NormalCageShape shape = NormalCageShape.fromString(cage);
+        NormalCageShape shape = cage.getShape();
         if (shape == null) return false;
 
         final SWCoord baseCoord = getSpawn().getLocation();

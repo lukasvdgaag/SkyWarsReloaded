@@ -1,8 +1,8 @@
 package net.gcnt.skywarsreloaded.game.cages;
 
+import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.data.CoreUnlockable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MaterialCage extends CoreUnlockable implements Cage {
@@ -11,9 +11,10 @@ public class MaterialCage extends CoreUnlockable implements Cage {
     private final List<String> materials;
     private final NormalCageShape shape;
 
-    public MaterialCage(String id, List<String> materials) {
+    public MaterialCage(String id, NormalCageShape shape, String... materials) {
         this.id = id;
-        this.materials = materials == null ? new ArrayList<>() : materials;
+        this.materials = Lists.newArrayList(materials);
+        this.shape = shape;
     }
 
     @Override
@@ -33,5 +34,14 @@ public class MaterialCage extends CoreUnlockable implements Cage {
     @Override
     public String getPermissionPrefix() {
         return "sw.kit.";
+    }
+
+    public NormalCageShape getShape() {
+        return this.shape;
+    }
+
+    @Override
+    public String toString() {
+        return "MaterialCage{id='" + this.id + '\'' + ", materials=" + this.materials + ", shape=" + this.shape + '}';
     }
 }

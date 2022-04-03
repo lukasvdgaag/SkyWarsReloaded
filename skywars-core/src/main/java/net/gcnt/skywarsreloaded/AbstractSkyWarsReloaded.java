@@ -169,6 +169,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     protected abstract void initKitManager();
 
+    protected abstract void initCageManager();
+
     protected abstract void initLogger();
 
     protected abstract void initNMSManager() throws IllegalStateException;

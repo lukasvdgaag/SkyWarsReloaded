@@ -7,7 +7,7 @@ public interface SWCoord {
     @Override
     String toString();
 
-    SWWorld world();
+    SWWorld getWorld();
 
     int x();
 
