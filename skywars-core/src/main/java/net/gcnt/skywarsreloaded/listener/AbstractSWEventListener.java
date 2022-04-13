@@ -47,8 +47,23 @@ public class AbstractSWEventListener implements SWEventListener {
         }
     }
 
+    private boolean cancelWhenWaitingInGame(SWPlayerEvent event) {
+        GameWorld gameWorld = event.getPlayer().getGameWorld();
+        if (gameWorld == null) return false;
+
+        if (gameWorld.getStatus().isWaiting()) {
+            if (event instanceof SWCancellable) {
+                ((SWCancellable) event).setCancelled(true);
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onPlayerBlockBreak(SWBlockBreakEvent event) {
+        if (cancelWhenWaitingInGame(event)) return;
+
         GameWorld gameWorld = plugin.getGameManager().getGameWorldByName(event.getCoord().getWorld().getName());
         if (gameWorld == null || !gameWorld.isEditing()) return;
         final GameTemplate template = gameWorld.getTemplate();
@@ -83,6 +98,8 @@ public class AbstractSWEventListener implements SWEventListener {
 
     @Override
     public void onPlayerBlockPlace(SWBlockPlaceEvent event) {
+        if (cancelWhenWaitingInGame(event)) return;
+
         // player is placing a chest
         if (event.getBlockTypeName().equalsIgnoreCase("CHEST") ||
                 event.getBlockTypeName().equalsIgnoreCase("TRAPPED_CHEST")) {
@@ -101,6 +118,12 @@ public class AbstractSWEventListener implements SWEventListener {
             }
         }
 
+    }
+
+    @Override
+    public void onPlayerFoodLevelChange(SWPlayerFoodLevelChangeEvent event) {
+        cancelWhenWaitingInGame(event);
+        event.setFoodLevel(20);
     }
 
     @Override

@@ -23,4 +23,7 @@ public interface SWEventListener {
     void onWorldInit(SWWorldInitEvent swEvent);
 
     void onPlayerMove(SWPlayerMoveEvent swEvent);
+
+    void onPlayerFoodLevelChange(SWPlayerFoodLevelChangeEvent event);
+
 }
