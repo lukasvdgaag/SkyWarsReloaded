@@ -244,8 +244,8 @@ public abstract class AbstractGameWorld implements GameWorld {
     public SWCompletableFuture<Boolean> teleportPlayerToLobbyOrTeamSpawn(SWPlayer swPlayer, TeamSpawn spawn) {
         if (shouldSendPlayerToCages()) {
             SWCoord coord = spawn.getLocation().clone().setWorld(this.getWorld());
-            final SWCoord add = coord.add(0.5, 1, 0.5);
-            swPlayer.teleport(coord);
+            final SWCoord add = coord.add(0.5, 0, 0.5);
+            swPlayer.teleport(add);
             return CoreSWCCompletableFuture.completedFuture(this.plugin, true);
         } else {
             SWCoord coord = this.gameTemplate.getWaitingLobbySpawn().clone().setWorld(this.getWorld());
