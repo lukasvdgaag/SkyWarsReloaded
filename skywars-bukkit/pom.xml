@@ -95,31 +95,19 @@
         <dependency>
             <groupId>de.simonsator</groupId>
             <artifactId>Party-and-Friends-MySQL-Edition-Spigot-API</artifactId>
-            <version>1.5.1</version>
+            <version>1.5.3</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>be.maximvdw</groupId>
-                    <artifactId>MVdWPlaceholderAPI</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>de.simonsator</groupId>
             <artifactId>Spigot-Party-API-For-RedisBungee</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.0.3-SNAPSHOT</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>be.maximvdw</groupId>
-                    <artifactId>MVdWPlaceholderAPI</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>de.simonsator</groupId>
             <artifactId>DevelopmentPAFSpigot</artifactId>
-            <version>1.0.66</version>
+            <version>1.0.67</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -161,7 +149,7 @@
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.2.9-SNAPSHOT</version>
+            <version>7.2.10-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
