@@ -35,16 +35,13 @@ public class CoreSchematicManager implements SchematicManager {
         this.plugin = plugin;
     }
 
-    @Override
-    public Clipboard getSchematic(File subFolder, String schemName) {
-        File schemFile = new File(subFolder, schemName);
-
+    public Clipboard getSchematic(File file) {
         Clipboard clipboard;
-        ClipboardFormat format = ClipboardFormats.findByFile(schemFile);
+        ClipboardFormat format = ClipboardFormats.findByFile(file);
         ClipboardReader reader = null;
 
         try {
-            reader = format.getReader(new FileInputStream(schemFile));
+            reader = format.getReader(new FileInputStream(file));
             clipboard = reader.read();
             reader.close();
         } catch (IOException | NullPointerException ex) {
@@ -59,6 +56,19 @@ public class CoreSchematicManager implements SchematicManager {
         }
 
         return clipboard;
+    }
+
+    @Override
+    public Clipboard getSchematic(File subFolder, String schemName) {
+        return getSchematic(new File(subFolder, schemName));
+    }
+
+    @Override
+    public EditSession pasteSchematic(Clipboard schem, SWCoord loc, boolean ignoreAir) {
+        final World world = plugin.getUtils().getWorldEditWorld(loc.getWorld().getName());
+        final BlockVector3 locationVec = BlockVector3.at(loc.x(), loc.y(), loc.z());
+
+        return pasteSchematic(schem, world, locationVec, ignoreAir);
     }
 
     @Override

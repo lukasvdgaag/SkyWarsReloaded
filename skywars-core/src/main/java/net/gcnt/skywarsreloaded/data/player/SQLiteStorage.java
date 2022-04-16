@@ -27,7 +27,7 @@ public class SQLiteStorage implements Storage {
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
-            ClassNotFoundException ex = new ClassNotFoundException("Failed to connect to MySQL databases because the Driver could not be found.");
+            ClassNotFoundException ex = new ClassNotFoundException("Failed to connect to SQLite databases because the Driver could not be found.");
             ex.setStackTrace(e.getStackTrace());
             ex.printStackTrace();
             return;
@@ -67,7 +67,9 @@ public class SQLiteStorage implements Storage {
         ps.executeUpdate();
 
         SWPlayerData swpd = this.plugin.getPlayerDataManager().createSWPlayerDataInstance();
-        swpd.initData(0, 0, 0, 0, 0, 0, null, null, null, null, null, null, null);
+        SWPlayerStats swps = this.plugin.getPlayerDataManager().createSWPlayerStatsInstance();
+        swps.initData(0, 0, 0, 0, 0, 0);
+        swpd.initData(swps, null, null, null, null, null, null, null);
         player.setPlayerData(swpd);
     }
 
@@ -84,13 +86,16 @@ public class SQLiteStorage implements Storage {
             }
 
             SWPlayerData swpd = this.plugin.getPlayerDataManager().createSWPlayerDataInstance();
-            swpd.initData(
+            SWPlayerStats swps = this.plugin.getPlayerDataManager().createSWPlayerStatsInstance();
+            swps.initData(
                     res.getInt("solo_wins"),
                     res.getInt("solo_kills"),
                     res.getInt("solo_games"),
                     res.getInt("team_wins"),
                     res.getInt("team_kills"),
-                    res.getInt("team_games"),
+                    res.getInt("team_games")
+            );
+            swpd.initData(swps,
                     res.getString("selected_solo_cage"),
                     res.getString("selected_team_cage"),
                     res.getString("selected_particle"),
@@ -108,8 +113,26 @@ public class SQLiteStorage implements Storage {
     }
 
     @Override
-    public void saveData() {
-        // we do not need this for SQL
+    public void saveData(SWPlayer player) {
+        SWPlayerData swpd = player.getPlayerData();
+        SWPlayerStats swps = swpd.getStats();
+
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("UPDATE `sw_player_data` SET solo_wins=?, solo_kills=?, solo_games=?, team_wins=?, team_kills=?, team_games=? WHERE `uuid`=?");
+            ps.setInt(1, swps.getSoloWins());
+            ps.setInt(2, swps.getSoloKills());
+            ps.setInt(3, swps.getSoloGamesPlayed());
+            ps.setInt(4, swps.getTeamKills());
+            ps.setInt(5, swps.getTeamWins());
+            ps.setInt(6, swps.getTeamGamesPlayed());
+
+            ps.setString(7, player.getUuid().toString());
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

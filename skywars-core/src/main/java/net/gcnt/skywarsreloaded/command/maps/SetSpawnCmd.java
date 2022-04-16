@@ -30,7 +30,7 @@ public class SetSpawnCmd extends Cmd {
         }
 
         SWPlayer player = (SWPlayer) sender;
-        GameWorld world = plugin.getGameManager().getGameWorldByName(player.getLocation().world().getName());
+        GameWorld world = plugin.getGameManager().getGameWorldByName(player.getLocation().getWorld().getName());
         if (world == null || !world.isEditing()) {
             plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
             return true;
@@ -135,7 +135,7 @@ public class SetSpawnCmd extends Cmd {
 
                 if (result.isSuccess()) {
                     plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_SET_SPAWN_PLAYER.toString()).replace("%template%", template.getName()).sendTitle(player);
-                    location.world().setBlockAt(blockLocation, AbstractItem.getItem("BEACON"));
+                    location.getWorld().setBlockAt(blockLocation, AbstractItem.getItem("BEACON"));
                     player.teleport(player.getLocation().add(0, 1, 0));
                 } else {
                     plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_SET_SPAWN_PLAYER_FAIL.toString()).replace("%template%", template.getName()).sendTitle(player);
@@ -163,7 +163,7 @@ public class SetSpawnCmd extends Cmd {
             if (sender instanceof SWPlayer) {
                 SpawnType type = SpawnType.fromString(args[0]);
                 if (type == SpawnType.PLAYER) {
-                    GameWorld world = plugin.getGameManager().getGameWorldByName(((SWPlayer) sender).getLocation().world().getName());
+                    GameWorld world = plugin.getGameManager().getGameWorldByName(((SWPlayer) sender).getLocation().getWorld().getName());
                     if (world != null && world.isEditing() && world.getTemplate().getTeamSize() > 1) {
                         List<String> options = new ArrayList<>();
                         for (int i = 0; i < world.getTemplate().getTeamSpawnpoints().size() + 1; i++) {

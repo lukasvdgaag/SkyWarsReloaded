@@ -13,10 +13,7 @@ import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
 import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CoreGameTemplate implements GameTemplate {
@@ -178,11 +175,14 @@ public class CoreGameTemplate implements GameTemplate {
         this.spectateSpawn = sspawn == null ? null : new CoreSWCoord(plugin, sspawn);
 
         this.chests = new HashMap<>();
-        for (String chestType : config.getKeys(MapDataProperties.CHESTS.toString())) {
-            final List<String> coordsList = config.getStringList(MapDataProperties.CHESTS + "." + chestType);
-            for (String coordStr : coordsList) {
-                SWCoord loc = new CoreSWCoord(plugin, coordStr);
-                this.chests.put(loc, this.plugin.getChestManager().getChestTypeByName(chestType));
+        final Set<String> chestKeys = config.getKeys(MapDataProperties.CHESTS.toString());
+        if (chestKeys != null) {
+            for (String chestType : chestKeys) {
+                final List<String> coordsList = config.getStringList(MapDataProperties.CHESTS + "." + chestType);
+                for (String coordStr : coordsList) {
+                    SWCoord loc = new CoreSWCoord(plugin, coordStr);
+                    this.chests.put(loc, this.plugin.getChestManager().getChestTypeByName(chestType));
+                }
             }
         }
         this.signs = new ArrayList<>();
@@ -242,13 +242,9 @@ public class CoreGameTemplate implements GameTemplate {
         final Map<String, List<String>> chestCoordsByType = new HashMap<>();
         this.chests.forEach((coord, type) -> {
             String chestName = type.getName();
-            List<String> coords = chestCoordsByType.get(chestName);
-            if (coord == null) {
-                coords = new ArrayList<>();
-                chestCoordsByType.put(chestName, coords);
-            }
-            assert coord != null;
+            List<String> coords = chestCoordsByType.getOrDefault(chestName, new ArrayList<>());
             coords.add(coord.toString());
+            chestCoordsByType.put(chestName, coords);
         });
 
         config.set(MapDataProperties.CHESTS.toString(), chestCoordsByType);

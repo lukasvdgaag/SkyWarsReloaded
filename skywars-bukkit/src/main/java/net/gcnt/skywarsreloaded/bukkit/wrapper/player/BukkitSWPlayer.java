@@ -143,7 +143,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
 
     @Override
     public void teleport(SWCoord coord) {
-        teleport(coord.world().getName(), coord.xPrecise(), coord.yPrecise(), coord.zPrecise(), coord.yaw(), coord.pitch());
+        teleport(coord.getWorld().getName(), coord.xPrecise(), coord.yPrecise(), coord.zPrecise(), coord.yaw(), coord.pitch());
     }
 
     @Override
@@ -164,7 +164,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
 
     @Override
     public SWCompletableFuture<Boolean> teleportAsync(SWCoord coord) {
-        return this.teleportAsync(coord.world().getName(), coord.xPrecise(), coord.yPrecise(), coord.zPrecise());
+        return this.teleportAsync(coord.getWorld().getName(), coord.xPrecise(), coord.yPrecise(), coord.zPrecise());
     }
 
     @Override
@@ -175,7 +175,10 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
             successFuture.complete(false);
             return successFuture;
         }
-        PaperLib.teleportAsync(player, new Location(bukkitWorld, x, y, z)).thenAccept(successFuture::complete);
+        final Location location = new Location(bukkitWorld, x, y, z);
+        PaperLib.teleportAsync(player, location).thenAccept((bool) -> {
+            successFuture.complete(bool);
+        });
         return successFuture;
 
     }

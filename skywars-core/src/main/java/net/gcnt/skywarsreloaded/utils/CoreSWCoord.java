@@ -88,13 +88,14 @@ public class CoreSWCoord implements SWCoord {
     }
 
     public boolean equals(SWCoord o) {
-        if (this.world == null || o.world() == null) {
+        if (this.world == null || o.getWorld() == null) {
             return this.x == o.xPrecise() && this.y == o.yPrecise() && this.z == o.zPrecise() && this.pitch == o.pitch() && this.yaw == o.yaw();
         }
         return (o.toString().equals(this.toString()));
     }
 
-    public SWWorld world() {
+    @Nullable
+    public SWWorld getWorld() {
         return world;
     }
 
@@ -163,7 +164,7 @@ public class CoreSWCoord implements SWCoord {
 
     @Override
     public SWCoord clone() {
-        return new CoreSWCoord(x, y, z);
+        return new CoreSWCoord(world, x, y, z, yaw, pitch);
     }
 
     @Override

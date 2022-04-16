@@ -9,18 +9,16 @@ public interface TeamCage {
     /**
      * Place the cage in the world
      *
-     * @param cageName The cage identifier from the configuration
      * @return Future with a boolean indicating whether the placing of the cage succeeded
      */
-    SWCompletableFuture<Boolean> placeCage(String cageName);
+    SWCompletableFuture<Boolean> placeCage();
 
     /**
      * Remove the cage from the world
      *
-     * @param cage Identifier of the cage to remove. Only applies to normal cages.
      * @return Future with a boolean indicating whether the removing of the cage succeeded
      */
-    SWCompletableFuture<Boolean> removeCage(String cage);
+    SWCompletableFuture<Boolean> removeCage();
 
     /**
      * Check whether the cage has been placed.

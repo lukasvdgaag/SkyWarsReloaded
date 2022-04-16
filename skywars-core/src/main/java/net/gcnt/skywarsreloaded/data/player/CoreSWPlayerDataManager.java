@@ -18,6 +18,11 @@ public class CoreSWPlayerDataManager implements SWPlayerDataManager {
     }
 
     @Override
+    public SWPlayerStats createSWPlayerStatsInstance() {
+        return new CoreSWPlayerStats();
+    }
+
+    @Override
     public void loadAllPlayerData() {
         final Storage storage = this.plugin.getStorage();
         for (SWPlayer player : this.plugin.getPlayerManager().getPlayers()) {

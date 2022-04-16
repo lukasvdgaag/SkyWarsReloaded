@@ -1,8 +1,11 @@
 package net.gcnt.skywarsreloaded.bukkit.listener;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.event.BukkitSWPlayerFoodLevelChangeEvent;
 import net.gcnt.skywarsreloaded.listener.AbstractSWEventListener;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
+import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.event.*;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
@@ -14,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldInitEvent;
@@ -160,6 +164,15 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
         // Fire core event
         SWWorldInitEvent swEvent = new CoreSWWorldInitEvent(world);
         this.onWorldInit(swEvent);
+    }
+
+    @EventHandler
+    public void onPlayerFoodLevelChange(FoodLevelChangeEvent event) {
+        Player player = (Player) event.getEntity();
+        SWPlayer p = this.getPlayerFromBukkitPlayer(player);
+
+        SWPlayerFoodLevelChangeEvent swEvent = new BukkitSWPlayerFoodLevelChangeEvent(event, p, event.getFoodLevel(), BukkitItem.fromBukkit(plugin, event.getItem()));
+        this.onPlayerFoodLevelChange(swEvent);
     }
 
     @EventHandler

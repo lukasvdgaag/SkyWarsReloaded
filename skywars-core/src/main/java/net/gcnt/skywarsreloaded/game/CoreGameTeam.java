@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 public class CoreGameTeam implements GameTeam {
 
+    private final SkyWarsReloaded plugin;
     private final GameWorld game;
     private final String name;
     private final TeamColor color;
@@ -20,7 +22,8 @@ public class CoreGameTeam implements GameTeam {
     private List<GamePlayer> players;
     private final Map<UUID, Long> reservations;
 
-    public CoreGameTeam(GameWorld game, String name, TeamColor color, List<SWCoord> spawns) {
+    public CoreGameTeam(SkyWarsReloaded pluginIn, GameWorld game, String name, TeamColor color, List<SWCoord> spawns) {
+        this.plugin = pluginIn;
         this.game = game;
         this.name = name;
         this.color = color;
@@ -29,7 +32,7 @@ public class CoreGameTeam implements GameTeam {
         this.reservations = new ConcurrentHashMap<>();
 
         for (SWCoord coord : spawns) {
-            this.spawns.add(new CoreTeamSpawn(this, coord));
+            this.spawns.add(new CoreTeamSpawn(this.plugin, this, coord));
         }
     }
 

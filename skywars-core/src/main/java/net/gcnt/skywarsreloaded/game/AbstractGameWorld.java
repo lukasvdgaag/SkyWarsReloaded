@@ -6,10 +6,7 @@ import net.gcnt.skywarsreloaded.game.types.GameDifficulty;
 import net.gcnt.skywarsreloaded.game.types.GameStatus;
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.party.SWParty;
-import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.utils.Message;
-import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.*;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
@@ -190,9 +187,11 @@ public abstract class AbstractGameWorld implements GameWorld {
 
             // Teleport player to next available spawn
             swPlayer.freeze();
-            teleportPlayerToLobbyOrTeamSpawn(swPlayer, spawn)
-                    .thenRun(() -> cagePlaceFuture.thenRunSync(swPlayer::unfreeze));
-
+            TeamSpawn finalSpawn = spawn;
+            cagePlaceFuture.thenRunSync(() -> teleportPlayerToLobbyOrTeamSpawn(swPlayer, finalSpawn).thenRunSync(swPlayer::unfreeze));
+//
+//            teleportPlayerToLobbyOrTeamSpawn(swPlayer, spawn)
+//                    .thenRun(() -> cagePlaceFuture.thenRunSync(swPlayer::unfreeze));
 
             announce(plugin.getMessages().getMessage(MessageProperties.GAMES_PLAYER_JOINED.toString())
                     .replace("%player%", gamePlayer.getSWPlayer().getName())
@@ -245,10 +244,12 @@ public abstract class AbstractGameWorld implements GameWorld {
     public SWCompletableFuture<Boolean> teleportPlayerToLobbyOrTeamSpawn(SWPlayer swPlayer, TeamSpawn spawn) {
         if (shouldSendPlayerToCages()) {
             SWCoord coord = spawn.getLocation().clone().setWorld(this.getWorld());
-            return swPlayer.teleportAsync(coord);
+            final SWCoord add = coord.add(0.5, 0, 0.5);
+            swPlayer.teleport(add);
+            return CoreSWCCompletableFuture.completedFuture(this.plugin, true);
         } else {
-            SWCoord coord = this.gameTemplate.getWaitingLobbySpawn().setWorld(this.getWorld());
-            return swPlayer.teleportAsync(coord);
+            SWCoord coord = this.gameTemplate.getWaitingLobbySpawn().clone().setWorld(this.getWorld());
+            return swPlayer.teleportAsync(coord.add(0, 0.5, 0));
         }
     }
 
@@ -325,7 +326,7 @@ public abstract class AbstractGameWorld implements GameWorld {
             if (index >= colors.length) index = 0;
 
             TeamColor color = colors[index];
-            GameTeam team = new CoreGameTeam(this, (index + 1) + "", color, locations);
+            GameTeam team = new CoreGameTeam(this.plugin, this, (index + 1) + "", color, locations);
             this.teams.add(team);
 
             index++;
