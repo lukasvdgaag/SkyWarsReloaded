@@ -21,15 +21,15 @@
     <repositories>
         <repository>
             <id>bukkitmc</id>
-            <url>https://nexus.gaagjescraft.net/repository/bukkit/</url>
+            <url>https://nexuslite.gcnt.net/repos/bukkit/</url>
         </repository>
         <repository>
             <id>gcnt</id>
-            <url>https://nexus.gaagjescraft.net/repository/gaagjescraft/</url>
+            <url>https://nexuslite.gcnt.net/repos/gcnt/</url>
         </repository>
         <repository>
             <id>gcnt-others</id>
-            <url>https://nexus.gaagjescraft.net/repository/others/</url>
+            <url>https://nexuslite.gcnt.net/repos/other/</url>
         </repository>
         <repository>
             <id>codemc-repo</id>
@@ -57,8 +57,16 @@
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
         <repository>
+            <id>glaremasters</id>
+            <url>https://repo.glaremasters.me/repository/concuncan/</url>
+        </repository>
+        <repository>
             <id>simonsators-repo</id>
             <url>https://simonsator.de/repo/</url>
+        </repository>
+        <repository>
+            <id>alessiodp-repo</id>
+            <url>https://repo.alessiodp.com/releases/</url>
         </repository>
     </repositories>
 
@@ -69,9 +77,9 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.18.2-R0.1-SNAPSHOT</version>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.18.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -111,6 +119,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.alessiodp.parties</groupId>
+            <artifactId>parties-api</artifactId>
+            <version>3.2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.ebonjaeger</groupId>
             <artifactId>perworldinventory-kt</artifactId>
             <version>2.3.2</version>
@@ -141,7 +155,7 @@
             <scope>provided</scope>
         </dependency>-->
         <dependency>
-            <groupId>net.gaagjescraft</groupId>
+            <groupId>net.gcnt</groupId>
             <artifactId>swr-extension</artifactId>
             <version>1.7.1</version>
             <scope>provided</scope>
