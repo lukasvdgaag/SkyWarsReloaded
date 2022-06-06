@@ -1,7 +1,6 @@
-package net.gcnt.skywarsreloaded.data;
+package net.gcnt.skywarsreloaded.unlockable;
 
 import net.gcnt.skywarsreloaded.data.player.PlayerStat;
-import net.gcnt.skywarsreloaded.game.kits.Unlockable;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 import java.util.HashMap;
@@ -9,22 +8,34 @@ import java.util.Map;
 
 public abstract class CoreUnlockable implements Unlockable {
 
+    private final String id;
     private boolean requirePermission;
     private int cost;
     private final Map<PlayerStat, Integer> minimumStats;
 
-    public CoreUnlockable() {
-        this(false, 0);
+    public CoreUnlockable(String id) {
+        this(id, false, 0);
     }
 
-    public CoreUnlockable(boolean requirePermission, int cost) {
-        this(requirePermission, cost, null);
+    public CoreUnlockable(String id, boolean requirePermission, int cost) {
+        this(id, requirePermission, cost, null);
     }
 
-    public CoreUnlockable(boolean requirePermission, int cost, Map<PlayerStat, Integer> minimumStats) {
+    public CoreUnlockable(String id, boolean requirePermission, int cost, Map<PlayerStat, Integer> minimumStats) {
+        this.id = id;
         this.requirePermission = requirePermission;
         this.cost = cost;
         this.minimumStats = minimumStats == null ? new HashMap<>() : minimumStats;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getPermission() {
+        return getPermissionPrefix() + getId();
     }
 
     @Override

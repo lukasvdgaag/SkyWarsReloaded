@@ -5,10 +5,10 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
-import net.gcnt.skywarsreloaded.game.cages.Cage;
-import net.gcnt.skywarsreloaded.game.cages.MaterialCage;
+import net.gcnt.skywarsreloaded.unlockable.cage.Cage;
+import net.gcnt.skywarsreloaded.unlockable.cage.MaterialCage;
 import net.gcnt.skywarsreloaded.game.cages.NormalCageShape;
-import net.gcnt.skywarsreloaded.game.cages.SchematicCage;
+import net.gcnt.skywarsreloaded.unlockable.cage.SchematicCage;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.BaseCageTypeProperties;
 
