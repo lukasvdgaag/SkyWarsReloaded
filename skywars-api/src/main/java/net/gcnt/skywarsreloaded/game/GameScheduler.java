@@ -10,6 +10,10 @@ public interface GameScheduler {
 
     void end();
 
+    GameStateHandler getGameStateHandler();
+
+    void setGameStateHandler(GameStateHandler handler);
+
     void addDelayedTask(SWRunnable runnable, double delay);
 
     void addTimer(Consumer<SWRunnable> consumer, int timer);

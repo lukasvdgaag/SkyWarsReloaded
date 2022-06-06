@@ -50,6 +50,10 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
 
     SWCoord getLocation();
 
+    void setExp(int level, float exp);
+
+    void playSound(SWCoord coord, String sound, float volume, float pitch);
+
     void teleport(SWCoord coord);
 
     void teleport(String world, double x, double y, double z);

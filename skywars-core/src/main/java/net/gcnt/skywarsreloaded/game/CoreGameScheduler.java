@@ -15,6 +15,7 @@ public class CoreGameScheduler implements GameScheduler {
     private SWRunnable runnable;
     private int ticksRun;
     private int ticksSinceGameStart;
+    private GameStateHandler gameStateHandler;
 
     public CoreGameScheduler(SkyWarsReloaded plugin, GameWorld world) {
         this.plugin = plugin;
@@ -28,6 +29,11 @@ public class CoreGameScheduler implements GameScheduler {
             public void run() {
                 ticksRun++;
                 if (gameWorld.getStatus() == GameStatus.PLAYING) ticksSinceGameStart++;
+                gameStateHandler.tick();
+
+                if (ticksRun % 20 == 0) {
+                    gameStateHandler.tickSecond();
+                }
             }
         };
         plugin.getScheduler().runSyncTimer(runnable, 0, 1);
@@ -37,6 +43,16 @@ public class CoreGameScheduler implements GameScheduler {
     public void end() {
         runnable.cancel();
         runnable = null;
+    }
+
+    @Override
+    public GameStateHandler getGameStateHandler() {
+        return gameStateHandler;
+    }
+
+    @Override
+    public void setGameStateHandler(GameStateHandler handler) {
+        this.gameStateHandler = handler;
     }
 
     @Override

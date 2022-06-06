@@ -19,5 +19,15 @@ world-loader:
   # automatically use slime worlds if SlimeWorldManager (SWM) was detected.
   enable-swm: true
 
+game:
+  timers:
+    waiting-lobby: 180
+    waiting-lobby-full: 10
+    waiting-cages: 30
+    waiting-cages-full: 15
+  cages:
+    separate-cages: false
+  solo-waiting-lobby: false
+
 parties:
   allow-dispersed-parties: true
