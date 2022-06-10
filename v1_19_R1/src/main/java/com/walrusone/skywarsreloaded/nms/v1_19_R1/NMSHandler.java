@@ -356,7 +356,7 @@ public class NMSHandler implements NMS {
     public void sendJSON(Player sender, String json) {
         final IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a(json);
         // 0: chat (chat box), 1: system message (chat box), 2: game info (above hotbar), 3: say command, 4: msg command, 5: team msg command, 6: emote command, 7: tellraw command
-        final ClientboundSystemChatPacket chat = new ClientboundSystemChatPacket(icbc, 0);
+        final ClientboundSystemChatPacket chat = new ClientboundSystemChatPacket(icbc, 1);
         ((CraftPlayer) sender).getHandle().b.a(chat);
     }
 

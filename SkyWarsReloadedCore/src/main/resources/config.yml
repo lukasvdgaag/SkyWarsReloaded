@@ -193,12 +193,12 @@ items:
   modifierstrength: BOOK
   modifiernone: BOOK
   modifierrandom: NETHER_STAR
-  joinselect: DIAMOND_HELMET
+  joinselect: DIAMOND_SWORD
   singleSlot: 11
   singlemenu: REDSTONE_TORCH
   teamSlot: 15
   teammenu: COMPARATOR
-  spectateselect: LEATHER_HELMET
+  spectateselect: WOOD_SWORD
   optionselect: ENDER_EYE
   particleselect: BLAZE_POWDER
   particleselectslot: 11

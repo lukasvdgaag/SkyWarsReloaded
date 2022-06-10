@@ -43,10 +43,10 @@ public class Config {
             "CLOCK", "NETHER_STAR", "CLOCK", "CLOCK", "CLOCK", "CLOCK",
             "BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD",
             "DRAGON_BREATH", "NETHER_STAR", "BOOK", "BOOK", "BOOK", "BOOK",
-            "DIAMOND_HELMET",
+            "DIAMOND_SWORD",
             "REDSTONE_TORCH",
             "COMPARATOR",
-            "LEATHER_HELMET",
+            "WOOD_SWORD",
             "ENDER_EYE",
             "BLAZE_POWDER",
             "ARROW",
@@ -62,10 +62,10 @@ public class Config {
             "WATCH", "NETHER_STAR", "WATCH", "WATCH", "WATCH", "WATCH",
             "BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD",
             "DRAGONS_BREATH", "NETHER_STAR", "BOOK", "BOOK", "BOOK", "BOOK",
-            "DIAMOND_HELMET",
+            "DIAMOND_SWORD",
             "REDSTONE_TORCH_OFF",
             "REDSTONE_COMPARATOR",
-            "LEATHER_HELMET",
+            "WOOD_SWORD",
             "EYE_OF_ENDER",
             "BLAZE_POWDER",
             "ARROW",
@@ -81,10 +81,10 @@ public class Config {
             "WATCH", "NETHER_STAR", "WATCH", "WATCH", "WATCH", "WATCH",
             "BLAZE_POWDER", "NETHER_STAR", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD", "PRISMARINE_SHARD",
             "DRAGON_EGG", "NETHER_STAR", "BOOK", "BOOK", "BOOK", "BOOK",
-            "DIAMOND_HELMET",
+            "DIAMOND_SWORD",
             "REDSTONE_TORCH_OFF",
             "REDSTONE_COMPARATOR",
-            "LEATHER_HELMET",
+            "WOOD_SWORD",
             "EYE_OF_ENDER",
             "BLAZE_POWDER",
             "ARROW",
@@ -92,8 +92,8 @@ public class Config {
             "DRAGON_EGG",
             "STAINED_GLASS", "DRAGON_EGG");
     private final List<String> signItems = Arrays.asList("blockoffline", "blockwaiting", "blockplaying", "blockending", "almostfull", "threefull", "halffull", "almostempty");
-    private final List<String> signDef8 = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_HELMET", "GOLD_HELMET", "IRON_HELMET", "LEATHER_HELMET");
-    private final List<String> signDef13 = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_HELMET", "GOLDEN_HELMET", "IRON_HELMET", "LEATHER_HELMET");
+    private final List<String> signDef8 = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_SWORD", "GOLD_HELMET", "IRON_HELMET", "WOOD_SWORD");
+    private final List<String> signDef13 = Arrays.asList("COAL_BLOCK", "EMERALD_BLOCK", "REDSTONE_BLOCK", "LAPIS_BLOCK", "DIAMOND_SWORD", "GOLDEN_HELMET", "IRON_HELMET", "WOODEN_SWORD");
     private boolean debug;
     private boolean bungeeMode;
     private boolean bungeeRandomMapPickOnStart;
