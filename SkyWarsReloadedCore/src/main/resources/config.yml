@@ -198,7 +198,7 @@ items:
   singlemenu: REDSTONE_TORCH
   teamSlot: 15
   teammenu: COMPARATOR
-  spectateselect: WOOD_SWORD
+  spectateselect: WOODEN_SWORD
   optionselect: ENDER_EYE
   particleselect: BLAZE_POWDER
   particleselectslot: 11
