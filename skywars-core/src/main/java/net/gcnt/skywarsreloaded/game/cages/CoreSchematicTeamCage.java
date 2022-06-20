@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.game.cages.cages;
+package net.gcnt.skywarsreloaded.game.cages;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
@@ -8,8 +8,8 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.TeamCage;
 import net.gcnt.skywarsreloaded.game.TeamSpawn;
-import net.gcnt.skywarsreloaded.game.cages.Cage;
-import net.gcnt.skywarsreloaded.game.cages.SchematicCage;
+import net.gcnt.skywarsreloaded.unlockable.cage.Cage;
+import net.gcnt.skywarsreloaded.unlockable.cage.SchematicCage;
 import net.gcnt.skywarsreloaded.utils.CoreSWCCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;

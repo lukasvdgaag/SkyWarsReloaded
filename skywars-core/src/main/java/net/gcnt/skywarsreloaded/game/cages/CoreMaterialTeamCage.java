@@ -1,10 +1,10 @@
-package net.gcnt.skywarsreloaded.game.cages.cages;
+package net.gcnt.skywarsreloaded.game.cages;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
 import net.gcnt.skywarsreloaded.game.TeamCage;
 import net.gcnt.skywarsreloaded.game.TeamSpawn;
-import net.gcnt.skywarsreloaded.game.cages.MaterialCage;
+import net.gcnt.skywarsreloaded.unlockable.cage.MaterialCage;
 import net.gcnt.skywarsreloaded.game.cages.NormalCageShape;
 import net.gcnt.skywarsreloaded.utils.CoreSWCCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;

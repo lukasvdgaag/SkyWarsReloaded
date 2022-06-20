@@ -1,9 +1,7 @@
 package net.gcnt.skywarsreloaded.manager;
 
 import com.sk89q.worldedit.EditSession;
-import net.gcnt.skywarsreloaded.game.TeamCage;
-import net.gcnt.skywarsreloaded.game.TeamSpawn;
-import net.gcnt.skywarsreloaded.game.cages.Cage;
+import net.gcnt.skywarsreloaded.unlockable.cage.Cage;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 
 import java.util.List;

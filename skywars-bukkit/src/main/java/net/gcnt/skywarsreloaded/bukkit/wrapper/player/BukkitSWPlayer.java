@@ -163,6 +163,23 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     }
 
     @Override
+    public void setExp(int level, float exp) {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        this.player.setLevel(level);
+        this.player.setExp(exp);
+    }
+
+    @Override
+    public void playSound(SWCoord coord, String sound, float volume, float pitch) {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        this.player.playSound(
+                new Location(player.getWorld(), coord.xPrecise(), coord.yPrecise(), coord.zPrecise()),
+                Sound.valueOf(sound.toUpperCase()),
+                volume, pitch
+        );
+    }
+
+    @Override
     public SWCompletableFuture<Boolean> teleportAsync(SWCoord coord) {
         return this.teleportAsync(coord.getWorld().getName(), coord.xPrecise(), coord.yPrecise(), coord.zPrecise());
     }

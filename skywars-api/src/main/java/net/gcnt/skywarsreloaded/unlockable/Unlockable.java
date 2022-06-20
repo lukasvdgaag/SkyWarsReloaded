@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.game.kits;
+package net.gcnt.skywarsreloaded.unlockable;
 
 import net.gcnt.skywarsreloaded.data.player.PlayerStat;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
@@ -10,6 +10,8 @@ public interface Unlockable {
     String getId();
 
     String getPermissionPrefix();
+
+    String getPermission();
 
     boolean needsPermission();
 
