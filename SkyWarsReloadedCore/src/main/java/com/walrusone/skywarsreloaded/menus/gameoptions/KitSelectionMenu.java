@@ -10,6 +10,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -49,9 +50,11 @@ public class KitSelectionMenu {
                 // Select icon based on player allowed to use the kit or not
                 if (hasPermission) {
                     item = kit.getIcon();
+                    if (item == null) item = new ItemStack(Material.DIRT, 1);
                     loreList.addAll(kit.getColorLores());
                 } else {
                     item = kit.getLIcon();
+                    if (item == null) item = new ItemStack(Material.BARRIER, 1);
                     loreList.add(kit.getColoredLockedLore());
                 }
 
