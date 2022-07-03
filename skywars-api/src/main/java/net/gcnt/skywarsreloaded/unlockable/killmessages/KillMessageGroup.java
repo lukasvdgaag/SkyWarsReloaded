@@ -15,6 +15,8 @@ public interface KillMessageGroup extends Unlockable {
 
     List<String> getMessages(DeathReason reason);
 
+    void setMessages(DeathReason reason, List<String> messages);
+
     String getRandomMessage(SWPlayer player, DeathReason reason);
 
 }

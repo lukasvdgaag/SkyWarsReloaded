@@ -8,10 +8,10 @@ import java.util.Map;
 
 public abstract class CoreUnlockable implements Unlockable {
 
-    private final String id;
-    private boolean requirePermission;
-    private int cost;
-    private final Map<PlayerStat, Integer> minimumStats;
+    protected final String id;
+    protected boolean requirePermission;
+    protected int cost;
+    protected final Map<PlayerStat, Integer> minimumStats;
 
     public CoreUnlockable(String id) {
         this(id, false, 0);

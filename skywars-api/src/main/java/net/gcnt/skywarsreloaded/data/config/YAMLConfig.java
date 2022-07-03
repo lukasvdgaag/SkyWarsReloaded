@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.data.config;
 
+import net.gcnt.skywarsreloaded.unlockable.Unlockable;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.Message;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
@@ -64,6 +65,8 @@ public interface YAMLConfig {
     Message getMessage(String property, String def);
 
     Message getMessage(String property, List<String> def);
+
+    void loadUnlockableData(Unlockable unlockable, String property);
 
     /**
      * Set a value to a key in the yaml config

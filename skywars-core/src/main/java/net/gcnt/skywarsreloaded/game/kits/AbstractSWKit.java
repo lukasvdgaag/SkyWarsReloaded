@@ -16,7 +16,6 @@ import java.util.List;
 public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
 
     public final SkyWarsReloaded plugin;
-    private final String id;
     private final YAMLConfig config;
 
     private String displayName;
@@ -36,9 +35,8 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
     private List<String> effects;
 
     public AbstractSWKit(SkyWarsReloaded plugin, String id) {
-        super();
+        super(id);
         this.plugin = plugin;
-        this.id = id;
         this.displayName = id;
         this.description = "Kit " + id;
         this.inventoryContents = new HashMap<>();
@@ -194,6 +192,8 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
 
     @Override
     public synchronized void loadData() {
+        config.loadUnlockableData(this, "");
+
         // basic kit info init
         this.displayName = config.getString(KitProperties.DISPLAY_NAME.toString(), id);
         // todo load default item when not in config.
@@ -203,19 +203,6 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
         this.lore = config.getStringList(KitProperties.LORE.toString());
         this.effects = config.getStringList(KitProperties.EFFECTS.toString());
         this.slot = config.getInt(KitProperties.SLOT.toString(), -1);
-
-        // kit requirement init
-        setNeedPermission(config.getBoolean(KitProperties.REQUIREMENTS_PERMISSION.toString(), false));
-        setCost(config.getInt(KitProperties.REQUIREMENTS_COST.toString(), 0));
-        if (config.contains(KitProperties.REQUIREMENTS_STATS.toString())) {
-            config.getKeys(KitProperties.REQUIREMENTS_STATS.toString()).forEach(stat -> {
-                try {
-                    addMinimumStat(PlayerStat.fromString(stat), config.getInt(KitProperties.REQUIREMENTS_STATS + "." + stat));
-                } catch (Exception e) {
-                    plugin.getLogger().error(String.format("Failed to load %s stat requirement for kit %s. Ignoring it. (%s)", stat, id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
-                }
-            });
-        }
 
         // inventory content init
         inventoryContents = new HashMap<>();

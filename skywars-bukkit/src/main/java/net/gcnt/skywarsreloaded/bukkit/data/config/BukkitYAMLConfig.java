@@ -3,7 +3,10 @@ package net.gcnt.skywarsreloaded.bukkit.data.config;
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.data.config.AbstractYAMLConfig;
+import net.gcnt.skywarsreloaded.data.player.PlayerStat;
+import net.gcnt.skywarsreloaded.unlockable.Unlockable;
 import net.gcnt.skywarsreloaded.utils.*;
+import net.gcnt.skywarsreloaded.utils.properties.KitProperties;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -290,6 +293,31 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     public Message getMessage(String property, List<String> def) {
         if (!contains(property)) return new CoreMessage(plugin, def.toArray(new String[0]));
         return new CoreMessage(plugin, getStringList(property).toArray(new String[0]));
+    }
+
+    @Override
+    public void loadUnlockableData(Unlockable unlockable, String property) {
+        if (!contains(property)) return;
+        ConfigurationSection section = fileConfiguration.getConfigurationSection(property);
+        if (section == null) return;
+
+        unlockable.setNeedPermission(section.getBoolean(KitProperties.REQUIREMENTS_PERMISSION.toString(), false));
+        unlockable.setCost(section.getInt(KitProperties.REQUIREMENTS_COST.toString(), 0));
+        if (section.contains(KitProperties.REQUIREMENTS_STATS.toString())) {
+            section.getConfigurationSection(KitProperties.REQUIREMENTS_STATS.toString()).getKeys(false).forEach(stat -> {
+                try {
+                    PlayerStat playerStat = PlayerStat.fromString(stat);
+                    if (playerStat == null) {
+                        plugin.getLogger().error("Invalid stat '" + stat + "' in unlockable '" + unlockable.getId() + "'");
+                        return;
+                    }
+
+                    unlockable.addMinimumStat(playerStat, section.getInt(KitProperties.REQUIREMENTS_STATS + "." + stat, 0));
+                } catch (Exception e) {
+                    plugin.getLogger().error(String.format("Failed to load %s stat requirement for kit %s. Ignoring it. (%s)", stat, unlockable.getId(), e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                }
+            });
+        }
     }
 
     @Override

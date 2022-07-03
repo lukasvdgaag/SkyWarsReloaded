@@ -32,6 +32,11 @@ public class CoreKillMessageGroup extends CoreUnlockable implements KillMessageG
     }
 
     @Override
+    public void setMessages(DeathReason reason, List<String> messages) {
+        this.messages.put(reason, messages);
+    }
+
+    @Override
     public List<String> getMessages(DeathReason reason) {
         return messages.getOrDefault(reason, new ArrayList<>());
     }

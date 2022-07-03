@@ -19,6 +19,7 @@ import net.gcnt.skywarsreloaded.bukkit.wrapper.sender.BukkitSWConsoleSender;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.server.BukkitSWServer;
 import net.gcnt.skywarsreloaded.command.CoreSWCommandManager;
 import net.gcnt.skywarsreloaded.manager.CoreCageManager;
+import net.gcnt.skywarsreloaded.manager.CoreUnlockablesManager;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
@@ -91,6 +92,11 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     public void initCageManager() {
         setCageManager(new CoreCageManager(this));
+    }
+
+    @Override
+    protected void initUnlockablesManager() {
+        setUnlockablesManager(new CoreUnlockablesManager(this));
     }
 
     @Override
