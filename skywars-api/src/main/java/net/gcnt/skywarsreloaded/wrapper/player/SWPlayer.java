@@ -68,6 +68,26 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
 
     void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut);
 
+    double getHealth();
+
+    void setHealth(double health);
+
+    void setFoodLevel(int foodLevel);
+
+    int getFoodLevel();
+
+    void setFlying(boolean flying);
+
+    boolean isFlying();
+
+    void setAllowFlight(boolean allowFlight);
+
+    boolean isAllowFlight();
+
+    void setFireTicks(int ticks);
+
+    void clearBodyArrows();
+
     /**
      * Change the game mode of the player.
      *

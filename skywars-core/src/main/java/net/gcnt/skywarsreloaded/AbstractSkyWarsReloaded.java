@@ -108,11 +108,11 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         getPlayerDataManager().loadAllPlayerData();
 
         // Templates
-        getGameManager().loadAllGameTemplates();
-        getKitManager().createDefaultsIfNotPresent();
-        getKitManager().loadAllKits();
         getChestManager().createDefaultsIfNotPresent();
         getChestManager().loadAllChestTypes();
+        getKitManager().createDefaultsIfNotPresent();
+        getKitManager().loadAllKits();
+        getGameManager().loadAllGameTemplates();
 
         // Worlds
         initWorldLoader();

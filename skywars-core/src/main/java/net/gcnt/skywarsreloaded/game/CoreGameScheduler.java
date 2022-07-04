@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.types.GameStatus;
+import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.CoreSWRunnable;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWRunnable;
 
@@ -28,7 +28,7 @@ public class CoreGameScheduler implements GameScheduler {
             @Override
             public void run() {
                 ticksRun++;
-                if (gameWorld.getStatus() == GameStatus.PLAYING) ticksSinceGameStart++;
+                if (gameWorld.getState() == GameState.PLAYING) ticksSinceGameStart++;
                 gameStateHandler.tick();
 
                 if (ticksRun % 20 == 0) {

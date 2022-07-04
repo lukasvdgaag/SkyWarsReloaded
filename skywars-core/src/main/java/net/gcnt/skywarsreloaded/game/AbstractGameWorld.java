@@ -3,7 +3,7 @@ package net.gcnt.skywarsreloaded.game;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.chest.SWChestType;
 import net.gcnt.skywarsreloaded.game.types.GameDifficulty;
-import net.gcnt.skywarsreloaded.game.types.GameStatus;
+import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.party.SWParty;
 import net.gcnt.skywarsreloaded.utils.*;
@@ -30,7 +30,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     protected GameDifficulty gameDifficulty;
     // States
     protected boolean editing;
-    protected GameStatus status;
+    protected GameState state;
     protected int timer;
 
     public AbstractGameWorld(SkyWarsReloaded plugin, String id, GameTemplate gameTemplate) {
@@ -40,7 +40,7 @@ public abstract class AbstractGameWorld implements GameWorld {
         this.teams = new ArrayList<>();
         this.players = new ArrayList<>();
         this.selectedChestTypes = new HashMap<>();
-        this.status = GameStatus.DISABLED;
+        this.state = GameState.DISABLED;
         this.timer = 0;
         this.worldName = "swr-" + id;
         loadTeams();
@@ -76,6 +76,7 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public void startScheduler() {
+        if (this.scheduler != null) this.scheduler.end();
         this.scheduler = new CoreGameScheduler(plugin, this);
         this.scheduler.start();
     }
@@ -107,7 +108,7 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public boolean canJoinGame() {
-        return this.status.isJoinable() && isSpawnAvailable();
+        return this.state.isJoinable() && isSpawnAvailable();
     }
 
     @Override
@@ -188,7 +189,10 @@ public abstract class AbstractGameWorld implements GameWorld {
             // Teleport player to next available spawn
             swPlayer.freeze();
             TeamSpawn finalSpawn = spawn;
-            cagePlaceFuture.thenRunSync(() -> teleportPlayerToLobbyOrTeamSpawn(swPlayer, finalSpawn).thenRunSync(swPlayer::unfreeze));
+            cagePlaceFuture.thenRunSync(() -> teleportPlayerToLobbyOrTeamSpawn(swPlayer, finalSpawn).thenRunSync(() -> {
+                preparePlayer(swPlayer);
+                swPlayer.unfreeze();
+            }));
 //
 //            teleportPlayerToLobbyOrTeamSpawn(swPlayer, spawn)
 //                    .thenRun(() -> cagePlaceFuture.thenRunSync(swPlayer::unfreeze));
@@ -197,12 +201,29 @@ public abstract class AbstractGameWorld implements GameWorld {
                     .replace("%player%", gamePlayer.getSWPlayer().getName())
                     .replace("%players%", getWaitingPlayers().size() + "")
                     .replace("%maxplayers%", this.gameTemplate.getMaxPlayers() + ""));
-            // todo send join message here.
 
             // todo give vote and other game items here.
             // todo teleport gamePlayer to team spawn / waiting spawn here.
         }
         return successState;
+    }
+
+    @Override
+    public void preparePlayer(SWPlayer player) {
+        player.clearInventory();
+        player.setFlying(false);
+        player.setAllowFlight(false);
+        player.setHealth(20);
+        player.setFoodLevel(20);
+        player.clearBodyArrows();
+        player.setFireTicks(0);
+
+        if (state == GameState.PLAYING) {
+            player.setGameMode(0);
+        } else {
+            // adventrue
+            player.setGameMode(2);
+        }
     }
 
     public GameTeam findPreferredTeam(SWPlayer swPlayer, List<GameTeam> gameTeams) {
@@ -279,13 +300,18 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     @Override
-    public GameStatus getStatus() {
-        return status;
+    public List<GameTeam> getAliveTeams() {
+        return teams.stream().filter(GameTeam::isEliminated).collect(Collectors.toList());
     }
 
     @Override
-    public void setStatus(GameStatus status) {
-        this.status = status;
+    public GameState getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(GameState state) {
+        this.state = state;
     }
 
     @Override
@@ -383,6 +409,6 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     private boolean shouldSendPlayerToCages() {
-        return this.gameTemplate.getTeamSize() == 1 || this.status == GameStatus.WAITING_CAGES || this.status == GameStatus.COUNTDOWN;
+        return this.gameTemplate.getTeamSize() == 1 || this.state == GameState.WAITING_CAGES || this.state == GameState.COUNTDOWN;
     }
 }

@@ -75,54 +75,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.gmail.filoghost.holographicdisplays</groupId>
-            <artifactId>holographicdisplays-api</artifactId>
-            <version>2.4.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>be.maximvdw</groupId>
-            <artifactId>MVdWPlaceholderAPI</artifactId>
-            <version>2.1.1-SNAPSHOT</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.spigotmc</groupId>
-                    <artifactId>spigot</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>de.simonsator</groupId>
-            <artifactId>Party-and-Friends-MySQL-Edition-Spigot-API</artifactId>
-            <version>1.5.3</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.simonsator</groupId>
-            <artifactId>Spigot-Party-API-For-RedisBungee</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.simonsator</groupId>
-            <artifactId>DevelopmentPAFSpigot</artifactId>
-            <version>1.0.67</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.ebonjaeger</groupId>
-            <artifactId>perworldinventory-kt</artifactId>
-            <version>2.3.2</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.dumptruckman.minecraft</groupId>
-                    <artifactId>JsonConfiguration</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.11.1</version>
@@ -132,18 +84,6 @@
             <groupId>com.grinderwolf</groupId>
             <artifactId>slimeworldmanager</artifactId>
             <version>2.2.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <!--<dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-        </dependency>-->
-        <dependency>
-            <groupId>net.gaagjescraft</groupId>
-            <artifactId>swr-extension</artifactId>
-            <version>1.7.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

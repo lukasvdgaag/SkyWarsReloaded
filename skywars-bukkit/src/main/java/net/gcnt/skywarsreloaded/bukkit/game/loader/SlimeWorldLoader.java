@@ -14,7 +14,7 @@ import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameWorld;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
-import net.gcnt.skywarsreloaded.game.types.GameStatus;
+import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
@@ -145,7 +145,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     public void deleteMap(GameTemplate gameTemplate, boolean forceUnloadInstances) {
         if (forceUnloadInstances) {
             for (GameWorld gameWorld : this.plugin.getGameManager().getGameWorldsByTemplate(gameTemplate)) {
-                if (!gameWorld.getStatus().equals(GameStatus.DISABLED)) {
+                if (!gameWorld.getState().equals(GameState.DISABLED)) {
                     // todo gameWorld.forceStop();
                 }
                 gameWorld.getWorld().unload(false);

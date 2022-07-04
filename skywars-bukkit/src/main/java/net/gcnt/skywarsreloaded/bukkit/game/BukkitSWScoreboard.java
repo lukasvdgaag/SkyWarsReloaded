@@ -60,9 +60,6 @@ public class BukkitSWScoreboard extends AbstractSWScoreboard {
             if (arg1.contains("%") && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI"))
                 arg1 = PlaceholderAPI.setPlaceholders(player.getPlayer(), arg1); // check if still contains a placeholder
         }
-        if (arg1.contains("{") && arg1.contains("}") && Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
-            arg1 = be.maximvdw.placeholderapi.PlaceholderAPI.replacePlaceholders(player.getPlayer(), arg1);
-        }
         arg1 = plugin.getUtils().colorize(arg1);
 
         if (cache.containsKey(arg0) && cache.get(arg0).equals(arg1)) return; // Line hasn't changed

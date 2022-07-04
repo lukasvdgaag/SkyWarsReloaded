@@ -6,7 +6,7 @@ import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.chest.SWChestType;
-import net.gcnt.skywarsreloaded.game.types.GameStatus;
+import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
@@ -14,7 +14,6 @@ import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -57,7 +56,7 @@ public class EditMapCmd extends Cmd {
                 world.readyForEditing();
                 player.teleport(world.getWorldName(), 0, 51, 0);
                 return true;
-            } else if (world.getStatus() != GameStatus.DISABLED) {
+            } else if (world.getState() != GameState.DISABLED) {
                 msgConfig.getMessage(MessageProperties.ERROR_CANNOT_SET_LOBBYSPAWN_IN_GAMEWORLD.toString())
                         .replace("%template%", template.getName())
                         .send(sender);

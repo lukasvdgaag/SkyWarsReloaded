@@ -1,10 +1,11 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.game.chest.SWChestType;
-import net.gcnt.skywarsreloaded.game.types.GameStatus;
+import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.Message;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 import java.util.List;
@@ -67,17 +68,21 @@ public interface GameWorld {
 
     void removePlayer(GamePlayer player);
 
+    void preparePlayer(SWPlayer player);
+
     List<GamePlayer> getPlayersCopy();
 
     List<GamePlayer> getAlivePlayers();
+
+    List<GameTeam> getAliveTeams();
 
     List<GamePlayer> getWaitingPlayers();
 
     List<GamePlayer> getSpectators();
 
-    GameStatus getStatus();
+    GameState getState();
 
-    void setStatus(GameStatus status);
+    void setState(GameState state);
 
     void readyForEditing();
 

@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.game.types;
 
-public enum GameStatus {
+public enum GameState {
 
     DISABLED(false, false),
     WAITING_LOBBY(true, true),
@@ -12,7 +12,7 @@ public enum GameStatus {
     private final boolean joinable;
     private final boolean waiting;
 
-    GameStatus(boolean canJoin, boolean waiting) {
+    GameState(boolean canJoin, boolean waiting) {
         this.joinable = canJoin;
         this.waiting = waiting;
     }

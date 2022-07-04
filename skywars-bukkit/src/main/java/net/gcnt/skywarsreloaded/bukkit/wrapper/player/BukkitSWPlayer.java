@@ -258,4 +258,64 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     public void fetchParentPlayer() {
         this.player = Bukkit.getPlayer(this.getUuid());
     }
+
+    @Override
+    public int getFoodLevel() {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        return this.player.getFoodLevel();
+    }
+
+    @Override
+    public void setFoodLevel(int foodLevel) {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        this.player.setFoodLevel(foodLevel);
+    }
+
+    @Override
+    public double getHealth() {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        return this.player.getHealth();
+    }
+
+    @Override
+    public void setHealth(double health) {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        this.player.setHealth(health);
+    }
+
+    @Override
+    public boolean isAllowFlight() {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        return this.player.getAllowFlight();
+    }
+
+    @Override
+    public void setAllowFlight(boolean allowFlight) {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        this.player.setAllowFlight(allowFlight);
+    }
+
+    @Override
+    public void setFlying(boolean flying) {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        this.player.setFlying(flying);
+    }
+
+    @Override
+    public boolean isFlying() {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        return this.player.isFlying();
+    }
+
+    @Override
+    public void setFireTicks(int ticks) {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        this.player.setFireTicks(ticks);
+    }
+
+    @Override
+    public void clearBodyArrows() {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        this.player.setArrowsInBody(0);
+    }
 }

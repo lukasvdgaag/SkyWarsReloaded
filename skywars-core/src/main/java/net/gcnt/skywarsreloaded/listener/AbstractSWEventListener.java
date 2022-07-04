@@ -51,7 +51,7 @@ public class AbstractSWEventListener implements SWEventListener {
         GameWorld gameWorld = event.getPlayer().getGameWorld();
         if (gameWorld == null) return false;
 
-        if (gameWorld.getStatus().isWaiting()) {
+        if (gameWorld.getState().isWaiting()) {
             if (event instanceof SWCancellable) {
                 ((SWCancellable) event).setCancelled(true);
                 return true;

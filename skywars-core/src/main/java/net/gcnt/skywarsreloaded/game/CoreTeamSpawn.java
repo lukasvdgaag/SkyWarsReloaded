@@ -2,11 +2,11 @@ package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
+import net.gcnt.skywarsreloaded.game.cages.CoreMaterialTeamCage;
+import net.gcnt.skywarsreloaded.game.cages.CoreSchematicTeamCage;
 import net.gcnt.skywarsreloaded.unlockable.cage.Cage;
 import net.gcnt.skywarsreloaded.unlockable.cage.MaterialCage;
 import net.gcnt.skywarsreloaded.unlockable.cage.SchematicCage;
-import net.gcnt.skywarsreloaded.game.cages.CoreMaterialTeamCage;
-import net.gcnt.skywarsreloaded.game.cages.CoreSchematicTeamCage;
 import net.gcnt.skywarsreloaded.utils.CoreSWCCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
@@ -21,8 +21,8 @@ public class CoreTeamSpawn implements TeamSpawn {
     private final SkyWarsReloaded plugin;
     private final GameTeam team;
     private final SWCoord location;
+    private final List<GamePlayer> players;
     private TeamCage teamCage;
-    private List<GamePlayer> players;
     private String oldCageDesign;
     private String cageDesign;
 
@@ -33,6 +33,7 @@ public class CoreTeamSpawn implements TeamSpawn {
         this.players = new ArrayList<>();
         this.cageDesign = "default";
         this.oldCageDesign = null;
+        this.teamCage = null;
     }
 
     @Override
@@ -152,7 +153,7 @@ public class CoreTeamSpawn implements TeamSpawn {
 
     @Override
     public void removeCage() {
-        if (!teamCage.isPlaced()) return;
+        if (teamCage == null || !teamCage.isPlaced()) return;
         teamCage.removeCage();
     }
 

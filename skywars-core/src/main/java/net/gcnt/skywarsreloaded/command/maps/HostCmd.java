@@ -4,8 +4,6 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
-import net.gcnt.skywarsreloaded.game.types.GameStatus;
-import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
@@ -36,18 +34,27 @@ public class HostCmd extends Cmd {
             return true;
         }
 
+        sender.sendMessage("Hosting game: " + template.getName());
+        sender.sendMessage(plugin.getWorldLoader().getClass().getName());
+
         GameWorld gameWorld = plugin.getGameManager().createGameWorld(template);
         plugin.getWorldLoader().generateWorldInstance(gameWorld).thenAccept((result) -> {
-            if (result) {
-                gameWorld.readyForGame();
+            System.out.println("World generation result: " + result);
+            try {
+                if (result) {
+                    gameWorld.readyForGame();
 
-                plugin.getMessages().getMessage(MessageProperties.MAPS_HOSTED.toString())
-                        .replace("%template%", template.getName())
-                        .replace("%gameworld%", gameWorld.getId())
-                        .send(sender);
-            } else {
-                plugin.getLogger().error("Could not create instance!");// todo send error
-                sender.sendMessage("Internal server has occurred!");
+                    sender.sendMessage("Game world ready for game");
+                    plugin.getMessages().getMessage(MessageProperties.MAPS_HOSTED.toString())
+                            .replace("%template%", template.getName())
+                            .replace("%gameworld%", gameWorld.getId())
+                            .send(sender);
+                } else {
+                    plugin.getLogger().error("Could not create instance!");// todo send error
+                    sender.sendMessage("Internal server has occurred!");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 

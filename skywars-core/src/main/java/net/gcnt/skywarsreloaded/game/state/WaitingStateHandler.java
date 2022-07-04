@@ -4,8 +4,9 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
-import net.gcnt.skywarsreloaded.game.types.GameStatus;
+import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
+import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 public class WaitingStateHandler extends CoreGameStateHandler {
 
@@ -13,32 +14,32 @@ public class WaitingStateHandler extends CoreGameStateHandler {
         super(plugin, gameWorld);
     }
 
-    public GameStatus getBeginningWaitingState(GameTemplate template) {
+    public GameState getBeginningWaitingState(GameTemplate template) {
         if (template.getTeamSize() > 1 || plugin.getConfig().getBoolean(ConfigProperties.GAME_SOLO_WAITING_LOBBY.toString()))
-            return GameStatus.WAITING_LOBBY;
+            return GameState.WAITING_LOBBY;
         else
-            return GameStatus.WAITING_CAGES;
+            return GameState.WAITING_CAGES;
     }
 
     @Override
     public void tickSecond() {
         final int playerCount = gameWorld.getWaitingPlayers().size();
 
-        final int waitingFullTimer = gameWorld.getStatus() == GameStatus.WAITING_LOBBY ?
+        final int waitingFullTimer = gameWorld.getState() == GameState.WAITING_LOBBY ?
                 plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_LOBBY_FULL.toString()) :
                 plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_CAGES_FULL.toString());
 
         if (playerCount < gameWorld.getTemplate().getMinPlayers()) {
-            GameStatus oldStatus = gameWorld.getStatus();
-            gameWorld.setStatus(getBeginningWaitingState(gameWorld.getTemplate()));
+            GameState oldStatus = gameWorld.getState();
+            gameWorld.setState(getBeginningWaitingState(gameWorld.getTemplate()));
 
-            if (gameWorld.getStatus() == GameStatus.WAITING_LOBBY) {
+            if (gameWorld.getState() == GameState.WAITING_LOBBY) {
                 int oldTimer = gameWorld.getTimer();
 
                 final int waitingLobbyTime = plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_LOBBY.toString());
                 gameWorld.setTimer(waitingLobbyTime);
 
-                if (oldTimer != waitingLobbyTime && oldStatus != GameStatus.WAITING_LOBBY) {
+                if (oldTimer != waitingLobbyTime && oldStatus != GameState.WAITING_LOBBY) {
                     // timer was reset
                     // teleporting all waiting players back to the waiting lobby
                     for (GamePlayer player : gameWorld.getWaitingPlayers()) {
@@ -47,7 +48,7 @@ public class WaitingStateHandler extends CoreGameStateHandler {
                     }
                 }
 
-            } else if (gameWorld.getStatus() == GameStatus.WAITING_CAGES) {
+            } else if (gameWorld.getState() == GameState.WAITING_CAGES) {
                 gameWorld.setTimer(plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_CAGES.toString()));
             }
         } else if (playerCount == gameWorld.getTemplate().getMaxPlayers() && gameWorld.getTimer() > waitingFullTimer) {
@@ -60,17 +61,18 @@ public class WaitingStateHandler extends CoreGameStateHandler {
             }
         } else {
             if (gameWorld.getTimer() == 0) {
-                if (gameWorld.getStatus() == GameStatus.WAITING_LOBBY) {
+                if (gameWorld.getState() == GameState.WAITING_LOBBY) {
                     // todo teleport all players to their cages
-                } else if (gameWorld.getStatus() == GameStatus.COUNTDOWN) {
-                    // todo teleport all players to the lobby
+                } else if (gameWorld.getState() == GameState.COUNTDOWN) {
+                    // todo release the cages
+                    startGame();
                 }
                 return;
             }
 
             // when the timer reaches 10, officially start the countdown state.
-            if (gameWorld.getStatus() == GameStatus.WAITING_CAGES && gameWorld.getTimer() == waitingFullTimer) {
-                gameWorld.setStatus(GameStatus.COUNTDOWN);
+            if (gameWorld.getState() == GameState.WAITING_CAGES && gameWorld.getTimer() == waitingFullTimer) {
+                gameWorld.setState(GameState.COUNTDOWN);
             }
 
             gameWorld.setTimer(gameWorld.getTimer() - 1);
@@ -82,6 +84,19 @@ public class WaitingStateHandler extends CoreGameStateHandler {
             announceTimer();
         }
 
+    }
+
+    private void startGame() {
+        gameWorld.setState(GameState.PLAYING);
+        gameWorld.fillChests();
+        gameWorld.removeCages();
+        for (GamePlayer gp : gameWorld.getWaitingPlayers()) {
+            gameWorld.preparePlayer(gp.getSWPlayer());
+            gp.getSWPlayer().playSound(gp.getSWPlayer().getLocation(), "BLOCK_NOTE_BLOCK_PLING", 1, 2);
+            gp.getSWPlayer().sendTitle("§a§lGOOD LUCK", "§eThe game has started!", 20, 50, 20);
+            gp.getSWPlayer().sendMessage("§aThe game has started! §eGood luck!");
+        }
+        gameWorld.getScheduler().setGameStateHandler(new PlayingStateHandler(plugin, gameWorld));
     }
 
     private void announceTimer() {
