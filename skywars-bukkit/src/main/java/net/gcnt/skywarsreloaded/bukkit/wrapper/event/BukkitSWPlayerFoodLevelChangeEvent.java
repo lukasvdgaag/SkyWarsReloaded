@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.bukkit.wrapper.event;
 
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.wrapper.event.CoreSWPlayerFoodLevelChangeEvent;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 public class BukkitSWPlayerFoodLevelChangeEvent extends CoreSWPlayerFoodLevelChangeEvent {

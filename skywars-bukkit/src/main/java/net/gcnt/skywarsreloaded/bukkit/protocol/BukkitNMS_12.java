@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.bukkit.protocol;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.lang.reflect.InvocationTargetException;
 

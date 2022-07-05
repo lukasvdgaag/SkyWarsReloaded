@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.wrapper.event;
 
 import net.gcnt.skywarsreloaded.enums.DeathReason;
-import net.gcnt.skywarsreloaded.wrapper.player.SWEntity;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWEntity;
 
 public interface SWEntityDamageEvent extends SWCancellable {
 
@@ -10,8 +10,6 @@ public interface SWEntityDamageEvent extends SWCancellable {
     void setDamage(double damage);
 
     double getDamage();
-
-    void setFinalDamage(double damage);
 
     double getFinalDamage();
 

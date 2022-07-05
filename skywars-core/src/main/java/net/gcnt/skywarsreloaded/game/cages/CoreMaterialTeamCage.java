@@ -5,12 +5,11 @@ import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
 import net.gcnt.skywarsreloaded.game.TeamCage;
 import net.gcnt.skywarsreloaded.game.TeamSpawn;
 import net.gcnt.skywarsreloaded.unlockable.cage.MaterialCage;
-import net.gcnt.skywarsreloaded.game.cages.NormalCageShape;
 import net.gcnt.skywarsreloaded.utils.CoreSWCCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.util.HashMap;
 import java.util.UUID;

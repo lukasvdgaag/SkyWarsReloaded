@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.wrapper.world;
 
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.util.List;
 
@@ -19,14 +19,14 @@ public interface SWWorld {
      * Set the block at a location to a block type
      *
      * @param location The location of where to set the spawn
-     * @param block The block to set at that location
+     * @param block    The block to set at that location
      */
     void setBlockAt(SWCoord location, Item block);
 
     /**
      * Set the block at a location to a block type
      *
-     * @param location The location of where to set the spawn
+     * @param location  The location of where to set the spawn
      * @param blockName The name of the block to set at that location
      */
     void setBlockAt(SWCoord location, String blockName);

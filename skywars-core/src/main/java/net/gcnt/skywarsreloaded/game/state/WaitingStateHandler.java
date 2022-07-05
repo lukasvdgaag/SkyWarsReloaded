@@ -6,7 +6,6 @@ import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
 
 public class WaitingStateHandler extends CoreGameStateHandler {
 

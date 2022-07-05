@@ -5,7 +5,7 @@ import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.utils.*;
-import net.gcnt.skywarsreloaded.wrapper.player.AbstractSWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.AbstractSWPlayer;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

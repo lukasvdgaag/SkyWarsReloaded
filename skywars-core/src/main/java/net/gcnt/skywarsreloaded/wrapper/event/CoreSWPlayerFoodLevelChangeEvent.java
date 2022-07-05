@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.wrapper.event;
 
 import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 public class CoreSWPlayerFoodLevelChangeEvent extends CoreSWPlayerEvent implements SWPlayerFoodLevelChangeEvent {
 

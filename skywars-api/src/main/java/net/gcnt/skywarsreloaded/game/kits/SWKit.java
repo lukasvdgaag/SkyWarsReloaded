@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game.kits;
 
 import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.util.HashMap;
 import java.util.List;

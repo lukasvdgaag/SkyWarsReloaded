@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.wrapper.event;
 
 import net.gcnt.skywarsreloaded.enums.DeathReason;
-import net.gcnt.skywarsreloaded.wrapper.player.SWEntity;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWEntity;
 
 public class CoreSWEntityDamageEvent implements SWEntityDamageEvent, SWCancellable {
 
@@ -55,8 +55,4 @@ public class CoreSWEntityDamageEvent implements SWEntityDamageEvent, SWCancellab
         this.damage = damage;
     }
 
-    @Override
-    public void setFinalDamage(double finalDamage) {
-        this.finalDamage = finalDamage;
-    }
 }

@@ -8,7 +8,7 @@ import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.party.SWParty;
 import net.gcnt.skywarsreloaded.utils.*;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.util.*;
 import java.util.function.Predicate;

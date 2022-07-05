@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.data.player;
 
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.io.File;
 import java.sql.*;

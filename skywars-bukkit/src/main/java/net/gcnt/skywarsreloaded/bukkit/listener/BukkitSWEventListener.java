@@ -9,8 +9,8 @@ import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.event.*;
-import net.gcnt.skywarsreloaded.wrapper.player.SWEntity;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWEntity;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -20,13 +20,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldInitEvent;
+import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class BukkitSWEventListener extends AbstractSWEventListener implements Listener {
 
@@ -208,7 +214,7 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
         // Get data
-        SWEntity entity = event.getEntityType() == EntityType.PLAYER ? getPlayerFromBukkitPlayer((Player) event.getEntity()) : getEntityFromUUID(event.getEntity().getUniqueId());
+        SWEntity entity = plugin.getEntityManager().getEntityByUUID(event.getEntity().getUniqueId());
         DeathReason reason = DeathReason.fromString(event.getCause().name());
         double damage = event.getDamage();
         double finalDamage = event.getFinalDamage();
@@ -221,13 +227,51 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
         if (swEvent.isCancelled()) {
             event.setCancelled(true);
         }
+        event.setDamage(swEvent.getDamage());
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        // Get data
+        SWPlayer p = this.getPlayerFromBukkitPlayer(event.getEntity());
+
+        List<Item> drops = new ArrayList<>();
+        for (ItemStack stack : event.getDrops()) {
+            drops.add(BukkitItem.fromBukkit(plugin, stack));
+        }
+
+        // Fire core event
+        SWPlayerDeathEvent swEvent = new CoreSWPlayerDeathEvent(p, event.getDeathMessage(), event.getKeepInventory(), drops);
+        this.onPlayerDeath(swEvent);
+
+        // Update changes
+        event.setDeathMessage(swEvent.getDeathMessage());
+        event.setKeepInventory(swEvent.isKeepInventory());
+        event.getDrops().clear();
+        event.getDrops().addAll(swEvent.getDrops().stream().map(item -> ((BukkitItem) item).getBukkitItem()).collect(Collectors.toList()));
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        // Get data
+        SWEntity entity = plugin.getEntityManager().getEntityByUUID(event.getEntity().getUniqueId());
+        SWEntity damager = plugin.getEntityManager().getEntityByUUID(event.getDamager().getUniqueId());
+        DeathReason reason = DeathReason.fromString(event.getCause().name());
+        double damage = event.getDamage();
+        double finalDamage = event.getFinalDamage();
+
+        // Fire core event
+        SWEntityDamageByEntityEvent swEvent = new CoreSWEntityDamageByEntityEvent(entity, damager, damage, finalDamage, reason);
+        this.onEntityDamageByEntity(swEvent);
+
+        // Update changes
+        if (swEvent.isCancelled()) {
+            event.setCancelled(true);
+        }
+        event.setDamage(swEvent.getDamage());
     }
 
     // Utils
-
-    private SWEntity getEntityFromUUID(UUID uuid) {
-        return this.plugin.getPlayerManager().getEntityFromUUID(uuid);
-    }
 
     private SWPlayer getPlayerFromBukkitPlayer(Player player) {
         return this.plugin.getPlayerManager().getPlayerByUUID(player.getUniqueId());

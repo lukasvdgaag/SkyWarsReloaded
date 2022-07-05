@@ -73,11 +73,7 @@ public class CoreSchematicManager implements SchematicManager {
 
     @Override
     public EditSession pasteSchematic(Clipboard schem, World world, BlockVector3 location, boolean ignoreAir) {
-        EditSession editSession = null;
-
-        try {
-            editSession = this.getNewEditSession(world);
-
+        try (EditSession editSession = this.getNewEditSession(world)) {
             Operation operation = new ClipboardHolder(schem)
                     .createPaste(editSession)
                     .to(location)
@@ -86,15 +82,9 @@ public class CoreSchematicManager implements SchematicManager {
                     .build();
 
             Operations.complete(operation);
-            editSession.close();
-
             return editSession;
-
         } catch (WorldEditException ex) {
             ex.printStackTrace();
-
-            editSession.close();
-
             return null;
         }
     }
@@ -110,23 +100,23 @@ public class CoreSchematicManager implements SchematicManager {
             BlockArrayClipboard clipboard = new BlockArrayClipboard(reg);
             clipboard.setOrigin(BlockVector3.at(0, 0, 0));
 
-            EditSession session = this.getNewEditSession(world);
-            if (session == null) return false;
-            ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(session, reg, clipboard, reg.getMinimumPoint());
-            Operations.complete(forwardExtentCopy);
-            File folder = new File(plugin.getDataFolder(), FolderProperties.WORLD_SCHEMATICS_FOLDER.toString());
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
+            try (EditSession session = this.getNewEditSession(world)) {
+                if (session == null) return false;
+                ForwardExtentCopy forwardExtentCopy = new ForwardExtentCopy(session, reg, clipboard, reg.getMinimumPoint());
+                Operations.complete(forwardExtentCopy);
+                File folder = new File(plugin.getDataFolder(), FolderProperties.WORLD_SCHEMATICS_FOLDER.toString());
+                if (!folder.exists()) {
+                    folder.mkdir();
+                }
 
-            File file = new File(folder, gameWorld.getTemplate().getName() + ".schem");
-            Files.deleteIfExists(file.toPath());
-            try (ClipboardWriter writer = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getWriter(new FileOutputStream(file))) {
-                writer.write(clipboard);
-            }
+                File file = new File(folder, gameWorld.getTemplate().getName() + ".schem");
+                Files.deleteIfExists(file.toPath());
+                try (ClipboardWriter writer = BuiltInClipboardFormat.SPONGE_SCHEMATIC.getWriter(new FileOutputStream(file))) {
+                    writer.write(clipboard);
+                }
 
-            session.close();
-            return true;
+                return true;
+            }
         } catch (Exception e) {
             plugin.getLogger().error(String.format("Failed to save schematic of world %s to file system. (%s)", gameWorld.getTemplate().getName(), e.getClass().getName() + ": " + e.getLocalizedMessage()));
             e.printStackTrace();
@@ -136,8 +126,9 @@ public class CoreSchematicManager implements SchematicManager {
 
     @Override
     public void undoSchematicPaste(EditSession session) {
-        session.undo(session);
-        session.close();
+        try (EditSession editSession = getNewEditSession(session.getWorld())) {
+            session.undo(editSession);
+        }
     }
 
     // Internal tools

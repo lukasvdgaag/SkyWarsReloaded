@@ -10,6 +10,8 @@ public interface UnlockablesManager {
 
     void loadKillMessages();
 
+    void loadDefaultKillMessage();
+
     List<KillMessageGroup> getKillMessageGroups();
 
     KillMessageGroup getKillMessageGroup(String identifier);

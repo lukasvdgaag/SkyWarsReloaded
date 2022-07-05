@@ -1,8 +1,7 @@
 package net.gcnt.skywarsreloaded.manager;
 
-import net.gcnt.skywarsreloaded.wrapper.player.SWEntity;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
-import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWEntity;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.util.List;
 import java.util.UUID;

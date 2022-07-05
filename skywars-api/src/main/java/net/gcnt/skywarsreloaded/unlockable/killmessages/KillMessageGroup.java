@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.unlockable.killmessages;
 
 import net.gcnt.skywarsreloaded.enums.DeathReason;
 import net.gcnt.skywarsreloaded.unlockable.Unlockable;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

@@ -16,6 +16,7 @@ import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.CageManager;
+import net.gcnt.skywarsreloaded.manager.EntityManager;
 import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
 import net.gcnt.skywarsreloaded.manager.UnlockablesManager;
 import net.gcnt.skywarsreloaded.protocol.NMSManager;
@@ -54,6 +55,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private ChestManager chestManager;
     private CageManager cageManager;
     private UnlockablesManager unlockablesManager;
+    private EntityManager entityManager;
     private SWEventListener eventListener;
     private GameWorldLoader worldLoader;
 
@@ -100,6 +102,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         initCageManager();
         getCageManager().loadAllCages();
         initUnlockablesManager();
+        initEntityManager();
 
         setSchematicManager(new CoreSchematicManager(this));
 
@@ -193,6 +196,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     protected abstract void initYAMLManager();
 
     protected abstract void initUnlockablesManager();
+
+    protected abstract void initEntityManager();
 
     // Getters & Setters
 
@@ -412,5 +417,15 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void setUnlockablesManager(UnlockablesManager unlockablesManager) {
         this.unlockablesManager = unlockablesManager;
+    }
+
+    @Override
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
+
+    @Override
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 }

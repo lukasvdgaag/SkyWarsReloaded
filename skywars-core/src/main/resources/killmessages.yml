@@ -4,6 +4,8 @@ default:
     - "&c%player%&7 was spooked by &c%killer%&7!"
     - "&c%player%&7's soul was taken by &c%killer%&7!"
     - "&c%player%&7 is now a ghost thanks to &c%killer%&7!"
+  projectile: "&c%player%&7 was shot."
+  projectile-kill: "&c%player%&7 was shot by &c%killer%&7!"
   void:
     - "&c%player%&7's soul was taken by the void!"
   void-kill:

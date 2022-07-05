@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.wrapper.event;
 
 import net.gcnt.skywarsreloaded.utils.SWCoord;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 public class CoreSWPlayerMoveEvent extends CoreSWPlayerEvent implements SWPlayerMoveEvent {
 

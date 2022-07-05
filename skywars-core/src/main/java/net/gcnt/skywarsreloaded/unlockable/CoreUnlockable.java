@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.unlockable;
 
 import net.gcnt.skywarsreloaded.data.player.PlayerStat;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.util.HashMap;
 import java.util.Map;

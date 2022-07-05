@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.data.player;
 
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 public class CoreSWPlayerDataManager implements SWPlayerDataManager {
 

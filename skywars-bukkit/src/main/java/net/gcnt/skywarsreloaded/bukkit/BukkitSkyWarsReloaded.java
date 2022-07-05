@@ -10,6 +10,7 @@ import net.gcnt.skywarsreloaded.bukkit.game.kits.BukkitKitManager;
 import net.gcnt.skywarsreloaded.bukkit.game.loader.SchemWorldLoader;
 import net.gcnt.skywarsreloaded.bukkit.game.loader.SlimeWorldLoader;
 import net.gcnt.skywarsreloaded.bukkit.listener.BukkitSWEventListener;
+import net.gcnt.skywarsreloaded.bukkit.managers.BukkitEntityManager;
 import net.gcnt.skywarsreloaded.bukkit.managers.BukkitPlayerManager;
 import net.gcnt.skywarsreloaded.bukkit.protocol.BukkitNMSManager;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitPlatformUtils;
@@ -127,6 +128,11 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     protected void initScheduler() {
         setScheduler(new BukkitSWScheduler(this));
+    }
+
+    @Override
+    protected void initEntityManager() {
+        setEntityManager(new BukkitEntityManager(this));
     }
 
     @Override

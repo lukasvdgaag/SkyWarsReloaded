@@ -7,17 +7,18 @@ import net.gcnt.skywarsreloaded.unlockable.killmessages.CoreKillMessageGroup;
 import net.gcnt.skywarsreloaded.unlockable.killmessages.KillMessageGroup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CoreUnlockablesManager implements UnlockablesManager {
 
     private final SkyWarsReloaded plugin;
 
-    private final List<KillMessageGroup> killMessageGroups;
+    private final HashMap<String, KillMessageGroup> killMessageGroups;
 
     public CoreUnlockablesManager(SkyWarsReloaded plugin) {
         this.plugin = plugin;
-        this.killMessageGroups = new ArrayList<>();
+        this.killMessageGroups = new HashMap<>();
 
         load();
     }
@@ -25,6 +26,16 @@ public class CoreUnlockablesManager implements UnlockablesManager {
     @Override
     public void load() {
         loadKillMessages();
+    }
+
+    @Override
+    public void loadDefaultKillMessage() {
+        if (getKillMessageGroup("default") != null) return;
+
+        CoreKillMessageGroup group = new CoreKillMessageGroup("default");
+        group.addMessage(DeathReason.DEFAULT, "§e%player%§7 died.");
+        group.addMessage(DeathReason.DEFAULT_KILL, "§e%player%§7 was killed by §e%killer%§7.");
+        killMessageGroups.put("default", group);
     }
 
     @Override
@@ -48,20 +59,22 @@ public class CoreUnlockablesManager implements UnlockablesManager {
                     }
                 }
             }
-            killMessageGroups.add(group);
+            killMessageGroups.put(key, group);
         });
+
+        loadDefaultKillMessage();
     }
 
     @Override
     public List<KillMessageGroup> getKillMessageGroups() {
-        return killMessageGroups;
+        return new ArrayList<>(killMessageGroups.values());
     }
 
     @Override
     public KillMessageGroup getKillMessageGroup(String identifier) {
-        for (KillMessageGroup group : killMessageGroups) {
-            if (group.getId().equals(identifier)) return group;
+        if (killMessageGroups.containsKey(identifier)) {
+            return killMessageGroups.get(identifier);
         }
-        return getKillMessageGroup("default");
+        return killMessageGroups.getOrDefault("default", null);
     }
 }

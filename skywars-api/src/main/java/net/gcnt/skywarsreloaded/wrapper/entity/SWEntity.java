@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.wrapper.player;
+package net.gcnt.skywarsreloaded.wrapper.entity;
 
 import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;

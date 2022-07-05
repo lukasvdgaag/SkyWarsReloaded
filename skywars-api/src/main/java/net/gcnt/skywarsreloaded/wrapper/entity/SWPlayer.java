@@ -1,10 +1,9 @@
-package net.gcnt.skywarsreloaded.wrapper.player;
+package net.gcnt.skywarsreloaded.wrapper.entity;
 
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.party.SWParty;
 import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 import org.jetbrains.annotations.Nullable;

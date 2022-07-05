@@ -28,4 +28,8 @@ public interface SWEventListener {
 
     void onEntityDamage(SWEntityDamageEvent event);
 
+    void onEntityDamageByEntity(SWEntityDamageByEntityEvent event);
+
+    void onPlayerDeath(SWPlayerDeathEvent event);
+
 }

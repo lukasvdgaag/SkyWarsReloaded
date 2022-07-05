@@ -10,7 +10,7 @@ import net.gcnt.skywarsreloaded.unlockable.cage.SchematicCage;
 import net.gcnt.skywarsreloaded.utils.CoreSWCCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -8,13 +8,12 @@ import net.gcnt.skywarsreloaded.utils.CoreSWCCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
-import net.gcnt.skywarsreloaded.wrapper.player.AbstractSWEntity;
+import net.gcnt.skywarsreloaded.wrapper.entity.AbstractSWEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 public class BukkitSWEntity extends AbstractSWEntity {
 

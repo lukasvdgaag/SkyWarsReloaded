@@ -9,8 +9,10 @@ import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.unlockable.killmessages.KillMessageGroup;
 import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWEntity;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWOwnedEntity;
 import net.gcnt.skywarsreloaded.wrapper.event.*;
-import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 public class AbstractSWEventListener implements SWEventListener {
@@ -131,37 +133,42 @@ public class AbstractSWEventListener implements SWEventListener {
     }
 
     @Override
+    public void onPlayerDeath(SWPlayerDeathEvent event) {
+        SWPlayer player = event.getPlayer();
+        final GameWorld gameWorld = player.getGameWorld();
+
+        if (gameWorld == null) return;
+
+        player.setHealth(20);
+        event.setDeathMessage(null);
+        event.setKeepInventory(false);
+    }
+
+    @Override
     public void onEntityDamage(SWEntityDamageEvent event) {
-        if (!(event.getEntity() instanceof SWPlayer)) {
-            System.out.println("entity is not a player.");
-            return;
-        }
+        if (!(event.getEntity() instanceof SWPlayer)) return;
 
         SWPlayer player = (SWPlayer) event.getEntity();
-        if (cancelWhenWaitingInGame(player, event)) {
-            System.out.println("Cancelling cause ur waiting in game.");
-            return;
-        }
-
+        if (cancelWhenWaitingInGame(player, event)) return;
         GameWorld gameWorld = player.getGameWorld();
-        if (gameWorld == null || gameWorld.getState() != GameState.PLAYING) {
-            System.out.println("Gameworld is null or != PLAYING");
-            return;
-        }
+        if (gameWorld == null) return;
 
-        if (player.getHealth() - event.getFinalDamage() > 0) {
-            System.out.println("not dead yet.");
-            return;
-        }
-
-        // todo kill the player here.
         GamePlayer gamePlayer = gameWorld.getPlayer(player);
-        final GameTeam team = gamePlayer.getTeam();
-        if (team == null) {
-            System.out.println("No team found.");
+        if (gamePlayer.isSpectating()) {
+            event.setCancelled(true);
             return;
         }
+        // todo fixed damage getting cancelled regardless.
 
+        if (gameWorld.getState() != GameState.PLAYING) return;
+
+        if (player.getHealth() - event.getFinalDamage() > 0) return;
+
+        final GameTeam team = gamePlayer.getTeam();
+        if (team == null) return;
+
+        // preparing the player for spectate.
+        event.setDamage(0);
         team.eliminatePlayer(gamePlayer);
         gameWorld.preparePlayer(player);
 
@@ -170,6 +177,7 @@ public class AbstractSWEventListener implements SWEventListener {
 
         SWPlayer tagged = gamePlayer.getLastTaggedBy();
 
+        // sending the death message.
         String message;
         if (tagged != null) {
             if (!reason.isKill()) {
@@ -189,12 +197,30 @@ public class AbstractSWEventListener implements SWEventListener {
 
         gameWorld.announce(plugin.getUtils().colorize(message));
 
-        player.sendTitle("§c§YOU DIED", "§7You are now a spectator", 5, 30, 5);
+        player.sendTitle("§c§lYOU DIED", "§7You are now a spectator", 5, 30, 5);
         // todo customize this message.
+    }
 
-        // todo add EntityDamageByEntityEvent wrapper class.
-        //  and use it to store the tagged player.
+    @Override
+    public void onEntityDamageByEntity(SWEntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof SWPlayer)) return;
 
+        SWPlayer player = (SWPlayer) event.getEntity();
+        if (cancelWhenWaitingInGame(player, event)) return;
+
+        SWEntity damager = event.getDamager();
+
+        SWPlayer tagger = null;
+        if (damager instanceof SWPlayer) {
+            tagger = (SWPlayer) damager;
+        } else if (damager instanceof SWOwnedEntity) {
+            tagger = ((SWOwnedEntity) damager).getOwner();
+        }
+
+        if (tagger != null && !tagger.equals(player)) {
+            final GamePlayer gamePlayer = player.getGameWorld().getPlayer(player);
+            gamePlayer.setLastTaggedBy(tagger);
+        }
     }
 
     @Override
