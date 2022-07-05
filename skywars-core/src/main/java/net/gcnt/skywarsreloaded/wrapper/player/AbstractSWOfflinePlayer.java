@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class AbstractSWOfflinePlayer implements SWOfflinePlayer {
 
-    private UUID uuid;
+    private final UUID uuid;
     private boolean online;
 
     public AbstractSWOfflinePlayer(UUID uuidIn, boolean onlineIn) {

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * General data about a player that is independent of any running state of games or teams
  */
-public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
+public interface SWPlayer extends SWCommandSender, SWOfflinePlayer, SWEntity {
 
     SWPlayerData getPlayerData();
 
@@ -48,33 +48,13 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
 
     void clearInventory();
 
-    SWCoord getLocation();
-
     void setExp(int level, float exp);
 
     void playSound(SWCoord coord, String sound, float volume, float pitch);
 
-    void teleport(SWCoord coord);
-
-    void teleport(String world, double x, double y, double z);
-
-    void teleport(String world, double x, double y, double z, float yaw, float pitch);
-
-    SWCompletableFuture<Boolean> teleportAsync(SWCoord coord);
-
-    SWCompletableFuture<Boolean> teleportAsync(String world, double x, double y, double z);
-
     void sendTitle(String title, String subtitle);
 
     void sendTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut);
-
-    double getHealth();
-
-    void setHealth(double health);
-
-    void setFoodLevel(int foodLevel);
-
-    int getFoodLevel();
 
     void setFlying(boolean flying);
 
@@ -84,7 +64,9 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer {
 
     boolean isAllowFlight();
 
-    void setFireTicks(int ticks);
+    void setFoodLevel(int foodLevel);
+
+    int getFoodLevel();
 
     void clearBodyArrows();
 

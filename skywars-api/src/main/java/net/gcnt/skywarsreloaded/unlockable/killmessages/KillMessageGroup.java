@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.unlockable.killmessages;
 import net.gcnt.skywarsreloaded.enums.DeathReason;
 import net.gcnt.skywarsreloaded.unlockable.Unlockable;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,6 @@ public interface KillMessageGroup extends Unlockable {
 
     void setMessages(DeathReason reason, List<String> messages);
 
-    String getRandomMessage(SWPlayer player, DeathReason reason);
+    String getRandomMessage(DeathReason reason, @Nullable SWPlayer killer);
 
 }

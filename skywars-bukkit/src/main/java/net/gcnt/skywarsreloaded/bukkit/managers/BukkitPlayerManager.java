@@ -1,10 +1,15 @@
 package net.gcnt.skywarsreloaded.bukkit.managers;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWEntity;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.manager.AbstractPlayerManager;
+import net.gcnt.skywarsreloaded.wrapper.player.SWEntity;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -25,6 +30,14 @@ public class BukkitPlayerManager extends AbstractPlayerManager {
 
     public SWPlayer createSWPlayerForPlatform(Player player) {
         return new BukkitSWPlayer((BukkitSkyWarsReloaded) plugin, player, true);
+    }
+
+    @Override
+    public SWEntity getEntityFromUUID(UUID uuid) {
+        Entity entity = Bukkit.getEntity(uuid);
+        if (entity == null) return null;
+
+        return new BukkitSWEntity(plugin, entity);
     }
 
     @Override

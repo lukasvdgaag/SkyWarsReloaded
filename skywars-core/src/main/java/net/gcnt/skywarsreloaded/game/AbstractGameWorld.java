@@ -62,6 +62,22 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     @Override
+    public GameTeam getTeam(GamePlayer player) {
+        for (GameTeam gt : teams) {
+            if (gt.isMember(player.getSWPlayer())) return gt;
+        }
+        return null;
+    }
+
+    @Override
+    public GamePlayer getPlayer(SWPlayer player) {
+        for (GamePlayer gp : players) {
+            if (gp.getSWPlayer().equals(player)) return gp;
+        }
+        return null;
+    }
+
+    @Override
     public String getWorldName() {
         return worldName;
     }
@@ -211,18 +227,26 @@ public abstract class AbstractGameWorld implements GameWorld {
     @Override
     public void preparePlayer(SWPlayer player) {
         player.clearInventory();
-        player.setFlying(false);
-        player.setAllowFlight(false);
         player.setHealth(20);
         player.setFoodLevel(20);
         player.clearBodyArrows();
         player.setFireTicks(0);
 
-        if (state == GameState.PLAYING) {
-            player.setGameMode(0);
+        GamePlayer gp = getPlayer(player);
+        if (gp != null && gp.isSpectating()) {
+            player.setAllowFlight(true);
+            player.setFlying(true);
+            player.setGameMode(3);
         } else {
-            // adventrue
-            player.setGameMode(2);
+            player.setFlying(false);
+            player.setAllowFlight(false);
+
+            if (state == GameState.PLAYING) {
+                player.setGameMode(0);
+            } else {
+                // adventure mode when waiting/ending
+                player.setGameMode(2);
+            }
         }
     }
 

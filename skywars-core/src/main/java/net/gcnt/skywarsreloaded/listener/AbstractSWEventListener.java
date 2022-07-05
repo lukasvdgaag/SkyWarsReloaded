@@ -1,8 +1,13 @@
 package net.gcnt.skywarsreloaded.listener;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.enums.DeathReason;
+import net.gcnt.skywarsreloaded.game.GamePlayer;
+import net.gcnt.skywarsreloaded.game.GameTeam;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.types.GameState;
+import net.gcnt.skywarsreloaded.unlockable.killmessages.KillMessageGroup;
 import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
 import net.gcnt.skywarsreloaded.wrapper.event.*;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
@@ -47,17 +52,22 @@ public class AbstractSWEventListener implements SWEventListener {
         }
     }
 
-    private boolean cancelWhenWaitingInGame(SWPlayerEvent event) {
-        GameWorld gameWorld = event.getPlayer().getGameWorld();
+    private boolean cancelWhenWaitingInGame(SWPlayer player, SWCancellable cancellable) {
+        if (player == null) return false;
+        GameWorld gameWorld = player.getGameWorld();
         if (gameWorld == null) return false;
 
-        if (gameWorld.getState().isWaiting()) {
-            if (event instanceof SWCancellable) {
-                ((SWCancellable) event).setCancelled(true);
-                return true;
-            }
+        if (gameWorld.getState().isWaiting() || gameWorld.getState() == GameState.ENDING) {
+            cancellable.setCancelled(true);
+            return true;
         }
         return false;
+    }
+
+    private boolean cancelWhenWaitingInGame(SWPlayerEvent event) {
+        if (!(event instanceof SWCancellable)) return false;
+
+        return cancelWhenWaitingInGame(event.getPlayer(), (SWCancellable) event);
     }
 
     @Override
@@ -117,6 +127,73 @@ public class AbstractSWEventListener implements SWEventListener {
                 template.checkToDoList(event.getPlayer());
             }
         }
+
+    }
+
+    @Override
+    public void onEntityDamage(SWEntityDamageEvent event) {
+        if (!(event.getEntity() instanceof SWPlayer)) {
+            System.out.println("entity is not a player.");
+            return;
+        }
+
+        SWPlayer player = (SWPlayer) event.getEntity();
+        if (cancelWhenWaitingInGame(player, event)) {
+            System.out.println("Cancelling cause ur waiting in game.");
+            return;
+        }
+
+        GameWorld gameWorld = player.getGameWorld();
+        if (gameWorld == null || gameWorld.getState() != GameState.PLAYING) {
+            System.out.println("Gameworld is null or != PLAYING");
+            return;
+        }
+
+        if (player.getHealth() - event.getFinalDamage() > 0) {
+            System.out.println("not dead yet.");
+            return;
+        }
+
+        // todo kill the player here.
+        GamePlayer gamePlayer = gameWorld.getPlayer(player);
+        final GameTeam team = gamePlayer.getTeam();
+        if (team == null) {
+            System.out.println("No team found.");
+            return;
+        }
+
+        team.eliminatePlayer(gamePlayer);
+        gameWorld.preparePlayer(player);
+
+        DeathReason reason = event.getCause();
+        if (reason == null) reason = DeathReason.DEFAULT;
+
+        SWPlayer tagged = gamePlayer.getLastTaggedBy();
+
+        String message;
+        if (tagged != null) {
+            if (!reason.isKill()) {
+                reason = DeathReason.fromString(reason.name() + "_KILL");
+                if (reason == null) reason = DeathReason.DEFAULT_KILL;
+            }
+
+            // selecting the kill messages of the killer.
+            final KillMessageGroup killMessageGroup = plugin.getUnlockablesManager().getKillMessageGroup(tagged.getPlayerData().getKillMessagesTheme());
+            message = killMessageGroup.getRandomMessage(reason, tagged);
+            message = message.replace("%killer%", tagged.getName());
+        } else {
+            final KillMessageGroup killMessageGroup = plugin.getUnlockablesManager().getKillMessageGroup(player.getPlayerData().getKillMessagesTheme());
+            message = killMessageGroup.getRandomMessage(reason, null);
+        }
+        message = message.replace("%player%", player.getName());
+
+        gameWorld.announce(plugin.getUtils().colorize(message));
+
+        player.sendTitle("§c§YOU DIED", "§7You are now a spectator", 5, 30, 5);
+        // todo customize this message.
+
+        // todo add EntityDamageByEntityEvent wrapper class.
+        //  and use it to store the tagged player.
 
     }
 

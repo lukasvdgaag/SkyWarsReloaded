@@ -7,6 +7,8 @@ public interface SWCoord {
     @Override
     String toString();
 
+    String toString(boolean withWorld);
+
     SWWorld getWorld();
 
     int x();

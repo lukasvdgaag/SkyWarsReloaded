@@ -33,6 +33,7 @@ public class CoreUnlockablesManager implements UnlockablesManager {
 
         final YAMLConfig config = plugin.getYAMLManager().loadConfig("killmessages", plugin.getDataFolder(), "killmessages.yml");
         config.getKeys("").forEach(key -> {
+            // todo make sure that a default group is always loaded
             KillMessageGroup group = new CoreKillMessageGroup(key);
             config.loadUnlockableData(group, key);
 
@@ -54,5 +55,13 @@ public class CoreUnlockablesManager implements UnlockablesManager {
     @Override
     public List<KillMessageGroup> getKillMessageGroups() {
         return killMessageGroups;
+    }
+
+    @Override
+    public KillMessageGroup getKillMessageGroup(String identifier) {
+        for (KillMessageGroup group : killMessageGroups) {
+            if (group.getId().equals(identifier)) return group;
+        }
+        return getKillMessageGroup("default");
     }
 }

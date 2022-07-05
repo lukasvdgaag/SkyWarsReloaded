@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.unlockable.killmessages;
 import net.gcnt.skywarsreloaded.enums.DeathReason;
 import net.gcnt.skywarsreloaded.unlockable.CoreUnlockable;
 import net.gcnt.skywarsreloaded.wrapper.player.SWPlayer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,16 +43,17 @@ public class CoreKillMessageGroup extends CoreUnlockable implements KillMessageG
     }
 
     @Override
-    public String getRandomMessage(SWPlayer player, DeathReason reason) {
+    public String getRandomMessage(DeathReason reason, @Nullable SWPlayer killer) {
         if (messages.containsKey(reason)) {
             return messages.get(reason).get(ThreadLocalRandom.current().nextInt(messages.get(reason).size()));
         }
 
         // falling back to the default message
         if (!messages.containsKey(DeathReason.DEFAULT)) {
-            return "§6%player §edied.";
+            if (killer == null) return "§6%player% §edied.";
+            else return "§6%player% §egot killed by §6%killer%§e.";
         }
-        return getRandomMessage(player, DeathReason.DEFAULT);
+        return getRandomMessage(DeathReason.DEFAULT, killer);
     }
 
     @Override

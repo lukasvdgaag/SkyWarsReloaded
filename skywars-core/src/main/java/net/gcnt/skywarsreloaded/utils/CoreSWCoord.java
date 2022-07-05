@@ -36,15 +36,7 @@ public class CoreSWCoord implements SWCoord {
         this.pitch = pitch;
     }
 
-    /**
-     * Get a Coord loc from a formatted input string (format: x:y:z)
-     *
-     * @param input Formatted coord loc string.
-     * @throws IndexOutOfBoundsException Thrown if there are more/less than 3 points found in this formatted input string.
-     * @throws NumberFormatException     Thrown if one of the points seems to not be an integer.
-     * @throws IllegalArgumentException  Thrown if the input string is null or empty.
-     */
-    public CoreSWCoord(SkyWarsReloaded plugin, @Nullable String input) {
+    public CoreSWCoord(SkyWarsReloaded plugin, @Nullable String input, boolean withWorld) {
         if (input == null || input.isEmpty()) {
             throw new IllegalArgumentException("String cannot be converted to a Coord location. Input is empty/null.");
         }
@@ -64,7 +56,7 @@ public class CoreSWCoord implements SWCoord {
         x = Double.parseDouble(arg0[lenAdd]);
         y = Double.parseDouble(arg0[1 + lenAdd]);
         z = Double.parseDouble(arg0[2 + lenAdd]);
-        if (lenAdd == 1) { // aka checks if length == 4 || length == 6 (contains world name)
+        if (lenAdd == 1 && withWorld) { // aka checks if length == 4 || length == 6 (contains world name)
             this.worldName = arg0[0];
             this.world = plugin.getUtils().getSWWorld(arg0[0]);
             if (this.world == null) {
@@ -77,11 +69,28 @@ public class CoreSWCoord implements SWCoord {
         }
     }
 
+    /**
+     * Get a Coord loc from a formatted input string (format: x:y:z)
+     *
+     * @param input Formatted coord loc string.
+     * @throws IndexOutOfBoundsException Thrown if there are more/less than 3 points found in this formatted input string.
+     * @throws NumberFormatException     Thrown if one of the points seems to not be an integer.
+     * @throws IllegalArgumentException  Thrown if the input string is null or empty.
+     */
+    public CoreSWCoord(SkyWarsReloaded plugin, @Nullable String input) {
+        this(plugin, input, true);
+    }
+
     @Override
     public String toString() {
+        return toString(true);
+    }
+
+    @Override
+    public String toString(boolean withWorld) {
         StringBuilder sb = new StringBuilder();
 
-        if (worldName != null) sb.append(worldName).append(":");
+        if (worldName != null && withWorld) sb.append(worldName).append(":");
         sb.append(xPrecise()).append(":").append(yPrecise()).append(":").append(zPrecise());
         if (yaw != 0 || pitch != 0) sb.append(":").append(yaw).append(":").append(pitch);
         return sb.toString();

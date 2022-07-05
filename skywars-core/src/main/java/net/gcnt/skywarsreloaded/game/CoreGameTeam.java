@@ -59,6 +59,7 @@ public class CoreGameTeam implements GameTeam {
         if (players == null || !canJoin()) return;
 
         this.players.add(player);
+        player.setTeam(this);
     }
 
     @Override
@@ -98,6 +99,13 @@ public class CoreGameTeam implements GameTeam {
 
     public List<GamePlayer> getAlivePlayers() {
         return players.stream().filter(GamePlayer::isAlive).collect(Collectors.toList());
+    }
+
+    @Override
+    public void eliminatePlayer(GamePlayer player) {
+        this.getAlivePlayers().remove(player);
+        player.setSpectating(true);
+        player.getSWPlayer().teleport(game.getTemplate().getSpectateSpawn());
     }
 
     @Override

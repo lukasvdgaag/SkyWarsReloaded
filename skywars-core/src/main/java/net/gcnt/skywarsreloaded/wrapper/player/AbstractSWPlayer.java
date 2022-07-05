@@ -9,10 +9,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class AbstractSWPlayer implements SWPlayer {
+public abstract class AbstractSWPlayer extends AbstractSWEntity implements SWPlayer {
 
     public final SkyWarsReloaded plugin;
-    private final UUID uuid;
 
     private final AtomicBoolean online;
     private final AtomicBoolean frozen;
@@ -22,8 +21,8 @@ public abstract class AbstractSWPlayer implements SWPlayer {
     private SWParty party;
 
     public AbstractSWPlayer(SkyWarsReloaded plugin, UUID uuid, boolean online) {
+        super(uuid);
         this.plugin = plugin;
-        this.uuid = uuid;
         this.online = new AtomicBoolean(online);
         this.gameWorld = null;
         this.frozen = new AtomicBoolean(false);
@@ -37,11 +36,6 @@ public abstract class AbstractSWPlayer implements SWPlayer {
     @Override
     public void setOnline(boolean online) {
         this.online.set(online);
-    }
-
-    @Override
-    public UUID getUuid() {
-        return uuid;
     }
 
     @Override

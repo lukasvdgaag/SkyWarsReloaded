@@ -143,7 +143,8 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
 
     @Override
     public void teleport(SWCoord coord) {
-        teleport(coord.getWorld().getName(), coord.xPrecise(), coord.yPrecise(), coord.zPrecise(), coord.yaw(), coord.pitch());
+        String worldName = coord.getWorld() == null ? getLocation().getWorld().getName() : coord.getWorld().getName();
+        teleport(worldName, coord.xPrecise(), coord.yPrecise(), coord.zPrecise(), coord.yaw(), coord.pitch());
     }
 
     @Override
@@ -193,9 +194,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
             return successFuture;
         }
         final Location location = new Location(bukkitWorld, x, y, z);
-        PaperLib.teleportAsync(player, location).thenAccept((bool) -> {
-            successFuture.complete(bool);
-        });
+        PaperLib.teleportAsync(player, location).thenAccept(successFuture::complete);
         return successFuture;
 
     }
@@ -317,5 +316,10 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     public void clearBodyArrows() {
         if (this.player == null) throw new NullPointerException("Bukkit player is null");
         this.player.setArrowsInBody(0);
+    }
+
+    @Override
+    public String getType() {
+        return "PLAYER";
     }
 }

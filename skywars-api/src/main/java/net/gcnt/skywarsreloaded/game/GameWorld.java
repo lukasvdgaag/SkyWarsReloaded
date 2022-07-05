@@ -20,6 +20,10 @@ public interface GameWorld {
 
     List<GameTeam> getTeams();
 
+    GameTeam getTeam(GamePlayer player);
+
+    GamePlayer getPlayer(SWPlayer player);
+
     SWWorld getWorld();
 
     String getWorldName();

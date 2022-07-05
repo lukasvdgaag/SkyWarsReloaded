@@ -1,4 +1,4 @@
-spooky:
+default:
   default: "&c%player%&7 died due to mysterious causes."
   default-kill:
     - "&c%player%&7 was spooked by &c%killer%&7!"

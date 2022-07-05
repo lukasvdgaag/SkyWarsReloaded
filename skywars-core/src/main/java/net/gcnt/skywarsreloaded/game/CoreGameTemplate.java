@@ -171,8 +171,8 @@ public class CoreGameTemplate implements GameTemplate {
 
         String lspawn = config.getString(MapDataProperties.LOBBY_SPAWN.toString(), null);
         String sspawn = config.getString(MapDataProperties.SPECTATE_SPAWN.toString(), null);
-        this.lobbySpawn = lspawn == null ? null : new CoreSWCoord(plugin, lspawn);
-        this.spectateSpawn = sspawn == null ? null : new CoreSWCoord(plugin, sspawn);
+        this.lobbySpawn = lspawn == null ? null : new CoreSWCoord(plugin, lspawn, false);
+        this.spectateSpawn = sspawn == null ? null : new CoreSWCoord(plugin, sspawn, false);
 
         this.chests = new HashMap<>();
         final Set<String> chestKeys = config.getKeys(MapDataProperties.CHESTS.toString());
@@ -230,8 +230,8 @@ public class CoreGameTemplate implements GameTemplate {
 
         config.set(MapDataProperties.IS_TEAMSIZE_SETUP.toString(), isTeamsizeSetup);
 
-        config.set(MapDataProperties.LOBBY_SPAWN.toString(), lobbySpawn == null ? null : lobbySpawn.toString());
-        config.set(MapDataProperties.SPECTATE_SPAWN.toString(), spectateSpawn == null ? null : spectateSpawn.toString());
+        config.set(MapDataProperties.LOBBY_SPAWN.toString(), lobbySpawn == null ? null : lobbySpawn.toString(false));
+        config.set(MapDataProperties.SPECTATE_SPAWN.toString(), spectateSpawn == null ? null : spectateSpawn.toString(false));
 
         // Chests
         SWChestType defaultChest = plugin.getChestManager().getChestTypeByName("normal"); // todo make this configurable?
@@ -243,7 +243,7 @@ public class CoreGameTemplate implements GameTemplate {
         this.chests.forEach((coord, type) -> {
             String chestName = type.getName();
             List<String> coords = chestCoordsByType.getOrDefault(chestName, new ArrayList<>());
-            coords.add(coord.toString());
+            coords.add(coord.toString(false));
             chestCoordsByType.put(chestName, coords);
         });
 
@@ -252,7 +252,7 @@ public class CoreGameTemplate implements GameTemplate {
 
         List<List<String>> spawnPoints = new ArrayList<>();
         for (List<SWCoord> list : this.teamSpawnLocations) {
-            spawnPoints.add(list.stream().map(SWCoord::toString).collect(Collectors.toList()));
+            spawnPoints.add(list.stream().map((coord) -> coord.toString(false)).collect(Collectors.toList()));
         }
         config.set(MapDataProperties.SPAWNPOINTS.toString(), spawnPoints);
         config.save();

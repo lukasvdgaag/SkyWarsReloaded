@@ -26,4 +26,6 @@ public interface SWEventListener {
 
     void onPlayerFoodLevelChange(SWPlayerFoodLevelChangeEvent event);
 
+    void onEntityDamage(SWEntityDamageEvent event);
+
 }

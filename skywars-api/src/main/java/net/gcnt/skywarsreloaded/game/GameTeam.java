@@ -75,6 +75,13 @@ public interface GameTeam {
     List<GamePlayer> getAlivePlayers();
 
     /**
+     * Eliminate a player from the team.
+     *
+     * @param player Player to eliminate
+     */
+    void eliminatePlayer(GamePlayer player);
+
+    /**
      * Get the Game that this team belongs to.
      *
      * @return Parent Game.
@@ -155,7 +162,7 @@ public interface GameTeam {
     /**
      * Add a reservation to the team.
      *
-     * @param uuid The UUID of the player
+     * @param uuid       The UUID of the player
      * @param expireTime The time at which the reservation should become invalid
      */
     void addReservation(UUID uuid, long expireTime);

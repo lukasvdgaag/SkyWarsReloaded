@@ -12,4 +12,6 @@ public interface UnlockablesManager {
 
     List<KillMessageGroup> getKillMessageGroups();
 
+    KillMessageGroup getKillMessageGroup(String identifier);
+
 }

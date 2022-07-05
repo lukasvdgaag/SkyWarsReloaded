@@ -19,10 +19,12 @@ public class BukkitSWWorld extends AbstractSWWorld {
 
     private final BukkitSkyWarsReloaded plugin;
     private final World bukkitWorld;
+    private final String name;
 
     public BukkitSWWorld(BukkitSkyWarsReloaded pluginIn, World worldIn) {
         this.plugin = pluginIn;
         this.bukkitWorld = worldIn;
+        this.name = worldIn.getName();
     }
 
     @Override
@@ -54,7 +56,7 @@ public class BukkitSWWorld extends AbstractSWWorld {
 
     @Override
     public String getName() {
-        return bukkitWorld.getName();
+        return name;
     }
 
     @Override

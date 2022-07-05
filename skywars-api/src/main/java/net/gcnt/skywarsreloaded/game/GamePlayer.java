@@ -12,6 +12,20 @@ public interface GamePlayer {
     SWPlayer getSWPlayer();
 
     /**
+     * Get the player that damaged the player last.
+     *
+     * @return The player that damaged the player last.
+     */
+    SWPlayer getLastTaggedBy();
+
+    /**
+     * Set the player that damaged the player last.
+     *
+     * @param player Player that dealt damage.
+     */
+    void setLastTaggedBy(SWPlayer player);
+
+    /**
      * Get if the player is still alive in the game.
      *
      * @return true when alive, false when dead.
@@ -53,6 +67,8 @@ public interface GamePlayer {
      * @return Team that the player is in.
      */
     GameTeam getTeam();
+
+    void setTeam(GameTeam team);
 
     SWScoreboard getScoreboard();
 

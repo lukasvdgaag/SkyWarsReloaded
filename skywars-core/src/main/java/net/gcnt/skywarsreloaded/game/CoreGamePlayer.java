@@ -10,6 +10,7 @@ public class CoreGamePlayer implements GamePlayer {
     private boolean alive;
     private boolean spectating;
     private SWScoreboard scoreboard;
+    private SWPlayer taggedBy;
 
     public CoreGamePlayer(SWPlayer player, GameWorld gameWorld) {
         this.player = player;
@@ -18,6 +19,7 @@ public class CoreGamePlayer implements GamePlayer {
         this.alive = false;
         this.spectating = false;
         this.scoreboard = null;
+        this.taggedBy = null;
     }
 
     @Override
@@ -59,6 +61,11 @@ public class CoreGamePlayer implements GamePlayer {
     }
 
     @Override
+    public void setTeam(GameTeam team) {
+        this.team = team;
+    }
+
+    @Override
     public SWScoreboard getScoreboard() {
         return scoreboard;
     }
@@ -66,5 +73,15 @@ public class CoreGamePlayer implements GamePlayer {
     @Override
     public void setScoreboard(SWScoreboard scoreboard) {
         this.scoreboard = scoreboard;
+    }
+
+    @Override
+    public SWPlayer getLastTaggedBy() {
+        return taggedBy;
+    }
+
+    @Override
+    public void setLastTaggedBy(SWPlayer player) {
+        this.taggedBy = player;
     }
 }
