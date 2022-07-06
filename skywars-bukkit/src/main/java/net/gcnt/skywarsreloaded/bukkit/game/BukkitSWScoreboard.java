@@ -3,7 +3,7 @@ package net.gcnt.skywarsreloaded.bukkit.game;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
-import net.gcnt.skywarsreloaded.game.AbstractSWScoreboard;
+import net.gcnt.skywarsreloaded.utils.scoreboards.AbstractSWBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -13,54 +13,56 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
 
-public class BukkitSWScoreboard extends AbstractSWScoreboard {
+public class BukkitSWScoreboard extends AbstractSWBoard {
 
-    private final SkyWarsReloaded plugin;
-    private final Scoreboard board;
-    private final BukkitSWPlayer player;
-    private final Objective objective;
-    private final int linecount;
+    private Scoreboard board;
+    private Objective objective;
 
     private final HashMap<Integer, String> cache = new HashMap<>();
 
-    public BukkitSWScoreboard(SkyWarsReloaded plugin, BukkitSWPlayer player, int linecount) {
-        this.plugin = plugin;
-        this.player = player;
-        this.linecount = linecount;
+    public BukkitSWScoreboard(SkyWarsReloaded plugin, BukkitSWPlayer player, int lineCount) {
+        super(plugin, player, lineCount);
+        setup();
+    }
+
+    @Override
+    public void setup() {
         this.board = Bukkit.getServer().getScoreboardManager().getNewScoreboard();
         this.objective = this.board.registerNewObjective("sb1", "sb2");
         this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         this.objective.setDisplayName("...");
 
-        int score = linecount;
-        for (int i = 0; i < linecount; i++) { // looping through the lines
-            Team t = this.board.registerNewTeam("plus-" + i); // creating the team
+        int score = lineCount;
+        for (int i = 0; i < lineCount; i++) { // looping through the lines
+            Team t = this.board.registerNewTeam("swr-" + i); // creating the team
             t.addEntry(ChatColor.values()[i] + ""); // assigning a color to the team
             this.objective.getScore(ChatColor.values()[i] + "").setScore(score); // sets the score number
             score--;
         }
-        this.player.getPlayer().setScoreboard(this.board); // sets the player scoreboard
+        apply();
+    }
+
+    @Override
+    public void apply() {
+        ((BukkitSWPlayer) player).getPlayer().setScoreboard(this.board);
     }
 
     public void setTitle(String arg0) {
         if (arg0 == null) arg0 = ""; // title null, making it empty
 
         if (cache.containsKey(-1) && cache.get(-1).equals(arg0)) return; // if title is in cache, return
-        cache.remove(-1); // removing the title from the cache
         cache.put(-1, arg0); // changing the title in the cache
         objective.setDisplayName(arg0); // sets the title of the scoreboard
     }
 
     public void setLine(int arg0, String arg1) {
-        Team arg2 = board.getTeam("plus-" + arg0 + ""); // Get the team we need
+        Team arg2 = board.getTeam("swr-" + arg0 + ""); // Get the team we need
         if (arg1 == null) arg1 = ""; // Line null, making it empty
 
         if (arg1.contains("%")) {
-            //arg1 = Utils.get().parseStatics(arg1, player);
             if (arg1.contains("%") && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI"))
-                arg1 = PlaceholderAPI.setPlaceholders(player.getPlayer(), arg1); // check if still contains a placeholder
+                arg1 = PlaceholderAPI.setPlaceholders(((BukkitSWPlayer) player).getPlayer(), arg1); // check if still contains a placeholder
         }
-        arg1 = plugin.getUtils().colorize(arg1);
 
         if (cache.containsKey(arg0) && cache.get(arg0).equals(arg1)) return; // Line hasn't changed
         cache.remove(arg0); // remove the old line
@@ -114,16 +116,5 @@ public class BukkitSWScoreboard extends AbstractSWScoreboard {
 
         return new String[]{prefix.toString(), suffix.toString()};
     }
-
-    @Override
-    public int getLineCount() {
-        return linecount;
-    }
-
-    @Override
-    public String getLine(int number) {
-        return cache.getOrDefault(number, "");
-    }
-
 
 }

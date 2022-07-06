@@ -121,4 +121,9 @@ public interface GameWorld {
     void loadTeams();
 
     void readyForGame();
+
+    GameTeam getWinningTeam();
+
+    void determineWinner();
+
 }

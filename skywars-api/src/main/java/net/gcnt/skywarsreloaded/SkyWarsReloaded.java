@@ -11,10 +11,7 @@ import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
-import net.gcnt.skywarsreloaded.manager.CageManager;
-import net.gcnt.skywarsreloaded.manager.EntityManager;
-import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
-import net.gcnt.skywarsreloaded.manager.UnlockablesManager;
+import net.gcnt.skywarsreloaded.manager.*;
 import net.gcnt.skywarsreloaded.protocol.NMSManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
@@ -91,6 +88,10 @@ public interface SkyWarsReloaded {
     EntityManager getEntityManager();
 
     void setEntityManager(EntityManager entityManager);
+
+    ScoreboardManager getScoreboardManager();
+
+    void setScoreboardManager(ScoreboardManager scoreboardManager);
 
     // Console
 

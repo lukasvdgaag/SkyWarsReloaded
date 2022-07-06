@@ -35,5 +35,7 @@ public class PlayingStateHandler extends CoreGameStateHandler {
         for (GamePlayer player : gameWorld.getWaitingPlayers()) {
             player.getSWPlayer().setExp(gameWorld.getTimer(), 0);
         }
+
+        plugin.getScoreboardManager().updateGame(gameWorld);
     }
 }

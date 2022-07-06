@@ -15,10 +15,7 @@ import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
-import net.gcnt.skywarsreloaded.manager.CageManager;
-import net.gcnt.skywarsreloaded.manager.EntityManager;
-import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
-import net.gcnt.skywarsreloaded.manager.UnlockablesManager;
+import net.gcnt.skywarsreloaded.manager.*;
 import net.gcnt.skywarsreloaded.protocol.NMSManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
@@ -58,6 +55,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private EntityManager entityManager;
     private SWEventListener eventListener;
     private GameWorldLoader worldLoader;
+    private ScoreboardManager scoreboardManager;
 
     // others
     private SWCommandSender consoleSender;
@@ -103,6 +101,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         getCageManager().loadAllCages();
         initUnlockablesManager();
         initEntityManager();
+        initScoreboardManager();
 
         setSchematicManager(new CoreSchematicManager(this));
 
@@ -198,6 +197,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     protected abstract void initUnlockablesManager();
 
     protected abstract void initEntityManager();
+
+    protected abstract void initScoreboardManager();
 
     // Getters & Setters
 
@@ -427,5 +428,15 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+    @Override
+    public ScoreboardManager getScoreboardManager() {
+        return scoreboardManager;
+    }
+
+    @Override
+    public void setScoreboardManager(ScoreboardManager scoreboardManager) {
+        this.scoreboardManager = scoreboardManager;
     }
 }

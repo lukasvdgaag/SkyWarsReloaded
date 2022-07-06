@@ -25,6 +25,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     protected final List<GamePlayer> players;
     protected final List<GameTeam> teams;
     protected final HashMap<UUID, SWChestType> selectedChestTypes;
+    protected GameTeam winningTeam;
     protected GameScheduler scheduler;
     // Map data
     protected GameDifficulty gameDifficulty;
@@ -43,6 +44,7 @@ public abstract class AbstractGameWorld implements GameWorld {
         this.state = GameState.DISABLED;
         this.timer = 0;
         this.worldName = "swr-" + id;
+        this.winningTeam = null;
         loadTeams();
     }
 
@@ -434,5 +436,18 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     private boolean shouldSendPlayerToCages() {
         return this.gameTemplate.getTeamSize() == 1 || this.state == GameState.WAITING_CAGES || this.state == GameState.COUNTDOWN;
+    }
+
+    @Override
+    public GameTeam getWinningTeam() {
+        return winningTeam;
+    }
+
+    @Override
+    public void determineWinner() {
+        final List<GameTeam> aliveTeams = getAliveTeams();
+        if (aliveTeams.size() == 1) {
+            winningTeam = aliveTeams.get(0);
+        }
     }
 }

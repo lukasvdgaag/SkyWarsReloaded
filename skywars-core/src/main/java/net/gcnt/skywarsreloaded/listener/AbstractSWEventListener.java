@@ -158,7 +158,6 @@ public class AbstractSWEventListener implements SWEventListener {
             event.setCancelled(true);
             return;
         }
-        // todo fixed damage getting cancelled regardless.
 
         if (gameWorld.getState() != GameState.PLAYING) return;
 
@@ -178,12 +177,16 @@ public class AbstractSWEventListener implements SWEventListener {
         SWPlayer tagged = gamePlayer.getLastTaggedBy();
 
         // sending the death message.
+        // todo check for assists.
         String message;
         if (tagged != null) {
             if (!reason.isKill()) {
                 reason = DeathReason.fromString(reason.name() + "_KILL");
                 if (reason == null) reason = DeathReason.DEFAULT_KILL;
             }
+
+            final GamePlayer taggedGamePlayer = gameWorld.getPlayer(tagged);
+            if (taggedGamePlayer != null) taggedGamePlayer.addKill();
 
             // selecting the kill messages of the killer.
             final KillMessageGroup killMessageGroup = plugin.getUnlockablesManager().getKillMessageGroup(tagged.getPlayerData().getKillMessagesTheme());

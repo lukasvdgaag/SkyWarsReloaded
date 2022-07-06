@@ -66,6 +66,8 @@ public class WaitingStateHandler extends CoreGameStateHandler {
                     // todo release the cages
                     startGame();
                 }
+
+                plugin.getScoreboardManager().updateGame(gameWorld);
                 return;
             }
 
@@ -83,6 +85,7 @@ public class WaitingStateHandler extends CoreGameStateHandler {
             announceTimer();
         }
 
+        plugin.getScoreboardManager().updateGame(gameWorld);
     }
 
     private void startGame() {
@@ -90,6 +93,7 @@ public class WaitingStateHandler extends CoreGameStateHandler {
         gameWorld.fillChests();
         gameWorld.removeCages();
         for (GamePlayer gp : gameWorld.getWaitingPlayers()) {
+            gp.setAlive(true);
             gameWorld.preparePlayer(gp.getSWPlayer());
             gp.getSWPlayer().playSound(gp.getSWPlayer().getLocation(), "BLOCK_NOTE_BLOCK_PLING", 1, 2);
             gp.getSWPlayer().sendTitle("§a§lGOOD LUCK", "§eThe game has started!", 20, 50, 20);

@@ -108,6 +108,16 @@ public enum MessageProperties {
     TITLES_MAPS_SET_SPAWN_SPECTATE("titles.maps.set-spawn-spectate"),
     TITLES_MAPS_SET_SPAWN_PLAYER("titles.maps.set-spawn-player"),
     TITLES_MAPS_SET_SPAWN_PLAYER_FAIL("titles.maps.set-spawn-player-fail"),
+
+    SCOREBOARDS_LOBBY("scoreboards.lobby"),
+    SCOREBOARDS_WAITING("scoreboards.waiting"),
+    SCOREBOARDS_STARTING_SOON("scoreboards.starting-soon"),
+    SCOREBOARDS_PLAYING("scoreboards.playing"),
+    SCOREBOARDS_PLAYING_EVENT_SOON("scoreboards.playing-event-soon"),
+    SCOREBOARDS_PLAYING_EVENT("scoreboards.playing-event"),
+    SCOREBOARDS_ENDING("scoreboards.ending"),
+    SCOREBOARDS_WINNER_LINE("scoreboards.winner-line"),
+    SCOREBOARDS_WINNERS_LEFT_LINE("scoreboards.winners-left-line"),
     ;
 
     private final String value;
