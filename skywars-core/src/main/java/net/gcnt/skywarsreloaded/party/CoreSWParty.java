@@ -11,7 +11,7 @@ public class CoreSWParty implements SWParty {
     }
 
     @Override
-    public UUID getLeaderUUID() {
+    public UUID getLeaderUUID(UUID member) {
         return this.leader;
     }
 }

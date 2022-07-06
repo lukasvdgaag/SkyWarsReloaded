@@ -4,6 +4,6 @@ import java.util.UUID;
 
 public interface SWParty {
 
-    UUID getLeaderUUID();
+    UUID getLeaderUUID(UUID member);
 
 }
