@@ -84,7 +84,7 @@ public abstract class AbstractScoreboardManager implements ScoreboardManager {
         List<String> lines = getScoreboardLines(player, format);
 
         SWBoard board = getScoreboard(player);
-        if (board == null || lines.size() != board.getLineCount() - 1) {
+        if (board == null || lines.size() - 1 != board.getLineCount()) {
             board = createScoreboard(player, lines.size() - 1);
             scoreboards.put(player, board);
         }

@@ -104,6 +104,7 @@ public class CoreGameTeam implements GameTeam {
     @Override
     public void eliminatePlayer(GamePlayer player) {
         this.getAlivePlayers().remove(player);
+        player.setAlive(false);
         player.setSpectating(true);
         player.getSWPlayer().teleport(game.getTemplate().getSpectateSpawn());
     }

@@ -96,6 +96,7 @@ public class CoreGamePlayer implements GamePlayer {
 
     @Override
     public void addKill() {
+        System.out.println("Adding kill to " + player.getName());
         this.kills++;
     }
 
