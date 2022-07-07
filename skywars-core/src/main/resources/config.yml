@@ -25,6 +25,7 @@ game:
     waiting-lobby-full: 10
     waiting-cages: 30
     waiting-cages-full: 15
+    ending: 20
   cages:
     separate-cages: false
   solo-waiting-lobby: false

@@ -19,6 +19,7 @@ public enum ConfigProperties {
     GAME_TIMER_WAITING_LOBBY_FULL("game.timers.waiting-lobby-full"),
     GAME_TIMER_WAITING_CAGES("game.timers.waiting-cages"),
     GAME_TIMER_WAITING_CAGES_FULL("game.timers.waiting-cages-full"),
+    GAME_TIMER_ENDING("game.timers.ending"),
 
     ENABLE_SLIME_WORLD_MANAGER("world-loader.enable-swm"),
     SLIME_WORLD_LOADER("world-loader.swm-loader"),

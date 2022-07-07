@@ -107,6 +107,10 @@ public class CoreGameTeam implements GameTeam {
         player.setAlive(false);
         player.setSpectating(true);
         player.getSWPlayer().teleport(game.getTemplate().getSpectateSpawn());
+
+        if (game.getAliveTeams().size() <= 1) {
+            game.endGame();
+        }
     }
 
     @Override

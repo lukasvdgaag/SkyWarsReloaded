@@ -154,8 +154,9 @@ public class AbstractSWEventListener implements SWEventListener {
         if (gameWorld == null) return;
 
         GamePlayer gamePlayer = gameWorld.getPlayer(player);
-        if (gamePlayer.isSpectating()) {
+        if (gamePlayer.isSpectating() || !gamePlayer.isAlive()) {
             event.setCancelled(true);
+            System.out.println(gamePlayer.getSWPlayer().getName() + " is spectating");
             return;
         }
 
@@ -166,10 +167,7 @@ public class AbstractSWEventListener implements SWEventListener {
         final GameTeam team = gamePlayer.getTeam();
         if (team == null) return;
 
-        // preparing the player for spectate.
         event.setDamage(0);
-        team.eliminatePlayer(gamePlayer);
-        gameWorld.preparePlayer(player);
 
         DeathReason reason = event.getCause();
         if (reason == null) reason = DeathReason.DEFAULT;
@@ -199,9 +197,11 @@ public class AbstractSWEventListener implements SWEventListener {
         message = message.replace("%player%", player.getName());
 
         gameWorld.announce(plugin.getUtils().colorize(message));
-
-        player.sendTitle("§c§lYOU DIED", "§7You are now a spectator", 5, 30, 5);
+        player.sendTitle("§c§lYOU DIED!", "§7You are now a spectator!", 5, 30, 5);
         // todo customize this message.
+
+        team.eliminatePlayer(gamePlayer);
+        gameWorld.preparePlayer(player);
     }
 
     @Override

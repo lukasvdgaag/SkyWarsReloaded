@@ -18,6 +18,9 @@ titles:
     set-spawn-spectate: "&a&lSPAWN SET!\n&7Successfully set the spectator spawnpoint!"
     set-spawn-player: "&a&lSPAWN SET!\n&7Successfully added a new player spawnpoint!"
     set-spawn-player-fail: "&c&lOH NO!\n&7Couldn't add the player spawn (see chat)!"
+  games:
+    won: "&6&lVICTORY!\n&7You were the last man standing!"
+    lost: "&c&lGAME END\n&7You weren't victorious this time"
 
 kits:
   enter-name: "&cPlease enter a kit name."
@@ -111,6 +114,30 @@ games:
   join-failed: "&cWe failed to put you in this game, please try again later!"
   player-joined: "&7%player% &ehas joined (&b%players%&e/&b%maxplayers%&e)!"
   player-left: "&7%player% &ehas quit!"
+  summary:
+    - "&a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    - "&f&lSkyWars"
+    - ""
+    - "&eWinner &7- %winner%"
+    - ""
+    - "&e&l1st Killer &7- %killer_1% &7- %killer_1_kills%"
+    - "&6&l2nd Killer &7- %killer_2% &7- %killer_2_kills%"
+    - "&c&l3rd Killer &7- %killer_3% &7- %killer_3_kills%"
+    - ""
+    - "&a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+  team-summary:
+    - "&a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    - "&f&lSkyWars"
+    - ""
+    - "&aTeam %winning_team% &awon the game!"
+    - "&eWinners &7- %winners%"
+    - ""
+    - "&e&l1st Killer &7- %killer_1% &7- %killer_1_kills%"
+    - "&6&l2nd Killer &7- %killer_2% &7- %killer_2_kills%"
+    - "&c&l3rd Killer &7- %killer_3% &7- %killer_3_kills%"
+    - ""
+    - "&a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+
 
 scoreboards:
   lobby:

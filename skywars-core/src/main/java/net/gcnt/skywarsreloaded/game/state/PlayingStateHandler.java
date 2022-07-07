@@ -17,23 +17,22 @@ public class PlayingStateHandler extends CoreGameStateHandler {
     public void tickSecond() {
         List<GameTeam> aliveTeams = gameWorld.getAliveTeams();
 
-        if (aliveTeams.size() == 1 || gameWorld.getTimer() == 0) {
+        if (aliveTeams.size() == 1) {
             // only one team left OR timer has run out.
             // todo determine the winner and end the game here.
-            gameWorld.determineWinner();
+            gameWorld.endGame();
             plugin.getScoreboardManager().updateGame(gameWorld);
-            System.out.println("Only one team left. (t=" + gameWorld.getTimer() + ")");
             return;
         } else if (aliveTeams.size() == 0) {
             // no more players left.
             // todo end the game here.
-            System.out.println("no alive teams");
+            gameWorld.endGame();
             plugin.getScoreboardManager().updateGame(gameWorld);
             return;
         }
 
         // game is regularly ticking - more than one team is alive.
-        gameWorld.setTimer(gameWorld.getTimer() - 1);
+        gameWorld.setTimer(gameWorld.getTimer() + 1);
 
         // todo remove this EXP setting.
         for (GamePlayer player : gameWorld.getWaitingPlayers()) {

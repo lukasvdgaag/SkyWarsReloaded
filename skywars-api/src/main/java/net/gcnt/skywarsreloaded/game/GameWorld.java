@@ -38,6 +38,12 @@ public interface GameWorld {
 
     void startScheduler();
 
+    void startGame();
+
+    void endGame();
+
+    List<GamePlayer> getTopKillers();
+
     GameScheduler getScheduler();
 
     Map<UUID, SWChestType> getSelectedChestTypes();

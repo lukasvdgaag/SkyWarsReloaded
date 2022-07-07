@@ -64,7 +64,7 @@ public class WaitingStateHandler extends CoreGameStateHandler {
                     // todo teleport all players to their cages
                 } else if (gameWorld.getState() == GameState.COUNTDOWN) {
                     // todo release the cages
-                    startGame();
+                    gameWorld.startGame();
                 }
 
                 plugin.getScoreboardManager().updateGame(gameWorld);
@@ -86,20 +86,6 @@ public class WaitingStateHandler extends CoreGameStateHandler {
         }
 
         plugin.getScoreboardManager().updateGame(gameWorld);
-    }
-
-    private void startGame() {
-        gameWorld.setState(GameState.PLAYING);
-        gameWorld.fillChests();
-        gameWorld.removeCages();
-        for (GamePlayer gp : gameWorld.getWaitingPlayers()) {
-            gp.setAlive(true);
-            gameWorld.preparePlayer(gp.getSWPlayer());
-            gp.getSWPlayer().playSound(gp.getSWPlayer().getLocation(), "BLOCK_NOTE_BLOCK_PLING", 1, 2);
-            gp.getSWPlayer().sendTitle("§a§lGOOD LUCK", "§eThe game has started!", 20, 50, 20);
-            gp.getSWPlayer().sendMessage("§aThe game has started! §eGood luck!");
-        }
-        gameWorld.getScheduler().setGameStateHandler(new PlayingStateHandler(plugin, gameWorld));
     }
 
     private void announceTimer() {

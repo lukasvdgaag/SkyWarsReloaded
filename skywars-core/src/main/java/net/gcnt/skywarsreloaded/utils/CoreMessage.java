@@ -57,6 +57,18 @@ public class CoreMessage implements Message {
     }
 
     @Override
+    public void sendCentered(SWCommandSender... senders) {
+        lines.forEach(s -> {
+            s = parse(s);
+            s = plugin.getUtils().centerMessage(s);
+
+            for (SWCommandSender sender : senders) {
+                sender.sendMessage(s);
+            }
+        });
+    }
+
+    @Override
     public void sendTitle(SWCommandSender... senders) {
         sendTitle(20, 50, 20, senders);
     }
@@ -73,5 +85,10 @@ public class CoreMessage implements Message {
         for (SWCommandSender sender : senders) {
             if (sender instanceof SWPlayer) ((SWPlayer) sender).sendTitle(first, second, in, stay, out);
         }
+    }
+
+    @Override
+    public List<String> getLines() {
+        return lines;
     }
 }

@@ -63,4 +63,14 @@ public class BukkitSWScheduler extends AbstractSWScheduler {
         runnable.setTaskId(task.getTaskId());
         return runnable;
     }
+
+    @Override
+    public SWRunnable createRunnable(Runnable runnable) {
+        return new BukkitSWRunnable() {
+            @Override
+            public void run() {
+                runnable.run();
+            }
+        };
+    }
 }

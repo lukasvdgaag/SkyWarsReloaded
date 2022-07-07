@@ -2,8 +2,8 @@ package net.gcnt.skywarsreloaded.wrapper.scheduler;
 
 public abstract class CoreSWRunnable implements SWRunnable {
 
-    private boolean cancelled;
-    private int taskId;
+    protected boolean cancelled;
+    protected int taskId;
 
     public CoreSWRunnable() {
         this.cancelled = false;

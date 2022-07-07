@@ -50,21 +50,23 @@ public abstract class AbstractScoreboardManager implements ScoreboardManager {
 
         if (gameWorld == null || !line.contains("%")) return line;
 
+        final GamePlayer gamePlayer = gameWorld.getPlayer(player);
+
         line = line
                 .replace("%max_players%", gameWorld.getTemplate().getMaxPlayers() + "")
                 .replace("%template%", plugin.getUtils().colorize(gameWorld.getTemplate().getDisplayName()))
                 .replace("%difficulty%", "N/A") // todo add support for difficulty/mode.
-                .replace("%timer%", gameWorld.getTimer() + "");
+                .replace("%timer%", gameWorld.getTimer() + "")
+                .replace("%countdown%", gameWorld.getTimer() + "")
+                .replace("%kills%", gamePlayer.getKills() + "")
+                .replace("%assists%", gamePlayer.getAssists() + "");
 
         if (gameWorld.getState() == GameState.WAITING_CAGES || gameWorld.getState() == GameState.WAITING_LOBBY || gameWorld.getState() == GameState.COUNTDOWN) {
             final int waitingPlayers = gameWorld.getWaitingPlayers().size();
             line = line.replace("%players%", waitingPlayers + "")
                     .replace("%players_needed%", (waitingPlayers - gameWorld.getTemplate().getMinPlayers()) + "");
         } else if (gameWorld.getState() == GameState.PLAYING) {
-            final GamePlayer gamePlayer = gameWorld.getPlayer(player);
-
-            line = line.replace("%kills%", gamePlayer.getKills() + "")
-                    .replace("%assists%", gamePlayer.getAssists() + "")
+            line = line
                     .replace("%team%", gamePlayer.getTeam() == null ? "N/A" : gamePlayer.getTeam().getName())
                     .replace("%players%", gameWorld.getAlivePlayers().size() + "")
                     .replace("%teams%", gameWorld.getAliveTeams().size() + "");
@@ -119,6 +121,7 @@ public abstract class AbstractScoreboardManager implements ScoreboardManager {
                     }
 
                     for (int i = 0; i < playersToDisplay; i++) {
+                        if (i >= winners.getPlayerCount()) break;
                         lines.add(winnerIndex, plugin.getMessages().getString(MessageProperties.SCOREBOARDS_WINNER_LINE.toString())
                                 .replace("%player%", winners.getPlayers().get(i).getSWPlayer().getName()));
                     }

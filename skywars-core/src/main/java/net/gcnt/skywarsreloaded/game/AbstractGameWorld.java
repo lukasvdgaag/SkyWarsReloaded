@@ -2,11 +2,14 @@ package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.chest.SWChestType;
+import net.gcnt.skywarsreloaded.game.state.EndingStateHandler;
+import net.gcnt.skywarsreloaded.game.state.PlayingStateHandler;
 import net.gcnt.skywarsreloaded.game.types.GameDifficulty;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.party.SWParty;
 import net.gcnt.skywarsreloaded.utils.*;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
@@ -327,7 +330,7 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public List<GameTeam> getAliveTeams() {
-        return teams.stream().filter(GameTeam::isEliminated).collect(Collectors.toList());
+        return teams.stream().filter(Predicate.not(GameTeam::isEliminated)).collect(Collectors.toList());
     }
 
     @Override
@@ -448,6 +451,97 @@ public abstract class AbstractGameWorld implements GameWorld {
         final List<GameTeam> aliveTeams = getAliveTeams();
         if (aliveTeams.size() == 1) {
             winningTeam = aliveTeams.get(0);
+        } else if (!aliveTeams.isEmpty()) {
+            // pick random team from the alive teams
+            winningTeam = aliveTeams.get(new Random().nextInt(aliveTeams.size()));
         }
+    }
+
+    @Override
+    public void endGame() {
+        setState(GameState.ENDING);
+        determineWinner();
+
+        Message message;
+
+        if (getTemplate().getTeamSize() == 1) {
+            message = plugin.getMessages().getMessage(MessageProperties.GAMES_SUMMARY.toString());
+
+            String winner = "N/A";
+            if (winningTeam != null && winningTeam.getPlayers().size() > 0) {
+                winner = winningTeam.getPlayers().get(0).getSWPlayer().getName();
+            }
+
+            message.replace("%winner%", winner);
+        } else {
+            message = plugin.getMessages().getMessage(MessageProperties.GAMES_TEAM_SUMMARY.toString());
+
+            StringBuilder sb = new StringBuilder();
+            if (winningTeam != null) {
+                for (int i = 0; i < winningTeam.getPlayers().size(); i++) {
+                    sb.append(winningTeam.getPlayers().get(i).getSWPlayer().getName());
+                    if (i < winningTeam.getPlayers().size() - 1) {
+                        sb.append("&7, ");
+                    }
+                }
+            } else {
+                sb.append("N/A");
+            }
+
+            message.replace("%winning_team%", winningTeam == null ? "N/A" : winningTeam.getName());
+            message.replace("%winners%", sb.toString());
+        }
+
+        // replacing the top 3 killers placeholders.
+        final List<GamePlayer> topKillers = getTopKillers();
+        for (int position = 0; position < 3; position++) {
+            final int displayPos = position + 1;
+            if (topKillers.size() > position) {
+                final GamePlayer gamePlayer = topKillers.get(position);
+                message.replace("%killer_" + displayPos + "%", gamePlayer.getSWPlayer().getName());
+                message.replace("%killer_" + displayPos + "_kills%", String.valueOf(gamePlayer.getKills()));
+            } else {
+                message.replace("%killer_" + displayPos + "%", "N/A");
+                message.replace("%killer_" + displayPos + "_kills%", "0");
+            }
+        }
+
+        message.sendCentered(players.stream().map(GamePlayer::getSWPlayer).toArray(SWPlayer[]::new));
+
+        Message winTitle = plugin.getMessages().getMessage(MessageProperties.TITLES_GAMES_WON.toString());
+        Message lostTitle = plugin.getMessages().getMessage(MessageProperties.TITLES_GAMES_LOST.toString());
+        for (GamePlayer gp : players) {
+            if (winningTeam != null && winningTeam.getPlayers().contains(gp)) {
+                winTitle.sendTitle(gp.getSWPlayer());
+            } else {
+                lostTitle.sendTitle(gp.getSWPlayer());
+            }
+        }
+
+        setTimer(plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_ENDING.toString()));
+        getScheduler().setGameStateHandler(new EndingStateHandler(plugin, this));
+    }
+
+    @Override
+    public List<GamePlayer> getTopKillers() {
+        return new ArrayList<>(players)
+                .stream()
+                .sorted((player1, player2) -> player2.getKills() - player1.getKills())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void startGame() {
+        setState(GameState.PLAYING);
+        fillChests();
+        removeCages();
+        for (GamePlayer gp : getWaitingPlayers()) {
+            gp.setAlive(true);
+            preparePlayer(gp.getSWPlayer());
+            gp.getSWPlayer().playSound(gp.getSWPlayer().getLocation(), "BLOCK_NOTE_BLOCK_PLING", 1, 2);
+            gp.getSWPlayer().sendTitle("§a§lGOOD LUCK", "§eThe game has started!", 20, 50, 20);
+            gp.getSWPlayer().sendMessage("§aThe game has started! §eGood luck!");
+        }
+        getScheduler().setGameStateHandler(new PlayingStateHandler(plugin, this));
     }
 }

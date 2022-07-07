@@ -37,4 +37,6 @@ public interface PlatformUtils {
 
     SWWorld getSWWorld(String worldName);
 
+    String centerMessage(String message);
+
 }

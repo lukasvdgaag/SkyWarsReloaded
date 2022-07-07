@@ -60,4 +60,7 @@ public interface SWScheduler {
      * @param period   Period in ticks
      */
     SWRunnable runAsyncTimer(SWRunnable runnable, int ticks, int period);
+
+    SWRunnable createRunnable(Runnable runnable);
+
 }

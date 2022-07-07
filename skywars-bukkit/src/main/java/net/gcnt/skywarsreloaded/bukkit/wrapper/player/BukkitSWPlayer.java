@@ -249,8 +249,8 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     public void unfreeze() throws NullPointerException {
         super.unfreeze();
         if (this.player == null) throw new NullPointerException("Bukkit player is null");
-        this.player.setAllowFlight(true);
-        this.player.setFlying(true);
+        this.player.setAllowFlight(false);
+        this.player.setFlying(false);
     }
 
     @Override
