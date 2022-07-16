@@ -56,6 +56,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SWEventListener eventListener;
     private GameWorldLoader worldLoader;
     private ScoreboardManager scoreboardManager;
+    private ItemManager itemManager;
 
     // others
     private SWCommandSender consoleSender;
@@ -91,6 +92,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
         // Managers
         initServer();
+        initItemManager();
         initPlayerManager();
         initCommandManager();
         initGameManager();
@@ -199,6 +201,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     protected abstract void initEntityManager();
 
     protected abstract void initScoreboardManager();
+
+    protected abstract void initItemManager();
 
     // Getters & Setters
 
@@ -438,5 +442,15 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void setScoreboardManager(ScoreboardManager scoreboardManager) {
         this.scoreboardManager = scoreboardManager;
+    }
+
+    @Override
+    public ItemManager getItemManager() {
+        return itemManager;
+    }
+
+    @Override
+    public void setItemManager(ItemManager itemManager) {
+        this.itemManager = itemManager;
     }
 }

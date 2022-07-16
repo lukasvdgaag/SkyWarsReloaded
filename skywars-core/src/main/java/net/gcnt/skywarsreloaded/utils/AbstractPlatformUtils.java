@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.utils;
 
 import net.gcnt.skywarsreloaded.utils.centeredText.DefaultFontInfo;
 
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class AbstractPlatformUtils implements PlatformUtils {
@@ -88,5 +89,10 @@ public abstract class AbstractPlatformUtils implements PlatformUtils {
         }
 
         return sb + message;
+    }
+
+    @Override
+    public Item getItemFromMap(Map<String, Object> map) {
+        return null;
     }
 }

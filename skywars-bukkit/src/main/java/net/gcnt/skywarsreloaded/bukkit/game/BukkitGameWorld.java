@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.inventory.Inventory;
 
 public class BukkitGameWorld extends AbstractGameWorld {
@@ -42,12 +43,13 @@ public class BukkitGameWorld extends AbstractGameWorld {
             return;
         }
 
-        Item[] items = this.generateChestLoot(chestType);
-
         if (block.getState() instanceof Chest) {
             Inventory inventory = ((Chest) block.getState()).getBlockInventory();
             inventory.clear();
+
+            Item[] items = chestType.generateChestLoot(gameDifficulty, inventory.getSize() > 27);
             for (int i = 0; i < items.length; i++) {
+                if (items[i] == null) continue;
                 inventory.setItem(i, ((BukkitItem) items[i]).getBukkitItem());
             }
         }

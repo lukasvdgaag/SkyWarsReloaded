@@ -93,6 +93,10 @@ public interface SkyWarsReloaded {
 
     void setScoreboardManager(ScoreboardManager scoreboardManager);
 
+    ItemManager getItemManager();
+
+    void setItemManager(ItemManager itemManager);
+
     // Console
 
     SWCommandSender getConsoleSender();

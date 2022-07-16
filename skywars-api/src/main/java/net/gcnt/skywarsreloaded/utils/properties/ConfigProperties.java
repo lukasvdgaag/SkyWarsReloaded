@@ -21,6 +21,9 @@ public enum ConfigProperties {
     GAME_TIMER_WAITING_CAGES_FULL("game.timers.waiting-cages-full"),
     GAME_TIMER_ENDING("game.timers.ending"),
 
+    GAME_CHESTS_MAX_ITEMS("game.chests.max-items"),
+    GAME_CHESTS_MAX_ITEMS_DOUBLE("game.chests.max-items-double"),
+
     ENABLE_SLIME_WORLD_MANAGER("world-loader.enable-swm"),
     SLIME_WORLD_LOADER("world-loader.swm-loader"),
     PARTIES_ALLOW_DISPERSED_PARTIES("parties.allow-dispersed-parties");

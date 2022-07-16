@@ -28,6 +28,9 @@ game:
     ending: 20
   cages:
     separate-cages: false
+  chests:
+    max-items: 26
+    max-items-double: 53
   solo-waiting-lobby: false
 
 parties:

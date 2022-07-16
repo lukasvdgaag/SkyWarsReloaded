@@ -5,19 +5,36 @@ import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.game.types.GameDifficulty;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.properties.ChestProperties;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 
-import java.util.HashMap;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class AbstractSWChestType implements SWChestType {
+
+    private static final List<Integer> RANDOM_SLOTS;
+    private static final List<Integer> RANDOM_SLOTS_DOUBLE;
+    private static final Random RANDOM;
+
+    static {
+        RANDOM_SLOTS = new ArrayList<>();
+        RANDOM_SLOTS_DOUBLE = new ArrayList<>();
+        for (int i = 0; i < 54; i++) {
+            RANDOM_SLOTS_DOUBLE.add(i);
+            if (i < 27) RANDOM_SLOTS.add(i);
+        }
+
+        RANDOM = ThreadLocalRandom.current();
+    }
 
     private final SkyWarsReloaded plugin;
     private final String name;
     private final YAMLConfig config;
+    private final HashMap<GameDifficulty, HashMap<Integer, List<Item>>> inventoryContents;
 
     private String displayName;
 
-    private HashMap<GameDifficulty, HashMap<Integer, Item>> inventoryContents;
 
     public AbstractSWChestType(SkyWarsReloaded plugin, String nameIn) {
         this.plugin = plugin;
@@ -42,8 +59,43 @@ public abstract class AbstractSWChestType implements SWChestType {
     }
 
     @Override
-    public HashMap<GameDifficulty, HashMap<Integer, Item>> getAllContents() {
+    public HashMap<GameDifficulty, HashMap<Integer, List<Item>>> getAllContents() {
         return inventoryContents;
+    }
+
+    @Override
+    public HashMap<Integer, List<Item>> getContents(GameDifficulty difficulty) {
+        inventoryContents.forEach((key, value) -> System.out.println("difficulty found: " + key.getId()));
+        return inventoryContents.get(difficulty);
+    }
+
+    @Override
+    public Item[] generateChestLoot(GameDifficulty difficulty, boolean doubleChest) {
+        // hashmap with a list of items per chance of occurrence
+        int maxItems = plugin.getConfig().getInt(doubleChest ? ConfigProperties.GAME_CHESTS_MAX_ITEMS_DOUBLE.toString() : ConfigProperties.GAME_CHESTS_MAX_ITEMS.toString());
+
+        List<Integer> slots = doubleChest ? RANDOM_SLOTS_DOUBLE : RANDOM_SLOTS;
+        Collections.shuffle(slots);
+
+        HashMap<Integer, List<Item>> items = getContents(difficulty);
+        Item[] loot = new Item[slots.size()];
+        if (items == null) return loot;
+
+        int added = 0;
+        adding:
+        for (int chance : items.keySet()) {
+            for (Item item : items.get(chance)) {
+                if (item == null) continue;
+
+                if (RANDOM.nextInt(100) + 1 <= chance) {
+                    loot[slots.get(added)] = item;
+                    added++;
+                    if (added >= maxItems || added >= slots.size() - 1) break adding;
+                }
+            }
+        }
+
+        return loot;
     }
 
     @Override
@@ -61,22 +113,25 @@ public abstract class AbstractSWChestType implements SWChestType {
     }
 
     private void loadDataFromGameType(GameDifficulty gameDifficulty) {
+        System.out.println("Loading chest type data for difficulty: " + gameDifficulty.getId());
         // Init data
         String gameTypeConfigSectionName = gameDifficulty.getId();
         String configPath = gameTypeConfigSectionName + ChestProperties.CONTENTS;
 
         // Load inventory content
-        HashMap<Integer, Item> gameTypeItems = new HashMap<>();
+        HashMap<Integer, List<Item>> gameTypeItems = new HashMap<>();
 
         if (config.isSet(configPath)) {
-            config.getKeys(configPath).forEach(slot1 -> {
+            config.getKeys(configPath).forEach(chance -> {
                 try {
-                    int number = Integer.parseInt(slot1);
-                    gameTypeItems.put(number, config.getItem(configPath + "." + number));
+                    int number = Integer.parseInt(chance);
+                    final List<Item> items = config.getItemList(configPath + "." + chance);
+                    System.out.println("- Found " + number + " items for chance " + chance + ".");
+                    gameTypeItems.put(number, items);
                 } catch (Exception e) {
                     plugin.getLogger().error(
-                            String.format("Failed to load slot '%s' under game type '%s' for chest type '%s'. Ignoring it. (%s)",
-                                    slot1, gameTypeConfigSectionName, name, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                            String.format("Failed to load percentage '%s' under game type '%s' for chest type '%s'. Ignoring it. (%s)",
+                                    chance, gameTypeConfigSectionName, name, e.getClass().getName() + ": " + e.getLocalizedMessage()));
                 }
             });
         }

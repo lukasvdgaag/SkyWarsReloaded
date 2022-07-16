@@ -3,15 +3,18 @@ display-name: 'Default'
 difficulties:
   basic:
     contents:
-      '0':
+      '100':
         material: STONE
 
   normal:
     contents:
-      '0':
-        material: IRON_BLOCK
+      '100':
+        - material: ENDER_PEARL
+          amount: 1
+        - material: END_STONE
+          amount: 14
 
   insane:
     contents:
-      '0':
+      '100':
         material: DIAMOND_BLOCK

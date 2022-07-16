@@ -48,6 +48,7 @@ public abstract class AbstractGameWorld implements GameWorld {
         this.timer = 0;
         this.worldName = "swr-" + id;
         this.winningTeam = null;
+        this.gameDifficulty = GameDifficulty.NORMAL;
         loadTeams();
     }
 
@@ -140,12 +141,10 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public GamePlayer preparePlayerJoin(UUID uuid, boolean ignoreAvailableSpawns) {
-        if (!canJoinGame()) throw new IllegalStateException("Game is not joinable, the main skywars plugins or extensions " +
-                "should always check if the instance is joinable before calling this method. (user id: " + uuid +
-                " | game id: " + this.id + ")");
+        if (!canJoinGame())
+            throw new IllegalStateException("Game is not joinable, the main skywars plugins or extensions " + "should always check if the instance is joinable before calling this method. (user id: " + uuid + " | game id: " + this.id + ")");
 
-        if (!this.isSpawnAvailable() && !ignoreAvailableSpawns)
-            throw new IllegalStateException("No spawns are available");
+        if (!this.isSpawnAvailable() && !ignoreAvailableSpawns) throw new IllegalStateException("No spawns are available");
 
         SWPlayer swp = plugin.getPlayerManager().getPlayerByUUID(uuid);
         if (swp == null) swp = plugin.getPlayerManager().getPlayerByUUID(uuid);
@@ -218,10 +217,7 @@ public abstract class AbstractGameWorld implements GameWorld {
 //            teleportPlayerToLobbyOrTeamSpawn(swPlayer, spawn)
 //                    .thenRun(() -> cagePlaceFuture.thenRunSync(swPlayer::unfreeze));
 
-            announce(plugin.getMessages().getMessage(MessageProperties.GAMES_PLAYER_JOINED.toString())
-                    .replace("%player%", gamePlayer.getSWPlayer().getName())
-                    .replace("%players%", getWaitingPlayers().size() + "")
-                    .replace("%maxplayers%", this.gameTemplate.getMaxPlayers() + ""));
+            announce(plugin.getMessages().getMessage(MessageProperties.GAMES_PLAYER_JOINED.toString()).replace("%player%", gamePlayer.getSWPlayer().getName()).replace("%players%", getWaitingPlayers().size() + "").replace("%maxplayers%", this.gameTemplate.getMaxPlayers() + ""));
 
             // todo give vote and other game items here.
             // todo teleport gamePlayer to team spawn / waiting spawn here.
@@ -354,13 +350,6 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     @Override
-    public Item[] generateChestLoot(SWChestType chestType) {
-        HashMap<GameDifficulty, HashMap<Integer, Item>> contents = chestType.getAllContents();
-        HashMap<Integer, Item> items = contents.get(this.gameDifficulty);
-        return new Item[0]; // todo
-    }
-
-    @Override
     public void removeCages() {
         teams.forEach(gameTeam -> gameTeam.getSpawns().forEach(TeamSpawn::removeCage));
     }
@@ -432,8 +421,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     private List<GameTeam> getTeamsOrderedByPlayerCountIncreasing() {
-        return teams.stream().filter(GameTeam::canJoin)
-                .sorted((team1, team2) -> team2.getPlayerCount() - team1.getPlayerCount()) // reverse sort
+        return teams.stream().filter(GameTeam::canJoin).sorted((team1, team2) -> team2.getPlayerCount() - team1.getPlayerCount()) // reverse sort
                 .collect(Collectors.toList());
     }
 
@@ -524,10 +512,7 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public List<GamePlayer> getTopKillers() {
-        return new ArrayList<>(players)
-                .stream()
-                .sorted((player1, player2) -> player2.getKills() - player1.getKills())
-                .collect(Collectors.toList());
+        return new ArrayList<>(players).stream().sorted((player1, player2) -> player2.getKills() - player1.getKills()).collect(Collectors.toList());
     }
 
     @Override

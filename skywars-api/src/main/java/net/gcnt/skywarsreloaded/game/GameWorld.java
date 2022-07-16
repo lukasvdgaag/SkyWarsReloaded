@@ -101,13 +101,6 @@ public interface GameWorld {
     void setTimer(int timer);
 
     /**
-     * Generate the loot of one chest based on the voted chest type.
-     *
-     * @return String array with all slots and their ItemStack values as strings.
-     */
-    Item[] generateChestLoot(SWChestType chestType);
-
-    /**
      * Fill the chest with the given coord.
      *
      * @param coord Location of the chest
