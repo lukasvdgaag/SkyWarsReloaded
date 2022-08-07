@@ -5,7 +5,6 @@ import com.walrusone.skywarsreloaded.game.signs.SWRSign;
 import com.walrusone.skywarsreloaded.nms.NMS;
 import net.minecraft.server.v1_12_R1.*;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_12_R1.PacketPlayOutTitle.EnumTitleAction;
 import org.bukkit.Material;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
@@ -64,9 +63,18 @@ public class NMSHandler implements NMS {
     }
 
     public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            SkyWarsReloaded.get().getLogger().info(String.format("Sending title: %s", title));
+            SkyWarsReloaded.get().getLogger().info(String.format("Sending subtitle: %s", subtitle));
+        }
+        player.sendTitle(title, subtitle, fadein, stay, fadeout);
+        /*
+        No longer needed?
+
         PlayerConnection pConn = ((CraftPlayer) player).getHandle().playerConnection;
         PacketPlayOutTitle pTitleInfo = new PacketPlayOutTitle(EnumTitleAction.TIMES, null, fadein, stay, fadeout);
         pConn.sendPacket(pTitleInfo);
+
         if (subtitle != null) {
             subtitle = subtitle.replaceAll("%player%", player.getDisplayName());
             subtitle = ChatColor.translateAlternateColorCodes('&', subtitle);
@@ -80,7 +88,7 @@ public class NMSHandler implements NMS {
             IChatBaseComponent iComp = ChatSerializer.a("{\"text\": \"" + title + "\"}");
             PacketPlayOutTitle pTitle = new PacketPlayOutTitle(EnumTitleAction.TITLE, iComp);
             pConn.sendPacket(pTitle);
-        }
+        }*/
     }
 
     public void sendActionBar(Player p, String msg) {
