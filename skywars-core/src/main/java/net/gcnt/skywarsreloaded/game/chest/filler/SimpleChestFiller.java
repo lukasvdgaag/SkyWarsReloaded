@@ -1,23 +1,21 @@
 package net.gcnt.skywarsreloaded.game.chest.filler;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
+import net.gcnt.skywarsreloaded.game.chest.tier.SimpleChestTier;
 import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
-import net.gcnt.skywarsreloaded.wrapper.world.block.SWBlock;
-import net.gcnt.skywarsreloaded.wrapper.world.block.SWChest;
 
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
-public class SimpleChestFiller implements SWChestFiller {
+public class SimpleChestFiller extends AbstractSWChestFiller {
 
     private static final List<Integer> RANDOM_SLOTS;
     private static final List<Integer> RANDOM_SLOTS_DOUBLE;
-    private static final Random RANDOM;
 
     static {
         RANDOM_SLOTS = new ArrayList<>();
@@ -26,25 +24,27 @@ public class SimpleChestFiller implements SWChestFiller {
             RANDOM_SLOTS_DOUBLE.add(i);
             if (i < 27) RANDOM_SLOTS.add(i);
         }
-
-        RANDOM = ThreadLocalRandom.current();
     }
 
-    private final SkyWarsReloaded plugin;
-
     public SimpleChestFiller(SkyWarsReloaded plugin) {
-        this.plugin = plugin;
+        super(plugin);
     }
 
     @Override
     public Item[] generateChestLoot(SWChestTier chestTier, ChestType chestType, boolean doubleChest) {
+        if (!(chestTier instanceof SimpleChestTier)) {
+            plugin.getLogger().error("SkyWarsReloaded is trying to fill a chest with a chest tier using simplified structure that is not a SimpleChestTier (tier: " + chestTier.getName() + ")!");
+            return new Item[]{};
+        }
+        SimpleChestTier simpleChestTier = (SimpleChestTier) chestTier;
+
         // hashmap with a list of items per chance of occurrence
         int maxItems = plugin.getConfig().getInt(doubleChest ? ConfigProperties.GAME_CHESTS_MAX_ITEMS_DOUBLE.toString() : ConfigProperties.GAME_CHESTS_MAX_ITEMS.toString());
 
         List<Integer> slots = doubleChest ? RANDOM_SLOTS_DOUBLE : RANDOM_SLOTS;
         Collections.shuffle(slots);
 
-        HashMap<Integer, List<Item>> items = getContents(type);
+        HashMap<Integer, List<Item>> items = simpleChestTier.getContents(chestType);
         Item[] loot = new Item[slots.size()];
         if (items == null) return loot;
 
@@ -63,25 +63,6 @@ public class SimpleChestFiller implements SWChestFiller {
         }
 
         return loot;
-    }
-
-    @Override
-    public void fillChest(SWChestTier chestTier, GameWorld world, SWCoord coord, ChestType chestType) {
-        if (world == null || coord.getWorld() == null) return;
-        SWBlock block = coord.getWorld().getBlockAt(coord.x(), coord.y(), coord.z());
-        if (!(block instanceof SWChest)) return;
-
-        SWChest chest = (SWChest) block;
-
-        if (!block.getChunk().isLoaded()) {
-            block.getChunk().load();
-            return;
-        }
-
-        chest.clearContents();
-
-        Item[] items = chestTier.generateChestLoot(chestType, chest.getSize() > 27);
-        chest.setContents(items);
     }
 
 }

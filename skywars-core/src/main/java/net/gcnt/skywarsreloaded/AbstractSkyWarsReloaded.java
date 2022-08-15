@@ -10,8 +10,9 @@ import net.gcnt.skywarsreloaded.data.schematic.CoreSchematicManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.chest.CoreChestManager;
+import net.gcnt.skywarsreloaded.game.chest.SWChestManager;
 import net.gcnt.skywarsreloaded.game.chest.filler.ChestFillerManager;
-import net.gcnt.skywarsreloaded.game.chest.ChestManager;
 import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFillerManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
@@ -50,7 +51,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private GameManager gameManager;
     private SWPlayerManager playerManager;
     private KitManager kitManager;
-    private ChestManager chestManager;
+    private SWChestManager chestManager;
     private CageManager cageManager;
     private UnlockablesManager unlockablesManager;
     private EntityManager entityManager;
@@ -165,7 +166,9 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public void postEnable() {
     }
 
-    protected abstract void initChestManager();
+    protected void initChestManager() {
+        this.chestManager = new CoreChestManager(this);
+    }
 
     protected abstract void initCommandManager();
 
@@ -208,7 +211,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     protected abstract void initItemManager();
 
     protected void initChestFillerManager() {
-        setChestFillerManager(new ChestFillerManager());
+        setChestFillerManager(new ChestFillerManager(this));
     }
 
     // Getters & Setters
@@ -354,12 +357,12 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public ChestManager getChestManager() {
+    public SWChestManager getChestManager() {
         return chestManager;
     }
 
     @Override
-    public void setChestManager(ChestManager chestManager) {
+    public void setChestManager(SWChestManager chestManager) {
         this.chestManager = chestManager;
     }
 

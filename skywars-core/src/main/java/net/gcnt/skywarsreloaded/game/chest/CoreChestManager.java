@@ -1,6 +1,9 @@
 package net.gcnt.skywarsreloaded.game.chest;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.game.chest.filler.LootTableChestFiller;
+import net.gcnt.skywarsreloaded.game.chest.tier.LootTableChestTier;
+import net.gcnt.skywarsreloaded.game.chest.tier.SimpleChestTier;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,12 +12,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class AbstractChestManager implements ChestManager {
+public class CoreChestManager implements SWChestManager {
 
     public final SkyWarsReloaded plugin;
     public HashMap<String, SWChestTier> chests;
 
-    public AbstractChestManager(SkyWarsReloaded plugin) {
+    public CoreChestManager(SkyWarsReloaded plugin) {
         this.plugin = plugin;
         this.chests = new HashMap<>();
     }
@@ -112,6 +115,18 @@ public abstract class AbstractChestManager implements ChestManager {
     // Platform specific
 
     @Override
-    public abstract SWChestTier initChestTier(String name);
+    public SWChestTier initChestTier(String name) {
+        final SWChestTier cached = getChestTierByName(name);
+        if (cached != null) return cached;
+
+        if (new File(plugin.getDataFolder(), "chests" + File.separator + name + ".yml").exists()) {
+            return new SimpleChestTier(plugin, name);
+        } else if (new File(plugin.getDataFolder(), "chests" + File.separator + name + ".json").exists()) {
+            return new LootTableChestTier(plugin, name);
+        }
+
+        plugin.getLogger().error("Count not initialize chest type with name '" + name + "' because it doesn't exist. No .yml or .json file with that name was found in the /chests folder.");
+        return null;
+    }
 
 }

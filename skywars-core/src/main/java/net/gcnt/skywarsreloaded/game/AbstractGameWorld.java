@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
+import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFiller;
 import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFillerManager;
 import net.gcnt.skywarsreloaded.game.state.EndingStateHandler;
 import net.gcnt.skywarsreloaded.game.state.PlayingStateHandler;
@@ -127,6 +128,11 @@ public abstract class AbstractGameWorld implements GameWorld {
     @Override
     public Map<UUID, SWChestTier> getVotedChestTiers() {
         return this.votedChestTiers;
+    }
+
+    @Override
+    public Map<UUID, ChestType> getSelectedEditingChestTypes() {
+        return null;
     }
 
     private int getObjectCount(Collection<?> collection, Object object) {
@@ -378,11 +384,10 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public void fillChests() {
-        final SWChestFillerManager chestFillerManager = plugin.getChestFillerManager();
-        final SWChestTier chestTier = getChestTier();
-
+        final SWChestTier chestTier = this.getChestTier();
+        final SWChestFiller filler = chestTier.getChestFiller();
         for (Map.Entry<SWCoord, ChestType> chest : this.gameTemplate.getChests().entrySet()) {
-            chestFillerManager.getFillerByName(this.getChestTier().getMode()).fillChest(chestTier, this, chest.getKey(), chest.getValue());
+            filler.fillChest(chestTier, this, chest.getKey(), chest.getValue());
         }
     }
 

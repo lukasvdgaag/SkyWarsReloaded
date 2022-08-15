@@ -1,67 +1,40 @@
-package net.gcnt.skywarsreloaded.game.chest;
+package net.gcnt.skywarsreloaded.game.chest.tier;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
+import net.gcnt.skywarsreloaded.game.chest.filler.ChestFillerManager;
+import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFiller;
 import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.properties.ChestTierProperties;
-import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.HashMap;
+import java.util.List;
 
-public abstract class AbstractSWChestTier implements SWChestTier {
+public class SimpleChestTier extends AbstractSWChestTier {
 
-    private final SkyWarsReloaded plugin;
-    private final String name;
     private final YAMLConfig config;
     private final HashMap<ChestType, HashMap<Integer, List<Item>>> inventoryContents;
 
-    private String displayName;
-
-
-    public AbstractSWChestTier(SkyWarsReloaded plugin, String nameIn) {
-        this.plugin = plugin;
-        this.name = nameIn;
+    public SimpleChestTier(SkyWarsReloaded plugin, String name) {
+        super(plugin, name);
         this.inventoryContents = new HashMap<>();
 
         this.config = plugin.getYAMLManager().loadConfig(
-                "chest-" + nameIn,
+                "chest-" + name,
                 FolderProperties.CHEST_TYPES_FOLDER.toString(),
-                nameIn + ".yml",
+                name + ".yml",
                 "/chests/default.yml");
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    @Override
     public HashMap<ChestType, HashMap<Integer, List<Item>>> getAllContents() {
         return inventoryContents;
     }
 
-    @Override
     public HashMap<Integer, List<Item>> getContents(ChestType type) {
         inventoryContents.forEach((key, value) -> System.out.println("type found: " + key.getId()));
         return inventoryContents.get(type);
-    }
-
-    @Override
-    public boolean hasChestType(ChestType chestType) {
-        return inventoryContents.containsKey(chestType);
-    }
-
-    @Override
-    public Item[] generateChestLoot(ChestType type, boolean doubleChest) {
-
     }
 
     @Override
@@ -72,7 +45,6 @@ public abstract class AbstractSWChestTier implements SWChestTier {
         try {
             config.getKeys(ChestTierProperties.TYPES.toString()).stream().map(ChestType::getById)
                     .forEach(this::loadDataFromChestType);
-
         } catch (Exception e) {
             plugin.getLogger().error(String.format("Failed to load chest type with id %s. Ignoring it. (%s)", name, e.getClass().getName() + ": " + e.getLocalizedMessage()));
         }
@@ -119,5 +91,15 @@ public abstract class AbstractSWChestTier implements SWChestTier {
         );
 
         config.save();
+    }
+
+    @Override
+    public boolean hasChestType(ChestType chestType) {
+        return inventoryContents.containsKey(chestType);
+    }
+
+    @Override
+    public SWChestFiller getChestFiller() {
+        return plugin.getChestFillerManager().getFillerByName(ChestFillerManager.SIMPLE);
     }
 }

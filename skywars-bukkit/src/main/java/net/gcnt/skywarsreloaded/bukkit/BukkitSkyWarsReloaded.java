@@ -5,7 +5,6 @@ import net.gcnt.skywarsreloaded.bukkit.command.BukkitSWCommandExecutor;
 import net.gcnt.skywarsreloaded.bukkit.data.config.BukkitYAMLManager;
 import net.gcnt.skywarsreloaded.bukkit.data.player.BukkitSWPlayerDataManager;
 import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameManager;
-import net.gcnt.skywarsreloaded.bukkit.game.chest.BukkitChestManager;
 import net.gcnt.skywarsreloaded.bukkit.game.kits.BukkitKitManager;
 import net.gcnt.skywarsreloaded.bukkit.game.loader.SchemWorldLoader;
 import net.gcnt.skywarsreloaded.bukkit.game.loader.SlimeWorldLoader;
@@ -38,11 +37,6 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     }
 
     // Internal Utils
-
-    @Override
-    public void initChestManager() {
-        setChestManager(new BukkitChestManager(this));
-    }
 
     @Override
     public void initCommandManager() {

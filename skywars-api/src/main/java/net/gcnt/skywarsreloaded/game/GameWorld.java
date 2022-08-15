@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
+import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.Message;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
@@ -45,6 +46,8 @@ public interface GameWorld {
     GameScheduler getScheduler();
 
     Map<UUID, SWChestTier> getVotedChestTiers();
+
+    Map<UUID, ChestType> getSelectedEditingChestTypes();
 
     SWChestTier getChestTier();
 

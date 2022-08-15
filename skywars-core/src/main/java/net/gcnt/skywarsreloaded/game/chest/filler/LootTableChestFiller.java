@@ -1,14 +1,19 @@
 package net.gcnt.skywarsreloaded.game.chest.filler;
 
-import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.game.types.ChestType;
+import net.gcnt.skywarsreloaded.utils.Item;
 
-public class LootTableChestFiller implements SWChestFiller {
+public class LootTableChestFiller extends AbstractSWChestFiller {
+
+    public LootTableChestFiller(SkyWarsReloaded plugin) {
+        super(plugin);
+    }
 
     @Override
-    public void fillChest(SWChestTier chestType, GameWorld world, SWCoord coord) {
-
+    public Item[] generateChestLoot(SWChestTier chestTier, ChestType chestType, boolean doubleChest) {
+        return new Item[0];
     }
 
 }

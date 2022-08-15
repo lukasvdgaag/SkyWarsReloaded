@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.game.chest;
 
+import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFiller;
 import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.utils.Item;
 
@@ -18,5 +19,5 @@ public interface SWChestTier {
 
     boolean hasChestType(ChestType chestType);
 
-    String getMode();
+    SWChestFiller getChestFiller();
 }

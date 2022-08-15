@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Manager to create, load and delete chest tiers from the plugin's chest folder.
  */
-public interface ChestManager {
+public interface SWChestManager {
 
     /**
      * Load all the chest tiers in the chests folder of the plugin

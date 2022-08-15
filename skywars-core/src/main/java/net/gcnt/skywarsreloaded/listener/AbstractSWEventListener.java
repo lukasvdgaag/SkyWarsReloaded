@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTeam;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.unlockable.killmessages.KillMessageGroup;
 import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
@@ -119,12 +120,14 @@ public class AbstractSWEventListener implements SWEventListener {
             if (gameWorld == null || !gameWorld.isEditing()) return;
 
             final GameTemplate template = gameWorld.getTemplate();
-            boolean res = template.addChest(event.getCoord().asBlock(), gameWorld.getVotedChestTiers().getOrDefault(event.getPlayer().getUuid(), plugin.getChestManager().getChestTierByName("normal")));
+            final ChestType chestType = gameWorld.getSelectedEditingChestTypes().getOrDefault(event.getPlayer().getUuid(), ChestType.ISLAND);
+            boolean res = template.addChest(event.getCoord().asBlock(), chestType);
             if (res) {
                 event.getPlayer().sendTitle(plugin.getUtils().colorize("&a&lCHEST ADDED"),
                         plugin.getUtils().colorize("&7Added a new chest to the template!"), 5, 30, 5);
                 event.getPlayer().sendMessage(plugin.getUtils().colorize(
-                        String.format("&aAdded a new chest (&b#%d&a) to game template &b%s&a.",
+                        String.format("&aAdded a new &e%s &achest (&b#%d&a) to game template &b%s&a.",
+                                chestType.getId().toLowerCase(),
                                 template.getChests().size(), template.getDisplayName())));
                 template.checkToDoList(event.getPlayer());
             }
