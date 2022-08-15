@@ -7,7 +7,9 @@ import net.gcnt.skywarsreloaded.data.player.SWPlayerDataManager;
 import net.gcnt.skywarsreloaded.data.player.Storage;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
+import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFiller;
 import net.gcnt.skywarsreloaded.game.chest.ChestManager;
+import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFillerManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
@@ -92,6 +94,10 @@ public interface SkyWarsReloaded {
     ScoreboardManager getScoreboardManager();
 
     void setScoreboardManager(ScoreboardManager scoreboardManager);
+
+    SWChestFillerManager getChestFillerManager();
+
+    void setChestFillerManager(SWChestFillerManager chestFillerManager);
 
     ItemManager getItemManager();
 

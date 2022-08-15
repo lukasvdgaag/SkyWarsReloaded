@@ -3,7 +3,7 @@ package net.gcnt.skywarsreloaded.game;
 import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
-import net.gcnt.skywarsreloaded.game.chest.SWChestType;
+import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
@@ -33,8 +33,8 @@ public class CoreGameTemplate implements GameTemplate {
     private List<List<SWCoord>> teamSpawnLocations;
     // Map Data
     private int borderRadius;
-    private Map<SWCoord, SWChestType> chests;
-    private List<SWChestType> enabledChestTypes;
+    private Map<SWCoord, SWChestTier> chests;
+    private List<SWChestTier> enabledChestTypes;
     private List<SWCoord> signs;
     private int maxPlayers;
 
@@ -158,9 +158,9 @@ public class CoreGameTemplate implements GameTemplate {
         this.borderRadius = config.getInt(MapDataProperties.BORDER_RADIUS.toString(), 100);
         this.enabled = config.getBoolean(MapDataProperties.ENABLED.toString(), false);
         List<String> swChestTypeIds = config.getStringList(MapDataProperties.ENABLED_CHESTTYPES.toString());
-        List<SWChestType> enabledChestTypesTmp = new ArrayList<>();
+        List<SWChestTier> enabledChestTypesTmp = new ArrayList<>();
         for (String swChestTypeId : swChestTypeIds) {
-            final SWChestType chestType = this.plugin.getChestManager().getChestTypeByName(swChestTypeId);
+            final SWChestTier chestType = this.plugin.getChestManager().getChestTierByName(swChestTypeId);
             if (chestType == null) {
                 plugin.getLogger().error("Invalid chest type found in the configuration of the template '" + name + "': " + swChestTypeId + ". Ignoring it.");
             } else enabledChestTypesTmp.add(chestType);
@@ -181,7 +181,7 @@ public class CoreGameTemplate implements GameTemplate {
                 final List<String> coordsList = config.getStringList(MapDataProperties.CHESTS + "." + chestType);
                 for (String coordStr : coordsList) {
                     SWCoord loc = new CoreSWCoord(plugin, coordStr);
-                    this.chests.put(loc, this.plugin.getChestManager().getChestTypeByName(chestType));
+                    this.chests.put(loc, this.plugin.getChestManager().getChestTierByName(chestType));
                 }
             }
         }
@@ -222,11 +222,11 @@ public class CoreGameTemplate implements GameTemplate {
         config.set(MapDataProperties.BORDER_RADIUS.toString(), borderRadius);
 
         System.out.println("enabledChestTypes is null ? " + (enabledChestTypes == null));
-        for (SWChestType enabledChestType : enabledChestTypes) {
+        for (SWChestTier enabledChestType : enabledChestTypes) {
             System.out.println("enabledChestType = " + enabledChestType);
         }
 
-        config.set(MapDataProperties.ENABLED_CHESTTYPES.toString(), enabledChestTypes.stream().map(SWChestType::getName).collect(Collectors.toList()));
+        config.set(MapDataProperties.ENABLED_CHESTTYPES.toString(), enabledChestTypes.stream().map(SWChestTier::getName).collect(Collectors.toList()));
 
         config.set(MapDataProperties.IS_TEAMSIZE_SETUP.toString(), isTeamsizeSetup);
 
@@ -234,7 +234,7 @@ public class CoreGameTemplate implements GameTemplate {
         config.set(MapDataProperties.SPECTATE_SPAWN.toString(), spectateSpawn == null ? null : spectateSpawn.toString(false));
 
         // Chests
-        SWChestType defaultChest = plugin.getChestManager().getChestTypeByName("normal"); // todo make this configurable?
+        SWChestTier defaultChest = plugin.getChestManager().getChestTierByName("normal"); // todo make this configurable?
         System.out.println("defaultChest = " + defaultChest);
         // Make sure chest types are valid before storing the data
         chests.replaceAll((swCoord, swChestType) -> swChestType == null ? defaultChest : swChestType);
@@ -259,17 +259,17 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
-    public List<SWChestType> getEnabledChestTypes() {
+    public List<SWChestTier> getEnabledChestTypes() {
         return this.enabledChestTypes;
     }
 
     @Override
-    public void enableChestType(SWChestType chestType) {
+    public void enableChestType(SWChestTier chestType) {
         if (!this.enabledChestTypes.contains(chestType)) this.enabledChestTypes.add(chestType);
     }
 
     @Override
-    public boolean addChest(SWCoord loc, SWChestType chestType) {
+    public boolean addChest(SWCoord loc, SWChestTier chestType) {
         synchronized (this.chestsLock) {
             for (SWCoord chest : this.chests.keySet()) {
                 if (chest.equals(loc)) return false;
@@ -291,7 +291,7 @@ public class CoreGameTemplate implements GameTemplate {
     }
 
     @Override
-    public Map<SWCoord, SWChestType> getChests() {
+    public Map<SWCoord, SWChestTier> getChests() {
         return this.chests;
     }
 

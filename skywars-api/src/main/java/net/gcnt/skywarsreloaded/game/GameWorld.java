@@ -1,10 +1,8 @@
 package net.gcnt.skywarsreloaded.game;
 
-import net.gcnt.skywarsreloaded.game.chest.SWChestType;
+import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.game.types.GameState;
-import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.Message;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
@@ -46,7 +44,9 @@ public interface GameWorld {
 
     GameScheduler getScheduler();
 
-    Map<UUID, SWChestType> getSelectedChestTypes();
+    Map<UUID, SWChestTier> getVotedChestTiers();
+
+    SWChestTier getChestTier();
 
     void announce(Message message);
 
@@ -56,7 +56,7 @@ public interface GameWorld {
 
     void announceTitle(Message message, int fadeIn, int stay, int fadeOut);
 
-    void setChestTypeSelected(UUID player, SWChestType type);
+    void setChestTypeSelected(UUID player, SWChestTier type);
 
     /**
      * This method is to be run async since it could perform long operations
@@ -99,13 +99,6 @@ public interface GameWorld {
     int getTimer();
 
     void setTimer(int timer);
-
-    /**
-     * Fill the chest with the given coord.
-     *
-     * @param coord Location of the chest
-     */
-    void fillChest(SWCoord coord, SWChestType chestType);
 
     /**
      * Removes all the cages that are currently placed.

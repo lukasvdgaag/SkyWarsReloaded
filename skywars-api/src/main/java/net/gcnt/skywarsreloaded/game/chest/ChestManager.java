@@ -5,14 +5,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
- * Manager to create, load and delete chest types from the plugin's chest folder.
+ * Manager to create, load and delete chest tiers from the plugin's chest folder.
  */
 public interface ChestManager {
 
     /**
-     * Load all the chest types in the chests folder of the plugin
+     * Load all the chest tiers in the chests folder of the plugin
      */
-    void loadAllChestTypes();
+    void loadAllChestTiers();
 
     /**
      * Generate the normal and center chests if they don't already exist
@@ -20,37 +20,42 @@ public interface ChestManager {
     void createDefaultsIfNotPresent();
 
     /**
-     * Get a chest type by name
-     * @param chestTypeName The name of the chest type
-     * @return The {@link SWChestType} associated with the name provided or null if it doesn't exist
+     * Get a chest tier by name
+     *
+     * @param chestTypeName The name of the chest tier
+     * @return The {@link SWChestTier} associated with the name provided or null if it doesn't exist
      */
-    SWChestType getChestTypeByName(String chestTypeName);
+    SWChestTier getChestTierByName(String chestTypeName);
 
     /**
-     * Completely remove a chest type from the server
-     * @param chestTypeName The name associated with the {@link SWChestType} to remove
+     * Completely remove a chest tier from the server
+     *
+     * @param chestTypeName The name associated with the {@link SWChestTier} to remove
      */
-    void deleteChestType(String chestTypeName);
+    void deleteChestTier(String chestTypeName);
 
     /**
-     * Get a list of chest types that are loaded from the chests folder
+     * Get a list of chest tiers that are loaded from the chests folder
+     *
      * @return The list of chests
      */
-    List<SWChestType> getChestTypes();
+    List<SWChestTier> getChestTiers();
 
     /**
-     * Create a new chest type and place it into the chests folder
-     * @param chestTypeName The name of the chest type to create
-     * @return The created {@link SWChestType}
+     * Create a new chest tier and place it into the chests folder
+     *
+     * @param chestTypeName The name of the chest tier to create
+     * @return The created {@link SWChestTier}
      */
-    SWChestType createChestType(@NotNull String chestTypeName);
+    SWChestTier createChestTier(@NotNull String chestTypeName);
 
     /**
-     * Create an instance of the {@link SWChestType} class given the name provided.
-     * @param chestTypeName The name of the chest type
-     * @return The {@link SWChestType} associated with the name provided or null if it does not already exist
-     *          in the chests folder
+     * Create an instance of the {@link SWChestTier} class given the name provided.
+     *
+     * @param chestTypeName The name of the chest tier
+     * @return The {@link SWChestTier} associated with the name provided or null if it does not already exist
+     * in the chests folder
      */
-    SWChestType initChestType(String chestTypeName);
+    SWChestTier initChestTier(String chestTypeName);
 
 }

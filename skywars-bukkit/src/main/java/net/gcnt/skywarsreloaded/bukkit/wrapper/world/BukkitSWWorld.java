@@ -2,15 +2,19 @@ package net.gcnt.skywarsreloaded.bukkit.wrapper.world;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.world.block.BukkitSWBlock;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.world.block.BukkitSWChest;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.wrapper.world.block.SWBlock;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.world.AbstractSWWorld;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +56,24 @@ public class BukkitSWWorld extends AbstractSWWorld {
     @Override
     public void setBlockAt(SWCoord location, String blockName) {
         this.setBlockAt(location, blockName == null ? null : new BukkitItem(this.plugin, blockName));
+    }
+
+    @Override
+    public SWBlock getBlockAt(int x, int y, int z) {
+        final Block bukkitBlock = this.bukkitWorld.getBlockAt(x, y, z);
+        BukkitSWBlock block = new BukkitSWBlock(plugin, bukkitBlock);
+
+        if (block.getMaterial().contains("CHEST") && bukkitBlock.getState() instanceof Chest) {
+            Chest chest = (Chest) bukkitBlock.getState();
+            return new BukkitSWChest(this.plugin, chest);
+        }
+
+        return block;
+    }
+
+    @Override
+    public SWBlock getBlockAt(SWCoord location) {
+        return getBlockAt(location.x(), location.y(), location.z());
     }
 
     @Override

@@ -119,7 +119,7 @@ public class AbstractSWEventListener implements SWEventListener {
             if (gameWorld == null || !gameWorld.isEditing()) return;
 
             final GameTemplate template = gameWorld.getTemplate();
-            boolean res = template.addChest(event.getCoord().asBlock(), gameWorld.getSelectedChestTypes().getOrDefault(event.getPlayer().getUuid(), plugin.getChestManager().getChestTypeByName("normal")));
+            boolean res = template.addChest(event.getCoord().asBlock(), gameWorld.getVotedChestTiers().getOrDefault(event.getPlayer().getUuid(), plugin.getChestManager().getChestTierByName("normal")));
             if (res) {
                 event.getPlayer().sendTitle(plugin.getUtils().colorize("&a&lCHEST ADDED"),
                         plugin.getUtils().colorize("&7Added a new chest to the template!"), 5, 30, 5);

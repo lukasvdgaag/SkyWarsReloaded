@@ -2,16 +2,16 @@ package net.gcnt.skywarsreloaded.game.chest;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
-import net.gcnt.skywarsreloaded.game.types.GameDifficulty;
+import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.utils.properties.ChestProperties;
+import net.gcnt.skywarsreloaded.utils.properties.ChestTierProperties;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public abstract class AbstractSWChestType implements SWChestType {
+public abstract class AbstractSWChestTier implements SWChestTier {
 
     private static final List<Integer> RANDOM_SLOTS;
     private static final List<Integer> RANDOM_SLOTS_DOUBLE;
@@ -31,12 +31,12 @@ public abstract class AbstractSWChestType implements SWChestType {
     private final SkyWarsReloaded plugin;
     private final String name;
     private final YAMLConfig config;
-    private final HashMap<GameDifficulty, HashMap<Integer, List<Item>>> inventoryContents;
+    private final HashMap<ChestType, HashMap<Integer, List<Item>>> inventoryContents;
 
     private String displayName;
 
 
-    public AbstractSWChestType(SkyWarsReloaded plugin, String nameIn) {
+    public AbstractSWChestTier(SkyWarsReloaded plugin, String nameIn) {
         this.plugin = plugin;
         this.name = nameIn;
         this.inventoryContents = new HashMap<>();
@@ -59,25 +59,25 @@ public abstract class AbstractSWChestType implements SWChestType {
     }
 
     @Override
-    public HashMap<GameDifficulty, HashMap<Integer, List<Item>>> getAllContents() {
+    public HashMap<ChestType, HashMap<Integer, List<Item>>> getAllContents() {
         return inventoryContents;
     }
 
     @Override
-    public HashMap<Integer, List<Item>> getContents(GameDifficulty difficulty) {
-        inventoryContents.forEach((key, value) -> System.out.println("difficulty found: " + key.getId()));
-        return inventoryContents.get(difficulty);
+    public HashMap<Integer, List<Item>> getContents(ChestType type) {
+        inventoryContents.forEach((key, value) -> System.out.println("type found: " + key.getId()));
+        return inventoryContents.get(type);
     }
 
     @Override
-    public Item[] generateChestLoot(GameDifficulty difficulty, boolean doubleChest) {
+    public Item[] generateChestLoot(ChestType type, boolean doubleChest) {
         // hashmap with a list of items per chance of occurrence
         int maxItems = plugin.getConfig().getInt(doubleChest ? ConfigProperties.GAME_CHESTS_MAX_ITEMS_DOUBLE.toString() : ConfigProperties.GAME_CHESTS_MAX_ITEMS.toString());
 
         List<Integer> slots = doubleChest ? RANDOM_SLOTS_DOUBLE : RANDOM_SLOTS;
         Collections.shuffle(slots);
 
-        HashMap<Integer, List<Item>> items = getContents(difficulty);
+        HashMap<Integer, List<Item>> items = getContents(type);
         Item[] loot = new Item[slots.size()];
         if (items == null) return loot;
 
@@ -101,22 +101,22 @@ public abstract class AbstractSWChestType implements SWChestType {
     @Override
     public synchronized void loadData() {
         // Basic chest type info init
-        this.displayName = config.getString(ChestProperties.DISPLAY_NAME.toString(), name);
+        this.displayName = config.getString(ChestTierProperties.DISPLAY_NAME.toString(), name);
 
         try {
-            config.getKeys(ChestProperties.DIFFICULTIES.toString()).stream().map(GameDifficulty::getById)
-                    .forEach(this::loadDataFromGameType);
+            config.getKeys(ChestTierProperties.TYPES.toString()).stream().map(ChestType::getById)
+                    .forEach(this::loadDataFromChestType);
 
         } catch (Exception e) {
             plugin.getLogger().error(String.format("Failed to load chest type with id %s. Ignoring it. (%s)", name, e.getClass().getName() + ": " + e.getLocalizedMessage()));
         }
     }
 
-    private void loadDataFromGameType(GameDifficulty gameDifficulty) {
-        System.out.println("Loading chest type data for difficulty: " + gameDifficulty.getId());
+    private void loadDataFromChestType(ChestType chestType) {
+        System.out.println("Loading chest type data for type: " + chestType.getId());
         // Init data
-        String gameTypeConfigSectionName = gameDifficulty.getId();
-        String configPath = gameTypeConfigSectionName + ChestProperties.CONTENTS;
+        String gameTypeConfigSectionName = chestType.getId();
+        String configPath = gameTypeConfigSectionName + ChestTierProperties.CONTENTS;
 
         // Load inventory content
         HashMap<Integer, List<Item>> gameTypeItems = new HashMap<>();
@@ -137,18 +137,18 @@ public abstract class AbstractSWChestType implements SWChestType {
         }
 
         // Apply it to the data map
-        inventoryContents.put(gameDifficulty, gameTypeItems);
+        inventoryContents.put(chestType, gameTypeItems);
     }
 
     @Override
     public void saveData() {
-        config.set(ChestProperties.DISPLAY_NAME.toString(), displayName);
+        config.set(ChestTierProperties.DISPLAY_NAME.toString(), displayName);
 
         getAllContents().forEach(
-                (gameDifficulty, contents) -> {
-                    String gameTypeConfigSectionName = gameDifficulty.getId();
+                (chestType, contents) -> {
+                    String gameTypeConfigSectionName = chestType.getId();
                     contents.forEach((slot, item) ->
-                            config.set(gameTypeConfigSectionName + "." + ChestProperties.CONTENTS + "." + slot, item));
+                            config.set(gameTypeConfigSectionName + "." + ChestTierProperties.CONTENTS + "." + slot, item));
                 }
         );
 

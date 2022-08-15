@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.bukkit.game.chest;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.chest.AbstractChestManager;
-import net.gcnt.skywarsreloaded.game.chest.SWChestType;
+import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 
 public class BukkitChestManager extends AbstractChestManager {
 
@@ -11,7 +11,7 @@ public class BukkitChestManager extends AbstractChestManager {
     }
 
     @Override
-    public SWChestType initChestType(String name) {
-        return new BukkitSWChestType(plugin, name);
+    public SWChestTier initChestTier(String name) {
+        return new BukkitSWChestTier(plugin, name);
     }
 }

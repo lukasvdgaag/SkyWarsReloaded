@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class AbstractChestManager implements ChestManager {
 
     public final SkyWarsReloaded plugin;
-    public HashMap<String, SWChestType> chests;
+    public HashMap<String, SWChestTier> chests;
 
     public AbstractChestManager(SkyWarsReloaded plugin) {
         this.plugin = plugin;
@@ -20,7 +20,7 @@ public abstract class AbstractChestManager implements ChestManager {
     }
 
     @Override
-    public void loadAllChestTypes() {
+    public void loadAllChestTiers() {
         // Chests folder under skywars plugin
         File dir = new File(plugin.getDataFolder(), FolderProperties.CHEST_TYPES_FOLDER.toString());
 
@@ -51,10 +51,10 @@ public abstract class AbstractChestManager implements ChestManager {
             } else if (!file.getName().endsWith(".yml")) continue;
 
             String name = file.getName().replace(".yml", "");
-            if (getChestTypeByName(name) != null) continue;
+            if (getChestTierByName(name) != null) continue;
 
             // Load data & store in cache
-            SWChestType chestType = this.initChestType(name);
+            SWChestTier chestType = this.initChestTier(name);
             chests.put(name, chestType);
 
             chestType.loadData();
@@ -79,31 +79,31 @@ public abstract class AbstractChestManager implements ChestManager {
 
         // Add default files on first install
         if (files.length < 1) {
-            this.createChestType("normal");
-            this.createChestType("center");
+            this.createChestTier("default");
+            this.createChestTier("insane");
         }
     }
 
     @Override
-    public SWChestType getChestTypeByName(String chestId) {
+    public SWChestTier getChestTierByName(String chestId) {
         return chests.getOrDefault(chestId, null);
     }
 
     @Override
-    public void deleteChestType(String chestId) {
+    public void deleteChestTier(String chestId) {
         // todo chest type deletion here
     }
 
     @Override
-    public List<SWChestType> getChestTypes() {
+    public List<SWChestTier> getChestTiers() {
         return new ArrayList<>(chests.values());
     }
 
     @Override
-    public SWChestType createChestType(@NotNull String name) {
-        if (getChestTypeByName(name) != null) return null;
+    public SWChestTier createChestTier(@NotNull String name) {
+        if (getChestTierByName(name) != null) return null;
 
-        SWChestType chestType = this.initChestType(name);
+        SWChestTier chestType = this.initChestTier(name);
         chestType.saveData();
         chests.put(name, chestType);
         return chestType;
@@ -112,6 +112,6 @@ public abstract class AbstractChestManager implements ChestManager {
     // Platform specific
 
     @Override
-    public abstract SWChestType initChestType(String name);
+    public abstract SWChestTier initChestTier(String name);
 
 }

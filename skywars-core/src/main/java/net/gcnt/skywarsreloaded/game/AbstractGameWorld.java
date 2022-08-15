@@ -1,10 +1,11 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.chest.SWChestType;
+import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
+import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFillerManager;
 import net.gcnt.skywarsreloaded.game.state.EndingStateHandler;
 import net.gcnt.skywarsreloaded.game.state.PlayingStateHandler;
-import net.gcnt.skywarsreloaded.game.types.GameDifficulty;
+import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.party.SWParty;
@@ -27,11 +28,11 @@ public abstract class AbstractGameWorld implements GameWorld {
     // Player data
     protected final List<GamePlayer> players;
     protected final List<GameTeam> teams;
-    protected final HashMap<UUID, SWChestType> selectedChestTypes;
+    protected final HashMap<UUID, SWChestTier> votedChestTiers;
     protected GameTeam winningTeam;
     protected GameScheduler scheduler;
     // Map data
-    protected GameDifficulty gameDifficulty;
+    protected ChestType chestType;
     // States
     protected boolean editing;
     protected GameState state;
@@ -43,12 +44,12 @@ public abstract class AbstractGameWorld implements GameWorld {
         this.gameTemplate = gameTemplate;
         this.teams = new ArrayList<>();
         this.players = new ArrayList<>();
-        this.selectedChestTypes = new HashMap<>();
+        this.votedChestTiers = new HashMap<>();
         this.state = GameState.DISABLED;
         this.timer = 0;
         this.worldName = "swr-" + id;
         this.winningTeam = null;
-        this.gameDifficulty = GameDifficulty.NORMAL;
+        this.chestType = ChestType.ISLAND;
         loadTeams();
     }
 
@@ -88,12 +89,12 @@ public abstract class AbstractGameWorld implements GameWorld {
         return worldName;
     }
 
-    public GameDifficulty getGameDifficulty() {
-        return this.gameDifficulty;
+    public ChestType getGameDifficulty() {
+        return this.chestType;
     }
 
-    public void setGameDifficulty(GameDifficulty gameDifficultyIn) {
-        this.gameDifficulty = gameDifficultyIn;
+    public void setGameDifficulty(ChestType chestTypeIn) {
+        this.chestType = chestTypeIn;
     }
 
     @Override
@@ -119,13 +120,29 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     @Override
-    public Map<UUID, SWChestType> getSelectedChestTypes() {
-        return this.selectedChestTypes;
+    public Map<UUID, SWChestTier> getVotedChestTiers() {
+        return this.votedChestTiers;
+    }
+
+    private int getObjectCount(Collection<?> collection, Object object) {
+        int count = 0;
+        for (Object o : collection) {
+            if ((o==null&& object==null) || (o!=null && o.equals(object))) count++;
+        }
+        return count;
     }
 
     @Override
-    public void setChestTypeSelected(UUID player, SWChestType type) {
-        this.selectedChestTypes.put(player, type);
+    public SWChestTier getChestTier() {
+        final Collection<SWChestTier> values = this.votedChestTiers.values();
+        return values.stream()
+                .max((o1, o2) -> getObjectCount(values, o2) - getObjectCount(values, o1))
+                .orElse(plugin.getChestManager().createChestTier("default"));
+    }
+
+    @Override
+    public void setChestTypeSelected(UUID player, SWChestTier type) {
+        this.votedChestTiers.put(player, type);
     }
 
     @Override
@@ -156,7 +173,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     @Override
     public boolean addPlayers(GamePlayer... players) {
         // Select the default chest type to be placed if the player is joining a map that is being edited.
-        SWChestType defaultChestType = getDefaultChestType();
+        SWChestTier defaultChestType = getDefaultChestType();
 
         boolean successState = true;
         int index = 0;
@@ -170,7 +187,7 @@ public abstract class AbstractGameWorld implements GameWorld {
             // Apply the default chest type to the gamePlayer
             final SWPlayer swPlayer = gamePlayer.getSWPlayer();
             if (this.editing) {
-                this.selectedChestTypes.put(swPlayer.getUuid(), defaultChestType);
+                this.votedChestTiers.put(swPlayer.getUuid(), defaultChestType);
 
                 // Add the gamePlayer to the game
                 this.players.add(gamePlayer);
@@ -356,8 +373,10 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public void fillChests() {
-        for (Map.Entry<SWCoord, SWChestType> chest : this.gameTemplate.getChests().entrySet()) {
-            this.fillChest(chest.getKey(), chest.getValue());
+        final SWChestFillerManager chestFillerManager = plugin.getChestFillerManager();
+        chestFillerManager.getFillerByName(this.getChestTier().getMode())
+        for (Map.Entry<SWCoord, SWChestTier> chest : this.gameTemplate.getChests().entrySet()) {
+            (chest.getKey(), chest.getValue());
         }
     }
 
@@ -408,11 +427,11 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     // Private utils
 
-    private SWChestType getDefaultChestType() {
+    private SWChestTier getDefaultChestType() {
         if (this.editing) {
-            Collection<SWChestType> chests = this.gameTemplate.getChests().values();
+            Collection<SWChestTier> chests = this.gameTemplate.getChests().values();
             if (!chests.isEmpty()) {
-                for (SWChestType chest : chests) {
+                for (SWChestTier chest : chests) {
                     return chest;
                 }
             }
