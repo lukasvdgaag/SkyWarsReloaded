@@ -36,4 +36,20 @@ public class ChestType {
     public String toString() {
         return this.getId();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChestType chestType = (ChestType) o;
+
+        return getId().equals(chestType.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
+
 }

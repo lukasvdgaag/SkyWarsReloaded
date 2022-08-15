@@ -16,7 +16,7 @@ public interface SWChestTier {
 
     String getDisplayName();
 
-    Item[] generateChestLoot(ChestType difficulty, boolean doubleChest);\ // todo move to filler
+    boolean hasChestType(ChestType chestType);
 
     String getMode();
 }

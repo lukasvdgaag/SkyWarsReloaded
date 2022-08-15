@@ -13,21 +13,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class AbstractSWChestTier implements SWChestTier {
 
-    private static final List<Integer> RANDOM_SLOTS;
-    private static final List<Integer> RANDOM_SLOTS_DOUBLE;
-    private static final Random RANDOM;
-
-    static {
-        RANDOM_SLOTS = new ArrayList<>();
-        RANDOM_SLOTS_DOUBLE = new ArrayList<>();
-        for (int i = 0; i < 54; i++) {
-            RANDOM_SLOTS_DOUBLE.add(i);
-            if (i < 27) RANDOM_SLOTS.add(i);
-        }
-
-        RANDOM = ThreadLocalRandom.current();
-    }
-
     private final SkyWarsReloaded plugin;
     private final String name;
     private final YAMLConfig config;
@@ -70,32 +55,13 @@ public abstract class AbstractSWChestTier implements SWChestTier {
     }
 
     @Override
+    public boolean hasChestType(ChestType chestType) {
+        return inventoryContents.containsKey(chestType);
+    }
+
+    @Override
     public Item[] generateChestLoot(ChestType type, boolean doubleChest) {
-        // hashmap with a list of items per chance of occurrence
-        int maxItems = plugin.getConfig().getInt(doubleChest ? ConfigProperties.GAME_CHESTS_MAX_ITEMS_DOUBLE.toString() : ConfigProperties.GAME_CHESTS_MAX_ITEMS.toString());
 
-        List<Integer> slots = doubleChest ? RANDOM_SLOTS_DOUBLE : RANDOM_SLOTS;
-        Collections.shuffle(slots);
-
-        HashMap<Integer, List<Item>> items = getContents(type);
-        Item[] loot = new Item[slots.size()];
-        if (items == null) return loot;
-
-        int added = 0;
-        adding:
-        for (int chance : items.keySet()) {
-            for (Item item : items.get(chance)) {
-                if (item == null) continue;
-
-                if (RANDOM.nextInt(100) + 1 <= chance) {
-                    loot[slots.get(added)] = item;
-                    added++;
-                    if (added >= maxItems || added >= slots.size() - 1) break adding;
-                }
-            }
-        }
-
-        return loot;
     }
 
     @Override

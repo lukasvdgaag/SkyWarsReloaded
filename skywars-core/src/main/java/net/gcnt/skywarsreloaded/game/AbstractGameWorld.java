@@ -9,7 +9,10 @@ import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.party.SWParty;
-import net.gcnt.skywarsreloaded.utils.*;
+import net.gcnt.skywarsreloaded.utils.CoreSWCCompletableFuture;
+import net.gcnt.skywarsreloaded.utils.Message;
+import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
@@ -29,6 +32,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     protected final List<GamePlayer> players;
     protected final List<GameTeam> teams;
     protected final HashMap<UUID, SWChestTier> votedChestTiers;
+    protected final HashMap<UUID, ChestType> selectedEditingChestType;
     protected GameTeam winningTeam;
     protected GameScheduler scheduler;
     // Map data
@@ -45,6 +49,7 @@ public abstract class AbstractGameWorld implements GameWorld {
         this.teams = new ArrayList<>();
         this.players = new ArrayList<>();
         this.votedChestTiers = new HashMap<>();
+        this.selectedEditingChestType = new HashMap<>();
         this.state = GameState.DISABLED;
         this.timer = 0;
         this.worldName = "swr-" + id;
@@ -127,7 +132,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     private int getObjectCount(Collection<?> collection, Object object) {
         int count = 0;
         for (Object o : collection) {
-            if ((o==null&& object==null) || (o!=null && o.equals(object))) count++;
+            if ((o == null && object == null) || (o != null && o.equals(object))) count++;
         }
         return count;
     }
@@ -173,7 +178,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     @Override
     public boolean addPlayers(GamePlayer... players) {
         // Select the default chest type to be placed if the player is joining a map that is being edited.
-        SWChestTier defaultChestType = getDefaultChestType();
+        ChestType defaultChestType = getDefaultChestType();
 
         boolean successState = true;
         int index = 0;
@@ -187,7 +192,7 @@ public abstract class AbstractGameWorld implements GameWorld {
             // Apply the default chest type to the gamePlayer
             final SWPlayer swPlayer = gamePlayer.getSWPlayer();
             if (this.editing) {
-                this.votedChestTiers.put(swPlayer.getUuid(), defaultChestType);
+                this.selectedEditingChestType.put(swPlayer.getUuid(), defaultChestType);
 
                 // Add the gamePlayer to the game
                 this.players.add(gamePlayer);
@@ -374,9 +379,10 @@ public abstract class AbstractGameWorld implements GameWorld {
     @Override
     public void fillChests() {
         final SWChestFillerManager chestFillerManager = plugin.getChestFillerManager();
-        chestFillerManager.getFillerByName(this.getChestTier().getMode())
-        for (Map.Entry<SWCoord, SWChestTier> chest : this.gameTemplate.getChests().entrySet()) {
-            (chest.getKey(), chest.getValue());
+        final SWChestTier chestTier = getChestTier();
+
+        for (Map.Entry<SWCoord, ChestType> chest : this.gameTemplate.getChests().entrySet()) {
+            chestFillerManager.getFillerByName(this.getChestTier().getMode()).fillChest(chestTier, this, chest.getKey(), chest.getValue());
         }
     }
 
@@ -427,16 +433,16 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     // Private utils
 
-    private SWChestTier getDefaultChestType() {
+    protected ChestType getDefaultChestType() {
         if (this.editing) {
-            Collection<SWChestTier> chests = this.gameTemplate.getChests().values();
+            Collection<ChestType> chests = this.gameTemplate.getChests().values();
             if (!chests.isEmpty()) {
-                for (SWChestTier chest : chests) {
+                for (ChestType chest : chests) {
                     return chest;
                 }
             }
         }
-        return null;
+        return ChestType.ISLAND;
     }
 
     private List<GameTeam> getTeamsOrderedByPlayerCountIncreasing() {

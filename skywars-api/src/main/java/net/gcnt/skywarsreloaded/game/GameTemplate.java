@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
+import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.results.SpawnAddResult;
 import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
@@ -132,7 +133,7 @@ public interface GameTemplate {
      *
      * @return List of enabled chest types
      */
-    List<SWChestTier> getEnabledChestTypes();
+    List<SWChestTier> getEnabledChestTiers();
 
     /**
      * Set a chest type to be enabled for this template
@@ -146,10 +147,10 @@ public interface GameTemplate {
      * This method will return false if there already was a chest at the target location.
      *
      * @param loc       Location of the new chest.
-     * @param chestType The {@link SWChestTier} of the chest being added
+     * @param chestType The {@link ChestType} of the chest being added
      * @return true if added, false if not added.
      */
-    boolean addChest(SWCoord loc, SWChestTier chestType);
+    boolean addChest(SWCoord loc, ChestType chestType);
 
     /**
      * Remove an existing chest from the template.
@@ -165,7 +166,7 @@ public interface GameTemplate {
      *
      * @return List of chest locations.
      */
-    Map<SWCoord, SWChestTier> getChests();
+    Map<SWCoord, ChestType> getChests();
 
     /**
      * Add a new player spawnpoint a team.
