@@ -1,20 +1,16 @@
-display-name: 'Default'
+display-name: 'Normal'
 
-difficulties:
-  basic:
-    contents:
-      '100':
-        material: STONE
-
-  normal:
+types:
+  island:
     contents:
       '100':
         - material: ENDER_PEARL
           amount: 1
         - material: END_STONE
           amount: 14
-
-  insane:
+  center:
     contents:
       '100':
-        material: DIAMOND_BLOCK
+        - material: STONE
+          amount: 16
+        - material: WOODEN_SWORD

@@ -11,6 +11,7 @@ import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class SimpleChestTier extends AbstractSWChestTier {
 
@@ -21,11 +22,8 @@ public class SimpleChestTier extends AbstractSWChestTier {
         super(plugin, name);
         this.inventoryContents = new HashMap<>();
 
-        this.config = plugin.getYAMLManager().loadConfig(
-                "chest-" + name,
-                FolderProperties.CHEST_TYPES_FOLDER.toString(),
-                name + ".yml",
-                "/chests/default.yml");
+        this.config = plugin.getYAMLManager().loadConfig("chest-" + name, FolderProperties.CHEST_TYPES_FOLDER.toString(), name + ".yml", "/chests/normal.yml");
+        loadData();
     }
 
     public HashMap<ChestType, HashMap<Integer, List<Item>>> getAllContents() {
@@ -43,33 +41,38 @@ public class SimpleChestTier extends AbstractSWChestTier {
         this.displayName = config.getString(ChestTierProperties.DISPLAY_NAME.toString(), name);
 
         try {
-            config.getKeys(ChestTierProperties.TYPES.toString()).stream().map(ChestType::getById)
-                    .forEach(this::loadDataFromChestType);
+            final Set<String> keys = config.getKeys(ChestTierProperties.TYPES.toString());
+            if (keys == null) {
+                plugin.getLogger().error("No chest types found in chest tier " + name);
+            } else {
+                keys.stream().map(ChestType::getById).forEach(this::loadDataFromChestType);
+            }
         } catch (Exception e) {
             plugin.getLogger().error(String.format("Failed to load chest type with id %s. Ignoring it. (%s)", name, e.getClass().getName() + ": " + e.getLocalizedMessage()));
         }
     }
 
     private void loadDataFromChestType(ChestType chestType) {
-        System.out.println("Loading chest type data for type: " + chestType.getId());
+        plugin.getLogger().debug("Loading chest type data for type: " + chestType.getId());
         // Init data
         String gameTypeConfigSectionName = chestType.getId();
-        String configPath = gameTypeConfigSectionName + ChestTierProperties.CONTENTS;
+        String configPath = ChestTierProperties.TYPES + "." + gameTypeConfigSectionName + "." + ChestTierProperties.CONTENTS;
 
         // Load inventory content
         HashMap<Integer, List<Item>> gameTypeItems = new HashMap<>();
 
+        plugin.getLogger().debug(configPath);
         if (config.isSet(configPath)) {
-            config.getKeys(configPath).forEach(chance -> {
+            final Set<String> keys = config.getKeys(configPath);
+            if (keys == null) return;
+            keys.forEach(chance -> {
                 try {
                     int number = Integer.parseInt(chance);
                     final List<Item> items = config.getItemList(configPath + "." + chance);
-                    System.out.println("- Found " + number + " items for chance " + chance + ".");
+                    plugin.getLogger().debug("- Found " + items.size() + " items for chance " + chance + ".");
                     gameTypeItems.put(number, items);
                 } catch (Exception e) {
-                    plugin.getLogger().error(
-                            String.format("Failed to load percentage '%s' under game type '%s' for chest type '%s'. Ignoring it. (%s)",
-                                    chance, gameTypeConfigSectionName, name, e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                    plugin.getLogger().error(String.format("Failed to load percentage '%s' under game type '%s' for chest type '%s'. Ignoring it. (%s)", chance, gameTypeConfigSectionName, name, e.getClass().getName() + ": " + e.getLocalizedMessage()));
                 }
             });
         }
@@ -82,13 +85,11 @@ public class SimpleChestTier extends AbstractSWChestTier {
     public void saveData() {
         config.set(ChestTierProperties.DISPLAY_NAME.toString(), displayName);
 
-        getAllContents().forEach(
-                (chestType, contents) -> {
-                    String gameTypeConfigSectionName = chestType.getId();
-                    contents.forEach((slot, item) ->
-                            config.set(gameTypeConfigSectionName + "." + ChestTierProperties.CONTENTS + "." + slot, item));
-                }
-        );
+        getAllContents().forEach((chestType, contents) -> {
+            if (chestType == null || contents == null) return;
+            String gameTypeConfigSectionName = chestType.getId();
+            contents.forEach((slot, item) -> config.set(gameTypeConfigSectionName + "." + ChestTierProperties.CONTENTS + "." + slot, item));
+        });
 
         config.save();
     }

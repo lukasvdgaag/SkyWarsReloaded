@@ -4,7 +4,7 @@ public enum ChestTierProperties {
 
     DISPLAY_NAME("display-name"),
     CONTENTS("contents"),
-    TYPES("type");
+    TYPES("types");
 
     private final String property;
 

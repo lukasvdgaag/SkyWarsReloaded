@@ -16,25 +16,26 @@ public class CoreChestManager implements SWChestManager {
 
     public final SkyWarsReloaded plugin;
     public HashMap<String, SWChestTier> chests;
+    protected File chestFolder;
 
     public CoreChestManager(SkyWarsReloaded plugin) {
         this.plugin = plugin;
         this.chests = new HashMap<>();
+        this.chestFolder = new File(plugin.getDataFolder(), FolderProperties.CHEST_TYPES_FOLDER.toString());
     }
 
     @Override
     public void loadAllChestTiers() {
         // Chests folder under skywars plugin
-        File dir = new File(plugin.getDataFolder(), FolderProperties.CHEST_TYPES_FOLDER.toString());
 
         // Sanity checks
-        if (!dir.exists()) return;
+        if (!chestFolder.exists()) return;
 
         // Reset all currently loaded chest types
         this.chests.clear();
 
         // Load all from directory
-        this.loadAllChestTypesFromDir(dir, 0, 1, "");
+        this.loadAllChestTypesFromDir(chestFolder, 0, 1, "");
     }
 
     private void loadAllChestTypesFromDir(File dir, int depth, int maxDepth, String currentPrefix) {
@@ -53,14 +54,12 @@ public class CoreChestManager implements SWChestManager {
                 continue;
             } else if (!file.getName().endsWith(".yml")) continue;
 
-            String name = file.getName().replace(".yml", "");
+            String fileName = file.getName();
+            String name = fileName.replace(".yml", "");
             if (getChestTierByName(name) != null) continue;
 
             // Load data & store in cache
-            SWChestTier chestType = this.initChestTier(name);
-            chests.put(name, chestType);
-
-            chestType.loadData();
+            this.initChestTier(fileName);
             plugin.getLogger().info("Loaded chest type '" + name + "'.");
         }
     }
@@ -82,8 +81,8 @@ public class CoreChestManager implements SWChestManager {
 
         // Add default files on first install
         if (files.length < 1) {
-            this.createChestTier("default");
-            this.createChestTier("insane");
+            this.createChestTier("normal.yml");
+//            this.createChestTier("insane"); // todo re-add insane chest type default
         }
     }
 
@@ -106,7 +105,7 @@ public class CoreChestManager implements SWChestManager {
     public SWChestTier createChestTier(@NotNull String name) {
         if (getChestTierByName(name) != null) return null;
 
-        SWChestTier chestType = this.initChestTier(name);
+        SWChestTier chestType = this.initChestTier(name, true);
         chestType.saveData();
         chests.put(name, chestType);
         return chestType;
@@ -116,17 +115,26 @@ public class CoreChestManager implements SWChestManager {
 
     @Override
     public SWChestTier initChestTier(String name) {
-        final SWChestTier cached = getChestTierByName(name);
-        if (cached != null) return cached;
-
-        if (new File(plugin.getDataFolder(), "chests" + File.separator + name + ".yml").exists()) {
-            return new SimpleChestTier(plugin, name);
-        } else if (new File(plugin.getDataFolder(), "chests" + File.separator + name + ".json").exists()) {
-            return new LootTableChestTier(plugin, name);
-        }
-
-        plugin.getLogger().error("Count not initialize chest type with name '" + name + "' because it doesn't exist. No .yml or .json file with that name was found in the /chests folder.");
-        return null;
+        return initChestTier(name, false);
     }
 
+    @Override
+    public SWChestTier initChestTier(String name, boolean generateDefault) {
+        final String strippedName = name.replace(".yml", "").replace(".json", "");
+        final SWChestTier cached = getChestTierByName(strippedName);
+        if (cached != null) return cached;
+
+        if (name.endsWith(".yml") && (new File(chestFolder, strippedName + ".yml").exists() || generateDefault)) {
+            final SimpleChestTier tier = new SimpleChestTier(plugin, strippedName);
+            chests.put(strippedName, tier);
+            return tier;
+        } else if (name.endsWith(".json") && (new File(chestFolder, strippedName + ".json").exists() || generateDefault)) {
+            final LootTableChestTier tier = new LootTableChestTier(plugin, strippedName);
+            chests.put(strippedName, tier);
+            return tier;
+        }
+
+        plugin.getLogger().error("Count not initialize chest type with name '" + strippedName + "' because it doesn't exist. No .yml or .json file with that name was found in the /chests folder.");
+        return null;
+    }
 }

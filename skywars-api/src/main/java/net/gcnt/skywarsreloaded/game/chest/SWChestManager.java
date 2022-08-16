@@ -58,4 +58,15 @@ public interface SWChestManager {
      */
     SWChestTier initChestTier(String chestTypeName);
 
+    /**
+     * Create an instance of the {@link SWChestTier} class given the name provided.
+     * And create the chest tier file if it doesn't already exist.
+     *
+     * @param chestTypeName   The name of the chest tier
+     * @param generateDefault If true, generate a default chest tier file if it doesn't already exist
+     * @return The {@link SWChestTier} associated with the name provided or null if it does not already exist
+     * in the chests folder
+     */
+    SWChestTier initChestTier(String chestTypeName, boolean generateDefault);
+
 }

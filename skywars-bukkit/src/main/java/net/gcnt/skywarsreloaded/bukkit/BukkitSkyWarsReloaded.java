@@ -98,7 +98,7 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
     @Override
     public void initLogger() {
-        setLogger(new BukkitSWLogger(this, this.plugin.getLogger(), false));
+        setLogger(new BukkitSWLogger(this, this.plugin.getLogger(), true));
     }
 
     @Override

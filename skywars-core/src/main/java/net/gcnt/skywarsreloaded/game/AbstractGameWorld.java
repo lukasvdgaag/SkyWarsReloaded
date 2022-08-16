@@ -148,7 +148,7 @@ public abstract class AbstractGameWorld implements GameWorld {
         final Collection<SWChestTier> values = this.votedChestTiers.values();
         return values.stream()
                 .max((o1, o2) -> getObjectCount(values, o2) - getObjectCount(values, o1))
-                .orElse(plugin.getChestManager().createChestTier("default"));
+                .orElse(plugin.getChestManager().getChestTierByName("normal"));
     }
 
     @Override
@@ -384,7 +384,9 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public void fillChests() {
-        final SWChestTier chestTier = this.getChestTier();
+        SWChestTier chestTier = this.getChestTier();
+        if (chestTier == null) chestTier = plugin.getChestManager().getChestTierByName("normal");
+
         final SWChestFiller filler = chestTier.getChestFiller();
         for (Map.Entry<SWCoord, ChestType> chest : this.gameTemplate.getChests().entrySet()) {
             filler.fillChest(chestTier, this, chest.getKey(), chest.getValue());

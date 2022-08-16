@@ -167,6 +167,9 @@ public class CoreGameTemplate implements GameTemplate {
             } else enabledChestTiersTmp.add(chestType);
         }
         this.enabledChestTiers = enabledChestTiersTmp;
+        if (this.enabledChestTiers.isEmpty()) {
+            this.enabledChestTiers.add(this.plugin.getChestManager().getChestTierByName("normal"));
+        }
 
         this.isTeamsizeSetup = config.getBoolean(MapDataProperties.IS_TEAMSIZE_SETUP.toString(), false);
 
@@ -181,20 +184,21 @@ public class CoreGameTemplate implements GameTemplate {
             for (String chestTypeId : chestKeys) {
                 ChestType chestType = ChestType.getById(chestTypeId);
 
-                final List<String> coordsList = config.getStringList(MapDataProperties.CHESTS + "." + chestTypeId);
-                for (String coordStr : coordsList) {
-                    SWCoord loc = new CoreSWCoord(plugin, coordStr);
-
-                    boolean valid = false;
-                    for (SWChestTier chestTier : enabledChestTiers) {
-                        if (chestTier.hasChestType(chestType)) {
-                            this.chests.put(loc, chestType);
-                            valid = true;
-                            break;
-                        }
+                boolean valid = false;
+                for (SWChestTier chestTier : enabledChestTiers) {
+                    if (chestTier.hasChestType(chestType)) {
+                        valid = true;
+                        break;
                     }
-                    if (!valid)
-                        plugin.getLogger().error("No chest type found in any of the map template's enabled chest tiers for the template '" + name + "': " + chestTypeId + ". Ignoring it.");
+                }
+                if (!valid) {
+                    plugin.getLogger().error("No chest type found in any of the map template's enabled chest tiers for the template '" + name + "': " + chestTypeId + ". Ignoring it.");
+                } else {
+                    final List<String> coordsList = config.getStringList(MapDataProperties.CHESTS + "." + chestTypeId);
+                    for (String coordStr : coordsList) {
+                        SWCoord loc = new CoreSWCoord(plugin, coordStr);
+                        this.chests.put(loc, chestType);
+                    }
                 }
             }
         }
