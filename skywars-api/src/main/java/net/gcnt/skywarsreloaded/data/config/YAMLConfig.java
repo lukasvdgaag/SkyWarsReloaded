@@ -30,6 +30,14 @@ public interface YAMLConfig {
 
     int getInt(String property, int defaultValue);
 
+    List<?> getList(String property);
+
+    List<?> getList(String property, List<?> defaultValue);
+
+    List<Map<?, ?>> getMapList(String property);
+
+    List<Item> getItemList(String property);
+
     List<String> getStringList(String property);
 
     Map<String, String> getStringMap(String toString);

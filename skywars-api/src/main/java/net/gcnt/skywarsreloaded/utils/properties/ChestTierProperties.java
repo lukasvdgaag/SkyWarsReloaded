@@ -1,14 +1,14 @@
 package net.gcnt.skywarsreloaded.utils.properties;
 
-public enum ChestProperties {
+public enum ChestTierProperties {
 
     DISPLAY_NAME("display-name"),
     CONTENTS("contents"),
-    DIFFICULTIES("difficulties");
+    TYPES("types");
 
     private final String property;
 
-    ChestProperties(String property) {
+    ChestTierProperties(String property) {
         this.property = property;
     }
 

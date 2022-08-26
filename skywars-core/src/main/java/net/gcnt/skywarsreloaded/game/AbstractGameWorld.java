@@ -1,12 +1,20 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.chest.SWChestType;
-import net.gcnt.skywarsreloaded.game.types.GameDifficulty;
+import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
+import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFiller;
+import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFillerManager;
+import net.gcnt.skywarsreloaded.game.state.EndingStateHandler;
+import net.gcnt.skywarsreloaded.game.state.PlayingStateHandler;
+import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.party.SWParty;
-import net.gcnt.skywarsreloaded.utils.*;
+import net.gcnt.skywarsreloaded.utils.CoreSWCCompletableFuture;
+import net.gcnt.skywarsreloaded.utils.Message;
+import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
+import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
@@ -24,10 +32,12 @@ public abstract class AbstractGameWorld implements GameWorld {
     // Player data
     protected final List<GamePlayer> players;
     protected final List<GameTeam> teams;
-    protected final HashMap<UUID, SWChestType> selectedChestTypes;
+    protected final HashMap<UUID, SWChestTier> votedChestTiers;
+    protected final HashMap<UUID, ChestType> selectedEditingChestType;
+    protected GameTeam winningTeam;
     protected GameScheduler scheduler;
     // Map data
-    protected GameDifficulty gameDifficulty;
+    protected ChestType chestType;
     // States
     protected boolean editing;
     protected GameState state;
@@ -39,10 +49,13 @@ public abstract class AbstractGameWorld implements GameWorld {
         this.gameTemplate = gameTemplate;
         this.teams = new ArrayList<>();
         this.players = new ArrayList<>();
-        this.selectedChestTypes = new HashMap<>();
+        this.votedChestTiers = new HashMap<>();
+        this.selectedEditingChestType = new HashMap<>();
         this.state = GameState.DISABLED;
         this.timer = 0;
         this.worldName = "swr-" + id;
+        this.winningTeam = null;
+        this.chestType = ChestType.ISLAND;
         loadTeams();
     }
 
@@ -82,12 +95,12 @@ public abstract class AbstractGameWorld implements GameWorld {
         return worldName;
     }
 
-    public GameDifficulty getGameDifficulty() {
-        return this.gameDifficulty;
+    public ChestType getGameDifficulty() {
+        return this.chestType;
     }
 
-    public void setGameDifficulty(GameDifficulty gameDifficultyIn) {
-        this.gameDifficulty = gameDifficultyIn;
+    public void setGameDifficulty(ChestType chestTypeIn) {
+        this.chestType = chestTypeIn;
     }
 
     @Override
@@ -113,13 +126,34 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     @Override
-    public Map<UUID, SWChestType> getSelectedChestTypes() {
-        return this.selectedChestTypes;
+    public Map<UUID, SWChestTier> getVotedChestTiers() {
+        return this.votedChestTiers;
     }
 
     @Override
-    public void setChestTypeSelected(UUID player, SWChestType type) {
-        this.selectedChestTypes.put(player, type);
+    public Map<UUID, ChestType> getSelectedEditingChestTypes() {
+        return null;
+    }
+
+    private int getObjectCount(Collection<?> collection, Object object) {
+        int count = 0;
+        for (Object o : collection) {
+            if ((o == null && object == null) || (o != null && o.equals(object))) count++;
+        }
+        return count;
+    }
+
+    @Override
+    public SWChestTier getChestTier() {
+        final Collection<SWChestTier> values = this.votedChestTiers.values();
+        return values.stream()
+                .max((o1, o2) -> getObjectCount(values, o2) - getObjectCount(values, o1))
+                .orElse(plugin.getChestManager().getChestTierByName("normal"));
+    }
+
+    @Override
+    public void setChestTypeSelected(UUID player, SWChestTier type) {
+        this.votedChestTiers.put(player, type);
     }
 
     @Override
@@ -135,12 +169,10 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public GamePlayer preparePlayerJoin(UUID uuid, boolean ignoreAvailableSpawns) {
-        if (!canJoinGame()) throw new IllegalStateException("Game is not joinable, the main skywars plugins or extensions " +
-                "should always check if the instance is joinable before calling this method. (user id: " + uuid +
-                " | game id: " + this.id + ")");
+        if (!canJoinGame())
+            throw new IllegalStateException("Game is not joinable, the main skywars plugins or extensions " + "should always check if the instance is joinable before calling this method. (user id: " + uuid + " | game id: " + this.id + ")");
 
-        if (!this.isSpawnAvailable() && !ignoreAvailableSpawns)
-            throw new IllegalStateException("No spawns are available");
+        if (!this.isSpawnAvailable() && !ignoreAvailableSpawns) throw new IllegalStateException("No spawns are available");
 
         SWPlayer swp = plugin.getPlayerManager().getPlayerByUUID(uuid);
         if (swp == null) swp = plugin.getPlayerManager().getPlayerByUUID(uuid);
@@ -152,7 +184,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     @Override
     public boolean addPlayers(GamePlayer... players) {
         // Select the default chest type to be placed if the player is joining a map that is being edited.
-        SWChestType defaultChestType = getDefaultChestType();
+        ChestType defaultChestType = getDefaultChestType();
 
         boolean successState = true;
         int index = 0;
@@ -166,7 +198,7 @@ public abstract class AbstractGameWorld implements GameWorld {
             // Apply the default chest type to the gamePlayer
             final SWPlayer swPlayer = gamePlayer.getSWPlayer();
             if (this.editing) {
-                this.selectedChestTypes.put(swPlayer.getUuid(), defaultChestType);
+                this.selectedEditingChestType.put(swPlayer.getUuid(), defaultChestType);
 
                 // Add the gamePlayer to the game
                 this.players.add(gamePlayer);
@@ -213,10 +245,7 @@ public abstract class AbstractGameWorld implements GameWorld {
 //            teleportPlayerToLobbyOrTeamSpawn(swPlayer, spawn)
 //                    .thenRun(() -> cagePlaceFuture.thenRunSync(swPlayer::unfreeze));
 
-            announce(plugin.getMessages().getMessage(MessageProperties.GAMES_PLAYER_JOINED.toString())
-                    .replace("%player%", gamePlayer.getSWPlayer().getName())
-                    .replace("%players%", getWaitingPlayers().size() + "")
-                    .replace("%maxplayers%", this.gameTemplate.getMaxPlayers() + ""));
+            announce(plugin.getMessages().getMessage(MessageProperties.GAMES_PLAYER_JOINED.toString()).replace("%player%", gamePlayer.getSWPlayer().getName()).replace("%players%", getWaitingPlayers().size() + "").replace("%maxplayers%", this.gameTemplate.getMaxPlayers() + ""));
 
             // todo give vote and other game items here.
             // todo teleport gamePlayer to team spawn / waiting spawn here.
@@ -325,7 +354,7 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     @Override
     public List<GameTeam> getAliveTeams() {
-        return teams.stream().filter(GameTeam::isEliminated).collect(Collectors.toList());
+        return teams.stream().filter(Predicate.not(GameTeam::isEliminated)).collect(Collectors.toList());
     }
 
     @Override
@@ -349,21 +378,18 @@ public abstract class AbstractGameWorld implements GameWorld {
     }
 
     @Override
-    public Item[] generateChestLoot(SWChestType chestType) {
-        HashMap<GameDifficulty, HashMap<Integer, Item>> contents = chestType.getAllContents();
-        HashMap<Integer, Item> items = contents.get(this.gameDifficulty);
-        return new Item[0]; // todo
-    }
-
-    @Override
     public void removeCages() {
         teams.forEach(gameTeam -> gameTeam.getSpawns().forEach(TeamSpawn::removeCage));
     }
 
     @Override
     public void fillChests() {
-        for (Map.Entry<SWCoord, SWChestType> chest : this.gameTemplate.getChests().entrySet()) {
-            this.fillChest(chest.getKey(), chest.getValue());
+        SWChestTier chestTier = this.getChestTier();
+        if (chestTier == null) chestTier = plugin.getChestManager().getChestTierByName("normal");
+
+        final SWChestFiller filler = chestTier.getChestFiller();
+        for (Map.Entry<SWCoord, ChestType> chest : this.gameTemplate.getChests().entrySet()) {
+            filler.fillChest(chestTier, this, chest.getKey(), chest.getValue());
         }
     }
 
@@ -414,25 +440,125 @@ public abstract class AbstractGameWorld implements GameWorld {
 
     // Private utils
 
-    private SWChestType getDefaultChestType() {
+    protected ChestType getDefaultChestType() {
         if (this.editing) {
-            Collection<SWChestType> chests = this.gameTemplate.getChests().values();
+            Collection<ChestType> chests = this.gameTemplate.getChests().values();
             if (!chests.isEmpty()) {
-                for (SWChestType chest : chests) {
+                for (ChestType chest : chests) {
                     return chest;
                 }
             }
         }
-        return null;
+        return ChestType.ISLAND;
     }
 
     private List<GameTeam> getTeamsOrderedByPlayerCountIncreasing() {
-        return teams.stream().filter(GameTeam::canJoin)
-                .sorted((team1, team2) -> team2.getPlayerCount() - team1.getPlayerCount()) // reverse sort
+        return teams.stream().filter(GameTeam::canJoin).sorted((team1, team2) -> team2.getPlayerCount() - team1.getPlayerCount()) // reverse sort
                 .collect(Collectors.toList());
     }
 
     private boolean shouldSendPlayerToCages() {
         return this.gameTemplate.getTeamSize() == 1 || this.state == GameState.WAITING_CAGES || this.state == GameState.COUNTDOWN;
+    }
+
+    @Override
+    public GameTeam getWinningTeam() {
+        return winningTeam;
+    }
+
+    @Override
+    public void determineWinner() {
+        final List<GameTeam> aliveTeams = getAliveTeams();
+        if (aliveTeams.size() == 1) {
+            winningTeam = aliveTeams.get(0);
+        } else if (!aliveTeams.isEmpty()) {
+            // pick random team from the alive teams
+            winningTeam = aliveTeams.get(new Random().nextInt(aliveTeams.size()));
+        }
+    }
+
+    @Override
+    public void endGame() {
+        setState(GameState.ENDING);
+        determineWinner();
+
+        Message message;
+
+        if (getTemplate().getTeamSize() == 1) {
+            message = plugin.getMessages().getMessage(MessageProperties.GAMES_SUMMARY.toString());
+
+            String winner = "N/A";
+            if (winningTeam != null && winningTeam.getPlayers().size() > 0) {
+                winner = winningTeam.getPlayers().get(0).getSWPlayer().getName();
+            }
+
+            message.replace("%winner%", winner);
+        } else {
+            message = plugin.getMessages().getMessage(MessageProperties.GAMES_TEAM_SUMMARY.toString());
+
+            StringBuilder sb = new StringBuilder();
+            if (winningTeam != null) {
+                for (int i = 0; i < winningTeam.getPlayers().size(); i++) {
+                    sb.append(winningTeam.getPlayers().get(i).getSWPlayer().getName());
+                    if (i < winningTeam.getPlayers().size() - 1) {
+                        sb.append("&7, ");
+                    }
+                }
+            } else {
+                sb.append("N/A");
+            }
+
+            message.replace("%winning_team%", winningTeam == null ? "N/A" : winningTeam.getName());
+            message.replace("%winners%", sb.toString());
+        }
+
+        // replacing the top 3 killers placeholders.
+        final List<GamePlayer> topKillers = getTopKillers();
+        for (int position = 0; position < 3; position++) {
+            final int displayPos = position + 1;
+            if (topKillers.size() > position) {
+                final GamePlayer gamePlayer = topKillers.get(position);
+                message.replace("%killer_" + displayPos + "%", gamePlayer.getSWPlayer().getName());
+                message.replace("%killer_" + displayPos + "_kills%", String.valueOf(gamePlayer.getKills()));
+            } else {
+                message.replace("%killer_" + displayPos + "%", "N/A");
+                message.replace("%killer_" + displayPos + "_kills%", "0");
+            }
+        }
+
+        message.sendCentered(players.stream().map(GamePlayer::getSWPlayer).toArray(SWPlayer[]::new));
+
+        Message winTitle = plugin.getMessages().getMessage(MessageProperties.TITLES_GAMES_WON.toString());
+        Message lostTitle = plugin.getMessages().getMessage(MessageProperties.TITLES_GAMES_LOST.toString());
+        for (GamePlayer gp : players) {
+            if (winningTeam != null && winningTeam.getPlayers().contains(gp)) {
+                winTitle.sendTitle(gp.getSWPlayer());
+            } else {
+                lostTitle.sendTitle(gp.getSWPlayer());
+            }
+        }
+
+        setTimer(plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_ENDING.toString()));
+        getScheduler().setGameStateHandler(new EndingStateHandler(plugin, this));
+    }
+
+    @Override
+    public List<GamePlayer> getTopKillers() {
+        return new ArrayList<>(players).stream().sorted((player1, player2) -> player2.getKills() - player1.getKills()).collect(Collectors.toList());
+    }
+
+    @Override
+    public void startGame() {
+        setState(GameState.PLAYING);
+        fillChests();
+        removeCages();
+        for (GamePlayer gp : getWaitingPlayers()) {
+            gp.setAlive(true);
+            preparePlayer(gp.getSWPlayer());
+            gp.getSWPlayer().playSound(gp.getSWPlayer().getLocation(), "BLOCK_NOTE_BLOCK_PLING", 1, 2);
+            gp.getSWPlayer().sendTitle("§a§lGOOD LUCK", "§eThe game has started!", 20, 50, 20);
+            gp.getSWPlayer().sendMessage("§aThe game has started! §eGood luck!");
+        }
+        getScheduler().setGameStateHandler(new PlayingStateHandler(plugin, this));
     }
 }

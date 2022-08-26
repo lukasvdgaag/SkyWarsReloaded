@@ -1,0 +1,16 @@
+display-name: 'Normal'
+
+types:
+  island:
+    contents:
+      '100':
+        - material: ENDER_PEARL
+          amount: 1
+        - material: END_STONE
+          amount: 14
+  center:
+    contents:
+      '100':
+        - material: STONE
+          amount: 16
+        - material: WOODEN_SWORD

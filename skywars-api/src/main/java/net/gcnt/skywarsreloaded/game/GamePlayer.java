@@ -68,6 +68,32 @@ public interface GamePlayer {
      */
     GameTeam getTeam();
 
+    /**
+     * Get the amount of players that this player killed.
+     *
+     * @return Number of killed players.
+     */
+    int getKills();
+
+    /**
+     * Add a kill to the player.
+     */
+    void addKill();
+
+    /**
+     * Get the number of assisted kills.
+     *
+     * @return The number of assisted kills.
+     */
+    int getAssists();
+
+    // todo add a percentage to the assist?
+
+    /**
+     * Add an assisted kill to the player.
+     */
+    void addAssist();
+
     void setTeam(GameTeam team);
 
     SWScoreboard getScoreboard();

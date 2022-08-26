@@ -12,14 +12,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
@@ -113,6 +109,36 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     }
 
     @Override
+    public List<?> getList(String property) {
+        return getList(property, this.defaultFileConfiguration.getList(property, null));
+    }
+
+    @Override
+    public List<?> getList(String property, List<?> defaultValue) {
+        return fileConfiguration.getList(property, defaultValue);
+    }
+
+    @Override
+    public List<Map<?, ?>> getMapList(String property) {
+        return fileConfiguration.getMapList(property);
+    }
+
+    @Override
+    public List<Item> getItemList(String property) {
+        final List<Map<?, ?>> mapList = getMapList(property);
+        List<Item> items = new ArrayList<>();
+
+        mapList.forEach(map -> {
+            if (map != null) {
+                final Item item = plugin.getItemManager().getItem(map);
+                if (item != null) items.add(item);
+            }
+        });
+
+        return items;
+    }
+
+    @Override
     public Map<String, String> getStringMap(String property) {
         ConfigurationSection section = this.fileConfiguration.getConfigurationSection(property);
         if (section == null) return new HashMap<>();
@@ -186,46 +212,10 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
         ConfigurationSection section = fileConfiguration.getConfigurationSection(category);
         if (section == null || !section.isSet("material")) return def;
 
-        try {
-            BukkitItem item = new BukkitItem(plugin, section.getString("material"));
-            item.setAmount(section.getInt("amount", 1));
-            item.setEnchantments(section.getStringList("enchantments"));
-            item.setDisplayName(section.getString("display-name", null));
-            item.setLore(section.getStringList("lore"));
-            item.setItemFlags(section.getStringList("item-flags"));
-            item.setSkullOwner(section.getString("owner", null));
+        Map<String, Object> map = section.getValues(true);
+        final Item item = plugin.getItemManager().getItem(map);
 
-            Object val = section.get("color", null);
-            if (val != null) {
-                if (val instanceof String) {
-                    String str = (String) val;
-                    if (str.startsWith("#")) item.setColor(Color.decode(str));
-                } else if (val instanceof Integer) {
-                    item.setColor(new Color((Integer) val));
-                }
-            }
-
-            try {
-                int rawNumber = section.getInt("damage", 0);
-                assert rawNumber >= -128 && rawNumber <= 127;
-                byte castedByte = (byte) rawNumber;
-                item.setDamage(castedByte);
-            } catch (Exception ignored) {
-            }
-            try {
-                int rawNumber = section.getInt("durability", 0);
-                assert rawNumber >= -128 && rawNumber <= 127;
-                byte castedByte = (byte) rawNumber;
-                item.setDurability(castedByte);
-            } catch (Exception ignored) {
-            }
-            return item;
-        } catch (Exception e) {
-            plugin.getLogger().error(String.format("Failed to load item with material %s. Ignoring it. (%s)",
-                    section.getString("material"), e.getClass().getName() + ": " + e.getLocalizedMessage()));
-        }
-
-        return def;
+        return item == null ? def : item;
     }
 
     @Override

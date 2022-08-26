@@ -2,7 +2,6 @@ package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.types.GameState;
-import net.gcnt.skywarsreloaded.wrapper.scheduler.CoreSWRunnable;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWRunnable;
 
 import java.util.function.Consumer;
@@ -24,25 +23,24 @@ public class CoreGameScheduler implements GameScheduler {
 
     @Override
     public void start() {
-        runnable = new CoreSWRunnable() {
-            @Override
-            public void run() {
-                ticksRun++;
-                if (gameWorld.getState() == GameState.PLAYING) ticksSinceGameStart++;
-                gameStateHandler.tick();
+        runnable = plugin.getScheduler().createRunnable(() -> {
+            ticksRun++;
+            if (gameWorld.getState() == GameState.PLAYING) ticksSinceGameStart++;
+            gameStateHandler.tick();
 
-                if (ticksRun % 20 == 0) {
-                    gameStateHandler.tickSecond();
-                }
+            if (ticksRun % 20 == 0) {
+                gameStateHandler.tickSecond();
             }
-        };
+        });
         plugin.getScheduler().runSyncTimer(runnable, 0, 1);
     }
 
     @Override
     public void end() {
-        runnable.cancel();
-        runnable = null;
+        if (runnable != null) {
+            runnable.cancel();
+            runnable = null;
+        }
     }
 
     @Override

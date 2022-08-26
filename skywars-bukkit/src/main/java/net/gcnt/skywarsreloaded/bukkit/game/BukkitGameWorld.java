@@ -5,7 +5,7 @@ import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.game.AbstractGameWorld;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.chest.SWChestType;
+import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.game.state.WaitingStateHandler;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
@@ -30,27 +30,6 @@ public class BukkitGameWorld extends AbstractGameWorld {
     @Override
     public SWWorld getWorld() {
         return new BukkitSWWorld((BukkitSkyWarsReloaded) plugin, getBukkitWorld());
-    }
-
-    @Override
-    public void fillChest(SWCoord coord, SWChestType chestType) {
-        World world = getBukkitWorld();
-        if (world == null) return;
-        Block block = world.getBlockAt(coord.x(), coord.y(), coord.z());
-        if (!block.getChunk().isLoaded()) {
-            block.getChunk().load();
-            return;
-        }
-
-        Item[] items = this.generateChestLoot(chestType);
-
-        if (block.getState() instanceof Chest) {
-            Inventory inventory = ((Chest) block.getState()).getBlockInventory();
-            inventory.clear();
-            for (int i = 0; i < items.length; i++) {
-                inventory.setItem(i, ((BukkitItem) items[i]).getBukkitItem());
-            }
-        }
     }
 
     @Override

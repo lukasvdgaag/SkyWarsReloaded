@@ -101,6 +101,9 @@ public enum MessageProperties {
     GAMES_PLAYER_LEFT("games.player-left"),
     GAMES_JOIN_FAILED("games.join-failed"),
 
+    GAMES_SUMMARY("games.summary"),
+    GAMES_TEAM_SUMMARY("games.team-summary"),
+
     TITLES_MAPS_GENERATING_WORLD("titles.maps.generating-world"),
     TITLES_MAPS_GENERATED_WORLD("titles.maps.generated-world"),
     TITLES_MAPS_NO_TEAM_GAME("titles.maps.no-team-game"),
@@ -108,6 +111,19 @@ public enum MessageProperties {
     TITLES_MAPS_SET_SPAWN_SPECTATE("titles.maps.set-spawn-spectate"),
     TITLES_MAPS_SET_SPAWN_PLAYER("titles.maps.set-spawn-player"),
     TITLES_MAPS_SET_SPAWN_PLAYER_FAIL("titles.maps.set-spawn-player-fail"),
+
+    TITLES_GAMES_WON("titles.games.won"),
+    TITLES_GAMES_LOST("titles.games.lost"),
+
+    SCOREBOARDS_LOBBY("scoreboards.lobby"),
+    SCOREBOARDS_WAITING("scoreboards.waiting"),
+    SCOREBOARDS_STARTING_SOON("scoreboards.starting-soon"),
+    SCOREBOARDS_PLAYING("scoreboards.playing"),
+    SCOREBOARDS_PLAYING_EVENT_SOON("scoreboards.playing-event-soon"),
+    SCOREBOARDS_PLAYING_EVENT("scoreboards.playing-event"),
+    SCOREBOARDS_ENDING("scoreboards.ending"),
+    SCOREBOARDS_WINNER_LINE("scoreboards.winner-line"),
+    SCOREBOARDS_WINNERS_LEFT_LINE("scoreboards.winners-left-line"),
     ;
 
     private final String value;

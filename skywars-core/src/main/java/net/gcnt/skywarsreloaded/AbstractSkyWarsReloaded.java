@@ -10,15 +10,14 @@ import net.gcnt.skywarsreloaded.data.schematic.CoreSchematicManager;
 import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
 import net.gcnt.skywarsreloaded.game.GameManager;
 import net.gcnt.skywarsreloaded.game.GameWorld;
-import net.gcnt.skywarsreloaded.game.cages.NormalCageShape;
-import net.gcnt.skywarsreloaded.game.chest.ChestManager;
+import net.gcnt.skywarsreloaded.game.chest.CoreChestManager;
+import net.gcnt.skywarsreloaded.game.chest.SWChestManager;
+import net.gcnt.skywarsreloaded.game.chest.filler.ChestFillerManager;
+import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFillerManager;
 import net.gcnt.skywarsreloaded.game.kits.KitManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
-import net.gcnt.skywarsreloaded.manager.CageManager;
-import net.gcnt.skywarsreloaded.manager.EntityManager;
-import net.gcnt.skywarsreloaded.manager.SWPlayerManager;
-import net.gcnt.skywarsreloaded.manager.UnlockablesManager;
+import net.gcnt.skywarsreloaded.manager.*;
 import net.gcnt.skywarsreloaded.protocol.NMSManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
@@ -52,12 +51,15 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private GameManager gameManager;
     private SWPlayerManager playerManager;
     private KitManager kitManager;
-    private ChestManager chestManager;
+    private SWChestManager chestManager;
     private CageManager cageManager;
     private UnlockablesManager unlockablesManager;
     private EntityManager entityManager;
     private SWEventListener eventListener;
     private GameWorldLoader worldLoader;
+    private ScoreboardManager scoreboardManager;
+    private ItemManager itemManager;
+    private SWChestFillerManager chestFillerManager;
 
     // others
     private SWCommandSender consoleSender;
@@ -93,6 +95,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
         // Managers
         initServer();
+        initItemManager();
+        initChestFillerManager();
         initPlayerManager();
         initCommandManager();
         initGameManager();
@@ -103,6 +107,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         getCageManager().loadAllCages();
         initUnlockablesManager();
         initEntityManager();
+        initScoreboardManager();
 
         setSchematicManager(new CoreSchematicManager(this));
 
@@ -112,7 +117,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
         // Templates
         getChestManager().createDefaultsIfNotPresent();
-        getChestManager().loadAllChestTypes();
+        getChestManager().loadAllChestTiers();
         getKitManager().createDefaultsIfNotPresent();
         getKitManager().loadAllKits();
         getGameManager().loadAllGameTemplates();
@@ -161,7 +166,9 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     public void postEnable() {
     }
 
-    protected abstract void initChestManager();
+    protected void initChestManager() {
+        this.chestManager = new CoreChestManager(this);
+    }
 
     protected abstract void initCommandManager();
 
@@ -198,6 +205,14 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     protected abstract void initUnlockablesManager();
 
     protected abstract void initEntityManager();
+
+    protected abstract void initScoreboardManager();
+
+    protected abstract void initItemManager();
+
+    protected void initChestFillerManager() {
+        setChestFillerManager(new ChestFillerManager(this));
+    }
 
     // Getters & Setters
 
@@ -342,12 +357,12 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public ChestManager getChestManager() {
+    public SWChestManager getChestManager() {
         return chestManager;
     }
 
     @Override
-    public void setChestManager(ChestManager chestManager) {
+    public void setChestManager(SWChestManager chestManager) {
         this.chestManager = chestManager;
     }
 
@@ -427,5 +442,35 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
+    }
+
+    @Override
+    public ScoreboardManager getScoreboardManager() {
+        return scoreboardManager;
+    }
+
+    @Override
+    public void setScoreboardManager(ScoreboardManager scoreboardManager) {
+        this.scoreboardManager = scoreboardManager;
+    }
+
+    @Override
+    public SWChestFillerManager getChestFillerManager() {
+        return chestFillerManager;
+    }
+
+    @Override
+    public void setChestFillerManager(SWChestFillerManager chestFillerManager) {
+        this.chestFillerManager = chestFillerManager;
+    }
+
+    @Override
+    public ItemManager getItemManager() {
+        return itemManager;
+    }
+
+    @Override
+    public void setItemManager(ItemManager itemManager) {
+        this.itemManager = itemManager;
     }
 }

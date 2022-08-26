@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTeam;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.unlockable.killmessages.KillMessageGroup;
 import net.gcnt.skywarsreloaded.utils.results.SpawnRemoveResult;
@@ -119,12 +120,14 @@ public class AbstractSWEventListener implements SWEventListener {
             if (gameWorld == null || !gameWorld.isEditing()) return;
 
             final GameTemplate template = gameWorld.getTemplate();
-            boolean res = template.addChest(event.getCoord().asBlock(), gameWorld.getSelectedChestTypes().getOrDefault(event.getPlayer().getUuid(), plugin.getChestManager().getChestTypeByName("normal")));
+            final ChestType chestType = gameWorld.getSelectedEditingChestTypes().getOrDefault(event.getPlayer().getUuid(), ChestType.ISLAND);
+            boolean res = template.addChest(event.getCoord().asBlock(), chestType);
             if (res) {
                 event.getPlayer().sendTitle(plugin.getUtils().colorize("&a&lCHEST ADDED"),
                         plugin.getUtils().colorize("&7Added a new chest to the template!"), 5, 30, 5);
                 event.getPlayer().sendMessage(plugin.getUtils().colorize(
-                        String.format("&aAdded a new chest (&b#%d&a) to game template &b%s&a.",
+                        String.format("&aAdded a new &e%s &achest (&b#%d&a) to game template &b%s&a.",
+                                chestType.getId().toLowerCase(),
                                 template.getChests().size(), template.getDisplayName())));
                 template.checkToDoList(event.getPlayer());
             }
@@ -154,11 +157,11 @@ public class AbstractSWEventListener implements SWEventListener {
         if (gameWorld == null) return;
 
         GamePlayer gamePlayer = gameWorld.getPlayer(player);
-        if (gamePlayer.isSpectating()) {
+        if (gamePlayer.isSpectating() || !gamePlayer.isAlive()) {
             event.setCancelled(true);
+            System.out.println(gamePlayer.getSWPlayer().getName() + " is spectating");
             return;
         }
-        // todo fixed damage getting cancelled regardless.
 
         if (gameWorld.getState() != GameState.PLAYING) return;
 
@@ -167,10 +170,7 @@ public class AbstractSWEventListener implements SWEventListener {
         final GameTeam team = gamePlayer.getTeam();
         if (team == null) return;
 
-        // preparing the player for spectate.
         event.setDamage(0);
-        team.eliminatePlayer(gamePlayer);
-        gameWorld.preparePlayer(player);
 
         DeathReason reason = event.getCause();
         if (reason == null) reason = DeathReason.DEFAULT;
@@ -178,12 +178,16 @@ public class AbstractSWEventListener implements SWEventListener {
         SWPlayer tagged = gamePlayer.getLastTaggedBy();
 
         // sending the death message.
+        // todo check for assists.
         String message;
         if (tagged != null) {
             if (!reason.isKill()) {
                 reason = DeathReason.fromString(reason.name() + "_KILL");
                 if (reason == null) reason = DeathReason.DEFAULT_KILL;
             }
+
+            final GamePlayer taggedGamePlayer = gameWorld.getPlayer(tagged);
+            if (taggedGamePlayer != null) taggedGamePlayer.addKill();
 
             // selecting the kill messages of the killer.
             final KillMessageGroup killMessageGroup = plugin.getUnlockablesManager().getKillMessageGroup(tagged.getPlayerData().getKillMessagesTheme());
@@ -196,9 +200,11 @@ public class AbstractSWEventListener implements SWEventListener {
         message = message.replace("%player%", player.getName());
 
         gameWorld.announce(plugin.getUtils().colorize(message));
-
-        player.sendTitle("§c§lYOU DIED", "§7You are now a spectator", 5, 30, 5);
+        player.sendTitle("§c§lYOU DIED!", "§7You are now a spectator!", 5, 30, 5);
         // todo customize this message.
+
+        team.eliminatePlayer(gamePlayer);
+        gameWorld.preparePlayer(player);
     }
 
     @Override

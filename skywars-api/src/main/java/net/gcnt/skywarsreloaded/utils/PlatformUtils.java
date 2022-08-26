@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.utils;
 import com.sk89q.worldedit.world.World;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
+import java.util.Map;
 import java.util.UUID;
 
 public interface PlatformUtils {
@@ -36,5 +37,9 @@ public interface PlatformUtils {
     World getWorldEditWorld(String worldName);
 
     SWWorld getSWWorld(String worldName);
+
+    String centerMessage(String message);
+
+    Item getItemFromMap(Map<String, Object> map);
 
 }

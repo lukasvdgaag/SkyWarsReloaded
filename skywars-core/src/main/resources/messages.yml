@@ -18,6 +18,9 @@ titles:
     set-spawn-spectate: "&a&lSPAWN SET!\n&7Successfully set the spectator spawnpoint!"
     set-spawn-player: "&a&lSPAWN SET!\n&7Successfully added a new player spawnpoint!"
     set-spawn-player-fail: "&c&lOH NO!\n&7Couldn't add the player spawn (see chat)!"
+  games:
+    won: "&6&lVICTORY!\n&7You were the last man standing!"
+    lost: "&c&lGAME END\n&7You weren't victorious this time"
 
 kits:
   enter-name: "&cPlease enter a kit name."
@@ -111,11 +114,35 @@ games:
   join-failed: "&cWe failed to put you in this game, please try again later!"
   player-joined: "&7%player% &ehas joined (&b%players%&e/&b%maxplayers%&e)!"
   player-left: "&7%player% &ehas quit!"
+  summary:
+    - "&a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    - "&f&lSkyWars"
+    - ""
+    - "&eWinner &7- %winner%"
+    - ""
+    - "&e&l1st Killer &7- %killer_1% &7- %killer_1_kills%"
+    - "&6&l2nd Killer &7- %killer_2% &7- %killer_2_kills%"
+    - "&c&l3rd Killer &7- %killer_3% &7- %killer_3_kills%"
+    - ""
+    - "&a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+  team-summary:
+    - "&a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+    - "&f&lSkyWars"
+    - ""
+    - "&aTeam %winning_team% &awon the game!"
+    - "&eWinners &7- %winners%"
+    - ""
+    - "&e&l1st Killer &7- %killer_1% &7- %killer_1_kills%"
+    - "&6&l2nd Killer &7- %killer_2% &7- %killer_2_kills%"
+    - "&c&l3rd Killer &7- %killer_3% &7- %killer_3_kills%"
+    - ""
+    - "&a▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+
 
 scoreboards:
   lobby:
     - '&e&lSKYWARS'
-    - '&7%date% &8%server%'
+    - '&7%localtime_time_MM/dd/yyyy% &8GCNT'
     - ''
     - '&fYour Level: &7%level%'
     - ''
@@ -127,7 +154,7 @@ scoreboards:
     - '&ewww.gcnt.net'
   waiting:
     - '&e&lSKYWARS'
-    - '&7%date% &8%server%'
+    - '&7%localtime_time_MM/dd/yyyy% &8GCNT'
     - ''
     - '&fPlayers: &a%players%/%max_players%'
     - ''
@@ -140,11 +167,11 @@ scoreboards:
     - '&ewww.gcnt.net'
   starting-soon:
     - '&e&lSKYWARS'
-    - '&7%date% &8%server%'
+    - '&7%localtime_time_MM/dd/yyyy% &8GCNT'
     - ''
     - '&fPlayers: &a%players%/%max_players%'
     - ''
-    - '&fStarting in &a%countdown%'
+    - '&fStarting in &a%timer%'
     - ''
     - '&fMap: &a%template%'
     - '&fMode: &a%difficulty%'
@@ -152,7 +179,20 @@ scoreboards:
     - '&ewww.gcnt.net'
   playing:
     - '&e&lSKYWARS'
-    - '&7%date% &8%server%'
+    - '&7%localtime_time_MM/dd/yyyy% &8GCNT'
+    - ''
+    - '&fPlayers left: &a%players%'
+    - ''
+    - '&fKills: &a%kills%'
+    - '&fAssists: &a%assists%'
+    - ''
+    - '&fMap: &a%template%'
+    - '&fMode: &a%difficulty%'
+    - ''
+    - '&ewww.gcnt.net'
+  playing-event-soon:
+    - '&e&lSKYWARS'
+    - '&7%localtime_time_MM/dd/yyyy% &8GCNT'
     - ''
     - '&fNext Event:'
     - '&e%next_event% %next_event_countdown%'
@@ -166,11 +206,25 @@ scoreboards:
     - '&fMode: &a%difficulty%'
     - ''
     - '&ewww.gcnt.net'
+  playing-event:
+    - '&e&lSKYWARS'
+    - '&7%localtime_time_MM/dd/yyyy% &8GCNT'
+    - ''
+    - '&fCurrent Event:'
+    - '&e%event%'
+    - ''
+    - '&fPlayers left: &a%players%'
+    - ''
+    - '&fKills: &a%kills%'
+    - '&fAssists: &a%assists%'
+    - ''
+    - '&fMap: &a%template%'
+    - '&fMode: &a%difficulty%'
+    - ''
+    - '&ewww.gcnt.net'
   ending:
     - '&e&lSKYWARS'
-    - '&7%date% &8%server%'
-    - ''
-    - '&fNext Event:'
+    - '&7%localtime_time_MM/dd/yyyy% &8GCNT'
     - '&aGame Ended!'
     - ''
     - '&fWinners:'
@@ -179,9 +233,11 @@ scoreboards:
     - '&fKills: &a%kills%'
     - '&fAssists: &a%assists%'
     - ''
-    - '&7Teleporting in: &c%countdown%'
+    - '&7Teleporting in: &c%timer%'
     - ''
     - '&fMap: &a%template%'
     - '&fMode: &a%difficulty%'
     - ''
     - '&ewww.gcnt.net'
+  winner-line: '&7- &a%player%'
+  winners-left-line: '&7- &fand &a%winners_left% &aothers...'

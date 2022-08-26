@@ -25,8 +25,12 @@ game:
     waiting-lobby-full: 10
     waiting-cages: 30
     waiting-cages-full: 15
+    ending: 20
   cages:
     separate-cages: false
+  chests:
+    max-items: 26
+    max-items-double: 53
   solo-waiting-lobby: false
 
 parties:

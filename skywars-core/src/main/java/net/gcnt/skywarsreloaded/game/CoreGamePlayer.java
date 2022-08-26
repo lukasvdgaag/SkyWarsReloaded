@@ -11,6 +11,8 @@ public class CoreGamePlayer implements GamePlayer {
     private boolean spectating;
     private SWScoreboard scoreboard;
     private SWPlayer taggedBy;
+    private int kills;
+    private int assists;
 
     public CoreGamePlayer(SWPlayer player, GameWorld gameWorld) {
         this.player = player;
@@ -20,6 +22,8 @@ public class CoreGamePlayer implements GamePlayer {
         this.spectating = false;
         this.scoreboard = null;
         this.taggedBy = null;
+        this.kills = 0;
+        this.assists = 0;
     }
 
     @Override
@@ -83,5 +87,25 @@ public class CoreGamePlayer implements GamePlayer {
     @Override
     public void setLastTaggedBy(SWPlayer player) {
         this.taggedBy = player;
+    }
+
+    @Override
+    public int getKills() {
+        return kills;
+    }
+
+    @Override
+    public void addKill() {
+        this.kills++;
+    }
+
+    @Override
+    public int getAssists() {
+        return assists;
+    }
+
+    @Override
+    public void addAssist() {
+        this.assists++;
     }
 }

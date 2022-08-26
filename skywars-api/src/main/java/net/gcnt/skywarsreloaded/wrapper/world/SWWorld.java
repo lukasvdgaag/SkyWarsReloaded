@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.wrapper.world;
 
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.wrapper.world.block.SWBlock;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.util.List;
@@ -30,6 +31,24 @@ public interface SWWorld {
      * @param blockName The name of the block to set at that location
      */
     void setBlockAt(SWCoord location, String blockName);
+
+    /**
+     * Get a block at a specific location.
+     *
+     * @param location {@link SWCoord} The location of the block to get
+     * @return A {@link SWBlock} at the location
+     */
+    SWBlock getBlockAt(SWCoord location);
+
+    /**
+     * Get a block at a specific location.
+     *
+     * @param x The x coordinate of the block to get
+     * @param y The y coordinate of the block to get
+     * @param z The z coordinate of the block to get
+     * @return A {@link SWBlock} at the location
+     */
+    SWBlock getBlockAt(int x, int y, int z);
 
     /**
      * Get the world's name

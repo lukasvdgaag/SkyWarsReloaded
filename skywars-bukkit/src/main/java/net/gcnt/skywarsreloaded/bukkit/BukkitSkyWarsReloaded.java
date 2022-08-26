@@ -5,13 +5,14 @@ import net.gcnt.skywarsreloaded.bukkit.command.BukkitSWCommandExecutor;
 import net.gcnt.skywarsreloaded.bukkit.data.config.BukkitYAMLManager;
 import net.gcnt.skywarsreloaded.bukkit.data.player.BukkitSWPlayerDataManager;
 import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameManager;
-import net.gcnt.skywarsreloaded.bukkit.game.chest.BukkitChestManager;
 import net.gcnt.skywarsreloaded.bukkit.game.kits.BukkitKitManager;
 import net.gcnt.skywarsreloaded.bukkit.game.loader.SchemWorldLoader;
 import net.gcnt.skywarsreloaded.bukkit.game.loader.SlimeWorldLoader;
 import net.gcnt.skywarsreloaded.bukkit.listener.BukkitSWEventListener;
 import net.gcnt.skywarsreloaded.bukkit.managers.BukkitEntityManager;
+import net.gcnt.skywarsreloaded.bukkit.managers.BukkitItemManager;
 import net.gcnt.skywarsreloaded.bukkit.managers.BukkitPlayerManager;
+import net.gcnt.skywarsreloaded.bukkit.managers.BukkitScoreboardManager;
 import net.gcnt.skywarsreloaded.bukkit.protocol.BukkitNMSManager;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitPlatformUtils;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitSWLogger;
@@ -36,11 +37,6 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     }
 
     // Internal Utils
-
-    @Override
-    public void initChestManager() {
-        setChestManager(new BukkitChestManager(this));
-    }
 
     @Override
     public void initCommandManager() {
@@ -102,7 +98,7 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
     @Override
     public void initLogger() {
-        setLogger(new BukkitSWLogger(this, this.plugin.getLogger(), false));
+        setLogger(new BukkitSWLogger(this, this.plugin.getLogger(), true));
     }
 
     @Override
@@ -133,6 +129,16 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     protected void initEntityManager() {
         setEntityManager(new BukkitEntityManager(this));
+    }
+
+    @Override
+    protected void initScoreboardManager() {
+        setScoreboardManager(new BukkitScoreboardManager(this));
+    }
+
+    @Override
+    protected void initItemManager() {
+        setItemManager(new BukkitItemManager(this));
     }
 
     @Override

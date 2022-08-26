@@ -1,10 +1,9 @@
 package net.gcnt.skywarsreloaded.game;
 
-import net.gcnt.skywarsreloaded.game.chest.SWChestType;
+import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
+import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.game.types.GameState;
-import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.Message;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
@@ -38,9 +37,19 @@ public interface GameWorld {
 
     void startScheduler();
 
+    void startGame();
+
+    void endGame();
+
+    List<GamePlayer> getTopKillers();
+
     GameScheduler getScheduler();
 
-    Map<UUID, SWChestType> getSelectedChestTypes();
+    Map<UUID, SWChestTier> getVotedChestTiers();
+
+    Map<UUID, ChestType> getSelectedEditingChestTypes();
+
+    SWChestTier getChestTier();
 
     void announce(Message message);
 
@@ -50,7 +59,7 @@ public interface GameWorld {
 
     void announceTitle(Message message, int fadeIn, int stay, int fadeOut);
 
-    void setChestTypeSelected(UUID player, SWChestType type);
+    void setChestTypeSelected(UUID player, SWChestTier type);
 
     /**
      * This method is to be run async since it could perform long operations
@@ -95,20 +104,6 @@ public interface GameWorld {
     void setTimer(int timer);
 
     /**
-     * Generate the loot of one chest based on the voted chest type.
-     *
-     * @return String array with all slots and their ItemStack values as strings.
-     */
-    Item[] generateChestLoot(SWChestType chestType);
-
-    /**
-     * Fill the chest with the given coord.
-     *
-     * @param coord Location of the chest
-     */
-    void fillChest(SWCoord coord, SWChestType chestType);
-
-    /**
      * Removes all the cages that are currently placed.
      */
     void removeCages();
@@ -121,4 +116,9 @@ public interface GameWorld {
     void loadTeams();
 
     void readyForGame();
+
+    GameTeam getWinningTeam();
+
+    void determineWinner();
+
 }

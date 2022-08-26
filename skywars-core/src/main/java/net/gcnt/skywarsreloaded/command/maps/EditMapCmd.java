@@ -5,7 +5,7 @@ import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
-import net.gcnt.skywarsreloaded.game.chest.SWChestType;
+import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
@@ -105,7 +105,7 @@ public class EditMapCmd extends Cmd {
 
             world.readyForEditing();
 
-            SWChestType defaultChestType = plugin.getChestManager().getChestTypeByName("normal");
+            SWChestTier defaultChestType = plugin.getChestManager().getChestTierByName("normal");
             /*Collection<SWChestType> chests = template.getEnabledChestTypes();
             // todo fix this.
             chests.forEach(System.out::println);
