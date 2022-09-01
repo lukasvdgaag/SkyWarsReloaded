@@ -26,19 +26,25 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
     private static final Object cooldownsLock = new Object();
 
     @org.bukkit.event.EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
-    public void onPlayerTeleport(PlayerTeleportEvent a1) {
-        Player player = a1.getPlayer();
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
 
         if (gameMap == null) {
+
+            if (event.getTo() == null) {
+                SkyWarsReloaded.get().getLogger().warning(String.format("Player %s teleported to nowhere! (changing dimension?)", player.getName()));
+                return;
+            }
+
             if (SkyWarsReloaded.getCfg().getSpawn() != null) {
                 // Pre vars
                 World spawnWorld = SkyWarsReloaded.getCfg().getSpawn().getWorld();
-                boolean wasInSpawnWorld = a1.getFrom().getWorld().equals(spawnWorld);
-                boolean isGoingToSpawnWorld = a1.getTo().getWorld().equals(spawnWorld);
+                boolean wasInSpawnWorld = event.getFrom().getWorld().equals(spawnWorld);
+                boolean isGoingToSpawnWorld = event.getTo().getWorld().equals(spawnWorld);
 
                 // Going to spawn world
-                if ((!a1.getFrom().getWorld().equals(spawnWorld)) && (a1.getTo().getWorld().equals(spawnWorld))) {
+                if (!wasInSpawnWorld && isGoingToSpawnWorld) {
                     setPlayerOnCooldown(player, true);
                     Bukkit.getScheduler().runTaskLaterAsynchronously(SkyWarsReloaded.get(), () -> setPlayerOnCooldown(player, false), 5);
                     com.walrusone.skywarsreloaded.managers.PlayerStat.updatePlayer(player.getUniqueId().toString());
@@ -79,24 +85,24 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
 
             }
         }
-        else if (a1.getCause().equals(TeleportCause.SPECTATE)) {
-            a1.setCancelled(true);
+        else if (event.getCause().equals(TeleportCause.SPECTATE)) {
+            event.setCancelled(true);
         }
-        else if (a1.getCause().equals(TeleportCause.END_PORTAL) ||
+        else if (event.getCause().equals(TeleportCause.END_PORTAL) ||
                 player.hasPermission("sw.opteleport") ||
-                a1.getTo().getWorld().equals(a1.getFrom().getWorld()))
+                event.getTo().getWorld().equals(event.getFrom().getWorld()))
         {
-            a1.setCancelled(false);
+            event.setCancelled(false);
         }
-        else if (a1.getCause().equals(TeleportCause.ENDER_PEARL) &&
+        else if (event.getCause().equals(TeleportCause.ENDER_PEARL) &&
                 gameMap.getMatchState() != MatchState.ENDING &&
                 gameMap.getMatchState() != MatchState.WAITINGSTART &&
                 gameMap.getMatchState() != MatchState.WAITINGLOBBY)
         {
-            a1.setCancelled(false);
+            event.setCancelled(false);
         }
         else {
-            a1.setCancelled(true);
+            event.setCancelled(true);
         }
     }
 
