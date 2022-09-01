@@ -1,12 +1,14 @@
 package com.walrusone.skywarsreloaded.commands.kits;
 
+import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class LoreCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
+public class LoreCmd extends BaseCmd {
     public LoreCmd(String t) {
         type = t;
         forcePlayer = true;
@@ -16,40 +18,62 @@ public class LoreCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     }
 
     public boolean run(CommandSender sender, Player player, String[] args) {
-        GameKit kit = GameKit.getKit(args[1]);
+        // Arg numbers to make code easier to read
+        int kitArgIndex = 1;
+        int lineArgIndex = 2;
+        int messageIndex = 3;
+
+        String kitArg = args.length > kitArgIndex ? args[kitArgIndex] : "";
+        String lineArg = args.length > lineArgIndex ? args[lineArgIndex] : "";
+        String message;
+
+        // Get kit by name
+        GameKit kit = GameKit.getKit(kitArg);
         if (kit == null) {
-            player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", args[1]).format("command.no-kit"));
+            player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", kitArg).format("command.no-kit"));
             return true;
         }
-        StringBuilder message = new StringBuilder();
-        for (int i = 3; i < args.length; i++) {
-            message.append(args[i]);
-            message.append(" ");
+
+        // Compile message from command args
+        StringBuilder strb = new StringBuilder();
+        for (int i = messageIndex; i < args.length; i++) {
+            strb.append(args[i]);
+            strb.append(" ");
         }
+        message = strb.toString();
 
-        if (com.walrusone.skywarsreloaded.utilities.Util.get().isInteger(args[2])) {
-            int loreNumber = Integer.parseInt(args[2]);
+        // Sanity check: is a number
+        if (Util.get().isInteger(lineArg)) {
+            int loreLineNumber = Integer.parseInt(lineArg);
+            int loreLineIndex = loreLineNumber - 1;
 
-            if (loreNumber < 1 || loreNumber > 16) {
+            // Sanity check: line number
+            if (loreLineNumber < 1 || loreLineNumber > 16) {
                 player.sendMessage(ChatColor.RED + "The lore number must be between 1 - 16 or \"locked\".");
                 return true;
             }
 
-            for (int line = 0; line < loreNumber-1; line++) {
-                if (kit.getLores().size() < line+1) {
-                    kit.getLores().set(line," ");
+            // Add additional lines in between last existing line (excluded) and targeted line (included)
+            int previousSize = kit.getLores().size();
+            if (previousSize < loreLineNumber) {
+                for (int line = previousSize; line < loreLineNumber; line++) {
+                    kit.getLores().set(line, " ");
                 }
             }
-            kit.getLores().set(loreNumber-1,message.toString().trim());
+
+            // Update lore message at line
+            kit.getLores().set(loreLineIndex, message.trim());
+
         } else if (args[2].equalsIgnoreCase("locked")) {
-            kit.setLockedLore(message.toString().trim());
+            kit.setLockedLore(strb.toString().trim());
         } else {
             player.sendMessage(new Messaging.MessageFormatter().format("command.kit-loreerror"));
+            return true;
         }
 
         GameKit.saveKit(kit);
 
-        player.sendMessage(new Messaging.MessageFormatter().setVariable("line", args[2]).setVariable("kit", kit.getColorName()).format("command.kit-lore"));
+        player.sendMessage(new Messaging.MessageFormatter().setVariable("line", lineArg).setVariable("kit", kit.getColorName()).format("command.kit-lore"));
         return true;
     }
 }
