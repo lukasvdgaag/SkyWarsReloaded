@@ -57,7 +57,7 @@ public class LoreCmd extends BaseCmd {
             int previousSize = kit.getLores().size();
             if (previousSize < loreLineNumber) {
                 for (int line = previousSize; line < loreLineNumber; line++) {
-                    kit.getLores().set(line, " ");
+                    kit.getLores().add(" ");
                 }
             }
 
