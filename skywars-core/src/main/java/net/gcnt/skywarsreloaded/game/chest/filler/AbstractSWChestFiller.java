@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import net.gcnt.skywarsreloaded.wrapper.world.block.SWBlock;
 import net.gcnt.skywarsreloaded.wrapper.world.block.SWChest;
 
@@ -27,16 +28,24 @@ public abstract class AbstractSWChestFiller implements SWChestFiller {
     }
 
     @Override
-    public void fillChest(SWChestTier chestTier, GameWorld world, SWCoord coord, ChestType chestType) {
-        if (world == null || coord.getWorld() == null) return;
-        SWBlock block = coord.getWorld().getBlockAt(coord.x(), coord.y(), coord.z());
-        if (!(block instanceof SWChest)) return;
+    public void fillChest(SWChestTier chestTier, GameWorld gameWorld, SWCoord coord, ChestType chestType) {
+        System.out.println("FILLING CHEST!");
+        if (gameWorld == null) {
+            System.out.println("gameWorld is null");
+            return;
+        }
+
+        SWWorld world = gameWorld.getWorld();
+        SWBlock block = world.getBlockAt(coord.x(), coord.y(), coord.z());
+        if (!(block instanceof SWChest)) {
+            System.out.println("block is not a chest");
+            return;
+        }
 
         SWChest chest = (SWChest) block;
 
         if (!block.getChunk().isLoaded()) {
             block.getChunk().load();
-            return;
         }
 
         chest.clearContents();

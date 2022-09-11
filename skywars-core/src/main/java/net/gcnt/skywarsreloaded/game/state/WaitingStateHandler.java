@@ -13,11 +13,15 @@ public class WaitingStateHandler extends CoreGameStateHandler {
         super(plugin, gameWorld);
     }
 
-    public GameState getBeginningWaitingState(GameTemplate template) {
+    public GameState determineDefaultWaitingState(GameTemplate template) {
         if (template.getTeamSize() > 1 || plugin.getConfig().getBoolean(ConfigProperties.GAME_SOLO_WAITING_LOBBY.toString()))
             return GameState.WAITING_LOBBY;
         else
             return GameState.WAITING_CAGES;
+    }
+
+    public GameState getDefaultWaitingState() {
+        return DEFAULT_WAITING_STATE;
     }
 
     @Override
@@ -60,32 +64,13 @@ public class WaitingStateHandler extends CoreGameStateHandler {
             }
         } else {
             if (gameWorld.getTimer() == 0) {
-                if (gameWorld.getState() == GameState.WAITING_LOBBY) {
-                    // todo teleport all players to their cages
-                } else if (gameWorld.getState() == GameState.COUNTDOWN) {
-                    // todo release the cages
-                    gameWorld.startGame();
-                }
-
-                plugin.getScoreboardManager().updateGame(gameWorld);
-                return;
+                return WaitingDecision.START_GAME;
             }
 
-            // when the timer reaches 10, officially start the countdown state.
-            if (gameWorld.getState() == GameState.WAITING_CAGES && gameWorld.getTimer() == waitingFullTimer) {
-                gameWorld.setState(GameState.COUNTDOWN);
-            }
-
-            gameWorld.setTimer(gameWorld.getTimer() - 1);
-
-            for (GamePlayer player : gameWorld.getWaitingPlayers()) {
-                player.getSWPlayer().setExp(gameWorld.getTimer(), 0);
-            }
-
-            announceTimer();
+            return WaitingDecision.COUNTDOWN;
         }
 
-        plugin.getScoreboardManager().updateGame(gameWorld);
+        return WaitingDecision.NONE;
     }
 
     private void announceTimer() {

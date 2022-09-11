@@ -136,7 +136,7 @@ public abstract class AbstractScoreboardManager implements ScoreboardManager {
     }
 
     @Override
-    public void updateGame(GameWorld gameWorld) {
+    public void updateAllPlayers(GameWorld gameWorld) {
         for (GamePlayer player : gameWorld.getPlayersCopy()) {
             updatePlayer(player.getSWPlayer());
         }

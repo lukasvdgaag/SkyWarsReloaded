@@ -11,7 +11,7 @@ public interface ScoreboardManager {
 
     void updatePlayer(SWPlayer player);
 
-    void updateGame(GameWorld gameWorld);
+    void updateAllPlayers(GameWorld gameWorld);
 
     /**
      * Determine what scoreboard format to apply to a player.

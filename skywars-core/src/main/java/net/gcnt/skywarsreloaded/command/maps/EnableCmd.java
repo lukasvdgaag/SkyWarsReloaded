@@ -39,6 +39,7 @@ public class EnableCmd extends Cmd {
         }
 
         template.enable();
+        template.saveData();
         plugin.getMessages().getMessage(MessageProperties.MAPS_ENABLED.toString()).replace("%template%", template.getName()).send(sender);
         return true;
     }

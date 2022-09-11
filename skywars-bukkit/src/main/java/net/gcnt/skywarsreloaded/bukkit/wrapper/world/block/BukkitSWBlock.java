@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.bukkit.wrapper.world.block;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
-import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWChunk;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.world.SWChunk;
@@ -20,7 +20,7 @@ public class BukkitSWBlock implements SWBlock {
 
     @Override
     public SWChunk getChunk() {
-        return null;
+        return new BukkitSWChunk(plugin, block.getChunk());
     }
 
     @Override

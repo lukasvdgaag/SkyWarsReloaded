@@ -21,13 +21,13 @@ public class PlayingStateHandler extends CoreGameStateHandler {
             // only one team left OR timer has run out.
             // todo determine the winner and end the game here.
             gameWorld.endGame();
-            plugin.getScoreboardManager().updateGame(gameWorld);
+            plugin.getScoreboardManager().updateAllPlayers(gameWorld);
             return;
         } else if (aliveTeams.size() == 0) {
             // no more players left.
             // todo end the game here.
             gameWorld.endGame();
-            plugin.getScoreboardManager().updateGame(gameWorld);
+            plugin.getScoreboardManager().updateAllPlayers(gameWorld);
             return;
         }
 
@@ -39,6 +39,6 @@ public class PlayingStateHandler extends CoreGameStateHandler {
             player.getSWPlayer().setExp(gameWorld.getTimer(), 0);
         }
 
-        plugin.getScoreboardManager().updateGame(gameWorld);
+        plugin.getScoreboardManager().updateAllPlayers(gameWorld);
     }
 }
