@@ -33,16 +33,6 @@ public class BukkitGameWorld extends AbstractGameWorld {
     }
 
     @Override
-    public void readyForGame() {
-        startScheduler();
-        gameTemplate.getTeamSpawnpoints().forEach(swCoords -> swCoords.forEach(swCoord -> getWorld().setBlockAt(swCoord, (Item) null)));
-        final WaitingStateHandler handler = new WaitingStateHandler(plugin, this);
-
-        scheduler.setGameStateHandler(handler);
-        setState(handler.getBeginningWaitingState(getTemplate()));
-    }
-
-    @Override
     public void readyForEditing() {
         World world = getBukkitWorld();
         plugin.getWorldLoader().updateWorldBorder(this);

@@ -45,12 +45,16 @@ public abstract class AbstractSWChestFiller implements SWChestFiller {
         SWChest chest = (SWChest) block;
 
         if (!block.getChunk().isLoaded()) {
+            System.out.println("WAS NOT LOADED!");
             block.getChunk().load();
         }
+        System.out.println("IS LOADED!");
 
         chest.clearContents();
 
+        System.out.println("PRE GEN!");
         Item[] items = generateChestLoot(chestTier, chestType, chest.getSize() > 27);
+        System.out.println("POST GEN!");
         chest.setContents(items);
     }
 

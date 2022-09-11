@@ -9,8 +9,15 @@ import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 
 public class WaitingStateHandler extends CoreGameStateHandler {
 
+    private final GameState DEFAULT_WAITING_STATE;
+    private final int gameFullTimerMaxLobby;
+    private final int gameFullTimerMaxCages;
+
     public WaitingStateHandler(SkyWarsReloaded plugin, GameWorld gameWorld) {
         super(plugin, gameWorld);
+        this.DEFAULT_WAITING_STATE = determineDefaultWaitingState(gameWorld.getTemplate());
+        gameFullTimerMaxLobby = plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_LOBBY_FULL.toString());
+        gameFullTimerMaxCages = plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_CAGES_FULL.toString());
     }
 
     public GameState determineDefaultWaitingState(GameTemplate template) {
@@ -26,43 +33,99 @@ public class WaitingStateHandler extends CoreGameStateHandler {
 
     @Override
     public void tickSecond() {
-        final int playerCount = gameWorld.getWaitingPlayers().size();
+        WaitingDecision decision = this.calculateDecision();
+        this.handleDecision(decision);
+    }
 
-        final int waitingFullTimer = gameWorld.getState() == GameState.WAITING_LOBBY ?
-                plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_LOBBY_FULL.toString()) :
-                plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_CAGES_FULL.toString());
+    public void handleDecision(WaitingDecision decision) {
+        switch (decision) {
+            case RESET_TO_WAITING_LOBBY:
+                // timer was reset
+                // teleporting all waiting players back to the waiting lobby
+                for (GamePlayer player : gameWorld.getWaitingPlayers()) {
+                    player.getSWPlayer().sendMessage("§cNot enough players. Teleporting you back to the waiting lobby.");
+                    player.getSWPlayer().teleport(gameWorld.getTemplate().getWaitingLobbySpawn());
+                }
+                break;
 
-        if (playerCount < gameWorld.getTemplate().getMinPlayers()) {
-            GameState oldStatus = gameWorld.getState();
-            gameWorld.setState(getBeginningWaitingState(gameWorld.getTemplate()));
+            case ANNOUNCE_DROP_TO_FULL_TIMER:
+                gameWorld.setTimer(getWaitingFullTimer());
+                final String message = "§eThe game is §6§lFULL§e! Starting in §6" + this.gameWorld.getTimer() + "§e seconds.";
+                for (GamePlayer player : gameWorld.getWaitingPlayers()) {
+                    player.getSWPlayer().sendMessage(message);
+                }
+                break;
 
-            if (gameWorld.getState() == GameState.WAITING_LOBBY) {
-                int oldTimer = gameWorld.getTimer();
-
-                final int waitingLobbyTime = plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_LOBBY.toString());
-                gameWorld.setTimer(waitingLobbyTime);
-
-                if (oldTimer != waitingLobbyTime && oldStatus != GameState.WAITING_LOBBY) {
-                    // timer was reset
-                    // teleporting all waiting players back to the waiting lobby
-                    for (GamePlayer player : gameWorld.getWaitingPlayers()) {
-                        player.getSWPlayer().sendMessage("§cNot enough players. Teleporting you back to the waiting lobby.");
-                        player.getSWPlayer().teleport(gameWorld.getTemplate().getWaitingLobbySpawn());
-                    }
+            case COUNTDOWN:
+                // when the timer reaches 10, officially start the countdown state.
+                if (gameWorld.getState() == GameState.WAITING_CAGES && gameWorld.getTimer() == getWaitingFullTimer()) {
+                    gameWorld.setState(GameState.COUNTDOWN);
                 }
 
-            } else if (gameWorld.getState() == GameState.WAITING_CAGES) {
-                gameWorld.setTimer(plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_CAGES.toString()));
-            }
-        } else if (playerCount == gameWorld.getTemplate().getMaxPlayers() && gameWorld.getTimer() > waitingFullTimer) {
-            // game is full and the timer is higher than the waiting-full timer... shortening the timer
-            gameWorld.setTimer(waitingFullTimer);
+                gameWorld.setTimer(gameWorld.getTimer() - 1);
 
-            final String message = "§eThe game is §6§lFULL§e! Starting in §6" + waitingFullTimer + "§e seconds.";
-            for (GamePlayer player : gameWorld.getWaitingPlayers()) {
-                player.getSWPlayer().sendMessage(message);
+                for (GamePlayer player : gameWorld.getWaitingPlayers()) {
+                    player.getSWPlayer().setExp(gameWorld.getTimer(), 0);
+                }
+
+                announceTimer();
+                break;
+
+            case START_GAME:
+                // In lobby -> cages state
+                if (gameWorld.getState() == GameState.WAITING_LOBBY) {
+                    // todo teleport all players to their cages
+                }
+                // In cages -> playing state
+                else if (gameWorld.getState() == GameState.COUNTDOWN) {
+                    // todo release the cages
+                    gameWorld.startGame();
+                }
+
+                plugin.getScoreboardManager().updateAllPlayers(gameWorld);
+                break;
+
+            default:
+                System.out.println("Failed at life");
+                break;
+        }
+        plugin.getScoreboardManager().updateAllPlayers(gameWorld);
+    }
+
+    public WaitingDecision calculateDecision() {
+        final int playerCount = gameWorld.getWaitingPlayers().size();
+
+        // Not ready to start yet
+        if (playerCount < gameWorld.getTemplate().getMinPlayers()) {
+            GameState prevState = gameWorld.getState();
+            int prevTimer = gameWorld.getTimer();
+
+            // Reset state
+            gameWorld.setState(DEFAULT_WAITING_STATE);
+
+            // Reset time
+            this.resetWaitingTime();
+
+            // Move players back to lobby
+            if (gameWorld.getState() == GameState.WAITING_LOBBY && prevTimer != gameWorld.getTimer() && prevState != GameState.WAITING_LOBBY) {
+                return WaitingDecision.RESET_TO_WAITING_LOBBY;
             }
-        } else {
+
+            return WaitingDecision.NONE;
+        }
+
+        // game is full and the timer is higher than the waiting-full timer... shortening the timer
+        else if (playerCount == gameWorld.getTemplate().getMaxPlayers()) {
+            final int waitingFullTimer = getWaitingFullTimer();
+
+            if (gameWorld.getTimer() > waitingFullTimer) {
+                return WaitingDecision.ANNOUNCE_DROP_TO_FULL_TIMER;
+            }
+        }
+
+        // Normal countdown
+        else {
+            // Countdown has finished, going to next state of the game.
             if (gameWorld.getTimer() == 0) {
                 return WaitingDecision.START_GAME;
             }
@@ -71,6 +134,22 @@ public class WaitingStateHandler extends CoreGameStateHandler {
         }
 
         return WaitingDecision.NONE;
+    }
+
+    private int getWaitingFullTimer() {
+        return this.gameWorld.getState() == GameState.WAITING_LOBBY ?
+                gameFullTimerMaxLobby :
+                gameFullTimerMaxCages;
+    }
+
+    public void resetWaitingTime() {
+        if (gameWorld.getState() == GameState.WAITING_LOBBY) {
+            final int waitingLobbyTime = plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_LOBBY.toString());
+            gameWorld.setTimer(waitingLobbyTime);
+
+        } else if (gameWorld.getState() == GameState.WAITING_CAGES) {
+            gameWorld.setTimer(plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_CAGES.toString()));
+        }
     }
 
     private void announceTimer() {
@@ -103,5 +182,11 @@ public class WaitingStateHandler extends CoreGameStateHandler {
         }
     }
 
-
+    public enum WaitingDecision {
+        NONE,
+        START_GAME,
+        RESET_TO_WAITING_LOBBY,
+        ANNOUNCE_DROP_TO_FULL_TIMER,
+        COUNTDOWN
+    }
 }

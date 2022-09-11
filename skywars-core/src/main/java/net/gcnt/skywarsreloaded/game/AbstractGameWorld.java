@@ -5,14 +5,12 @@ import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFiller;
 import net.gcnt.skywarsreloaded.game.state.EndingStateHandler;
 import net.gcnt.skywarsreloaded.game.state.PlayingStateHandler;
+import net.gcnt.skywarsreloaded.game.state.WaitingStateHandler;
 import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.party.SWParty;
-import net.gcnt.skywarsreloaded.utils.CoreSWCCompletableFuture;
-import net.gcnt.skywarsreloaded.utils.Message;
-import net.gcnt.skywarsreloaded.utils.SWCompletableFuture;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.*;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
@@ -384,9 +382,12 @@ public abstract class AbstractGameWorld implements GameWorld {
     @Override
     public void fillChests() {
         SWChestTier chestTier = this.getChestTier();
+        System.out.println("chestTier = " + chestTier);
+        // Default chest tier to normal if none supplied // todo: make voted
         if (chestTier == null) chestTier = plugin.getChestManager().getChestTierByName("normal");
 
         final SWChestFiller filler = chestTier.getChestFiller();
+        System.out.println("filler.getClass().getName() = " + filler.getClass().getName());
         for (Map.Entry<SWCoord, ChestType> chest : this.gameTemplate.getChests().entrySet()) {
             filler.fillChest(chestTier, this, chest.getKey(), chest.getValue());
         }
@@ -406,6 +407,18 @@ public abstract class AbstractGameWorld implements GameWorld {
 
             index++;
         }
+    }
+
+    @Override
+    public void readyForGame() {
+        startScheduler();
+        gameTemplate.getTeamSpawnpoints().forEach(swCoords -> swCoords.forEach(swCoord -> getWorld().setBlockAt(swCoord, (Item) null)));
+        final WaitingStateHandler handler = new WaitingStateHandler(plugin, this);
+
+        scheduler.setGameStateHandler(handler);
+        setState(handler.determineDefaultWaitingState(getTemplate()));
+
+        handler.resetWaitingTime();
     }
 
     @Override
