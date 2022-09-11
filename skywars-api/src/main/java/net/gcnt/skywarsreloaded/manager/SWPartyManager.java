@@ -1,4 +1,6 @@
-package net.gcnt.skywarsreloaded.party;
+package net.gcnt.skywarsreloaded.manager;
+
+import net.gcnt.skywarsreloaded.party.SWParty;
 
 import java.util.UUID;
 

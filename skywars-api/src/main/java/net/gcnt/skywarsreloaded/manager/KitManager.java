@@ -1,5 +1,6 @@
-package net.gcnt.skywarsreloaded.game.kits;
+package net.gcnt.skywarsreloaded.manager;
 
+import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.utils.Item;
 
 import java.util.List;

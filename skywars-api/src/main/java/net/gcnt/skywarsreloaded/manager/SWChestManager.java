@@ -1,5 +1,6 @@
-package net.gcnt.skywarsreloaded.game.chest;
+package net.gcnt.skywarsreloaded.manager;
 
+import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

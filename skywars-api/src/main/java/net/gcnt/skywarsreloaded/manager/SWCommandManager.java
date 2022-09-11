@@ -1,5 +1,6 @@
-package net.gcnt.skywarsreloaded.command;
+package net.gcnt.skywarsreloaded.manager;
 
+import net.gcnt.skywarsreloaded.command.SWCommand;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.Collection;

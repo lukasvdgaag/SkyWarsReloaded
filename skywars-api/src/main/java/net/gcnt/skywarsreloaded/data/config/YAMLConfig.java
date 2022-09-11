@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.data.config;
 
+import net.gcnt.skywarsreloaded.manager.YAMLManager;
 import net.gcnt.skywarsreloaded.unlockable.Unlockable;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.Message;

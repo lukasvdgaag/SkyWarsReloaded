@@ -1,4 +1,6 @@
-package net.gcnt.skywarsreloaded.data.config;
+package net.gcnt.skywarsreloaded.manager;
+
+import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 
 import java.io.File;
 

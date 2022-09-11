@@ -1,6 +1,7 @@
-package net.gcnt.skywarsreloaded.command;
+package net.gcnt.skywarsreloaded.manager;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.command.SWCommand;
 import net.gcnt.skywarsreloaded.command.general.JoinCmd;
 import net.gcnt.skywarsreloaded.command.general.LobbySpawnCmd;
 import net.gcnt.skywarsreloaded.command.general.MainCmd;

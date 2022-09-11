@@ -78,6 +78,7 @@ public class SimpleChestTier extends AbstractSWChestTier {
         }
 
         // Apply it to the data map
+        System.out.println("Storing chest content of type " + chestType.getId());
         inventoryContents.put(chestType, gameTypeItems);
     }
 

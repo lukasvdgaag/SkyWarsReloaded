@@ -1,6 +1,8 @@
-package net.gcnt.skywarsreloaded.data.config;
+package net.gcnt.skywarsreloaded.manager;
 
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
+import net.gcnt.skywarsreloaded.data.config.AbstractYAMLConfig;
+import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 
 import java.io.File;
 import java.util.HashMap;

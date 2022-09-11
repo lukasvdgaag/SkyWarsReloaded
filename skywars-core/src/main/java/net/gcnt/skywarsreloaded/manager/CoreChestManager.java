@@ -1,7 +1,7 @@
-package net.gcnt.skywarsreloaded.game.chest;
+package net.gcnt.skywarsreloaded.manager;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.chest.filler.LootTableChestFiller;
+import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.game.chest.tier.LootTableChestTier;
 import net.gcnt.skywarsreloaded.game.chest.tier.SimpleChestTier;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
@@ -103,7 +103,7 @@ public class CoreChestManager implements SWChestManager {
 
     @Override
     public SWChestTier createChestTier(@NotNull String name) {
-        if (getChestTierByName(name) != null) return null;
+        if (getChestTierByName(name) != null) throw new IllegalArgumentException("Attempted to create chest tier that already exists!");
 
         SWChestTier chestType = this.initChestTier(name, true);
         chestType.saveData();

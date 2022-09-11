@@ -1,6 +1,7 @@
-package net.gcnt.skywarsreloaded.game.kits;
+package net.gcnt.skywarsreloaded.manager;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import org.jetbrains.annotations.Nullable;
@@ -9,7 +10,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class AbstractKitManager implements KitManager {
 

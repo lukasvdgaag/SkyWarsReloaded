@@ -1,7 +1,8 @@
-package net.gcnt.skywarsreloaded.bukkit.game.kits;
+package net.gcnt.skywarsreloaded.bukkit.managers;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.kits.AbstractKitManager;
+import net.gcnt.skywarsreloaded.bukkit.game.kits.BukkitSWKit;
+import net.gcnt.skywarsreloaded.manager.AbstractKitManager;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
 
 public class BukkitKitManager extends AbstractKitManager {

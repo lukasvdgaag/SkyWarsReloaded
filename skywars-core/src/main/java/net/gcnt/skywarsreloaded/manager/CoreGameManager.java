@@ -1,6 +1,9 @@
-package net.gcnt.skywarsreloaded.game;
+package net.gcnt.skywarsreloaded.manager;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.game.CoreGameTemplate;
+import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
@@ -10,7 +13,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class CoreGameManager implements GameManager {
 

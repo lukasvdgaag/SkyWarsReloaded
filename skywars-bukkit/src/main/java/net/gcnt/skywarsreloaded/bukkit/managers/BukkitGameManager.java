@@ -1,7 +1,8 @@
-package net.gcnt.skywarsreloaded.bukkit.game;
+package net.gcnt.skywarsreloaded.bukkit.managers;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.CoreGameManager;
+import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameWorld;
+import net.gcnt.skywarsreloaded.manager.CoreGameManager;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.GameWorld;
 

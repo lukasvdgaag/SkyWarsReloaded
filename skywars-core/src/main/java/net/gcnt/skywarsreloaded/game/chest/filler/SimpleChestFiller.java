@@ -36,6 +36,7 @@ public class SimpleChestFiller extends AbstractSWChestFiller {
             plugin.getLogger().error("SkyWarsReloaded is trying to fill a chest with a chest tier using simplified structure that is not a SimpleChestTier (tier: " + chestTier.getName() + ")!");
             return new Item[]{};
         }
+        System.out.println("Generating loot for chest tier " + chestTier.getName() + " and chest type " + chestType.getId() + " (double chest: " + doubleChest + ")");
         SimpleChestTier simpleChestTier = (SimpleChestTier) chestTier;
 
         // hashmap with a list of items per chance of occurrence
@@ -45,6 +46,7 @@ public class SimpleChestFiller extends AbstractSWChestFiller {
         Collections.shuffle(slots);
 
         HashMap<Integer, List<Item>> items = simpleChestTier.getContents(chestType);
+        System.out.println("Number of items:" + (items == null ? null : items.size()));
         Item[] loot = new Item[slots.size()];
         if (items == null) return loot;
 

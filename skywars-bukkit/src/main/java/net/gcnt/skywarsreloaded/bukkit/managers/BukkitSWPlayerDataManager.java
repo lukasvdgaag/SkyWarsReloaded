@@ -1,7 +1,7 @@
-package net.gcnt.skywarsreloaded.bukkit.data.player;
+package net.gcnt.skywarsreloaded.bukkit.managers;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
-import net.gcnt.skywarsreloaded.data.player.CoreSWPlayerDataManager;
+import net.gcnt.skywarsreloaded.manager.CoreSWPlayerDataManager;
 
 /**
  * Currently not used // TODO remove or use

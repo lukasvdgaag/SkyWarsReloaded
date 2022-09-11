@@ -3,7 +3,6 @@ package net.gcnt.skywarsreloaded.game;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFiller;
-import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFillerManager;
 import net.gcnt.skywarsreloaded.game.state.EndingStateHandler;
 import net.gcnt.skywarsreloaded.game.state.PlayingStateHandler;
 import net.gcnt.skywarsreloaded.game.types.ChestType;

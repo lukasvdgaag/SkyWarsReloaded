@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.data.schematic;
+package net.gcnt.skywarsreloaded.manager;
 
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;

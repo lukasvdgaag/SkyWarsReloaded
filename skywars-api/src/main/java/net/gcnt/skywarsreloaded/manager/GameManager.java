@@ -1,5 +1,7 @@
-package net.gcnt.skywarsreloaded.game;
+package net.gcnt.skywarsreloaded.manager;
 
+import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 import java.util.List;

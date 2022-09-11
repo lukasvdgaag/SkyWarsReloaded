@@ -1,7 +1,8 @@
-package net.gcnt.skywarsreloaded.bukkit.data.config;
+package net.gcnt.skywarsreloaded.bukkit.managers;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
-import net.gcnt.skywarsreloaded.data.config.AbstractYAMLManager;
+import net.gcnt.skywarsreloaded.bukkit.data.config.BukkitYAMLConfig;
+import net.gcnt.skywarsreloaded.manager.AbstractYAMLManager;
 
 import java.io.File;
 

@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.game.chest.filler;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.manager.SWChestFillerManager;
 
 import java.util.HashMap;
 

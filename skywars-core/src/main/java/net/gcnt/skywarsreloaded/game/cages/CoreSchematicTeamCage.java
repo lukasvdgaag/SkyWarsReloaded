@@ -5,7 +5,7 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.World;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.data.schematic.SchematicManager;
+import net.gcnt.skywarsreloaded.manager.SchematicManager;
 import net.gcnt.skywarsreloaded.game.TeamCage;
 import net.gcnt.skywarsreloaded.game.TeamSpawn;
 import net.gcnt.skywarsreloaded.unlockable.cage.Cage;
