@@ -1,23 +1,29 @@
 package net.gcnt.skywarsreloaded.utils.gui;
 
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
 
 import java.util.HashMap;
 
 public abstract class AbstractSWGui implements SWGui {
 
+    protected SkyWarsReloaded plugin;
+    protected SWInventory inventory;
     protected String title;
     protected int size;
 
     protected HashMap<Integer, SWGuiClickHandler> clickHandlers;
     protected SWPlayer viewer;
 
-    public AbstractSWGui(String title, int size, SWPlayer player) {
+    public AbstractSWGui(SkyWarsReloaded plugin, String title, int size, SWPlayer player) {
+        this.plugin = plugin;
         this.title = title;
         this.size = size;
         this.clickHandlers = new HashMap<>();
-        this.viewer = player;
+        this.player = player;
+        this.inventory = null;
     }
 
     @Override

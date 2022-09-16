@@ -9,4 +9,6 @@ public abstract class AbstractSWServer implements SWServer{
     public AbstractSWServer(SkyWarsReloaded pluginIn) {
         this.plugin = pluginIn;
     }
+
+
 }

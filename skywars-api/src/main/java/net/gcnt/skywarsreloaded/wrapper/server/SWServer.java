@@ -27,4 +27,13 @@ public interface SWServer {
      */
     void registerWorld(UUID serverWorldUUID, SWWorld world);
 
+    /**
+     * Create a new Inventory.
+     *
+     * @param title The title of the inventory
+     * @param size  The size of the inventory
+     * @return The new inventory
+     */
+    SWInventory createInventory(String title, int size);
+
 }

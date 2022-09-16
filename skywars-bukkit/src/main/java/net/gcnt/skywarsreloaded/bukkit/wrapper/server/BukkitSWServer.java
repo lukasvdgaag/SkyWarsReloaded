@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.bukkit.wrapper.server;
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.wrapper.server.AbstractSWServer;
+import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -58,5 +59,10 @@ public class BukkitSWServer extends AbstractSWServer {
         }
 
         return swWorld;
+    }
+
+    @Override
+    public SWInventory createInventory(String title, int size) {
+        return new BukkitSWInventory(plugin, title, size);
     }
 }

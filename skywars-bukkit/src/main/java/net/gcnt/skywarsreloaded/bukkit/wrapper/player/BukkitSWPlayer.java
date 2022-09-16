@@ -3,9 +3,11 @@ package net.gcnt.skywarsreloaded.bukkit.wrapper.player;
 import io.papermc.lib.PaperLib;
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.server.BukkitSWInventory;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.utils.*;
 import net.gcnt.skywarsreloaded.wrapper.entity.AbstractSWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -321,5 +323,17 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     @Override
     public String getType() {
         return "PLAYER";
+    }
+
+    @Override
+    public void openInventory(SWInventory inventory) {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        this.player.openInventory(((BukkitSWInventory) inventory).getBukkitInventory());
+    }
+
+    @Override
+    public void closeInventory() {
+        if (this.player == null) throw new NullPointerException("Bukkit player is null");
+        this.player.closeInventory();
     }
 }

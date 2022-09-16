@@ -2,25 +2,17 @@ package net.gcnt.skywarsreloaded.bukkit;
 
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.command.BukkitSWCommandExecutor;
-import net.gcnt.skywarsreloaded.bukkit.managers.BukkitYAMLManager;
-import net.gcnt.skywarsreloaded.bukkit.managers.BukkitSWPlayerDataManager;
-import net.gcnt.skywarsreloaded.bukkit.managers.BukkitGameManager;
-import net.gcnt.skywarsreloaded.bukkit.managers.BukkitKitManager;
 import net.gcnt.skywarsreloaded.bukkit.game.loader.SchemWorldLoader;
 import net.gcnt.skywarsreloaded.bukkit.game.loader.SlimeWorldLoader;
 import net.gcnt.skywarsreloaded.bukkit.listener.BukkitSWEventListener;
-import net.gcnt.skywarsreloaded.bukkit.managers.BukkitEntityManager;
-import net.gcnt.skywarsreloaded.bukkit.managers.BukkitItemManager;
-import net.gcnt.skywarsreloaded.bukkit.managers.BukkitPlayerManager;
-import net.gcnt.skywarsreloaded.bukkit.managers.BukkitScoreboardManager;
-import net.gcnt.skywarsreloaded.bukkit.managers.BukkitNMSManager;
+import net.gcnt.skywarsreloaded.bukkit.managers.*;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitPlatformUtils;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitSWLogger;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.scheduler.BukkitSWScheduler;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.sender.BukkitSWConsoleSender;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.server.BukkitSWServer;
-import net.gcnt.skywarsreloaded.manager.CoreSWCommandManager;
 import net.gcnt.skywarsreloaded.manager.CoreCageManager;
+import net.gcnt.skywarsreloaded.manager.CoreSWCommandManager;
 import net.gcnt.skywarsreloaded.manager.CoreUnlockablesManager;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import org.bukkit.command.PluginCommand;
@@ -139,6 +131,11 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     protected void initItemManager() {
         setItemManager(new BukkitItemManager(this));
+    }
+
+    @Override
+    protected void initInventoryManager() {
+        setInventoryManager(new BukkitInventoryManager(this));
     }
 
     @Override

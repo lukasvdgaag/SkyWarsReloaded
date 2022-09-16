@@ -6,6 +6,7 @@ import net.gcnt.skywarsreloaded.party.SWParty;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
+import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -119,4 +120,8 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer, SWEntity {
      * find the parent player from the platform.
      */
     void fetchParentPlayer();
+
+    void openInventory(SWInventory inventory);
+
+    void closeInventory();
 }
