@@ -2,10 +2,10 @@ package net.gcnt.skywarsreloaded.manager;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.CoreGameTemplate;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.LocalGameInstance;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
-import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,17 +13,18 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class CoreGameManager implements GameManager {
 
     public final SkyWarsReloaded plugin;
-    public final HashMap<GameTemplate, List<GameWorld>> gameWorlds;
+    private final HashMap<GameTemplate, List<GameInstance>> gameInstances;
     private final HashMap<String, GameTemplate> templates;
 
     public CoreGameManager(SkyWarsReloaded plugin) {
         this.plugin = plugin;
         this.templates = new HashMap<>();
-        this.gameWorlds = new HashMap<>();
+        this.gameInstances = new HashMap<>();
     }
 
     @Override
@@ -34,7 +35,7 @@ public abstract class CoreGameManager implements GameManager {
         if (!dir.exists()) return;
 
         // Reset all currently loaded templates
-        this.templates.clear();
+        this.getGameTemplates().clear();
 
         // Load all from directory
         File[] files = dir.listFiles();
@@ -48,7 +49,7 @@ public abstract class CoreGameManager implements GameManager {
 
             // Load data & store in cache
             GameTemplate template = new CoreGameTemplate(plugin, name);
-            templates.put(name, template);
+            getGameTemplates().put(name, template);
 
             template.loadData();
             plugin.getLogger().info("Loaded game template '" + name + "'.");
@@ -57,31 +58,34 @@ public abstract class CoreGameManager implements GameManager {
 
     @Override
     public GameTemplate getGameTemplateByName(String gameId) {
-        return templates.getOrDefault(gameId, null);
+        return getGameTemplates().getOrDefault(gameId, null);
     }
 
     @Override
-    public GameWorld getGameWorldByName(String worldName) {
-        if (worldName == null) return null;
-        for (GameWorld gameWorld : getGameWorlds()) {
-            if (gameWorld.getWorldName().equals(worldName)) return gameWorld;
+    public GameInstance getGameInstanceByName(String name) {
+        if (name == null) return null;
+        for (GameInstance gameInstance : getGameInstancesListCopy()) {
+            if (gameInstance instanceof LocalGameInstance && ((LocalGameInstance) gameInstance).getWorldName().equals(name)) return gameInstance;
         }
         return null;
     }
 
     @Override
-    public GameWorld getGameWorldBySWWorld(SWWorld swWorld) {
-        if (swWorld == null) return null;
-        for (GameWorld gameWorld : getGameWorlds()) {
-            if (gameWorld.getWorld().equals(swWorld)) return gameWorld;
-        }
-        return null;
+    public List<GameInstance> getGameInstancesCopy(GameTemplate data) {
+        return getGameInstances().getOrDefault(data, new ArrayList<>());
+    }
+
+    @Override
+    public List<GameInstance> getGameInstancesListCopy() {
+        List<GameInstance> instances = new ArrayList<>();
+        getGameInstances().forEach((gameTemplate, templateInstances) -> instances.addAll(templateInstances));
+        return instances;
     }
 
     @Override
     public boolean deleteGameTemplate(String gameId, boolean deleteMap) {
         GameTemplate template = this.getGameTemplateByName(gameId);
-        this.templates.remove(gameId);
+        this.getGameTemplates().remove(gameId);
         if (template == null) return false;
 
         // Delete template data
@@ -102,8 +106,8 @@ public abstract class CoreGameManager implements GameManager {
     }
 
     @Override
-    public List<GameTemplate> getGameTemplates() {
-        return new ArrayList<>(this.templates.values());
+    public List<GameTemplate> getGameTemplatesCopy() {
+        return new ArrayList<>(this.getGameTemplates().values());
     }
 
     @Override
@@ -115,49 +119,48 @@ public abstract class CoreGameManager implements GameManager {
         GameTemplate template = new CoreGameTemplate(plugin, gameId);
         template.loadData();
         template.saveData();
-        this.templates.put(gameId, template);
+        this.getGameTemplates().put(gameId, template);
         return template;
     }
 
     @Override
-    public abstract GameWorld createGameWorld(GameTemplate data);
+    public abstract CompletableFuture<GameInstance> createGameWorld(GameTemplate data);
 
     @Override
-    public void deleteGameWorld(GameWorld world) {
+    public CompletableFuture<Void> deleteGameInstance(GameInstance world) {
         plugin.getWorldLoader().deleteWorldInstance(world);
-        for (GameTemplate template : gameWorlds.keySet()) {
-            List<GameWorld> worlds = gameWorlds.get(template);
-            if (worlds.contains(world)) {
-                worlds.remove(world);
-                gameWorlds.put(template, worlds);
-                return;
+        final HashMap<GameTemplate, List<GameInstance>> gameInstances = this.getGameInstances();
+
+        for (GameTemplate template : gameInstances.keySet()) {
+            List<GameInstance> instances = gameInstances.get(template);
+            if (instances.contains(world)) {
+                instances.remove(world);
+                gameInstances.put(template, instances);
+                return CompletableFuture.completedFuture(null);
             }
         }
+
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public List<GameWorld> getGameWorlds(GameTemplate data) {
-        return gameWorlds.getOrDefault(data, new ArrayList<>());
-    }
-
-    @Override
-    public List<GameWorld> getGameWorlds() {
-        List<GameWorld> worlds = new ArrayList<>();
-        gameWorlds.forEach((gameTemplate, gameWorlds1) -> worlds.addAll(gameWorlds1));
-        return worlds;
-    }
-
-    @Override
-    public List<GameWorld> getGameWorldsByTemplate(GameTemplate template) {
-        return new ArrayList<>(gameWorlds.get(template));
+    public List<GameInstance> getGameInstancesByTemplate(GameTemplate template) {
+        return new ArrayList<>(getGameInstances().get(template));
     }
 
     // Internal util
 
-    protected void registerGameWorld(GameTemplate temp, GameWorld world) {
-        List<GameWorld> worlds = this.gameWorlds.getOrDefault(temp, new ArrayList<>());
-        worlds.add(world);
-        this.gameWorlds.put(temp, worlds);
+    protected void registerGameWorld(GameTemplate temp, GameInstance gameInstance) {
+        List<GameInstance> instances = this.getGameInstances().getOrDefault(temp, new ArrayList<>());
+        instances.add(gameInstance);
+        this.getGameInstances().put(temp, instances);
     }
 
+    public HashMap<GameTemplate, List<GameInstance>> getGameInstances() {
+        return gameInstances;
+    }
+
+    public HashMap<String, GameTemplate> getGameTemplates() {
+        return this.templates;
+    }
 }

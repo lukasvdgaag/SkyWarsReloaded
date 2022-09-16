@@ -2,8 +2,8 @@ package net.gcnt.skywarsreloaded.command.maps;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
@@ -22,7 +22,7 @@ public class TodoMapCmd extends Cmd {
         SWPlayer player = (SWPlayer) sender;
         GameTemplate template;
         if (args.length == 0) {
-            GameWorld world = plugin.getGameManager().getGameWorldByName(player.getLocation().getWorld().getName());
+            GameInstance world = plugin.getGameManager().getGameWorldByName(player.getLocation().getWorld().getName());
             if (world == null || !world.isEditing() || world.getTemplate() == null) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
                 return true;

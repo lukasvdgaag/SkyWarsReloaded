@@ -1,9 +1,9 @@
 package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
-import net.gcnt.skywarsreloaded.data.player.SQLiteStorage;
+import net.gcnt.skywarsreloaded.data.player.SQLitePlayerStorage;
 import net.gcnt.skywarsreloaded.data.player.Storage;
-import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.chest.filler.ChestFillerManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
@@ -81,7 +81,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         setDataConfig(getYAMLManager().loadConfig("data", getDataFolder(), "data.yml")); // requires yaml mgr
         setMessages(getYAMLManager().loadConfig("messages", getDataFolder(), "messages.yml")); // requires yaml mgr
 
-        setStorage(new SQLiteStorage(this)); // requires config
+        setStorage(new SQLitePlayerStorage(this)); // requires config
         getStorage().setup();
 
         // Managers
@@ -139,7 +139,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void onDisable() {
         if (getGameManager() != null) {
-            for (GameWorld world : getGameManager().getGameWorlds()) {
+            for (GameInstance world : getGameManager().getGameWorlds()) {
                 getGameManager().deleteGameWorld(world);
             }
         }

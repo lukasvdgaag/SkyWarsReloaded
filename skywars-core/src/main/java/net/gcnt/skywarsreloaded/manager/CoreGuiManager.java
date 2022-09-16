@@ -47,10 +47,12 @@ public class CoreGuiManager implements SWGuiManager {
 
     public void registerInventoryCreation(SWGui gui) {
         this.guiMap.put(gui.getInventory(), gui);
+        plugin.getInventoryManager().registerInventory(gui.getInventory());
     }
 
     public void unregisterInventory(SWInventory inventory) {
         this.guiMap.remove(inventory);
+        plugin.getInventoryManager().unregisterInventory(inventory);
     }
 
     public void unregisterGui(SWGui gui) {

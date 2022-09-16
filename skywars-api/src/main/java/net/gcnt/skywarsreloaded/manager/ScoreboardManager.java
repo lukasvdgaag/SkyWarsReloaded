@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.manager;
 
-import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.utils.scoreboards.SWBoard;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import org.jetbrains.annotations.Nullable;
@@ -11,7 +11,7 @@ public interface ScoreboardManager {
 
     void updatePlayer(SWPlayer player);
 
-    void updateAllPlayers(GameWorld gameWorld);
+    void updateAllPlayers(GameInstance gameWorld);
 
     /**
      * Determine what scoreboard format to apply to a player.
@@ -29,7 +29,7 @@ public interface ScoreboardManager {
      * @param gameWorld Optional GameWorld of the player to use for parsing.
      * @return Parsed line.
      */
-    String prepareLine(SWPlayer player, String line, @Nullable GameWorld gameWorld);
+    String prepareLine(SWPlayer player, String line, @Nullable GameInstance gameWorld);
 
     SWBoard createScoreboard(SWPlayer player, int lineCount);
 

@@ -5,9 +5,9 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import io.papermc.lib.PaperLib;
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
-import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameWorld;
+import net.gcnt.skywarsreloaded.bukkit.game.BukkitLocalGameInstance;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.FileUtils;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
@@ -42,7 +42,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public CompletableFuture<Boolean> generateWorldInstance(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException {
+    public CompletableFuture<Boolean> generateWorldInstance(GameInstance gameWorld) throws IllegalStateException, IllegalArgumentException {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         System.out.println("Generating world instance for " + gameWorld.getTemplate().getName());
         this.createEmptyWorld(gameWorld).thenRun(() -> {
@@ -52,7 +52,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
         return future;
     }
 
-    protected void postWorldGenerateTask(GameWorld gameWorld, CompletableFuture<Boolean> future) {
+    protected void postWorldGenerateTask(GameInstance gameWorld, CompletableFuture<Boolean> future) {
         System.out.println("Post world generate task for " + gameWorld.getTemplate().getName());
         boolean res = false;
         try {
@@ -66,7 +66,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public CompletableFuture<Void> createEmptyWorld(GameWorld gameWorld) {
+    public CompletableFuture<Void> createEmptyWorld(GameInstance gameWorld) {
         System.out.println("Creating empty world for " + gameWorld.getTemplate().getName());
         WorldCreator creator = new WorldCreator(gameWorld.getWorldName());
         creator.generateStructures(false);
@@ -116,7 +116,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
      * @param gameWorld GameWorld to paste into
      * @return true if the schematic existed
      */
-    public CompletableFuture<Boolean> pasteTemplateSchematic(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException {
+    public CompletableFuture<Boolean> pasteTemplateSchematic(GameInstance gameWorld) throws IllegalStateException, IllegalArgumentException {
         CompletableFuture<Boolean> futureFail = CompletableFuture.completedFuture(false);
         // todo: Later make this work with FAWE
         CompletableFuture<Boolean> futureOk = CompletableFuture.completedFuture(true);
@@ -138,7 +138,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
             return futureFail; // todo throw error?
         }
 
-        World world = ((BukkitGameWorld) gameWorld).getBukkitWorld();
+        World world = ((BukkitLocalGameInstance) gameWorld).getBukkitWorld();
         if (world == null) {
             throw new IllegalStateException(String.format(
                     "GameWorld %s$ doesn't have a valid minecraft world. Check the console for other errors!",
@@ -152,10 +152,10 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public void deleteWorldInstance(GameWorld gameWorld) {
+    public void deleteWorldInstance(GameInstance gameWorld) {
         if (gameWorld.getScheduler() != null) gameWorld.getScheduler().end();
 
-        World world = ((BukkitGameWorld) gameWorld).getBukkitWorld();
+        World world = ((BukkitLocalGameInstance) gameWorld).getBukkitWorld();
         if (world == null) {
             return;
         }
@@ -190,8 +190,8 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public void createBasePlatform(GameWorld gameWorld) {
-        World world = ((BukkitGameWorld) gameWorld).getBukkitWorld();
+    public void createBasePlatform(GameInstance gameWorld) {
+        World world = ((BukkitLocalGameInstance) gameWorld).getBukkitWorld();
         if (world == null) return;
 
         world.getBlockAt(
@@ -202,7 +202,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public CompletableFuture<Boolean> save(GameWorld gameWorld) {
+    public CompletableFuture<Boolean> save(GameInstance gameWorld) {
         boolean successful = plugin.getSchematicManager().saveGameWorldToSchematic(gameWorld, plugin.getUtils()
                 .getWorldEditWorld(gameWorld.getWorldName()));
         return CompletableFuture.completedFuture(successful);

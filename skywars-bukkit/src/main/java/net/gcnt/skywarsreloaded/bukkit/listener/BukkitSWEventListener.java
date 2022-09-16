@@ -279,6 +279,9 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
         // todo: wrap event and handle in core
         SWInventory inv = ((BukkitInventoryManager) this.plugin.getInventoryManager()).getSWInventory(event.getInventory());
         SWGui gui = this.plugin.getGuiManager().getActiveGui(inv);
+        if (gui == null) return;
+
+        event.setCancelled(true);
 
         SWGuiClickHandler.ClickType clickType;
         switch (event.getClick()) {

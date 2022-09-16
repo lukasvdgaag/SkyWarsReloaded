@@ -4,7 +4,7 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.World;
-import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +24,6 @@ public interface SchematicManager {
 
     void undoSchematicPaste(EditSession session);
 
-    boolean saveGameWorldToSchematic(GameWorld gameWorld, World world);
+    boolean saveGameWorldToSchematic(GameInstance gameWorld, World world);
 
 }

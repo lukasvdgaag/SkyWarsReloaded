@@ -55,11 +55,11 @@ public interface GamePlayer {
     void setSpectating(boolean spectating);
 
     /**
-     * Get the {@link GameWorld} that the Player is in.
+     * Get the {@link GameInstance} that the Player is in.
      *
      * @return Game that the player is in.
      */
-    GameWorld getGame();
+    GameInstance getGame();
 
     /**
      * Get the team that the Player is in.

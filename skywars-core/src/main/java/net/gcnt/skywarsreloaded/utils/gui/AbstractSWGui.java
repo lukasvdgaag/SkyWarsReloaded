@@ -23,7 +23,9 @@ public abstract class AbstractSWGui implements SWGui {
         this.size = size;
         this.clickHandlers = new HashMap<>();
         this.player = player;
-        this.inventory = null;
+
+        this.inventory = plugin.getServer().createInventory(title, size);
+        this.plugin.getGuiManager().registerInventoryCreation(this);
     }
 
     @Override
@@ -85,8 +87,6 @@ public abstract class AbstractSWGui implements SWGui {
 
     @Override
     public void open() {
-        this.inventory = plugin.getServer().createInventory(title, size);
-        this.plugin.getGuiManager().registerInventoryCreation(this);
         player.openInventory(this.inventory);
     }
 

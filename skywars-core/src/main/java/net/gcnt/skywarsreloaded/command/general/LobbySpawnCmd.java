@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.command.general;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
-import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
@@ -27,7 +27,7 @@ public class LobbySpawnCmd extends Cmd {
             plugin.getMessages().getMessage(MessageProperties.ERROR_WORLD_NOT_RECOGNIZED.toString()).send(sender);
             return true;
         }
-        for (GameWorld gw : plugin.getGameManager().getGameWorlds()) {
+        for (GameInstance gw : plugin.getGameManager().getGameWorlds()) {
             if (gw.getWorldName().equals(loc.getWorld().getName())) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_CANNOT_SET_LOBBYSPAWN_IN_GAMEWORLD.toString()).send(sender);
                 return true;

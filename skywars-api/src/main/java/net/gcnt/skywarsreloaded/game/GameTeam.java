@@ -86,7 +86,7 @@ public interface GameTeam {
      *
      * @return Parent Game.
      */
-    GameWorld getGameWorld();
+    GameInstance getGameWorld();
 
     /**
      * Get the size of the team.

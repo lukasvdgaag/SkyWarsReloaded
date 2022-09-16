@@ -3,8 +3,8 @@ package net.gcnt.skywarsreloaded.command.maps;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
@@ -47,8 +47,8 @@ public class EditMapCmd extends Cmd {
         }
         final SWPlayer player = (SWPlayer) sender;
 
-        List<GameWorld> worlds = plugin.getGameManager().getGameWorlds(template);
-        for (GameWorld world : worlds) {
+        List<GameInstance> worlds = plugin.getGameManager().getGameWorlds(template);
+        for (GameInstance world : worlds) {
             if (world.isEditing()) {
                 msgConfig.getMessage(MessageProperties.MAPS_EDIT_EXISTING_WORLD.toString())
                         .replace("%template%", template.getName())
@@ -71,7 +71,7 @@ public class EditMapCmd extends Cmd {
         msgConfig.getMessage(MessageProperties.TITLES_MAPS_GENERATING_WORLD.toString())
                 .replace("%template%", template.getName())
                 .sendTitle(20, 600, 20, sender);
-        GameWorld world = plugin.getGameManager().createGameWorld(template);
+        GameInstance world = plugin.getGameManager().createGameWorld(template);
         world.setEditing(true);
 
         // Create instance of the world given the template data, or create a new one if it doesn't exist.

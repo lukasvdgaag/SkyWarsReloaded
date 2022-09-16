@@ -9,14 +9,14 @@ import java.util.function.Consumer;
 public class CoreGameScheduler implements GameScheduler {
 
     protected final SkyWarsReloaded plugin;
-    protected final GameWorld gameWorld;
+    protected final GameInstance gameWorld;
 
     private SWRunnable runnable;
     private int ticksRun;
     private int ticksSinceGameStart;
     private GameStateHandler gameStateHandler;
 
-    public CoreGameScheduler(SkyWarsReloaded plugin, GameWorld world) {
+    public CoreGameScheduler(SkyWarsReloaded plugin, GameInstance world) {
         this.plugin = plugin;
         this.gameWorld = world;
     }

@@ -1,19 +1,21 @@
 package net.gcnt.skywarsreloaded.data.player;
 
-import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.data.CoreMySQLStorage;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.io.File;
 import java.sql.*;
 
-public class SQLiteStorage implements Storage {
+public class SQLitePlayerStorage extends CoreMySQLStorage<SWPlayer> {
 
-    private final AbstractSkyWarsReloaded plugin;
     private final String url;
+    private final String fileName;
 
-    public SQLiteStorage(AbstractSkyWarsReloaded plugin) {
-        this.plugin = plugin;
-        this.url = "jdbc:sqlite:" + plugin.getDataFolder() + File.separator + "playerdata.db"; // todo change this name?
+    public SQLitePlayerStorage(SkyWarsReloaded plugin) {
+        super(plugin, "sw_player_data");
+        this.fileName = "playerdata.db";
+        this.url = "jdbc:sqlite:" + plugin.getDataFolder() + File.separator + fileName;
     }
 
     public Connection getConnection() throws SQLException {
@@ -34,35 +36,36 @@ public class SQLiteStorage implements Storage {
         }
 
         try (Connection connection = getConnection()) {
-            if (connection != null) {
-                connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS `sw_player_data` (" +
-                        "uuid TEXT NOT NULL UNIQUE PRIMARY KEY," +
-                        "solo_wins  INT DEFAULT 0," +
-                        "solo_kills INT DEFAULT 0," +
-                        "solo_games INT DEFAULT 0," +
-                        "team_wins INT DEFAULT 0," +
-                        "team_kills INT DEFAULT 0," +
-                        "team_games INT DEFAULT 0," +
-                        "selected_solo_cage TEXT DEFAULT NULL," +
-                        "selected_team_cage TEXT DEFAULT NULL," +
-                        "selected_particle TEXT DEFAULT NULL," +
-                        "selected_kill_effect TEXT DEFAULT NULL," +
-                        "selected_win_effect TEXT DEFAULT NULL," +
-                        "selected_projectile_effect TEXT DEFAULT NULL," +
-                        "selected_kill_messages_theme TEXT DEFAULT NULL" + ")");
-            } else {
-                plugin.getLogger().error("SkyWarsReloaded failed to connect to SQLite database file for player data.");
-            }
+            this.createTable(connection);
         } catch (SQLException e) {
-            plugin.getLogger().error("SkyWarsReloaded failed to create the SQLite database called 'playerdata.db'!"); // todo change this name?
+            plugin.getLogger().error("SkyWarsReloaded failed to create the SQLite database called '" + fileName + "'!"); // todo change this name?
             plugin.getLogger().error("Disabling the plugin to prevent further complications!");
             e.printStackTrace();
             plugin.disableSkyWars();
         }
     }
 
+    @Override
+    public void createTable(Connection connection) throws SQLException {
+        connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS `" + table + "` (" +
+                "uuid TEXT NOT NULL UNIQUE PRIMARY KEY," +
+                "solo_wins  INT DEFAULT 0," +
+                "solo_kills INT DEFAULT 0," +
+                "solo_games INT DEFAULT 0," +
+                "team_wins INT DEFAULT 0," +
+                "team_kills INT DEFAULT 0," +
+                "team_games INT DEFAULT 0," +
+                "selected_solo_cage TEXT DEFAULT NULL," +
+                "selected_team_cage TEXT DEFAULT NULL," +
+                "selected_particle TEXT DEFAULT NULL," +
+                "selected_kill_effect TEXT DEFAULT NULL," +
+                "selected_win_effect TEXT DEFAULT NULL," +
+                "selected_projectile_effect TEXT DEFAULT NULL," +
+                "selected_kill_messages_theme TEXT DEFAULT NULL" + ")");
+    }
+
     private void createDefault(SWPlayer player, Connection conn) throws SQLException {
-        PreparedStatement ps = conn.prepareStatement("INSERT INTO `sw_player_data`(`uuid`) VALUES (?)");
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO `" + table + "` (`uuid`) VALUES (?)");
         ps.setString(1, player.getUuid().toString());
         ps.executeUpdate();
 
@@ -76,7 +79,7 @@ public class SQLiteStorage implements Storage {
     @Override
     public void loadData(SWPlayer player) {
         try (Connection conn = getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM `sw_player_data` WHERE `uuid`=?");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM `" + table + "` WHERE `uuid`=?");
             ps.setString(1, player.getUuid().toString());
             ResultSet res = ps.executeQuery();
 
@@ -118,7 +121,7 @@ public class SQLiteStorage implements Storage {
         SWPlayerStats swps = swpd.getStats();
 
         try (Connection conn = getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("UPDATE `sw_player_data` SET solo_wins=?, solo_kills=?, solo_games=?, team_wins=?, team_kills=?, team_games=? WHERE `uuid`=?");
+            PreparedStatement ps = conn.prepareStatement("UPDATE `" + table + "` SET solo_wins=?, solo_kills=?, solo_games=?, team_wins=?, team_kills=?, team_games=? WHERE `uuid`=?");
             ps.setInt(1, swps.getSoloWins());
             ps.setInt(2, swps.getSoloKills());
             ps.setInt(3, swps.getSoloGamesPlayed());
@@ -138,15 +141,10 @@ public class SQLiteStorage implements Storage {
     @Override
     public void setProperty(String property, Object value, SWPlayer player) {
         try (Connection conn = getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("UPDATE `sw_player_data` SET ?=? WHERE `uuid`=?");
+            PreparedStatement ps = conn.prepareStatement("UPDATE `" + table + "` SET ?=? WHERE `uuid`=?");
+
             ps.setString(1, property);
-
-            if (value instanceof Integer) ps.setInt(2, (Integer) value);
-            else if (value instanceof Double) ps.setDouble(2, (Double) value);
-            else if (value instanceof Boolean) ps.setBoolean(2, (Boolean) value);
-            else if (value instanceof Float) ps.setFloat(2, (Float) value);
-            else ps.setString(2, value.toString());
-
+            bindPropertyValue(ps, 2, value);
             ps.setString(3, player.getUuid().toString());
 
             ps.executeUpdate();

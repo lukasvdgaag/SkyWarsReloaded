@@ -1,15 +1,15 @@
 package net.gcnt.skywarsreloaded.game.state;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTeam;
-import net.gcnt.skywarsreloaded.game.GameWorld;
 
 import java.util.List;
 
 public class PlayingStateHandler extends CoreGameStateHandler {
 
-    public PlayingStateHandler(SkyWarsReloaded plugin, GameWorld gameWorld) {
+    public PlayingStateHandler(SkyWarsReloaded plugin, GameInstance gameWorld) {
         super(plugin, gameWorld);
     }
 

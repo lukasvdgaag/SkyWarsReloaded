@@ -1,10 +1,10 @@
 package net.gcnt.skywarsreloaded.manager;
 
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.GameWorld;
-import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface GameManager {
 
@@ -22,28 +22,35 @@ public interface GameManager {
     GameTemplate getGameTemplateByName(String gameId);
 
     /**
-     * Get a {@link GameTemplate} by its wrapped world.
+     * Get a list of all GameWorlds.
      *
-     * @param swWorld The wrapped world object the game world is based on.
-     * @return GameTemplate if found, null otherwise.
+     * @return List of all GameWorlds.
      */
-    GameWorld getGameWorldBySWWorld(SWWorld swWorld);
+    List<GameInstance> getGameInstancesListCopy();
+
+    /**
+     * Get a list of {@link GameInstance} from its template.
+     *
+     * @param data Template to get the GameWorlds from.
+     * @return List of {@link GameInstance} that matches the template.
+     */
+    List<GameInstance> getGameInstancesCopy(GameTemplate data);
 
     /**
      * Delete a game template from the skywars registry and optionally from the active storage method
      *
-     * @param gameId    The template name to delete
-     * @param deleteMap If true, the map will be deleted as well
+     * @param gameId       The template name to delete
+     * @param deleteRemote If true, the map will be deleted as well
      * @return If the map deletion was successful
      */
-    boolean deleteGameTemplate(String gameId, boolean deleteMap);
+    boolean deleteGameTemplate(String gameId, boolean deleteRemote);
 
     /**
      * Get all the currently known game templates
      *
      * @return A list of all the game templates
      */
-    List<GameTemplate> getGameTemplates();
+    List<GameTemplate> getGameTemplatesCopy();
 
     /**
      * Create a new {@link GameTemplate} with the id/name specified
@@ -54,42 +61,27 @@ public interface GameManager {
     GameTemplate createGameTemplate(String gameId);
 
     /**
-     * Create a new {@link GameWorld} from a {@link GameTemplate}.
+     * Create a new {@link GameInstance} from a {@link GameTemplate}.
      *
      * @param data GameTemplate to create a world from.
-     * @return The newly created {@link GameWorld}.
+     * @return The newly created {@link GameInstance}.
      */
-    GameWorld createGameWorld(GameTemplate data);
+    CompletableFuture<GameInstance> createGameWorld(GameTemplate data);
 
     /**
      * Remove a game world from running.
      *
-     * @param world GameWorld to remove.
+     * @param instance GameWorld to remove.
      */
-    void deleteGameWorld(GameWorld world);
-
-    /**
-     * Get a list of {@link GameWorld} from its template.
-     *
-     * @param data Template to get the GameWorlds from.
-     * @return List of {@link GameWorld} that matches the template.
-     */
-    List<GameWorld> getGameWorlds(GameTemplate data);
+    CompletableFuture<Void> deleteGameInstance(GameInstance instance);
 
     /**
      * Get a GameWorld by its assigned world name.
      *
      * @param worldName Name of the world to look up.
-     * @return {@link GameWorld} if found, null otherwise.
+     * @return {@link GameInstance} if found, null otherwise.
      */
-    GameWorld getGameWorldByName(String worldName);
-
-    /**
-     * Get a list of all GameWorlds.
-     *
-     * @return List of all GameWorlds.
-     */
-    List<GameWorld> getGameWorlds();
+    GameInstance getGameInstanceByName(String worldName);
 
     /**
      * Get a list of all GameWorlds that were created under a specified template.
@@ -97,6 +89,7 @@ public interface GameManager {
      * @param template The template to get the game instances of.
      * @return List of all GameWorlds.
      */
-    List<GameWorld> getGameWorldsByTemplate(GameTemplate template);
+    List<GameInstance> getGameInstancesByTemplate(GameTemplate template);
+
 
 }

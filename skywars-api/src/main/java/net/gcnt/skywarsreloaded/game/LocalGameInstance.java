@@ -11,13 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public interface GameWorld {
-
-    String getId();
-
-    GameTemplate getTemplate();
-
-    List<GameTeam> getTeams();
+public interface LocalGameInstance extends GameInstance {
 
     GameTeam getTeam(GamePlayer player);
 
@@ -120,5 +114,4 @@ public interface GameWorld {
     GameTeam getWinningTeam();
 
     void determineWinner();
-
 }

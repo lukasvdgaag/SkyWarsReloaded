@@ -10,10 +10,10 @@ import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.bukkit.game.BukkitGameWorld;
+import net.gcnt.skywarsreloaded.bukkit.game.BukkitLocalGameInstance;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
@@ -33,8 +33,8 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
 
     private final String slimeLoaderType;
 
-    private final HashMap<GameWorld, SlimePropertyMap> templatePropertyMap;
-    private final HashMap<GameWorld, SlimeWorld> slimeWorldMap;
+    private final HashMap<GameInstance, SlimePropertyMap> templatePropertyMap;
+    private final HashMap<GameInstance, SlimeWorld> slimeWorldMap;
 
     public SlimeWorldLoader(SkyWarsReloaded plugin) {
         super(plugin);
@@ -50,7 +50,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public CompletableFuture<Boolean> generateWorldInstance(GameWorld gameWorld) {
+    public CompletableFuture<Boolean> generateWorldInstance(GameInstance gameWorld) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         this.plugin.getScheduler().runAsync(() -> {
             try {
@@ -104,7 +104,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public CompletableFuture<Void> createEmptyWorld(GameWorld gameWorld) {
+    public CompletableFuture<Void> createEmptyWorld(GameInstance gameWorld) {
         // Create a new and empty property map
         SlimePropertyMap properties = new SlimePropertyMap();
 
@@ -121,7 +121,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public void deleteWorldInstance(GameWorld gameWorld) {
+    public void deleteWorldInstance(GameInstance gameWorld) {
         String spawnLocationStr = this.plugin.getDataConfig().getString(RuntimeDataProperties.LOBBY_SPAWN.toString(), null);
         SWCoord coord = null;
         try {
@@ -144,7 +144,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     @Override
     public void deleteMap(GameTemplate gameTemplate, boolean forceUnloadInstances) {
         if (forceUnloadInstances) {
-            for (GameWorld gameWorld : this.plugin.getGameManager().getGameWorldsByTemplate(gameTemplate)) {
+            for (GameInstance gameWorld : this.plugin.getGameManager().getGameWorldsByTemplate(gameTemplate)) {
                 if (!gameWorld.getState().equals(GameState.DISABLED)) {
                     // todo gameWorld.forceStop();
                 }
@@ -160,10 +160,10 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public CompletableFuture<Boolean> save(GameWorld gameWorld) {
+    public CompletableFuture<Boolean> save(GameInstance gameWorld) {
         boolean successful = true;
         try {
-            assert gameWorld instanceof BukkitGameWorld;
+            assert gameWorld instanceof BukkitLocalGameInstance;
             SlimeWorld slimeWorld;
             synchronized (slimeWorldMap) {
                 slimeWorld = this.slimeWorldMap.get(gameWorld);
@@ -172,7 +172,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
             if (slimeWorld.isReadOnly()) {
                 successful = false;
             } else {
-                ((BukkitGameWorld) gameWorld).getBukkitWorld().save();
+                ((BukkitLocalGameInstance) gameWorld).getBukkitWorld().save();
             }
 
         } catch (Exception e) {

@@ -2,8 +2,8 @@ package net.gcnt.skywarsreloaded.command.maps;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
@@ -26,7 +26,7 @@ public class SaveMapCmd extends Cmd {
 
         GameTemplate template;
         if (args.length == 0) {
-            GameWorld world = plugin.getGameManager().getGameWorldByName(player.getLocation().getWorld().getName());
+            GameInstance world = plugin.getGameManager().getGameWorldByName(player.getLocation().getWorld().getName());
             if (world == null || !world.isEditing() || world.getTemplate() == null) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
                 return true;
@@ -42,10 +42,10 @@ public class SaveMapCmd extends Cmd {
             }
         }
 
-        List<GameWorld> worlds = plugin.getGameManager().getGameWorlds(template);
+        List<GameInstance> worlds = plugin.getGameManager().getGameWorlds(template);
         CompletableFuture<Boolean> savingFuture = null;
-        GameWorld gameWorld = null;
-        for (GameWorld world : worlds) {
+        GameInstance gameWorld = null;
+        for (GameInstance world : worlds) {
             if (world.isEditing()) {
                 // world creating and saving
                 gameWorld = world;
@@ -60,7 +60,7 @@ public class SaveMapCmd extends Cmd {
             return true;
         }
 
-        GameWorld finalGameWorld = gameWorld;
+        GameInstance finalGameWorld = gameWorld;
         savingFuture.thenAccept(successful -> {
             try {
                 if (successful) this.sendWorldSaved(template, sender);

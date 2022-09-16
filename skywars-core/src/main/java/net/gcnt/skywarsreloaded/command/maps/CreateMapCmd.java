@@ -3,8 +3,8 @@ package net.gcnt.skywarsreloaded.command.maps;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
@@ -58,7 +58,7 @@ public class CreateMapCmd extends Cmd {
                 .sendTitle(20, 600, 20, sender);
 
         // Generate game instance to use as template editor
-        GameWorld world = plugin.getGameManager().createGameWorld(template);
+        GameInstance world = plugin.getGameManager().createGameWorld(template);
         world.setEditing(true);
 
         // Create instance of the world given the template data, or create a new one if it doesn't exist.

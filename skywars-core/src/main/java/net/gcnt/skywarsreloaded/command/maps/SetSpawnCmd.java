@@ -2,8 +2,8 @@ package net.gcnt.skywarsreloaded.command.maps;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.types.SpawnType;
 import net.gcnt.skywarsreloaded.utils.AbstractItem;
 import net.gcnt.skywarsreloaded.utils.Message;
@@ -30,7 +30,7 @@ public class SetSpawnCmd extends Cmd {
         }
 
         SWPlayer player = (SWPlayer) sender;
-        GameWorld world = plugin.getGameManager().getGameWorldByName(player.getLocation().getWorld().getName());
+        GameInstance world = plugin.getGameManager().getGameWorldByName(player.getLocation().getWorld().getName());
         if (world == null || !world.isEditing()) {
             plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
             return true;
@@ -163,7 +163,7 @@ public class SetSpawnCmd extends Cmd {
             if (sender instanceof SWPlayer) {
                 SpawnType type = SpawnType.fromString(args[0]);
                 if (type == SpawnType.PLAYER) {
-                    GameWorld world = plugin.getGameManager().getGameWorldByName(((SWPlayer) sender).getLocation().getWorld().getName());
+                    GameInstance world = plugin.getGameManager().getGameWorldByName(((SWPlayer) sender).getLocation().getWorld().getName());
                     if (world != null && world.isEditing() && world.getTemplate().getTeamSize() > 1) {
                         List<String> options = new ArrayList<>();
                         for (int i = 0; i < world.getTemplate().getTeamSpawnpoints().size() + 1; i++) {

@@ -14,7 +14,7 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
@@ -90,7 +90,7 @@ public class CoreSchematicManager implements SchematicManager {
     }
 
     @Override
-    public boolean saveGameWorldToSchematic(GameWorld gameWorld, World world) {
+    public boolean saveGameWorldToSchematic(GameInstance gameWorld, World world) {
         try {
             final int borderSize = gameWorld.getTemplate().getBorderRadius();
             SWCoord lowest = new CoreSWCoord(-borderSize, 0, -borderSize);

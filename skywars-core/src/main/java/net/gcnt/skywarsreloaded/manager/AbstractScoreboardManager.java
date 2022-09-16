@@ -1,9 +1,9 @@
 package net.gcnt.skywarsreloaded.manager;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTeam;
-import net.gcnt.skywarsreloaded.game.GameWorld;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.utils.scoreboards.SWBoard;
@@ -25,7 +25,7 @@ public abstract class AbstractScoreboardManager implements ScoreboardManager {
 
     @Override
     public String determineScoreboardFormat(SWPlayer player) {
-        GameWorld gameWorld = player.getGameWorld();
+        GameInstance gameWorld = player.getGameWorld();
         if (gameWorld == null) return MessageProperties.SCOREBOARDS_LOBBY.toString();
 
         if (gameWorld.getState() == GameState.WAITING_CAGES || gameWorld.getState() == GameState.WAITING_LOBBY || gameWorld.getState() == GameState.COUNTDOWN) {
@@ -43,7 +43,7 @@ public abstract class AbstractScoreboardManager implements ScoreboardManager {
     }
 
     @Override
-    public String prepareLine(SWPlayer player, String line, @Nullable GameWorld gameWorld) {
+    public String prepareLine(SWPlayer player, String line, @Nullable GameInstance gameWorld) {
         if (line.trim().isEmpty()) return "";
 
         line = plugin.getUtils().colorize(line);
@@ -91,7 +91,7 @@ public abstract class AbstractScoreboardManager implements ScoreboardManager {
             scoreboards.put(player, board);
         }
 
-        GameWorld gameWorld = player.getGameWorld();
+        GameInstance gameWorld = player.getGameWorld();
 
         if (gameWorld != null && gameWorld.getState() == GameState.ENDING) {
             GameTeam winners = gameWorld.getWinningTeam();
@@ -136,7 +136,7 @@ public abstract class AbstractScoreboardManager implements ScoreboardManager {
     }
 
     @Override
-    public void updateAllPlayers(GameWorld gameWorld) {
+    public void updateAllPlayers(GameInstance gameWorld) {
         for (GamePlayer player : gameWorld.getPlayersCopy()) {
             updatePlayer(player.getSWPlayer());
         }

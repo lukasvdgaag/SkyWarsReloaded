@@ -5,7 +5,7 @@ import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 public class CoreGamePlayer implements GamePlayer {
 
     private final SWPlayer player;
-    private final GameWorld gameWorld;
+    private final GameInstance gameWorld;
     private GameTeam team;
     private boolean alive;
     private boolean spectating;
@@ -14,7 +14,7 @@ public class CoreGamePlayer implements GamePlayer {
     private int kills;
     private int assists;
 
-    public CoreGamePlayer(SWPlayer player, GameWorld gameWorld) {
+    public CoreGamePlayer(SWPlayer player, GameInstance gameWorld) {
         this.player = player;
         this.gameWorld = gameWorld;
         this.team = null;
@@ -55,7 +55,7 @@ public class CoreGamePlayer implements GamePlayer {
     }
 
     @Override
-    public GameWorld getGame() {
+    public GameInstance getGame() {
         return gameWorld;
     }
 

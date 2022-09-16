@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class AbstractGameWorld implements GameWorld {
+public abstract class AbstractLocalGameInstance implements LocalGameInstance {
 
     // Static properties
     protected final SkyWarsReloaded plugin;
@@ -40,7 +40,7 @@ public abstract class AbstractGameWorld implements GameWorld {
     protected GameState state;
     protected int timer;
 
-    public AbstractGameWorld(SkyWarsReloaded plugin, String id, GameTemplate gameTemplate) {
+    public AbstractLocalGameInstance(SkyWarsReloaded plugin, String id, GameTemplate gameTemplate) {
         this.plugin = plugin;
         this.id = id;
         this.gameTemplate = gameTemplate;

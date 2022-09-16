@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game.loader;
 
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.GameWorld;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -10,25 +10,25 @@ public interface GameWorldLoader {
     /**
      * Create an instance of a minecraft world for the given game world based on the template associated
      *
-     * @param gameWorld The {@link GameWorld} used to determine data to be loaded
+     * @param gameWorld The {@link GameInstance} used to determine data to be loaded
      * @return true if the template data already exists given the template name
      */
-    CompletableFuture<Boolean> generateWorldInstance(GameWorld gameWorld) throws IllegalStateException, IllegalArgumentException;
+    CompletableFuture<Boolean> generateWorldInstance(GameInstance gameWorld) throws IllegalStateException, IllegalArgumentException;
 
     /**
      * Create an empty world for the corresponding GameWorld.
      *
-     * @param gameWorld {@link GameWorld} to create a void world for.
+     * @param gameWorld {@link GameInstance} to create a void world for.
      * @return {@link CompletableFuture<Void>} which completes when the world is finished creating.
      */
-    CompletableFuture<Void> createEmptyWorld(GameWorld gameWorld);
+    CompletableFuture<Void> createEmptyWorld(GameInstance gameWorld);
 
     /**
-     * Delete the world instance for the {@link GameWorld} provided
+     * Delete the world instance for the {@link GameInstance} provided
      *
-     * @param gameWorld The {@link GameWorld} to delete the world for
+     * @param gameWorld The {@link GameInstance} to delete the world for
      */
-    void deleteWorldInstance(GameWorld gameWorld);
+    void deleteWorldInstance(GameInstance gameWorld);
 
     /**
      * Delete the stored template map data for the given {@link GameTemplate}
@@ -40,20 +40,20 @@ public interface GameWorldLoader {
     /**
      * Create the base platform to spawn on when editing the map for the first time.
      *
-     * @param gameWorld The {@link GameWorld} to create the platform in.
+     * @param gameWorld The {@link GameInstance} to create the platform in.
      */
-    void createBasePlatform(GameWorld gameWorld);
+    void createBasePlatform(GameInstance gameWorld);
 
     /**
-     * Update the World Border for the target {@link GameWorld}.
+     * Update the World Border for the target {@link GameInstance}.
      *
-     * @param gameWorld {@link GameWorld} to update the border of.
+     * @param gameWorld {@link GameInstance} to update the border of.
      */
-    void updateWorldBorder(GameWorld gameWorld);
+    void updateWorldBorder(GameInstance gameWorld);
 
     /**
      * Save the current world to disk for future use when creating instances of the map.
      */
-    CompletableFuture<Boolean> save(GameWorld gameWorld);
+    CompletableFuture<Boolean> save(GameInstance gameWorld);
 
 }

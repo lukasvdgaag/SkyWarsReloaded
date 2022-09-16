@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.wrapper.entity;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
-import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.party.SWParty;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +17,7 @@ public abstract class AbstractSWPlayer extends AbstractSWEntity implements SWPla
     private final AtomicBoolean frozen;
 
     private SWPlayerData playerData;
-    private GameWorld gameWorld;
+    private GameInstance gameWorld;
     private SWParty party;
 
     public AbstractSWPlayer(SkyWarsReloaded plugin, UUID uuid, boolean online) {
@@ -49,12 +49,12 @@ public abstract class AbstractSWPlayer extends AbstractSWEntity implements SWPla
     }
 
     @Override
-    public GameWorld getGameWorld() {
+    public GameInstance getGameWorld() {
         return this.gameWorld;
     }
 
     @Override
-    public void setGameWorld(GameWorld world) {
+    public void setGameWorld(GameInstance world) {
         this.gameWorld = world;
     }
 

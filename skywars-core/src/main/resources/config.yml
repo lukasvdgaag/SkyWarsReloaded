@@ -19,6 +19,11 @@ world-loader:
   # automatically use slime worlds if SlimeWorldManager (SWM) was detected.
   enable-swm: true
 
+menus:
+  join:
+    # Options: NAME, NAME-REVERSED, TEAMSIZE, TEAMSIZE-REVERSED, WAITING, WAITING-REVERSED
+    sort-by: TEAMSIZE
+
 game:
   timers:
     waiting-lobby: 180
