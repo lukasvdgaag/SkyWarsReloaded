@@ -68,6 +68,7 @@ public abstract class AbstractSWGui implements SWGui {
         }
 
         this.clickHandlers.put(slot, handler);
+        this.inventory.setItem(slot, item);
         return this;
     }
 

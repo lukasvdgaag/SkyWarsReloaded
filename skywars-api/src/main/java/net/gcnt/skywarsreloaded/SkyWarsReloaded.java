@@ -1,19 +1,10 @@
 package net.gcnt.skywarsreloaded;
 
-import net.gcnt.skywarsreloaded.manager.SWCommandManager;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
-import net.gcnt.skywarsreloaded.manager.YAMLManager;
-import net.gcnt.skywarsreloaded.manager.SWPlayerDataManager;
 import net.gcnt.skywarsreloaded.data.player.Storage;
-import net.gcnt.skywarsreloaded.manager.SchematicManager;
-import net.gcnt.skywarsreloaded.manager.GameManager;
-import net.gcnt.skywarsreloaded.manager.SWChestManager;
-import net.gcnt.skywarsreloaded.manager.SWChestFillerManager;
-import net.gcnt.skywarsreloaded.manager.KitManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.*;
-import net.gcnt.skywarsreloaded.manager.NMSManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
