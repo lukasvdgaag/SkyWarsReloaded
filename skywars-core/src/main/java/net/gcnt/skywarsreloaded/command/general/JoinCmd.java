@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameWorld;
+import net.gcnt.skywarsreloaded.utils.gui.SWGui;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
@@ -31,14 +32,17 @@ public class JoinCmd extends Cmd {
             return true;
         }
 
-        // todo make this random?
+        final SWGui joinGameGui = this.plugin.getGuiManager().createJoinGameGui((SWPlayer) sender);
+        joinGameGui.open();
+
+        /*// todo make this random?
         GameWorld world = worlds.get(0);
         GamePlayer gamePlayer = world.preparePlayerJoin(((SWPlayer) sender).getUuid(), false);
         boolean joined = world.addPlayers(gamePlayer);
         if (!joined) {
             plugin.getMessages().getMessage(MessageProperties.GAMES_JOIN_FAILED.toString()).send(sender);
             return true;
-        }
+        }*/
         return true;
     }
 

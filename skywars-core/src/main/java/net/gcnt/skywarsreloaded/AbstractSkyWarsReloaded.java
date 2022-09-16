@@ -49,6 +49,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private ScoreboardManager scoreboardManager;
     private ItemManager itemManager;
     private SWChestFillerManager chestFillerManager;
+    private SWGuiManager guiManager;
+    private SWInventoryManager inventoryManager;
 
     // others
     private SWCommandSender consoleSender;
@@ -97,6 +99,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         initUnlockablesManager();
         initEntityManager();
         initScoreboardManager();
+        initGuiManager();
+        initInventoryManager();
 
         setSchematicManager(new CoreSchematicManager(this));
 
@@ -203,6 +207,10 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     protected void initChestFillerManager() {
         setChestFillerManager(new ChestFillerManager(this));
+    }
+
+    protected void initGuiManager() {
+        setGuiManager(new CoreGuiManager(this));
     }
 
     // Getters & Setters
@@ -463,5 +471,25 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void setItemManager(ItemManager itemManager) {
         this.itemManager = itemManager;
+    }
+
+    @Override
+    public SWGuiManager getGuiManager() {
+        return guiManager;
+    }
+
+    @Override
+    public void setGuiManager(SWGuiManager guiManager) {
+        this.guiManager = guiManager;
+    }
+
+    @Override
+    public SWInventoryManager getInventoryManager() {
+        return inventoryManager;
+    }
+
+    @Override
+    public void setInventoryManager(SWInventoryManager inventoryManager) {
+        this.inventoryManager = inventoryManager;
     }
 }

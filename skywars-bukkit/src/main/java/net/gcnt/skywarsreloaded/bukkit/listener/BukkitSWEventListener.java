@@ -9,13 +9,15 @@ import net.gcnt.skywarsreloaded.listener.AbstractSWEventListener;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
-import net.gcnt.skywarsreloaded.wrapper.event.*;
+import net.gcnt.skywarsreloaded.utils.gui.SWGui;
+import net.gcnt.skywarsreloaded.utils.gui.SWGuiClickHandler;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWEntity;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.event.*;
+import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,6 +27,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldInitEvent;
@@ -32,7 +35,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class BukkitSWEventListener extends AbstractSWEventListener implements Listener {
@@ -270,6 +272,29 @@ public class BukkitSWEventListener extends AbstractSWEventListener implements Li
             event.setCancelled(true);
         }
         event.setDamage(swEvent.getDamage());
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        // todo: wrap event and handle in core
+        SWInventory inv = ((BukkitInventoryManager) this.plugin.getInventoryManager()).getSWInventory(event.getInventory());
+        SWGui gui = this.plugin.getGuiManager().getActiveGui(inv);
+
+        SWGuiClickHandler.ClickType clickType;
+        switch (event.getClick()) {
+            case RIGHT:
+            case SHIFT_RIGHT:
+                clickType = SWGuiClickHandler.ClickType.SECONDARY;
+                break;
+            case MIDDLE:
+                clickType = SWGuiClickHandler.ClickType.MIDDLE;
+                break;
+            default:
+                clickType = SWGuiClickHandler.ClickType.PRIMARY;
+                break;
+        }
+
+        gui.handleClick(event.getSlot(), clickType, event.isShiftClick());
     }
 
     // Utils

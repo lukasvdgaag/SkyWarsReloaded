@@ -102,6 +102,14 @@ public interface SkyWarsReloaded {
 
     void setItemManager(ItemManager itemManager);
 
+    SWGuiManager getGuiManager();
+
+    void setGuiManager(SWGuiManager itemManager);
+
+    SWInventoryManager getInventoryManager();
+
+    void setInventoryManager(SWInventoryManager inventoryManager);
+
     // Console
 
     SWCommandSender getConsoleSender();

@@ -86,7 +86,6 @@ public class WaitingStateHandler extends CoreGameStateHandler {
                 break;
 
             default:
-                System.out.println("Failed at life");
                 break;
         }
         plugin.getScoreboardManager().updateAllPlayers(gameWorld);

@@ -15,7 +15,7 @@ public abstract class AbstractSWGui implements SWGui {
     protected int size;
 
     protected HashMap<Integer, SWGuiClickHandler> clickHandlers;
-    protected SWPlayer viewer;
+    protected SWPlayer player;
 
     public AbstractSWGui(SkyWarsReloaded plugin, String title, int size, SWPlayer player) {
         this.plugin = plugin;
@@ -63,7 +63,7 @@ public abstract class AbstractSWGui implements SWGui {
     @Override
     public SWGui addButton(int slot, Item item, SWGuiClickHandler handler) {
         if (this.clickHandlers.containsKey(slot)) {
-            // fail
+            this.plugin.getLogger().error(String.format("Attempted to add a button to an already existing slot %d", slot));
             return this;
         }
 
@@ -74,10 +74,55 @@ public abstract class AbstractSWGui implements SWGui {
     @Override
     public void removeButton(int slot) {
         this.clickHandlers.remove(slot);
+        this.inventory.setItem(slot, null);
+    }
+
+    @Override
+    public void updateButton(int slot, Item item) {
+        this.inventory.setItem(slot, item);
+    }
+
+    @Override
+    public void open() {
+        this.inventory = plugin.getServer().createInventory(title, size);
+        this.plugin.getGuiManager().registerInventoryCreation(this);
+        player.openInventory(this.inventory);
+    }
+
+    @Override
+    public void close() {
+        if (isViewing()) player.closeInventory();
+        if (this.inventory != null) this.plugin.getGuiManager().unregisterInventory(this.inventory);
+        this.inventory = null;
+    }
+
+    @Override
+    public boolean isViewing() {
+        return this.inventory.isViewing(player);
+    }
+
+    @Override
+    public SWPlayer getPlayer() {
+        return this.player;
+    }
+
+    @Override
+    public SWInventory getInventory() {
+        return inventory;
+    }
+
+    @Override
+    public void handleClick(int slot, SWGuiClickHandler.ClickType clickType, boolean isShiftClick) {
+        final SWGuiClickHandler handler = this.clickHandlers.get(slot);
+        if (handler != null) handler.onClick(this, slot, clickType, isShiftClick);
     }
 
     // Platform handlers
 
-    public abstract void refreshInventory();
-
+    private void refreshInventory() {
+        if (this.isViewing()) {
+            this.close();
+            this.open();
+        }
+    }
 }
