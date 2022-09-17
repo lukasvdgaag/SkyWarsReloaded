@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.data.player;
 
-import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.CoreMySQLStorage;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
@@ -9,9 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class MySQLPlayerStorage extends CoreMySQLStorage<SWPlayer> {
+public class MySQLPlayerStorage extends CoreMySQLStorage<SWPlayer> implements PlayerStorage {
 
-    public MySQLPlayerStorage(AbstractSkyWarsReloaded plugin) {
+    public MySQLPlayerStorage(SkyWarsReloaded plugin) {
         super(plugin, "sw_player_data");
     }
 

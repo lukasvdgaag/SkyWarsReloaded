@@ -1,8 +1,8 @@
 package net.gcnt.skywarsreloaded;
 
+import net.gcnt.skywarsreloaded.data.Storage;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.player.SQLitePlayerStorage;
-import net.gcnt.skywarsreloaded.data.player.Storage;
 import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.chest.filler.ChestFillerManager;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;

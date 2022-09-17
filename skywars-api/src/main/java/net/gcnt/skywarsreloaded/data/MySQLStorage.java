@@ -1,7 +1,5 @@
 package net.gcnt.skywarsreloaded.data;
 
-import net.gcnt.skywarsreloaded.data.player.Storage;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
