@@ -1,14 +1,9 @@
 package net.gcnt.skywarsreloaded.data.player;
 
+import net.gcnt.skywarsreloaded.data.Storage;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
-public interface Storage {
-
-    /**
-     * Will set up the requirements for the storage to function properly.
-     */
-    void setup();
-
+public interface PlayerStorage extends Storage {
 
     /**
      * Loads all data from storage (MySQL/MongoDB/YAML) into cache.
@@ -19,14 +14,5 @@ public interface Storage {
      * Saves all cache data to storage (MySQL/MongoDB/YAML).
      */
     void saveData(SWPlayer player);
-
-    /**
-     * Sets a property for a player
-     *
-     * @param property
-     * @param value
-     * @param player
-     */
-    void setProperty(String property, Object value, SWPlayer player);
 
 }
