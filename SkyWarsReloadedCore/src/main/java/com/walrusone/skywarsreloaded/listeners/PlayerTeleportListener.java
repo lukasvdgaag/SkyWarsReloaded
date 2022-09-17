@@ -37,6 +37,11 @@ public class PlayerTeleportListener implements org.bukkit.event.Listener {
                 return;
             }
 
+            if (event.getTo().getWorld() == null) {
+                SkyWarsReloaded.get().getLogger().warning(String.format("Player %s teleported to location with no world! (changing dimension?)", player.getName()));
+                return;
+            }
+
             if (SkyWarsReloaded.getCfg().getSpawn() != null) {
                 // Pre vars
                 World spawnWorld = SkyWarsReloaded.getCfg().getSpawn().getWorld();
