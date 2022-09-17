@@ -25,9 +25,12 @@ public class BukkitLocalGameInstance extends AbstractLocalGameInstance {
     }
 
     @Override
-    public void readyForEditing() {
+    public void makeReadyForEditing() {
         World world = getBukkitWorld();
         plugin.getWorldLoader().updateWorldBorder(this);
-        getTemplate().getTeamSpawnpoints().forEach(swCoords -> swCoords.forEach(swCoord -> world.getBlockAt(swCoord.x(), swCoord.y(), swCoord.z()).setType(Material.BEACON)));
+        // Place beacons for each player spawn point
+        getTemplate().getTeamSpawnpoints().forEach(swCoords -> 
+                swCoords.forEach(swCoord -> 
+                        world.getBlockAt(swCoord.x(), swCoord.y(), swCoord.z()).setType(Material.BEACON)));
     }
 }

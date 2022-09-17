@@ -16,6 +16,7 @@ import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -120,6 +121,12 @@ public abstract class AbstractLocalGameInstance implements LocalGameInstance {
     @Override
     public void setEditing(boolean editing) {
         this.editing = editing;
+    }
+
+    @Override
+    public CompletableFuture<Void> requestEditSession() {
+        this.makeReadyForEditing();
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
@@ -410,7 +417,7 @@ public abstract class AbstractLocalGameInstance implements LocalGameInstance {
     }
 
     @Override
-    public void readyForGame() {
+    public void makeReadyForGame() {
         startScheduler();
         gameTemplate.getTeamSpawnpoints().forEach(swCoords -> swCoords.forEach(swCoord -> getWorld().setBlockAt(swCoord, (Item) null)));
         final WaitingStateHandler handler = new WaitingStateHandler(plugin, this);

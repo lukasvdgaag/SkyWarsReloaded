@@ -42,6 +42,7 @@ public class SetMapCreatorCmd extends Cmd {
                 .send(sender);
 
         template.checkToDoList(sender);
+        // todo: save template to storage
         return true;
     }
 
@@ -49,7 +50,7 @@ public class SetMapCreatorCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameManager().getGameTemplatesCopy().forEach(template -> maps.add(template.getName()));
             return maps;
         } else if (args.length == 2) {
             return new ArrayList<>();

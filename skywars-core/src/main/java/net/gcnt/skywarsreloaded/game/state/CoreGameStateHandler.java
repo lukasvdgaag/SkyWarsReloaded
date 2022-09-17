@@ -3,20 +3,21 @@ package net.gcnt.skywarsreloaded.game.state;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameStateHandler;
+import net.gcnt.skywarsreloaded.game.LocalGameInstance;
 
 public abstract class CoreGameStateHandler implements GameStateHandler {
 
     protected final SkyWarsReloaded plugin;
-    protected final GameInstance gameWorld;
+    protected final LocalGameInstance gameInstance;
 
-    public CoreGameStateHandler(SkyWarsReloaded plugin, GameInstance gameWorld) {
+    public CoreGameStateHandler(SkyWarsReloaded plugin, LocalGameInstance gameInstance) {
         this.plugin = plugin;
-        this.gameWorld = gameWorld;
+        this.gameInstance = gameInstance;
     }
 
     @Override
-    public GameInstance getGameWorld() {
-        return gameWorld;
+    public GameInstance getGameInstance() {
+        return gameInstance;
     }
 
     @Override

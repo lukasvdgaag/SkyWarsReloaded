@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.manager;
+package net.gcnt.skywarsreloaded.manager.gameinstance;
 
 import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
@@ -92,4 +92,14 @@ public interface GameManager {
     List<GameInstance> getGameInstancesByTemplate(GameTemplate template);
 
 
+    /**
+     * Request that the instance provided be used to update the template it is based on.
+     * This is primarily used in map editing to save changes.
+     * If the save succeeded, the {@link CompletableFuture<Boolean>} will return true.
+     * If the save failed, the {@link CompletableFuture<Boolean>} will return false.
+     *
+     * @param instance The game instance used to update the template
+     * @return A {@link CompletableFuture<Boolean>} which completes when the save has succeeded or failed.
+     */
+    CompletableFuture<Boolean> saveInstanceToTemplate(GameInstance instance);
 }

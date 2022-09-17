@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game.chest.filler;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.GameInstance;
+import net.gcnt.skywarsreloaded.game.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.utils.Item;
@@ -28,13 +28,13 @@ public abstract class AbstractSWChestFiller implements SWChestFiller {
     }
 
     @Override
-    public void fillChest(SWChestTier chestTier, GameInstance gameWorld, SWCoord coord, ChestType chestType) {
+    public void fillChest(SWChestTier chestTier, LocalGameInstance gameInstance, SWCoord coord, ChestType chestType) {
         System.out.println("FILLING CHEST!");
-        if (gameWorld == null) {
+        if (gameInstance == null) {
             return;
         }
 
-        SWWorld world = gameWorld.getWorld();
+        SWWorld world = gameInstance.getWorld();
         SWBlock block = world.getBlockAt(coord.x(), coord.y(), coord.z());
         if (!(block instanceof SWChest)) {
             return;

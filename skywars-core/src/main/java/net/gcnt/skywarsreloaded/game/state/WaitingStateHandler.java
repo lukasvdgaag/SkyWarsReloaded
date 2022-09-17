@@ -42,30 +42,30 @@ public class WaitingStateHandler extends CoreGameStateHandler {
             case RESET_TO_WAITING_LOBBY:
                 // timer was reset
                 // teleporting all waiting players back to the waiting lobby
-                for (GamePlayer player : gameWorld.getWaitingPlayers()) {
+                for (GamePlayer player : gameInstance.getWaitingPlayers()) {
                     player.getSWPlayer().sendMessage("§cNot enough players. Teleporting you back to the waiting lobby.");
-                    player.getSWPlayer().teleport(gameWorld.getTemplate().getWaitingLobbySpawn());
+                    player.getSWPlayer().teleport(gameInstance.getTemplate().getWaitingLobbySpawn());
                 }
                 break;
 
             case ANNOUNCE_DROP_TO_FULL_TIMER:
-                gameWorld.setTimer(getWaitingFullTimer());
-                final String message = "§eThe game is §6§lFULL§e! Starting in §6" + this.gameWorld.getTimer() + "§e seconds.";
-                for (GamePlayer player : gameWorld.getWaitingPlayers()) {
+                gameInstance.setTimer(getWaitingFullTimer());
+                final String message = "§eThe game is §6§lFULL§e! Starting in §6" + this.gameInstance.getTimer() + "§e seconds.";
+                for (GamePlayer player : gameInstance.getWaitingPlayers()) {
                     player.getSWPlayer().sendMessage(message);
                 }
                 break;
 
             case COUNTDOWN:
                 // when the timer reaches 10, officially start the countdown state.
-                if (gameWorld.getState() == GameState.WAITING_CAGES && gameWorld.getTimer() == getWaitingFullTimer()) {
-                    gameWorld.setState(GameState.COUNTDOWN);
+                if (gameInstance.getState() == GameState.WAITING_CAGES && gameInstance.getTimer() == getWaitingFullTimer()) {
+                    gameInstance.setState(GameState.COUNTDOWN);
                 }
 
-                gameWorld.setTimer(gameWorld.getTimer() - 1);
+                gameInstance.setTimer(gameInstance.getTimer() - 1);
 
-                for (GamePlayer player : gameWorld.getWaitingPlayers()) {
-                    player.getSWPlayer().setExp(gameWorld.getTimer(), 0);
+                for (GamePlayer player : gameInstance.getWaitingPlayers()) {
+                    player.getSWPlayer().setExp(gameInstance.getTimer(), 0);
                 }
 
                 announceTimer();
@@ -73,40 +73,40 @@ public class WaitingStateHandler extends CoreGameStateHandler {
 
             case START_GAME:
                 // In lobby -> cages state
-                if (gameWorld.getState() == GameState.WAITING_LOBBY) {
+                if (gameInstance.getState() == GameState.WAITING_LOBBY) {
                     // todo teleport all players to their cages
                 }
                 // In cages -> playing state
-                else if (gameWorld.getState() == GameState.COUNTDOWN) {
+                else if (gameInstance.getState() == GameState.COUNTDOWN) {
                     // todo release the cages
-                    gameWorld.startGame();
+                    gameInstance.startGame();
                 }
 
-                plugin.getScoreboardManager().updateAllPlayers(gameWorld);
+                plugin.getScoreboardManager().updateAllPlayers(gameInstance);
                 break;
 
             default:
                 break;
         }
-        plugin.getScoreboardManager().updateAllPlayers(gameWorld);
+        plugin.getScoreboardManager().updateAllPlayers(gameInstance);
     }
 
     public WaitingDecision calculateDecision() {
-        final int playerCount = gameWorld.getWaitingPlayers().size();
+        final int playerCount = gameInstance.getWaitingPlayers().size();
 
         // Not ready to start yet
-        if (playerCount < gameWorld.getTemplate().getMinPlayers()) {
-            GameState prevState = gameWorld.getState();
-            int prevTimer = gameWorld.getTimer();
+        if (playerCount < gameInstance.getTemplate().getMinPlayers()) {
+            GameState prevState = gameInstance.getState();
+            int prevTimer = gameInstance.getTimer();
 
             // Reset state
-            gameWorld.setState(DEFAULT_WAITING_STATE);
+            gameInstance.setState(DEFAULT_WAITING_STATE);
 
             // Reset time
             this.resetWaitingTime();
 
             // Move players back to lobby
-            if (gameWorld.getState() == GameState.WAITING_LOBBY && prevTimer != gameWorld.getTimer() && prevState != GameState.WAITING_LOBBY) {
+            if (gameInstance.getState() == GameState.WAITING_LOBBY && prevTimer != gameInstance.getTimer() && prevState != GameState.WAITING_LOBBY) {
                 return WaitingDecision.RESET_TO_WAITING_LOBBY;
             }
 
@@ -114,10 +114,10 @@ public class WaitingStateHandler extends CoreGameStateHandler {
         }
 
         // game is full and the timer is higher than the waiting-full timer... shortening the timer
-        else if (playerCount == gameWorld.getTemplate().getMaxPlayers()) {
+        else if (playerCount == gameInstance.getTemplate().getMaxPlayers()) {
             final int waitingFullTimer = getWaitingFullTimer();
 
-            if (gameWorld.getTimer() > waitingFullTimer) {
+            if (gameInstance.getTimer() > waitingFullTimer) {
                 return WaitingDecision.ANNOUNCE_DROP_TO_FULL_TIMER;
             }
         }
@@ -125,7 +125,7 @@ public class WaitingStateHandler extends CoreGameStateHandler {
         // Normal countdown
         else {
             // Countdown has finished, going to next state of the game.
-            if (gameWorld.getTimer() == 0) {
+            if (gameInstance.getTimer() == 0) {
                 return WaitingDecision.START_GAME;
             }
 
@@ -136,44 +136,44 @@ public class WaitingStateHandler extends CoreGameStateHandler {
     }
 
     private int getWaitingFullTimer() {
-        return this.gameWorld.getState() == GameState.WAITING_LOBBY ?
+        return this.gameInstance.getState() == GameState.WAITING_LOBBY ?
                 gameFullTimerMaxLobby :
                 gameFullTimerMaxCages;
     }
 
     public void resetWaitingTime() {
-        if (gameWorld.getState() == GameState.WAITING_LOBBY) {
+        if (gameInstance.getState() == GameState.WAITING_LOBBY) {
             final int waitingLobbyTime = plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_LOBBY.toString());
-            gameWorld.setTimer(waitingLobbyTime);
+            gameInstance.setTimer(waitingLobbyTime);
 
-        } else if (gameWorld.getState() == GameState.WAITING_CAGES) {
-            gameWorld.setTimer(plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_CAGES.toString()));
+        } else if (gameInstance.getState() == GameState.WAITING_CAGES) {
+            gameInstance.setTimer(plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_CAGES.toString()));
         }
     }
 
     private void announceTimer() {
         // todo make this configurable
         // At 60
-        if (gameWorld.getTimer() == 60) {
-            for (GamePlayer player : gameWorld.getWaitingPlayers()) {
+        if (gameInstance.getTimer() == 60) {
+            for (GamePlayer player : gameInstance.getWaitingPlayers()) {
                 player.getSWPlayer().playSound(player.getSWPlayer().getLocation(), "BLOCK_NOTE_BLOCK_PLING", 0.7f, 1.0f);
                 player.getSWPlayer().sendMessage("§eStarting in §a1 minute");
                 player.getSWPlayer().sendTitle("§a§l1 minute", "§eStarting soon!", 20, 50, 20);
             }
 
             // Every 10s (other than 0)
-        } else if (gameWorld.getTimer() > 0 && gameWorld.getTimer() % 10 == 0) {
-            for (GamePlayer player : gameWorld.getWaitingPlayers()) {
+        } else if (gameInstance.getTimer() > 0 && gameInstance.getTimer() % 10 == 0) {
+            for (GamePlayer player : gameInstance.getWaitingPlayers()) {
                 player.getSWPlayer().playSound(player.getSWPlayer().getLocation(), "BLOCK_NOTE_BLOCK_PLING", 0.7f, 1.0f);
-                player.getSWPlayer().sendMessage(String.format("§eStarting in §6%d seconds", gameWorld.getTimer()));
-                player.getSWPlayer().sendTitle(String.format("§6§l%d seconds", gameWorld.getTimer()), "§eStarting soon!", 20, 50, 20);
+                player.getSWPlayer().sendMessage(String.format("§eStarting in §6%d seconds", gameInstance.getTimer()));
+                player.getSWPlayer().sendTitle(String.format("§6§l%d seconds", gameInstance.getTimer()), "§eStarting soon!", 20, 50, 20);
             }
 
             // Every number under or equal to 5 (other than 0)
-        } else if (gameWorld.getTimer() > 0 && gameWorld.getTimer() <= 5) {
-            final String formatted = String.format("%d second%s", gameWorld.getTimer(), gameWorld.getTimer() == 1 ? "" : "s");
+        } else if (gameInstance.getTimer() > 0 && gameInstance.getTimer() <= 5) {
+            final String formatted = String.format("%d second%s", gameInstance.getTimer(), gameInstance.getTimer() == 1 ? "" : "s");
 
-            for (GamePlayer player : gameWorld.getWaitingPlayers()) {
+            for (GamePlayer player : gameInstance.getWaitingPlayers()) {
                 player.getSWPlayer().playSound(player.getSWPlayer().getLocation(), "UI_BUTTON_CLICK", 0.7f, 1.0f);
                 player.getSWPlayer().sendMessage("§eStarting in §c" + formatted);
                 player.getSWPlayer().sendTitle("§c§l" + formatted, "§eStarting soon!", 0, 25, 0);

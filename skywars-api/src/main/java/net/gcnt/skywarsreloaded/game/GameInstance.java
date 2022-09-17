@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface GameInstance {
 
@@ -10,4 +11,7 @@ public interface GameInstance {
 
     List<GameTeam> getTeams();
 
+    boolean isEditing();
+
+    CompletableFuture<Void> requestEditSession();
 }

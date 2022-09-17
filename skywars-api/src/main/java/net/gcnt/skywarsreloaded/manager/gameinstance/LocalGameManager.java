@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.manager;
+package net.gcnt.skywarsreloaded.manager.gameinstance;
 
 import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;

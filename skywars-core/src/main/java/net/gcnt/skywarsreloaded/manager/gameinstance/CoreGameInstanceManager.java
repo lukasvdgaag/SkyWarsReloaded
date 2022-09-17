@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.manager;
+package net.gcnt.skywarsreloaded.manager.gameinstance;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.CoreGameTemplate;
@@ -15,13 +15,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class CoreGameManager implements GameManager {
+public abstract class CoreGameInstanceManager implements GameManager {
 
     public final SkyWarsReloaded plugin;
     private final HashMap<GameTemplate, List<GameInstance>> gameInstances;
     private final HashMap<String, GameTemplate> templates;
 
-    public CoreGameManager(SkyWarsReloaded plugin) {
+    public CoreGameInstanceManager(SkyWarsReloaded plugin) {
         this.plugin = plugin;
         this.templates = new HashMap<>();
         this.gameInstances = new HashMap<>();

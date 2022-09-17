@@ -8,7 +8,7 @@ public interface GameStateHandler {
 
     void tickSecond();
 
-    GameInstance getGameWorld();
+    GameInstance getGameInstance();
 
     SkyWarsReloaded getPlugin();
 

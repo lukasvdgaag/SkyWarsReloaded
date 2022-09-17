@@ -70,7 +70,7 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
     @Override
     public void initGameManager() {
-        setGameManager(new BukkitGameManager(this));
+        setGameManager(new BukkitGameInstanceManager(this));
     }
 
     @Override

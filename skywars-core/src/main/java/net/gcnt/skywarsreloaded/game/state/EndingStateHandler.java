@@ -12,17 +12,17 @@ public class EndingStateHandler extends CoreGameStateHandler {
 
     @Override
     public void tickSecond() {
-        if (gameWorld.getTimer() == 0) {
-            plugin.getGameManager().deleteGameWorld(gameWorld);
+        if (gameInstance.getTimer() == 0) {
+            plugin.getGameManager().deleteGameWorld(gameInstance);
             return;
         }
 
-        gameWorld.setTimer(gameWorld.getTimer() - 1);
+        gameInstance.setTimer(gameInstance.getTimer() - 1);
 
-        for (GamePlayer player : gameWorld.getWaitingPlayers()) {
-            player.getSWPlayer().setExp(gameWorld.getTimer(), 0);
+        for (GamePlayer player : gameInstance.getWaitingPlayers()) {
+            player.getSWPlayer().setExp(gameInstance.getTimer(), 0);
         }
 
-        plugin.getScoreboardManager().updateAllPlayers(gameWorld);
+        plugin.getScoreboardManager().updateAllPlayers(gameInstance);
     }
 }

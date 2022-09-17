@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.manager.gameinstance.GameManager;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
@@ -25,33 +26,39 @@ public class SaveMapCmd extends Cmd {
         SWPlayer player = (SWPlayer) sender;
 
         GameTemplate template;
+        GameInstance foundInstance;
+        CompletableFuture<Boolean> savingFuture = null;
+
+        GameManager gameManager = plugin.getGameManager();
         if (args.length == 0) {
-            GameInstance world = plugin.getGameManager().getGameWorldByName(player.getLocation().getWorld().getName());
-            if (world == null || !world.isEditing() || world.getTemplate() == null) {
+            GameInstance gameInstance = gameManager.getGameInstanceByName(player.getLocation().getWorld().getName());
+            if (gameInstance == null || !gameInstance.isEditing() || gameInstance.getTemplate() == null) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
                 return true;
             }
-            template = world.getTemplate();
+            template = gameInstance.getTemplate();
+            foundInstance = gameInstance;
         } else {
             final String templateName = args[0];
-            sender.sendMessage(templateName);
-            template = plugin.getGameManager().getGameTemplateByName(templateName);
+            sender.sendMessage(templateName); // todo: remove debug
+            template = gameManager.getGameTemplateByName(templateName);
+            foundInstance = null;
             if (template == null) {
                 plugin.getMessages().getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
                 return true;
             }
         }
 
-        List<GameInstance> worlds = plugin.getGameManager().getGameWorlds(template);
-        CompletableFuture<Boolean> savingFuture = null;
-        GameInstance gameWorld = null;
-        for (GameInstance world : worlds) {
-            if (world.isEditing()) {
-                // world creating and saving
-                gameWorld = world;
-                plugin.getMessages().getMessage(MessageProperties.MAPS_SAVING_START.toString()).send(sender);
-                savingFuture = plugin.getWorldLoader().save(world);
-                break;
+        if (foundInstance == null) {
+            List<GameInstance> runningInstances = gameManager.getGameInstancesByTemplate(template);
+            for (GameInstance instance : runningInstances) {
+                if (instance.isEditing()) {
+                    // instance creating and saving
+                    foundInstance = instance;
+                    plugin.getMessages().getMessage(MessageProperties.MAPS_SAVING_START.toString()).send(sender);
+                    savingFuture = gameManager.saveInstanceToTemplate(instance);
+                    break;
+                }
             }
         }
 
@@ -60,7 +67,7 @@ public class SaveMapCmd extends Cmd {
             return true;
         }
 
-        GameInstance finalGameWorld = gameWorld;
+        GameInstance finalGameWorld = foundInstance;
         savingFuture.thenAccept(successful -> {
             try {
                 if (successful) this.sendWorldSaved(template, sender);
@@ -72,7 +79,7 @@ public class SaveMapCmd extends Cmd {
                 for (SWPlayer swp : finalGameWorld.getWorld().getAllPlayers()) {
                     swp.teleport(coord);
                 }
-                plugin.getGameManager().deleteGameWorld(finalGameWorld);
+                gameManager.deleteGameWorld(finalGameWorld);
 
                 this.sendMapSaved(template, sender);
                 template.checkToDoList(sender);

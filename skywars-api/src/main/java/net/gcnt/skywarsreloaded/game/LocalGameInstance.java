@@ -25,8 +25,6 @@ public interface LocalGameInstance extends GameInstance {
 
     boolean isSpawnAvailable();
 
-    boolean isEditing();
-
     void setEditing(boolean edit);
 
     void startScheduler();
@@ -91,7 +89,7 @@ public interface LocalGameInstance extends GameInstance {
 
     void setState(GameState state);
 
-    void readyForEditing();
+    void makeReadyForEditing();
 
     int getTimer();
 
@@ -109,7 +107,7 @@ public interface LocalGameInstance extends GameInstance {
 
     void loadTeams();
 
-    void readyForGame();
+    void makeReadyForGame();
 
     GameTeam getWinningTeam();
 

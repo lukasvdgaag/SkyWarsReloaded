@@ -1,44 +1,44 @@
 package net.gcnt.skywarsreloaded.game.state;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTeam;
+import net.gcnt.skywarsreloaded.game.LocalGameInstance;
 
 import java.util.List;
 
 public class PlayingStateHandler extends CoreGameStateHandler {
 
-    public PlayingStateHandler(SkyWarsReloaded plugin, GameInstance gameWorld) {
-        super(plugin, gameWorld);
+    public PlayingStateHandler(SkyWarsReloaded plugin, LocalGameInstance localInstance) {
+        super(plugin, localInstance);
     }
 
     @Override
     public void tickSecond() {
-        List<GameTeam> aliveTeams = gameWorld.getAliveTeams();
+        List<GameTeam> aliveTeams = gameInstance.getAliveTeams();
 
         if (aliveTeams.size() == 1) {
             // only one team left OR timer has run out.
             // todo determine the winner and end the game here.
-            gameWorld.endGame();
-            plugin.getScoreboardManager().updateAllPlayers(gameWorld);
+            gameInstance.endGame();
+            plugin.getScoreboardManager().updateAllPlayers(gameInstance);
             return;
         } else if (aliveTeams.size() == 0) {
             // no more players left.
             // todo end the game here.
-            gameWorld.endGame();
-            plugin.getScoreboardManager().updateAllPlayers(gameWorld);
+            gameInstance.endGame();
+            plugin.getScoreboardManager().updateAllPlayers(gameInstance);
             return;
         }
 
         // game is regularly ticking - more than one team is alive.
-        gameWorld.setTimer(gameWorld.getTimer() + 1);
+        gameInstance.setTimer(gameInstance.getTimer() + 1);
 
         // todo remove this EXP setting.
-        for (GamePlayer player : gameWorld.getWaitingPlayers()) {
-            player.getSWPlayer().setExp(gameWorld.getTimer(), 0);
+        for (GamePlayer player : gameInstance.getWaitingPlayers()) {
+            player.getSWPlayer().setExp(gameInstance.getTimer(), 0);
         }
 
-        plugin.getScoreboardManager().updateAllPlayers(gameWorld);
+        plugin.getScoreboardManager().updateAllPlayers(gameInstance);
     }
 }

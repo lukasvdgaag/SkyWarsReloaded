@@ -47,16 +47,16 @@ public class EditMapCmd extends Cmd {
         }
         final SWPlayer player = (SWPlayer) sender;
 
-        List<GameInstance> worlds = plugin.getGameManager().getGameWorlds(template);
-        for (GameInstance world : worlds) {
-            if (world.isEditing()) {
+        List<GameInstance> instances = plugin.getGameManager().getGameInstancesByTemplate(template);
+        for (GameInstance instance : instances) {
+            if (instance.isEditing()) {
                 msgConfig.getMessage(MessageProperties.MAPS_EDIT_EXISTING_WORLD.toString())
                         .replace("%template%", template.getName())
                         .send(sender);
-                world.readyForEditing();
-                player.teleport(world.getWorldName(), 0, 51, 0);
+                instance.requestEditSession(); // todo: in progress
+                player.teleport(instance.getWorldName(), 0, 51, 0);
                 return true;
-            } else if (world.getState() != GameState.DISABLED) {
+            } else if (instance.getState() != GameState.DISABLED) {
                 msgConfig.getMessage(MessageProperties.ERROR_CANNOT_SET_LOBBYSPAWN_IN_GAMEWORLD.toString())
                         .replace("%template%", template.getName())
                         .send(sender);
