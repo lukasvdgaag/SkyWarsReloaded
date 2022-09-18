@@ -30,6 +30,11 @@ public abstract class CoreMySQLStorage<DataType> implements MySQLStorage<DataTyp
     }
 
     @Override
+    public Connection getConnection() throws SQLException {
+        return ds.getConnection();
+    }
+
+    @Override
     public void setup() {
         YAMLConfig yamlConfig = plugin.getConfig();
 
@@ -84,5 +89,13 @@ public abstract class CoreMySQLStorage<DataType> implements MySQLStorage<DataTyp
         else if (value instanceof Boolean) statement.setBoolean(paramPosition, (Boolean) value);
         else if (value instanceof Float) statement.setFloat(paramPosition, (Float) value);
         else statement.setString(paramPosition, value.toString());
+    }
+
+    @Override
+    /**
+     * Does nothing by default
+     */
+    public void setProperty(String property, Object value, DataType object) {
+
     }
 }

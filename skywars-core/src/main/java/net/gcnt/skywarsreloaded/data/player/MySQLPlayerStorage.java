@@ -15,10 +15,6 @@ public class MySQLPlayerStorage extends CoreMySQLStorage<SWPlayer> implements Pl
         super(plugin, "sw_player_data");
     }
 
-    public Connection getConnection() throws SQLException {
-        return ds.getConnection();
-    }
-
     @Override
     public void createTable(Connection connection) throws SQLException {
         connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS `" + table + "` (" +
@@ -39,7 +35,7 @@ public class MySQLPlayerStorage extends CoreMySQLStorage<SWPlayer> implements Pl
                 "KEY  (`uuid`))");
     }
 
-    private void createDefault(SWPlayer player, Connection conn) throws SQLException {
+    protected void createDefault(SWPlayer player, Connection conn) throws SQLException {
         PreparedStatement ps = conn.prepareStatement("INSERT INTO `" + table + "`(`uuid`) VALUES (?)");
         ps.setString(1, player.getUuid().toString());
         ps.executeUpdate();

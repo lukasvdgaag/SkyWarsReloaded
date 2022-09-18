@@ -25,6 +25,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>4.2.3</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>net.gcnt</groupId>
             <artifactId>skywars-api</artifactId>
             <version>${revision}</version>
