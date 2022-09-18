@@ -1,6 +1,7 @@
-package net.gcnt.skywarsreloaded.game;
+package net.gcnt.skywarsreloaded.game.gameinstance;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.game.*;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFiller;
 import net.gcnt.skywarsreloaded.game.state.EndingStateHandler;
@@ -20,12 +21,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class AbstractLocalGameInstance implements LocalGameInstance {
+public abstract class AbstractLocalGameInstance extends AbstractGameInstance implements LocalGameInstance {
 
     // Static properties
-    protected final SkyWarsReloaded plugin;
-    protected final String id;
-    protected final GameTemplate gameTemplate;
     protected final String worldName;
     // Player data
     protected final List<GamePlayer> players;
@@ -37,19 +35,14 @@ public abstract class AbstractLocalGameInstance implements LocalGameInstance {
     // Map data
     protected ChestType chestType;
     // States
-    protected boolean editing;
-    protected GameState state;
     protected int timer;
 
-    public AbstractLocalGameInstance(SkyWarsReloaded plugin, String id, GameTemplate gameTemplate) {
-        this.plugin = plugin;
-        this.id = id;
-        this.gameTemplate = gameTemplate;
+    public AbstractLocalGameInstance(SkyWarsReloaded plugin, UUID id, GameTemplate gameTemplate) {
+        super(plugin, id, gameTemplate);
         this.teams = new ArrayList<>();
         this.players = new ArrayList<>();
         this.votedChestTiers = new HashMap<>();
         this.selectedEditingChestType = new HashMap<>();
-        this.state = GameState.DISABLED;
         this.timer = 0;
         this.worldName = "swr-" + id;
         this.winningTeam = null;
@@ -58,18 +51,13 @@ public abstract class AbstractLocalGameInstance implements LocalGameInstance {
     }
 
     @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public GameTemplate getTemplate() {
-        return this.gameTemplate;
-    }
-
-    @Override
     public List<GameTeam> getTeams() {
         return teams;
+    }
+
+    @Override
+    public int getPlayerCount() {
+        return this.players.size();
     }
 
     @Override
@@ -115,12 +103,12 @@ public abstract class AbstractLocalGameInstance implements LocalGameInstance {
 
     @Override
     public boolean isEditing() {
-        return editing;
+        return this.getState() == GameState.EDIT_MODE;
     }
 
     @Override
     public void setEditing(boolean editing) {
-        this.editing = editing;
+        this.setState(GameState.EDIT_MODE);
     }
 
     @Override
@@ -162,7 +150,7 @@ public abstract class AbstractLocalGameInstance implements LocalGameInstance {
 
     @Override
     public boolean canJoinGame() {
-        return this.state.isJoinable() && isSpawnAvailable();
+        return this.getState().isJoinable() && isSpawnAvailable();
     }
 
     @Override
@@ -201,7 +189,7 @@ public abstract class AbstractLocalGameInstance implements LocalGameInstance {
 
             // Apply the default chest type to the gamePlayer
             final SWPlayer swPlayer = gamePlayer.getSWPlayer();
-            if (this.editing) {
+            if (this.isEditing()) {
                 this.selectedEditingChestType.put(swPlayer.getUuid(), defaultChestType);
 
                 // Add the gamePlayer to the game
@@ -274,7 +262,7 @@ public abstract class AbstractLocalGameInstance implements LocalGameInstance {
             player.setFlying(false);
             player.setAllowFlight(false);
 
-            if (state == GameState.PLAYING) {
+            if (getState() == GameState.PLAYING) {
                 player.setGameMode(0);
             } else {
                 // adventure mode when waiting/ending
@@ -359,16 +347,6 @@ public abstract class AbstractLocalGameInstance implements LocalGameInstance {
     @Override
     public List<GameTeam> getAliveTeams() {
         return teams.stream().filter(Predicate.not(GameTeam::isEliminated)).collect(Collectors.toList());
-    }
-
-    @Override
-    public GameState getState() {
-        return state;
-    }
-
-    @Override
-    public void setState(GameState state) {
-        this.state = state;
     }
 
     @Override
@@ -460,7 +438,7 @@ public abstract class AbstractLocalGameInstance implements LocalGameInstance {
     // Private utils
 
     protected ChestType getDefaultChestType() {
-        if (this.editing) {
+        if (this.isEditing()) {
             Collection<ChestType> chests = this.gameTemplate.getChests().values();
             if (!chests.isEmpty()) {
                 for (ChestType chest : chests) {
@@ -477,7 +455,7 @@ public abstract class AbstractLocalGameInstance implements LocalGameInstance {
     }
 
     private boolean shouldSendPlayerToCages() {
-        return this.gameTemplate.getTeamSize() == 1 || this.state == GameState.WAITING_CAGES || this.state == GameState.COUNTDOWN;
+        return this.gameTemplate.getTeamSize() == 1 || this.getState() == GameState.WAITING_CAGES || this.getState() == GameState.COUNTDOWN;
     }
 
     @Override

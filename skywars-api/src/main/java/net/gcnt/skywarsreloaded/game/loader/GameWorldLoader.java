@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game.loader;
 
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 
 import java.util.concurrent.CompletableFuture;
 

@@ -2,8 +2,8 @@ package net.gcnt.skywarsreloaded.bukkit.game;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
-import net.gcnt.skywarsreloaded.game.AbstractLocalGameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.gameinstance.AbstractLocalGameInstance;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -29,8 +29,8 @@ public class BukkitLocalGameInstance extends AbstractLocalGameInstance {
         World world = getBukkitWorld();
         plugin.getWorldLoader().updateWorldBorder(this);
         // Place beacons for each player spawn point
-        getTemplate().getTeamSpawnpoints().forEach(swCoords -> 
-                swCoords.forEach(swCoord -> 
+        getTemplate().getTeamSpawnpoints().forEach(swCoords ->
+                swCoords.forEach(swCoord ->
                         world.getBlockAt(swCoord.x(), swCoord.y(), swCoord.z()).setType(Material.BEACON)));
     }
 }

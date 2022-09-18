@@ -2,9 +2,9 @@ package net.gcnt.skywarsreloaded.command.maps;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.manager.gameinstance.GameManager;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
@@ -29,7 +29,7 @@ public class SaveMapCmd extends Cmd {
         GameInstance foundInstance;
         CompletableFuture<Boolean> savingFuture = null;
 
-        GameManager gameManager = plugin.getGameManager();
+        GameInstanceManager gameManager = plugin.getGameManager();
         if (args.length == 0) {
             GameInstance gameInstance = gameManager.getGameInstanceByName(player.getLocation().getWorld().getName());
             if (gameInstance == null || !gameInstance.isEditing() || gameInstance.getTemplate() == null) {

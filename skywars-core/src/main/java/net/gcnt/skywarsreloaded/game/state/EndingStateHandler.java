@@ -1,8 +1,8 @@
 package net.gcnt.skywarsreloaded.game.state;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 
 public class EndingStateHandler extends CoreGameStateHandler {
 

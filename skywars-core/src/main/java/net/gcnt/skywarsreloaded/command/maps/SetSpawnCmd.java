@@ -2,8 +2,8 @@ package net.gcnt.skywarsreloaded.command.maps;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.types.SpawnType;
 import net.gcnt.skywarsreloaded.utils.AbstractItem;
 import net.gcnt.skywarsreloaded.utils.Message;

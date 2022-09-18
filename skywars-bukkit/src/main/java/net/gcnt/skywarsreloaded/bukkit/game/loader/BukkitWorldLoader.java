@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.bukkit.game.loader;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.game.BukkitLocalGameInstance;
-import net.gcnt.skywarsreloaded.game.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.loader.AbstractWorldLoader;
 import org.bukkit.World;
 import org.bukkit.block.Biome;

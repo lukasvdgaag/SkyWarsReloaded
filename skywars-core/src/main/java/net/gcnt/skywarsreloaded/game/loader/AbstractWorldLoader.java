@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game.loader;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;

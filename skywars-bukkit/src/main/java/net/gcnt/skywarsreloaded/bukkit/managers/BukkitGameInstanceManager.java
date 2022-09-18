@@ -2,8 +2,8 @@ package net.gcnt.skywarsreloaded.bukkit.managers;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.game.BukkitLocalGameInstance;
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.manager.gameinstance.CoreLocalGameInstanceManager;
 
 import java.util.UUID;

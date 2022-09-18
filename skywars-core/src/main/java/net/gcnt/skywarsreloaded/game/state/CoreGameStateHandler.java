@@ -1,9 +1,9 @@
 package net.gcnt.skywarsreloaded.game.state;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameStateHandler;
-import net.gcnt.skywarsreloaded.game.LocalGameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 
 public abstract class CoreGameStateHandler implements GameStateHandler {
 

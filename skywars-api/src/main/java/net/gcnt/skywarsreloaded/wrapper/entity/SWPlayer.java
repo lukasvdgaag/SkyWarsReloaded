@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.wrapper.entity;
 
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
-import net.gcnt.skywarsreloaded.game.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.party.SWParty;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;

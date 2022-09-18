@@ -3,7 +3,7 @@ package net.gcnt.skywarsreloaded.game.state;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTeam;
-import net.gcnt.skywarsreloaded.game.LocalGameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 
 import java.util.List;
 

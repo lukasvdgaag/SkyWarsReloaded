@@ -1,8 +1,10 @@
-package net.gcnt.skywarsreloaded.game;
+package net.gcnt.skywarsreloaded.game.gameinstance;
 
+import net.gcnt.skywarsreloaded.game.GamePlayer;
+import net.gcnt.skywarsreloaded.game.GameScheduler;
+import net.gcnt.skywarsreloaded.game.GameTeam;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.game.types.ChestType;
-import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.Message;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
@@ -12,6 +14,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface LocalGameInstance extends GameInstance {
+
+    List<GameTeam> getTeams();
 
     GameTeam getTeam(GamePlayer player);
 
@@ -84,10 +88,6 @@ public interface LocalGameInstance extends GameInstance {
     List<GamePlayer> getWaitingPlayers();
 
     List<GamePlayer> getSpectators();
-
-    GameState getState();
-
-    void setState(GameState state);
 
     void makeReadyForEditing();
 

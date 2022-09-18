@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.manager;
 
-import net.gcnt.skywarsreloaded.game.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.utils.scoreboards.SWBoard;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import org.jetbrains.annotations.Nullable;

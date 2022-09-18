@@ -1,12 +1,12 @@
 package net.gcnt.skywarsreloaded.manager.gameinstance;
 
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public interface GameManager {
+public interface GameInstanceManager {
 
     /**
      * Load all {@link GameTemplate} from storage into memory.

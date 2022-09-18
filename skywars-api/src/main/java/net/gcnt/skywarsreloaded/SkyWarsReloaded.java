@@ -5,7 +5,7 @@ import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.*;
-import net.gcnt.skywarsreloaded.manager.gameinstance.GameManager;
+import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
@@ -62,9 +62,9 @@ public interface SkyWarsReloaded {
 
     void setCommandManager(SWCommandManager commandManager);
 
-    GameManager getGameManager();
+    GameInstanceManager getGameManager();
 
-    void setGameManager(GameManager gameManager);
+    void setGameManager(GameInstanceManager gameManager);
 
     SWPlayerManager getPlayerManager();
 

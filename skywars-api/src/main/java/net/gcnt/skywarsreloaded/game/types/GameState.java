@@ -7,7 +7,8 @@ public enum GameState {
     WAITING_CAGES(true, true),
     COUNTDOWN(true, true),
     PLAYING(false, false),
-    ENDING(false, false);
+    ENDING(false, false),
+    EDIT_MODE(false, false);
 
     private final boolean joinable;
     private final boolean waiting;

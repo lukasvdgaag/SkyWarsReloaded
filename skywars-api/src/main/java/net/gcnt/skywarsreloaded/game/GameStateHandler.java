@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 
 public interface GameStateHandler {
 

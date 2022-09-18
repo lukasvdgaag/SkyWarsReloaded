@@ -2,10 +2,10 @@ package net.gcnt.skywarsreloaded.listener;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.enums.DeathReason;
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTeam;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.unlockable.killmessages.KillMessageGroup;

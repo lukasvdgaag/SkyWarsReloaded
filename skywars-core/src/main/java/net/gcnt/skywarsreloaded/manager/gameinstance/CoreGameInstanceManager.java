@@ -2,9 +2,9 @@ package net.gcnt.skywarsreloaded.manager.gameinstance;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.CoreGameTemplate;
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.LocalGameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 
 import java.io.File;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class CoreGameInstanceManager implements GameManager {
+public abstract class CoreGameInstanceManager implements GameInstanceManager {
 
     public final SkyWarsReloaded plugin;
     private final HashMap<GameTemplate, List<GameInstance>> gameInstances;

@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.command.general;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
-import net.gcnt.skywarsreloaded.game.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;

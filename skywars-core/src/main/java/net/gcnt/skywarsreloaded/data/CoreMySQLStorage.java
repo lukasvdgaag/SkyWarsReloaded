@@ -69,14 +69,20 @@ public abstract class CoreMySQLStorage<DataType> implements MySQLStorage<DataTyp
         connection.createStatement().executeUpdate("CREATE DATABASE IF NOT EXISTS " + database);
     }
 
+    /**
+     * @param statement     The {@link PreparedStatement} to supply with parameter data
+     * @param paramPosition Number from 1 to n
+     * @param value         Paramter data
+     * @throws SQLException
+     */
     @Override
-    public void bindPropertyValue(PreparedStatement statement, int index, Object value) throws SQLException {
+    public void bindPropertyValue(PreparedStatement statement, int paramPosition, Object value) throws SQLException {
         if (statement == null) return;
 
-        if (value instanceof Integer) statement.setInt(index, (Integer) value);
-        else if (value instanceof Double) statement.setDouble(index, (Double) value);
-        else if (value instanceof Boolean) statement.setBoolean(index, (Boolean) value);
-        else if (value instanceof Float) statement.setFloat(index, (Float) value);
-        else statement.setString(index, value.toString());
+        if (value instanceof Integer) statement.setInt(paramPosition, (Integer) value);
+        else if (value instanceof Double) statement.setDouble(paramPosition, (Double) value);
+        else if (value instanceof Boolean) statement.setBoolean(paramPosition, (Boolean) value);
+        else if (value instanceof Float) statement.setFloat(paramPosition, (Float) value);
+        else statement.setString(paramPosition, value.toString());
     }
 }

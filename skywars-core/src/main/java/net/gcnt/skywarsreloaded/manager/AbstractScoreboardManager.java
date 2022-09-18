@@ -1,9 +1,9 @@
 package net.gcnt.skywarsreloaded.manager;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTeam;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.utils.scoreboards.SWBoard;

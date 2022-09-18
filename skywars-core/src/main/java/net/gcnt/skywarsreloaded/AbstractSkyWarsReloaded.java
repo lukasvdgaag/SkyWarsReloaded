@@ -3,12 +3,12 @@ package net.gcnt.skywarsreloaded;
 import net.gcnt.skywarsreloaded.data.Storage;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.player.SQLitePlayerStorage;
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.chest.filler.ChestFillerManager;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.*;
-import net.gcnt.skywarsreloaded.manager.gameinstance.GameManager;
+import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
@@ -38,7 +38,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SWPlayerDataManager playerDataManager;
     private SchematicManager schematicManager;
     private SWCommandManager commandManager;
-    private GameManager gameManager;
+    private GameInstanceManager gameManager;
     private SWPlayerManager playerManager;
     private KitManager kitManager;
     private SWChestManager chestManager;
@@ -317,12 +317,12 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public GameManager getGameManager() {
+    public GameInstanceManager getGameManager() {
         return this.gameManager;
     }
 
     @Override
-    public void setGameManager(GameManager gameManager) {
+    public void setGameManager(GameInstanceManager gameManager) {
         this.gameManager = gameManager;
     }
 

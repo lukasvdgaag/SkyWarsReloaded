@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game.chest.filler;
 
-import net.gcnt.skywarsreloaded.game.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;

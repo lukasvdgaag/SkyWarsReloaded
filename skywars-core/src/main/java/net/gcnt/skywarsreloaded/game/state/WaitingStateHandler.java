@@ -1,9 +1,9 @@
 package net.gcnt.skywarsreloaded.game.state;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 

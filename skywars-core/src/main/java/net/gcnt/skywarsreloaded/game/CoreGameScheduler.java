@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWRunnable;
 

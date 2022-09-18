@@ -1,8 +1,8 @@
 package net.gcnt.skywarsreloaded.gui.join;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.GameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.gui.AbstractSWGui;
 import net.gcnt.skywarsreloaded.utils.gui.SWGui;
