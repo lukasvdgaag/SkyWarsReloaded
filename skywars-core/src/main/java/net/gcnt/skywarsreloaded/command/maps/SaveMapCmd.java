@@ -29,7 +29,7 @@ public class SaveMapCmd extends Cmd {
         GameInstance foundInstance;
         CompletableFuture<Boolean> savingFuture = null;
 
-        GameInstanceManager gameManager = plugin.getGameManager();
+        GameInstanceManager gameManager = plugin.getGameInstanceManager();
         if (args.length == 0) {
             GameInstance gameInstance = gameManager.getGameInstanceByName(player.getLocation().getWorld().getName());
             if (gameInstance == null || !gameInstance.isEditing() || gameInstance.getTemplate() == null) {
@@ -96,7 +96,7 @@ public class SaveMapCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
             return maps;
         }
         return new ArrayList<>();

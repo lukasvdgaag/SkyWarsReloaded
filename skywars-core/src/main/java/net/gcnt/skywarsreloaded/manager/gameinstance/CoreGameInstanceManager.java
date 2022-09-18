@@ -10,21 +10,21 @@ import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public abstract class CoreGameInstanceManager implements GameInstanceManager {
 
     public final SkyWarsReloaded plugin;
-    private final HashMap<GameTemplate, List<GameInstance>> gameInstances;
+    private final ConcurrentHashMap<UUID, GameInstance> gameInstances;
     private final HashMap<String, GameTemplate> templates;
 
     public CoreGameInstanceManager(SkyWarsReloaded plugin) {
         this.plugin = plugin;
         this.templates = new HashMap<>();
-        this.gameInstances = new HashMap<>();
+        this.gameInstances = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -64,22 +64,15 @@ public abstract class CoreGameInstanceManager implements GameInstanceManager {
     @Override
     public GameInstance getGameInstanceByName(String name) {
         if (name == null) return null;
-        for (GameInstance gameInstance : getGameInstancesListCopy()) {
+        for (GameInstance gameInstance : getGameInstancesList()) {
             if (gameInstance instanceof LocalGameInstance && ((LocalGameInstance) gameInstance).getWorldName().equals(name)) return gameInstance;
         }
         return null;
     }
 
     @Override
-    public List<GameInstance> getGameInstancesCopy(GameTemplate data) {
-        return getGameInstances().getOrDefault(data, new ArrayList<>());
-    }
-
-    @Override
-    public List<GameInstance> getGameInstancesListCopy() {
-        List<GameInstance> instances = new ArrayList<>();
-        getGameInstances().forEach((gameTemplate, templateInstances) -> instances.addAll(templateInstances));
-        return instances;
+    public Collection<GameInstance> getGameInstancesList() {
+        return this.getGameInstances().values();
     }
 
     @Override
@@ -128,35 +121,23 @@ public abstract class CoreGameInstanceManager implements GameInstanceManager {
 
     @Override
     public CompletableFuture<Void> deleteGameInstance(GameInstance world) {
-        plugin.getWorldLoader().deleteWorldInstance(world);
-        final HashMap<GameTemplate, List<GameInstance>> gameInstances = this.getGameInstances();
-
-        for (GameTemplate template : gameInstances.keySet()) {
-            List<GameInstance> instances = gameInstances.get(template);
-            if (instances.contains(world)) {
-                instances.remove(world);
-                gameInstances.put(template, instances);
-                return CompletableFuture.completedFuture(null);
-            }
-        }
+        this.getGameInstances().remove(world.getId());
 
         return CompletableFuture.completedFuture(null);
     }
 
     @Override
     public List<GameInstance> getGameInstancesByTemplate(GameTemplate template) {
-        return new ArrayList<>(getGameInstances().get(template));
+        return this.getGameInstancesList().stream().filter(inst -> inst.getTemplate().equals(template)).collect(Collectors.toList());
     }
 
     // Internal util
 
-    protected void registerGameWorld(GameTemplate temp, GameInstance gameInstance) {
-        List<GameInstance> instances = this.getGameInstances().getOrDefault(temp, new ArrayList<>());
-        instances.add(gameInstance);
-        this.getGameInstances().put(temp, instances);
+    protected void registerGameWorld(GameInstance gameInstance) {
+        this.getGameInstances().put(gameInstance.getId(), gameInstance);
     }
 
-    public HashMap<GameTemplate, List<GameInstance>> getGameInstances() {
+    public ConcurrentHashMap<UUID, GameInstance> getGameInstances() {
         return gameInstances;
     }
 

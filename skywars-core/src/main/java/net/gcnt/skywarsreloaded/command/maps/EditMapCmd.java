@@ -40,14 +40,14 @@ public class EditMapCmd extends Cmd {
         }
 
         final String templateName = args[0];
-        GameTemplate template = plugin.getGameManager().getGameTemplateByName(templateName);
+        GameTemplate template = plugin.getGameInstanceManager().getGameTemplateByName(templateName);
         if (template == null) {
             msgConfig.getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
             return true;
         }
         final SWPlayer player = (SWPlayer) sender;
 
-        List<GameInstance> instances = plugin.getGameManager().getGameInstancesByTemplate(template);
+        List<GameInstance> instances = plugin.getGameInstanceManager().getGameInstancesByTemplate(template);
         for (GameInstance instance : instances) {
             if (instance.isEditing()) {
                 msgConfig.getMessage(MessageProperties.MAPS_EDIT_EXISTING_WORLD.toString())
@@ -71,7 +71,7 @@ public class EditMapCmd extends Cmd {
         msgConfig.getMessage(MessageProperties.TITLES_MAPS_GENERATING_WORLD.toString())
                 .replace("%template%", template.getName())
                 .sendTitle(20, 600, 20, sender);
-        GameInstance world = plugin.getGameManager().createGameWorld(template);
+        GameInstance world = plugin.getGameInstanceManager().createGameWorld(template);
         world.setEditing(true);
 
         // Create instance of the world given the template data, or create a new one if it doesn't exist.
@@ -151,7 +151,7 @@ public class EditMapCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
             return maps;
         }
         return new ArrayList<>();

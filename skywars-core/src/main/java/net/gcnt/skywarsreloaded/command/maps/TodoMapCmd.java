@@ -22,7 +22,7 @@ public class TodoMapCmd extends Cmd {
         SWPlayer player = (SWPlayer) sender;
         GameTemplate template;
         if (args.length == 0) {
-            GameInstance world = plugin.getGameManager().getGameWorldByName(player.getLocation().getWorld().getName());
+            GameInstance world = plugin.getGameInstanceManager().getGameWorldByName(player.getLocation().getWorld().getName());
             if (world == null || !world.isEditing() || world.getTemplate() == null) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
                 return true;
@@ -30,7 +30,7 @@ public class TodoMapCmd extends Cmd {
             template = world.getTemplate();
         } else {
             final String templateName = args[0];
-            template = plugin.getGameManager().getGameTemplateByName(templateName);
+            template = plugin.getGameInstanceManager().getGameTemplateByName(templateName);
             if (template == null) {
                 plugin.getMessages().getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
                 return true;
@@ -49,7 +49,7 @@ public class TodoMapCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
             return maps;
         }
         return new ArrayList<>();

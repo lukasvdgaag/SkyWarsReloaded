@@ -23,7 +23,7 @@ public class EnableCmd extends Cmd {
         }
 
         final String templateName = args[0];
-        GameTemplate template = plugin.getGameManager().getGameTemplateByName(templateName);
+        GameTemplate template = plugin.getGameInstanceManager().getGameTemplateByName(templateName);
         if (template == null) {
             plugin.getMessages().getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
             return true;
@@ -48,7 +48,7 @@ public class EnableCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
             return maps;
         }
         return new ArrayList<>();

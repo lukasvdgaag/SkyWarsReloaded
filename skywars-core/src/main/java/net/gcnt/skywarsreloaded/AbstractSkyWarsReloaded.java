@@ -2,6 +2,8 @@ package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.data.Storage;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
+import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
+import net.gcnt.skywarsreloaded.data.games.MySQLGameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.player.SQLitePlayerStorage;
 import net.gcnt.skywarsreloaded.game.chest.filler.ChestFillerManager;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
@@ -9,6 +11,7 @@ import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.*;
 import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
+import net.gcnt.skywarsreloaded.manager.gameinstance.LocalGameInstanceManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
@@ -26,6 +29,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SWScheduler scheduler;
     private SWServer server;
     private NMSManager nmsManager;
+    private GameInstanceStorage instanceStorage;
 
     // Data
     private Storage storage;
@@ -38,7 +42,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SWPlayerDataManager playerDataManager;
     private SchematicManager schematicManager;
     private SWCommandManager commandManager;
-    private GameInstanceManager gameManager;
+    private GameInstanceManager instanceManager;
     private SWPlayerManager playerManager;
     private KitManager kitManager;
     private SWChestManager chestManager;
@@ -75,6 +79,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
             this.onDisable();
             return;
         }
+        initGameInstanceStorage();
 
         // Data and configs
         initYAMLManager();
@@ -91,7 +96,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         initChestFillerManager();
         initPlayerManager();
         initCommandManager();
-        initGameManager();
+        initGameInstanceManager();
         initPlayerDataManager();
         initKitManager();
         initChestManager();
@@ -114,7 +119,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         getChestManager().loadAllChestTiers();
         getKitManager().createDefaultsIfNotPresent();
         getKitManager().loadAllKits();
-        getGameManager().loadAllGameTemplates();
+        getGameInstanceManager().loadAllGameTemplates();
 
         // Worlds
         initWorldLoader();
@@ -139,82 +144,17 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     @Override
     public void onDisable() {
-        if (getGameManager() != null) {
-            for (GameInstance world : getGameManager().getGameWorlds()) {
-                getGameManager().deleteGameWorld(world);
+        GameInstanceManager gameInstanceManager = getGameInstanceManager();
+
+        // Only remove instances if running locally
+        if (gameInstanceManager instanceof LocalGameInstanceManager) {
+            for (GameInstance gameInstance : gameInstanceManager.getGameInstancesList()) {
+                gameInstanceManager.deleteGameInstance(gameInstance);
             }
         }
     }
 
-    // Initialization
-
-    /**
-     * Override to run required initialization before core enable
-     */
-    public void preEnable() {
-    }
-
-    /**
-     * Override to run required initialization after core enable
-     */
-    public void postEnable() {
-    }
-
-    protected void initChestManager() {
-        this.chestManager = new CoreChestManager(this);
-    }
-
-    protected abstract void initCommandManager();
-
-    protected abstract void initCommands();
-
-    protected abstract void initConsoleSender();
-
-    protected abstract void initEventListener();
-
-    protected abstract void initGameManager();
-
-    protected abstract void initKitManager();
-
-    protected abstract void initCageManager();
-
-    protected abstract void initLogger();
-
-    protected abstract void initNMSManager() throws IllegalStateException;
-
-    protected abstract void initPlatformUtils();
-
-    protected abstract void initPlayerDataManager();
-
-    protected abstract void initPlayerManager();
-
-    protected abstract void initScheduler();
-
-    protected abstract void initServer();
-
-    protected abstract void initWorldLoader();
-
-    protected abstract void initYAMLManager();
-
-    protected abstract void initUnlockablesManager();
-
-    protected abstract void initEntityManager();
-
-    protected abstract void initScoreboardManager();
-
-    protected abstract void initItemManager();
-
-    protected abstract void initInventoryManager();
-
-    protected void initChestFillerManager() {
-        setChestFillerManager(new ChestFillerManager(this));
-    }
-
-    protected void initGuiManager() {
-        setGuiManager(new CoreGuiManager(this));
-    }
-
-    // Getters & Setters
+    // Getters and setters
 
     @Override
     public SWLogger getLogger() {
@@ -227,23 +167,13 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public SchematicManager getSchematicManager() {
-        return this.schematicManager;
+    public YAMLManager getYAMLManager() {
+        return this.yamlManager;
     }
 
     @Override
-    public void setSchematicManager(SchematicManager schematicManager) {
-        this.schematicManager = schematicManager;
-    }
-
-    @Override
-    public KitManager getKitManager() {
-        return kitManager;
-    }
-
-    @Override
-    public void setKitManager(KitManager kitManager) {
-        this.kitManager = kitManager;
+    public void setYAMLManager(YAMLManager yamlManager) {
+        this.yamlManager = yamlManager;
     }
 
     @Override
@@ -277,73 +207,33 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public SWCommandSender getConsoleSender() {
-        return consoleSender;
+    public GameWorldLoader getWorldLoader() {
+        return worldLoader;
     }
 
     @Override
-    public void setConsoleSender(SWCommandSender consoleSender) {
-        this.consoleSender = consoleSender;
+    public void setWorldLoader(GameWorldLoader loader) {
+        this.worldLoader = loader;
     }
 
     @Override
-    public Storage getStorage() {
-        return this.storage;
+    public SchematicManager getSchematicManager() {
+        return this.schematicManager;
     }
 
     @Override
-    public void setStorage(Storage storage) {
-        this.storage = storage;
+    public void setSchematicManager(SchematicManager schematicManager) {
+        this.schematicManager = schematicManager;
     }
 
     @Override
-    public SWPlayerDataManager getPlayerDataManager() {
-        return this.playerDataManager;
+    public KitManager getKitManager() {
+        return kitManager;
     }
 
     @Override
-    public void setPlayerDataManager(SWPlayerDataManager playerDataManager) {
-        this.playerDataManager = playerDataManager;
-    }
-
-    @Override
-    public PlatformUtils getUtils() {
-        return this.platformUtils;
-    }
-
-    @Override
-    public void setPlatformUtils(PlatformUtils utils) {
-        this.platformUtils = utils;
-    }
-
-    @Override
-    public GameInstanceManager getGameManager() {
-        return this.gameManager;
-    }
-
-    @Override
-    public void setGameManager(GameInstanceManager gameManager) {
-        this.gameManager = gameManager;
-    }
-
-    @Override
-    public SWPlayerManager getPlayerManager() {
-        return this.playerManager;
-    }
-
-    @Override
-    public void setPlayerManager(SWPlayerManager playerManagerIn) {
-        this.playerManager = playerManagerIn;
-    }
-
-    @Override
-    public YAMLManager getYAMLManager() {
-        return this.yamlManager;
-    }
-
-    @Override
-    public void setYAMLManager(YAMLManager yamlManager) {
-        this.yamlManager = yamlManager;
+    public void setKitManager(KitManager kitManager) {
+        this.kitManager = kitManager;
     }
 
     @Override
@@ -357,61 +247,23 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public SWChestManager getChestManager() {
-        return chestManager;
+    public GameInstanceManager getGameInstanceManager() {
+        return this.instanceManager;
     }
 
     @Override
-    public void setChestManager(SWChestManager chestManager) {
-        this.chestManager = chestManager;
+    public void setGameInstanceManager(GameInstanceManager instanceManager) {
+        this.instanceManager = instanceManager;
     }
 
     @Override
-    public SWEventListener getEventListener() {
-        return this.eventListener;
+    public SWPlayerManager getPlayerManager() {
+        return this.playerManager;
     }
 
     @Override
-    public void setEventListener(SWEventListener listener) {
-        this.eventListener = listener;
-    }
-
-    @Override
-    public GameWorldLoader getWorldLoader() {
-        return worldLoader;
-    }
-
-    @Override
-    public void setWorldLoader(GameWorldLoader loader) {
-        this.worldLoader = loader;
-    }
-
-    public SWScheduler getScheduler() {
-        return scheduler;
-    }
-
-    public void setScheduler(SWScheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
-    @Override
-    public SWServer getServer() {
-        return this.server;
-    }
-
-    @Override
-    public void setServer(SWServer serverIn) {
-        this.server = serverIn;
-    }
-
-    @Override
-    public NMSManager getNMSManager() {
-        return this.nmsManager;
-    }
-
-    @Override
-    public void setNMSManager(NMSManager nmsManagerIn) {
-        this.nmsManager = nmsManagerIn;
+    public void setPlayerManager(SWPlayerManager playerManagerIn) {
+        this.playerManager = playerManagerIn;
     }
 
     @Override
@@ -492,5 +344,175 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void setInventoryManager(SWInventoryManager inventoryManager) {
         this.inventoryManager = inventoryManager;
+    }
+
+    @Override
+    public SWPlayerDataManager getPlayerDataManager() {
+        return this.playerDataManager;
+    }
+
+    @Override
+    public void setPlayerDataManager(SWPlayerDataManager playerDataManager) {
+        this.playerDataManager = playerDataManager;
+    }
+
+    @Override
+    public SWChestManager getChestManager() {
+        return chestManager;
+    }
+
+    @Override
+    public void setChestManager(SWChestManager chestManager) {
+        this.chestManager = chestManager;
+    }
+
+    @Override
+    public SWCommandSender getConsoleSender() {
+        return consoleSender;
+    }
+
+    @Override
+    public void setConsoleSender(SWCommandSender consoleSender) {
+        this.consoleSender = consoleSender;
+    }
+
+    @Override
+    public Storage getStorage() {
+        return this.storage;
+    }
+
+    @Override
+    public void setStorage(Storage storage) {
+        this.storage = storage;
+    }
+
+    @Override
+    public GameInstanceStorage getGameInstanceStorage() {
+        return instanceStorage;
+    }
+
+    @Override
+    public void setGameInstanceStorage(GameInstanceStorage instanceStorage) {
+        this.instanceStorage = instanceStorage;
+    }
+
+    @Override
+    public void setPlatformUtils(PlatformUtils utils) {
+        this.platformUtils = utils;
+    }
+
+    @Override
+    public SWEventListener getEventListener() {
+        return this.eventListener;
+    }
+
+    @Override
+    public void setEventListener(SWEventListener listener) {
+        this.eventListener = listener;
+    }
+
+    public SWScheduler getScheduler() {
+        return scheduler;
+    }
+
+    public void setScheduler(SWScheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+
+    @Override
+    public SWServer getServer() {
+        return this.server;
+    }
+
+    @Override
+    public void setServer(SWServer serverIn) {
+        this.server = serverIn;
+    }
+
+    @Override
+    public NMSManager getNMSManager() {
+        return this.nmsManager;
+    }
+
+    @Override
+    public void setNMSManager(NMSManager nmsManagerIn) {
+        this.nmsManager = nmsManagerIn;
+    }
+
+    @Override
+    public PlatformUtils getUtils() {
+        return this.platformUtils;
+    }
+
+    /**
+     * Override to run required initialization before core enable
+     */
+    public void preEnable() {
+    }
+
+    /**
+     * Override to run required initialization after core enable
+     */
+    public void postEnable() {
+    }
+
+    protected void initChestManager() {
+        this.chestManager = new CoreChestManager(this);
+    }
+
+    protected abstract void initCommandManager();
+
+    protected abstract void initCommands();
+
+    protected abstract void initConsoleSender();
+
+    protected abstract void initEventListener();
+
+    protected abstract void initGameInstanceManager();
+
+    protected abstract void initKitManager();
+
+    protected abstract void initCageManager();
+
+    protected abstract void initLogger();
+
+    protected abstract void initNMSManager() throws IllegalStateException;
+
+    protected abstract void initPlatformUtils();
+
+    protected abstract void initPlayerDataManager();
+
+    protected abstract void initPlayerManager();
+
+    protected abstract void initScheduler();
+
+    protected abstract void initServer();
+
+    protected abstract void initWorldLoader();
+
+    protected abstract void initYAMLManager();
+
+    protected abstract void initUnlockablesManager();
+
+    protected abstract void initEntityManager();
+
+    protected abstract void initScoreboardManager();
+
+    protected abstract void initItemManager();
+
+    protected abstract void initInventoryManager();
+
+    // Core initializers
+
+    protected void initGameInstanceStorage() {
+        setGameInstanceStorage(new MySQLGameInstanceStorage(this));
+    }
+
+    protected void initChestFillerManager() {
+        setChestFillerManager(new ChestFillerManager(this));
+    }
+
+    protected void initGuiManager() {
+        setGuiManager(new CoreGuiManager(this));
     }
 }

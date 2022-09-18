@@ -38,7 +38,7 @@ public class CreateMapCmd extends Cmd {
 
         // Verify that the template exists
         final String templateName = args[0];
-        GameTemplate template = plugin.getGameManager().createGameTemplate(templateName);
+        GameTemplate template = plugin.getGameInstanceManager().createGameTemplate(templateName);
         if (template == null) {
             msgConfig.getMessage(MessageProperties.MAPS_ALREADY_EXIST.toString()).send(sender);
             return true;
@@ -58,7 +58,7 @@ public class CreateMapCmd extends Cmd {
                 .sendTitle(20, 600, 20, sender);
 
         // Generate game instance to use as template editor
-        GameInstance world = plugin.getGameManager().createGameWorld(template);
+        GameInstance world = plugin.getGameInstanceManager().createGameWorld(template);
         world.setEditing(true);
 
         // Create instance of the world given the template data, or create a new one if it doesn't exist.

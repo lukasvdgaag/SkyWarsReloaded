@@ -65,7 +65,7 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
              final Statement statement = conn.createStatement();
              final ResultSet resultSet = statement.executeQuery("SELECT * FROM `" + table + "`)")) {
             while (resultSet.next()) {
-                final RemoteGameInstanceManager gameManager = (RemoteGameInstanceManager) plugin.getGameManager();
+                final RemoteGameInstanceManager gameManager = (RemoteGameInstanceManager) plugin.getGameInstanceManager();
                 // todo create or update a game instance here.
             }
         } catch (SQLException e) {

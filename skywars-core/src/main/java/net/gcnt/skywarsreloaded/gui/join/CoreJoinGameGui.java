@@ -34,7 +34,7 @@ public class CoreJoinGameGui extends AbstractSWGui {
 
     private void createTemplateItems(SkyWarsReloaded plugin) {
         // Get all templates with game instances and sort them by teamsize from smallest to largest.
-        plugin.getGameManager().getGameWorlds().stream()
+        plugin.getGameInstanceManager().getGameWorlds().stream()
                 .map(GameInstance::getTemplate).distinct()
                 .sorted(getComparator())
                 .forEach(this::addGameTemplateItem);

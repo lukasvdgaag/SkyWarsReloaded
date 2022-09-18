@@ -27,7 +27,7 @@ public class SetWorldSizeCmd extends Cmd {
             plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_WORLD_SIZE.toString()).send(sender);
             return true;
         } else if (args.length == 1) {
-            GameInstance world = plugin.getGameManager().getGameWorldByName(player.getLocation().getWorld().getName());
+            GameInstance world = plugin.getGameInstanceManager().getGameWorldByName(player.getLocation().getWorld().getName());
             if (world == null || !world.isEditing() || world.getTemplate() == null) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
                 return true;
@@ -36,7 +36,7 @@ public class SetWorldSizeCmd extends Cmd {
             creatorArgStart = 0;
         } else {
             final String templateName = args[0];
-            template = plugin.getGameManager().getGameTemplateByName(templateName);
+            template = plugin.getGameInstanceManager().getGameTemplateByName(templateName);
             if (template == null) {
                 plugin.getMessages().getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
                 return true;
@@ -55,7 +55,7 @@ public class SetWorldSizeCmd extends Cmd {
 
         template.setBorderRadius(size);
 
-        List<GameInstance> gameWorld = plugin.getGameManager().getGameWorlds(template);
+        List<GameInstance> gameWorld = plugin.getGameInstanceManager().getGameWorlds(template);
         for (GameInstance world : gameWorld) {
             if (world.isEditing()) {
                 plugin.getWorldLoader().updateWorldBorder(world);
@@ -71,7 +71,7 @@ public class SetWorldSizeCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
             return maps;
         }
         return new ArrayList<>();

@@ -27,7 +27,7 @@ public class SetMapTeamsizeCmd extends Cmd {
             plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_TEAM_SIZE.toString()).send(sender);
             return true;
         } else if (args.length == 1) {
-            GameInstance world = plugin.getGameManager().getGameWorldByName(player.getLocation().getWorld().getName());
+            GameInstance world = plugin.getGameInstanceManager().getGameWorldByName(player.getLocation().getWorld().getName());
             if (world == null || !world.isEditing() || world.getTemplate() == null) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
                 return true;
@@ -36,7 +36,7 @@ public class SetMapTeamsizeCmd extends Cmd {
             creatorArgStart = 0;
         } else {
             final String templateName = args[0];
-            template = plugin.getGameManager().getGameTemplateByName(templateName);
+            template = plugin.getGameInstanceManager().getGameTemplateByName(templateName);
             if (template == null) {
                 plugin.getMessages().getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
                 return true;
@@ -73,7 +73,7 @@ public class SetMapTeamsizeCmd extends Cmd {
                 suggestions.add(String.valueOf(i));
             }
         } else if (args.length == 2) {
-            plugin.getGameManager().getGameTemplates().forEach(template -> suggestions.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> suggestions.add(template.getName()));
         }
         return suggestions;
     }

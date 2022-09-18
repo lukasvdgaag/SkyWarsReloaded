@@ -24,7 +24,7 @@ public class HostCmd extends Cmd {
         }
 
         final String templateName = args[0];
-        GameTemplate template = plugin.getGameManager().getGameTemplateByName(templateName);
+        GameTemplate template = plugin.getGameInstanceManager().getGameTemplateByName(templateName);
         if (template == null) {
             plugin.getMessages().getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
             return true;
@@ -37,7 +37,7 @@ public class HostCmd extends Cmd {
         sender.sendMessage("Hosting game: " + template.getName());
         sender.sendMessage(plugin.getWorldLoader().getClass().getName());
 
-        GameInstance gameWorld = plugin.getGameManager().createGameWorld(template);
+        GameInstance gameWorld = plugin.getGameInstanceManager().createGameWorld(template);
         plugin.getWorldLoader().generateWorldInstance(gameWorld).thenAccept((result) -> {
             System.out.println("World generation result: " + result);
             try {
@@ -65,7 +65,7 @@ public class HostCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
             return maps;
         }
         return new ArrayList<>();

@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.data.Storage;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
+import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.*;
@@ -19,11 +20,26 @@ import java.io.File;
  */
 public interface SkyWarsReloaded {
 
-    // Configs
+    // Plugin
 
     void onEnable();
 
     void onDisable();
+
+    SWLogger getLogger();
+
+    void setLogger(SWLogger logger);
+
+    void disableSkyWars();
+
+    /**
+     * Get the plugin version
+     *
+     * @return The plugin version
+     */
+    String getVersion();
+
+    // Config and init data
 
     File getDataFolder();
 
@@ -62,9 +78,9 @@ public interface SkyWarsReloaded {
 
     void setCommandManager(SWCommandManager commandManager);
 
-    GameInstanceManager getGameManager();
+    GameInstanceManager getGameInstanceManager();
 
-    void setGameManager(GameInstanceManager gameManager);
+    void setGameInstanceManager(GameInstanceManager gameManager);
 
     SWPlayerManager getPlayerManager();
 
@@ -102,6 +118,14 @@ public interface SkyWarsReloaded {
 
     void setInventoryManager(SWInventoryManager inventoryManager);
 
+    SWPlayerDataManager getPlayerDataManager();
+
+    void setPlayerDataManager(SWPlayerDataManager playerDataManager);
+
+    SWChestManager getChestManager();
+
+    void setChestManager(SWChestManager chestManager);
+
     // Console
 
     SWCommandSender getConsoleSender();
@@ -115,43 +139,27 @@ public interface SkyWarsReloaded {
 
     void setStorage(Storage storage);
 
-    SWPlayerDataManager getPlayerDataManager();
+    // Instance Data
 
-    void setPlayerDataManager(SWPlayerDataManager playerDataManager);
+    GameInstanceStorage getGameInstanceStorage();
 
-    PlatformUtils getUtils();
+    void setGameInstanceStorage(GameInstanceStorage instanceStorage);
+
+    // Listeners
 
     void setPlatformUtils(PlatformUtils utils);
-
-    SWChestManager getChestManager();
-
-    void setChestManager(SWChestManager chestManager);
 
     SWEventListener getEventListener();
 
     void setEventListener(SWEventListener listener);
 
+    // Messaging
+
+    // Schedulers
+
     SWScheduler getScheduler();
 
     void setScheduler(SWScheduler scheduler);
-
-
-    // Plugin
-
-    SWLogger getLogger();
-
-    void setLogger(SWLogger logger);
-
-    // ---- Util ----
-
-    void disableSkyWars();
-
-    /**
-     * Get the plugin version
-     *
-     * @return The plugin version
-     */
-    String getVersion();
 
     // Server
 
@@ -196,4 +204,8 @@ public interface SkyWarsReloaded {
      * @param nmsManager The NMS manager
      */
     void setNMSManager(NMSManager nmsManager);
+
+    // Utils
+
+    PlatformUtils getUtils();
 }

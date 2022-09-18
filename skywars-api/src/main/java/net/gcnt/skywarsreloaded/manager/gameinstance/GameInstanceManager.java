@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.manager.gameinstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -26,15 +27,15 @@ public interface GameInstanceManager {
      *
      * @return List of all GameWorlds.
      */
-    List<GameInstance> getGameInstancesListCopy();
+    Collection<GameInstance> getGameInstancesList();
 
     /**
-     * Get a list of {@link GameInstance} from its template.
+     * Get a list of all GameWorlds that were created under a specified template.
      *
-     * @param data Template to get the GameWorlds from.
-     * @return List of {@link GameInstance} that matches the template.
+     * @param template The template to get the game instances of.
+     * @return List of all {@link GameInstance}s made using the template.
      */
-    List<GameInstance> getGameInstancesCopy(GameTemplate data);
+    List<GameInstance> getGameInstancesByTemplate(GameTemplate template);
 
     /**
      * Delete a game template from the skywars registry and optionally from the active storage method
@@ -82,14 +83,6 @@ public interface GameInstanceManager {
      * @return {@link GameInstance} if found, null otherwise.
      */
     GameInstance getGameInstanceByName(String worldName);
-
-    /**
-     * Get a list of all GameWorlds that were created under a specified template.
-     *
-     * @param template The template to get the game instances of.
-     * @return List of all GameWorlds.
-     */
-    List<GameInstance> getGameInstancesByTemplate(GameTemplate template);
 
 
     /**

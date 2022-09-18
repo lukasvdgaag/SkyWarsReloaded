@@ -16,7 +16,7 @@ public abstract class CoreLocalGameInstanceManager extends CoreGameInstanceManag
     @Override
     public GameInstance getGameInstanceBySWWorld(SWWorld swWorld) {
         if (swWorld == null) return null;
-        for (GameInstance gameInstance : getGameInstancesListCopy()) {
+        for (GameInstance gameInstance : getGameInstancesList()) {
             if (gameInstance instanceof LocalGameInstance && ((LocalGameInstance) gameInstance).getWorld().equals(swWorld)) return gameInstance;
         }
         return null;
@@ -27,4 +27,9 @@ public abstract class CoreLocalGameInstanceManager extends CoreGameInstanceManag
         return plugin.getWorldLoader().save(instance);
     }
 
+    @Override
+    public CompletableFuture<Void> deleteGameInstance(GameInstance world) {
+        plugin.getWorldLoader().deleteWorldInstance(world);
+        return super.deleteGameInstance(world);
+    }
 }

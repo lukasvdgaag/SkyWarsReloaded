@@ -69,8 +69,9 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     }
 
     @Override
-    public void initGameManager() {
-        setGameManager(new BukkitGameInstanceManager(this));
+    public void initGameInstanceManager() {
+        // todo: check proxy mode
+        setGameInstanceManager(new BukkitGameInstanceManager(this));
     }
 
     @Override

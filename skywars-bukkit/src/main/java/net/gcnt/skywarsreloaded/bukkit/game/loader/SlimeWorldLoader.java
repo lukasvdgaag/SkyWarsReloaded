@@ -144,7 +144,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     @Override
     public void deleteMap(GameTemplate gameTemplate, boolean forceUnloadInstances) {
         if (forceUnloadInstances) {
-            for (GameInstance gameWorld : this.plugin.getGameManager().getGameWorldsByTemplate(gameTemplate)) {
+            for (GameInstance gameWorld : this.plugin.getGameInstanceManager().getGameWorldsByTemplate(gameTemplate)) {
                 if (!gameWorld.getState().equals(GameState.DISABLED)) {
                     // todo gameWorld.forceStop();
                 }

@@ -27,7 +27,7 @@ public class LobbySpawnCmd extends Cmd {
             plugin.getMessages().getMessage(MessageProperties.ERROR_WORLD_NOT_RECOGNIZED.toString()).send(sender);
             return true;
         }
-        for (GameInstance gw : plugin.getGameManager().getGameWorlds()) {
+        for (GameInstance gw : plugin.getGameInstanceManager().getGameWorlds()) {
             if (gw.getWorldName().equals(loc.getWorld().getName())) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_CANNOT_SET_LOBBYSPAWN_IN_GAMEWORLD.toString()).send(sender);
                 return true;
@@ -44,7 +44,7 @@ public class LobbySpawnCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
             return maps;
         }
         return new ArrayList<>();
