@@ -22,4 +22,6 @@ public interface GameInstanceStorage {
 
     void removeGameInstance(String uuid);
 
+    void updateGameInstance(GameInstance gameInstance);
+
 }

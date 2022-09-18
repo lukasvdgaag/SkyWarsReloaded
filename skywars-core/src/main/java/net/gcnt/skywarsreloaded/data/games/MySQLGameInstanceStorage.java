@@ -46,7 +46,7 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
     public void removeOldInstances() {
         try (Connection conn = getConnection()) {
             try (final Statement statement = conn.createStatement()) {
-                statement.executeUpdate("DELETE FROM `" + table + "` WHERE `updated_at` <=");
+                statement.executeUpdate("DELETE FROM `" + table + "` WHERE `updated_at` <= NOW() - INTERVAL 5 SECOND");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -111,6 +111,19 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
     }
 
     @Override
+    public void updateGameInstance(GameInstance gameInstance) {
+        try (Connection conn = getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("UPDATE `" + table + "` SET `playercount`=?, `state`=?, `updated_at`=NOW() WHERE `id`=?");
+            bindPropertyValue(ps, 1, gameInstance.getPlayerCount());
+            bindPropertyValue(ps, 2, gameInstance.getState().name());
+            bindPropertyValue(ps, 3, gameInstance.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void removeGameInstance(GameInstance gameInstance) {
         try (Connection conn = getConnection()) {
             PreparedStatement ps = conn.prepareStatement("DELETE FROM `" + table + "` WHERE `id`=?");
@@ -120,4 +133,5 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
             e.printStackTrace();
         }
     }
+
 }
