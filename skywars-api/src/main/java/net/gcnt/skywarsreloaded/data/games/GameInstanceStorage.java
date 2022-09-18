@@ -1,12 +1,13 @@
 package net.gcnt.skywarsreloaded.data.games;
 
+import net.gcnt.skywarsreloaded.data.Storage;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.gameinstance.RemoteGameInstance;
 
 import java.util.List;
 
-public interface GameInstanceStorage {
+public interface GameInstanceStorage extends Storage {
 
     List<RemoteGameInstance> getGameInstances();
 
