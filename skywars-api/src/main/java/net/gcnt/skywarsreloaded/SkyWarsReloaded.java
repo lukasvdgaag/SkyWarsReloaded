@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded;
 import net.gcnt.skywarsreloaded.data.Storage;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
+import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.*;
@@ -78,9 +79,9 @@ public interface SkyWarsReloaded {
 
     void setCommandManager(SWCommandManager commandManager);
 
-    GameInstanceManager getGameInstanceManager();
+    GameInstanceManager<? extends GameInstance> getGameInstanceManager();
 
-    void setGameInstanceManager(GameInstanceManager gameManager);
+    void setGameInstanceManager(GameInstanceManager<? extends GameInstance> gameManager);
 
     SWPlayerManager getPlayerManager();
 

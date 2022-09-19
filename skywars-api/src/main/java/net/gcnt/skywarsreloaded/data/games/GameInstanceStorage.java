@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface GameInstanceStorage extends Storage {
 
-    List<RemoteGameInstance> getGameInstances();
+    List<RemoteGameInstance> fetchGameInstances();
 
     GameInstance getGameInstanceById(String uuid);
 

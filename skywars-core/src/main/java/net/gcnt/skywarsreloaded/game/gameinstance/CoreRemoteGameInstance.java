@@ -31,4 +31,12 @@ public class CoreRemoteGameInstance extends AbstractGameInstance implements Remo
     public void setPlayerCount(int playerCount) {
         this.playerCount = playerCount;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof GameInstance) {
+            return this.getId().equals(((GameInstance) obj).getId());
+        }
+        return false;
+    }
 }

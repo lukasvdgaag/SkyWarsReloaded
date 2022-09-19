@@ -51,7 +51,7 @@ public class RedisGameInstanceStorage implements GameInstanceStorage {
     }
 
     @Override
-    public List<RemoteGameInstance> getGameInstances() {
+    public List<RemoteGameInstance> fetchGameInstances() {
         return null;
     }
 

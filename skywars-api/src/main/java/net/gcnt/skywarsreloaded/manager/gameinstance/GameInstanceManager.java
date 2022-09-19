@@ -74,7 +74,7 @@ public interface GameInstanceManager<G extends GameInstance> {
      *
      * @param instance GameWorld to remove.
      */
-    CompletableFuture<Void> deleteGameInstance(G instance);
+    CompletableFuture<Void> deleteGameInstance(GameInstance instance);
 
     /**
      * Get a GameWorld by its assigned world name.
