@@ -124,6 +124,16 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
     }
 
     @Override
+    public void startAutoUpdating() {
+
+    }
+
+    @Override
+    public void stopAutoUpdating() {
+
+    }
+
+    @Override
     public void removeGameInstance(GameInstance gameInstance) {
         try (Connection conn = getConnection()) {
             PreparedStatement ps = conn.prepareStatement("DELETE FROM `" + table + "` WHERE `id`=?");

@@ -15,10 +15,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public abstract class CoreGameInstanceManager implements GameInstanceManager {
+public abstract class CoreGameInstanceManager<G extends GameInstance> implements GameInstanceManager<G> {
 
     public final SkyWarsReloaded plugin;
-    private final ConcurrentHashMap<UUID, GameInstance> gameInstances;
+    private final ConcurrentHashMap<UUID, G> gameInstances;
     private final HashMap<String, GameTemplate> templates;
 
     public CoreGameInstanceManager(SkyWarsReloaded plugin) {
@@ -62,16 +62,16 @@ public abstract class CoreGameInstanceManager implements GameInstanceManager {
     }
 
     @Override
-    public GameInstance getGameInstanceByName(String name) {
+    public G getGameInstanceByName(String name) {
         if (name == null) return null;
-        for (GameInstance gameInstance : getGameInstancesList()) {
+        for (G gameInstance : getGameInstancesList()) {
             if (gameInstance instanceof LocalGameInstance && ((LocalGameInstance) gameInstance).getWorldName().equals(name)) return gameInstance;
         }
         return null;
     }
 
     @Override
-    public Collection<GameInstance> getGameInstancesList() {
+    public Collection<G> getGameInstancesList() {
         return this.getGameInstances().values();
     }
 
@@ -117,27 +117,27 @@ public abstract class CoreGameInstanceManager implements GameInstanceManager {
     }
 
     @Override
-    public abstract CompletableFuture<GameInstance> createGameWorld(GameTemplate data);
+    public abstract CompletableFuture<G> createGameWorld(GameTemplate data);
 
     @Override
-    public CompletableFuture<Void> deleteGameInstance(GameInstance world) {
+    public CompletableFuture<Void> deleteGameInstance(G world) {
         this.getGameInstances().remove(world.getId());
 
         return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public List<GameInstance> getGameInstancesByTemplate(GameTemplate template) {
+    public List<G> getGameInstancesByTemplate(GameTemplate template) {
         return this.getGameInstancesList().stream().filter(inst -> inst.getTemplate().equals(template)).collect(Collectors.toList());
     }
 
     // Internal util
 
-    protected void registerGameWorld(GameInstance gameInstance) {
+    protected void registerGameWorld(G gameInstance) {
         this.getGameInstances().put(gameInstance.getId(), gameInstance);
     }
 
-    public ConcurrentHashMap<UUID, GameInstance> getGameInstances() {
+    public ConcurrentHashMap<UUID, G> getGameInstances() {
         return gameInstances;
     }
 

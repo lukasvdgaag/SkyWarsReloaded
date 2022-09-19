@@ -25,4 +25,8 @@ public interface GameInstanceStorage extends Storage {
 
     void updateGameInstance(GameInstance gameInstance);
 
+    void startAutoUpdating();
+
+    void stopAutoUpdating();
+
 }

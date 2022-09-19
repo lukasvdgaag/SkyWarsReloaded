@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public interface GameInstanceManager {
+public interface GameInstanceManager<G extends GameInstance> {
 
     /**
      * Load all {@link GameTemplate} from storage into memory.
@@ -27,7 +27,7 @@ public interface GameInstanceManager {
      *
      * @return List of all GameWorlds.
      */
-    Collection<GameInstance> getGameInstancesList();
+    Collection<G> getGameInstancesList();
 
     /**
      * Get a list of all GameWorlds that were created under a specified template.
@@ -35,7 +35,7 @@ public interface GameInstanceManager {
      * @param template The template to get the game instances of.
      * @return List of all {@link GameInstance}s made using the template.
      */
-    List<GameInstance> getGameInstancesByTemplate(GameTemplate template);
+    List<G> getGameInstancesByTemplate(GameTemplate template);
 
     /**
      * Delete a game template from the skywars registry and optionally from the active storage method
@@ -67,14 +67,14 @@ public interface GameInstanceManager {
      * @param data GameTemplate to create a world from.
      * @return The newly created {@link GameInstance}.
      */
-    CompletableFuture<GameInstance> createGameWorld(GameTemplate data);
+    CompletableFuture<G> createGameWorld(GameTemplate data);
 
     /**
      * Remove a game world from running.
      *
      * @param instance GameWorld to remove.
      */
-    CompletableFuture<Void> deleteGameInstance(GameInstance instance);
+    CompletableFuture<Void> deleteGameInstance(G instance);
 
     /**
      * Get a GameWorld by its assigned world name.
@@ -82,7 +82,7 @@ public interface GameInstanceManager {
      * @param worldName Name of the world to look up.
      * @return {@link GameInstance} if found, null otherwise.
      */
-    GameInstance getGameInstanceByName(String worldName);
+    G getGameInstanceByName(String worldName);
 
 
     /**
@@ -94,5 +94,5 @@ public interface GameInstanceManager {
      * @param instance The game instance used to update the template
      * @return A {@link CompletableFuture<Boolean>} which completes when the save has succeeded or failed.
      */
-    CompletableFuture<Boolean> saveInstanceToTemplate(GameInstance instance);
+    CompletableFuture<Boolean> saveInstanceToTemplate(G instance);
 }

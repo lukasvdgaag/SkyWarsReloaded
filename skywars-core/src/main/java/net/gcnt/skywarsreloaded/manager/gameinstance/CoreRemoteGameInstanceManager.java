@@ -2,30 +2,29 @@ package net.gcnt.skywarsreloaded.manager.gameinstance;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.RemoteGameInstance;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class CoreRemoteGameInstanceManager extends CoreGameInstanceManager implements RemoteGameInstanceManager {
-
+public class CoreRemoteGameInstanceManager extends CoreGameInstanceManager<RemoteGameInstance> implements RemoteGameInstanceManager {
 
     public CoreRemoteGameInstanceManager(SkyWarsReloaded plugin) {
         super(plugin);
     }
 
     @Override
-    public CompletableFuture<Boolean> saveInstanceToTemplate(GameInstance instance) {
+    public CompletableFuture<Boolean> saveInstanceToTemplate(RemoteGameInstance instance) {
         return plugin.getWorldLoader().save(instance); // todo: request save to messaging handler (redis or sql)
     }
 
     @Override
-    public CompletableFuture<GameInstance> createGameWorld(GameTemplate data) {
+    public CompletableFuture<RemoteGameInstance> createGameWorld(GameTemplate data) {
         return null; // todo
     }
 
     @Override
-    public void addCachedGameInstance(GameInstance instance) {
+    public void addCachedGameInstance(RemoteGameInstance instance) {
         this.getGameInstances().put(instance.getId(), instance);
     }
 
@@ -35,12 +34,22 @@ public class CoreRemoteGameInstanceManager extends CoreGameInstanceManager imple
     }
 
     @Override
-    public void removeCachedGameInstance(GameInstance instance) {
+    public void removeCachedGameInstance(RemoteGameInstance instance) {
         this.removeCachedGameInstance(instance.getId());
     }
 
     @Override
-    public void updateCachedGameInstance(UUID instanceId, GameInstance instance) {
-        this.getGameInstances().put(instanceId, instance);
+    public boolean isGameInstanceCached(UUID instanceId) {
+        return this.getGameInstances().containsKey(instanceId);
+    }
+
+    @Override
+    public RemoteGameInstance getCachedGameInstance(UUID instanceId) {
+        return this.getGameInstances().get(instanceId);
+    }
+
+    @Override
+    public void updateCachedGameInstance(RemoteGameInstance instance) {
+        this.getGameInstances().put(instance.getId(), instance);
     }
 }

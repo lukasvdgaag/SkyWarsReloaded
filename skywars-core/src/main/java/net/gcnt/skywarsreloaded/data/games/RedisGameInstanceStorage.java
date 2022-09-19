@@ -89,4 +89,14 @@ public class RedisGameInstanceStorage implements GameInstanceStorage {
     public void updateGameInstance(GameInstance gameInstance) {
 
     }
+
+    @Override
+    public void startAutoUpdating() {
+
+    }
+
+    @Override
+    public void stopAutoUpdating() {
+
+    }
 }
