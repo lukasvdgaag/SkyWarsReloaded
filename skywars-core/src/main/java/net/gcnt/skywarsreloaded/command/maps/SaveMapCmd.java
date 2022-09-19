@@ -3,8 +3,8 @@ package net.gcnt.skywarsreloaded.command.maps;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
-import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
+import net.gcnt.skywarsreloaded.manager.gameinstance.LocalGameInstanceManager;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
@@ -24,14 +24,18 @@ public class SaveMapCmd extends Cmd {
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
         SWPlayer player = (SWPlayer) sender;
+        if (plugin.getGameInstanceManager().isManagerRemote()) {
+            plugin.getMessages().getMessage(MessageProperties.ERROR_EDITING_GAME_FROM_LOBBY_SERVER.toString()).send(sender);
+            return true;
+        }
 
         GameTemplate template;
-        GameInstance foundInstance;
+        LocalGameInstance foundInstance;
         CompletableFuture<Boolean> savingFuture = null;
 
-        GameInstanceManager gameManager = plugin.getGameInstanceManager();
+        LocalGameInstanceManager gameManager = (LocalGameInstanceManager) plugin.getGameInstanceManager();
         if (args.length == 0) {
-            GameInstance gameInstance = gameManager.getGameInstanceByName(player.getLocation().getWorld().getName());
+            LocalGameInstance gameInstance = gameManager.getGameInstanceByName(player.getLocation().getWorld().getName());
             if (gameInstance == null || !gameInstance.isEditing() || gameInstance.getTemplate() == null) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
                 return true;
@@ -50,8 +54,8 @@ public class SaveMapCmd extends Cmd {
         }
 
         if (foundInstance == null) {
-            List<GameInstance> runningInstances = gameManager.getGameInstancesByTemplate(template);
-            for (GameInstance instance : runningInstances) {
+            List<LocalGameInstance> runningInstances = gameManager.getGameInstancesByTemplate(template);
+            for (LocalGameInstance instance : runningInstances) {
                 if (instance.isEditing()) {
                     // instance creating and saving
                     foundInstance = instance;
@@ -67,7 +71,7 @@ public class SaveMapCmd extends Cmd {
             return true;
         }
 
-        GameInstance finalGameWorld = foundInstance;
+        LocalGameInstance finalGameWorld = foundInstance;
         savingFuture.thenAccept(successful -> {
             try {
                 if (successful) this.sendWorldSaved(template, sender);
@@ -79,7 +83,7 @@ public class SaveMapCmd extends Cmd {
                 for (SWPlayer swp : finalGameWorld.getWorld().getAllPlayers()) {
                     swp.teleport(coord);
                 }
-                gameManager.deleteGameWorld(finalGameWorld);
+                gameManager.deleteGameInstance(finalGameWorld);
 
                 this.sendMapSaved(template, sender);
                 template.checkToDoList(sender);
@@ -96,7 +100,7 @@ public class SaveMapCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplatesCopy().forEach(template -> maps.add(template.getName()));
             return maps;
         }
         return new ArrayList<>();

@@ -120,7 +120,7 @@ public abstract class CoreGameInstanceManager<G extends GameInstance> implements
     public abstract CompletableFuture<G> createGameWorld(GameTemplate data);
 
     @Override
-    public CompletableFuture<Void> deleteGameInstance(GameInstance world) {
+    public CompletableFuture<Void> deleteGameInstance(G world) {
         this.getGameInstances().remove(world.getId());
 
         return CompletableFuture.completedFuture(null);

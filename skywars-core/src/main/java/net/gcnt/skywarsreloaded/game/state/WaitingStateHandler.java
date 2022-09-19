@@ -3,7 +3,7 @@ package net.gcnt.skywarsreloaded.game.state;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 
@@ -13,7 +13,7 @@ public class WaitingStateHandler extends CoreGameStateHandler {
     private final int gameFullTimerMaxLobby;
     private final int gameFullTimerMaxCages;
 
-    public WaitingStateHandler(SkyWarsReloaded plugin, GameInstance gameWorld) {
+    public WaitingStateHandler(SkyWarsReloaded plugin, LocalGameInstance gameWorld) {
         super(plugin, gameWorld);
         this.DEFAULT_WAITING_STATE = determineDefaultWaitingState(gameWorld.getTemplate());
         gameFullTimerMaxLobby = plugin.getConfig().getInt(ConfigProperties.GAME_TIMER_WAITING_LOBBY_FULL.toString());

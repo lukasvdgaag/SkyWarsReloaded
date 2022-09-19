@@ -27,6 +27,7 @@ public class EditMapCmd extends Cmd {
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
         // Utils
+        // todo make edit map command do a request to a server to host a map editing session somewhere if it's on proxy.
         YAMLConfig msgConfig = plugin.getMessages();
 
         if (args.length == 0) {

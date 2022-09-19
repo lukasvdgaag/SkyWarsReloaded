@@ -77,7 +77,7 @@ public class AbstractSWEventListener implements SWEventListener {
     public void onPlayerBlockBreak(SWBlockBreakEvent event) {
         if (cancelWhenWaitingInGame(event)) return;
 
-        GameInstance gameWorld = plugin.getGameInstanceManager().getGameWorldByName(event.getCoord().getWorld().getName());
+        GameInstance gameWorld = plugin.getGameInstanceManager().getGameInstanceByName(event.getCoord().getWorld().getName());
         if (gameWorld == null || !gameWorld.isEditing()) return;
         final GameTemplate template = gameWorld.getTemplate();
 
@@ -116,7 +116,7 @@ public class AbstractSWEventListener implements SWEventListener {
         // player is placing a chest
         if (event.getBlockTypeName().equalsIgnoreCase("CHEST") ||
                 event.getBlockTypeName().equalsIgnoreCase("TRAPPED_CHEST")) {
-            GameInstance gameWorld = plugin.getGameInstanceManager().getGameWorldByName(event.getCoord().getWorld().getName());
+            GameInstance gameWorld = plugin.getGameInstanceManager().getGameInstanceByName(event.getCoord().getWorld().getName());
             if (gameWorld == null || !gameWorld.isEditing()) return;
 
             final GameTemplate template = gameWorld.getTemplate();

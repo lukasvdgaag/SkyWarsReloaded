@@ -19,6 +19,10 @@ public class SetMapTeamsizeCmd extends Cmd {
 
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
+        if (plugin.getGameInstanceManager().isManagerRemote()) {
+            plugin.getMessages().getMessage(MessageProperties.ERROR_EDITING_GAME_FROM_LOBBY_SERVER.toString()).send(sender);
+            return true;
+        }
         SWPlayer player = (SWPlayer) sender;
         GameTemplate template;
         int creatorArgStart = 1;
@@ -27,7 +31,7 @@ public class SetMapTeamsizeCmd extends Cmd {
             plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_TEAM_SIZE.toString()).send(sender);
             return true;
         } else if (args.length == 1) {
-            GameInstance world = plugin.getGameInstanceManager().getGameWorldByName(player.getLocation().getWorld().getName());
+            GameInstance world = plugin.getGameInstanceManager().getGameInstanceByName(player.getLocation().getWorld().getName());
             if (world == null || !world.isEditing() || world.getTemplate() == null) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
                 return true;
@@ -73,7 +77,7 @@ public class SetMapTeamsizeCmd extends Cmd {
                 suggestions.add(String.valueOf(i));
             }
         } else if (args.length == 2) {
-            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> suggestions.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplatesCopy().forEach(template -> suggestions.add(template.getName()));
         }
         return suggestions;
     }
