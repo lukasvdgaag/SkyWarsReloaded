@@ -1,6 +1,11 @@
+server:
+  # If using a proxy like bungeecord or velocity, set the server name of this server (case-sensitive).
+  # If this value is incorrect, skywars won't be able to send players to the games.
+  name: "default"
+
 storage:
   # The type of storage to use for player data.
-  # Could be: YAML, MySQL*, MongoDB*
+  # Could be: SQLite, MySQL, MongoDB*, Redis*
   # * extension required
   type: MySQL
   hostname: localhost
@@ -10,14 +15,31 @@ storage:
   database: skywarsreloaded
   use-ssl: true
 
-# the number of instances of a map template that will be loaded when the server starts.
+# The number of instances of a map template that will be loaded when the server starts.
 game-instances:
-  default: 1
-  # map1: 2
-  # map2: 1
+  # Instance options for when the plugin is running on only one server
+  local-mode:
+    idle-instances: 3
+
+  # Instance options for when the plugin is running on a multi-server network (bungeecord / velocity)
+  proxy-mode:
+    # Dynamic mode features only work with the SkywarsReloaded Extension
+    dynamic-mode:
+      # Minimum amount of worlds loaded and ready to accept maps upon request
+      min-idle: 3
+      # Maximum amount of games that can run on this server
+      max-instances: 10
+    # Amount of fixed instances for each map/template on this server
+    # Set fixed-templates: {} to have 0 fixed template instances
+    # (you probably want dynamic mode if you are doing this)
+    # Note: Without the SkywarsReloaded Extension, the maximum instances on each game server is 3
+    fixed-templates:
+      default: 1
+      # map_name_a: 2
+      # map_name_b: 1
 
 world-loader:
-  # automatically use slime worlds if SlimeWorldManager (SWM) was detected.
+  # Whether to automatically use slime worlds if SlimeWorldManager (SWM) is detected.
   enable-swm: true
 
 menus:
@@ -26,6 +48,7 @@ menus:
     sort-by: TEAMSIZE
 
 game:
+  # Timer values are in seconds
   timers:
     waiting-lobby: 180
     waiting-lobby-full: 10
@@ -40,4 +63,5 @@ game:
   solo-waiting-lobby: false
 
 parties:
+  # If this is set to false, you won't be permitted to join a game that can't fit the entire party into one team.
   allow-dispersed-parties: true

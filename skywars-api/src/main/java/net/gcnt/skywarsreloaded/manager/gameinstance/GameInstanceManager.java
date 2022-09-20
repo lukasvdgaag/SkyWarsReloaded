@@ -103,4 +103,5 @@ public interface GameInstanceManager<G extends GameInstance> {
      */
     boolean isManagerRemote();
 
+    G getGameInstanceById(String uuid);
 }

@@ -11,7 +11,7 @@ public class CoreRemoteGameInstance extends AbstractGameInstance implements Remo
     private final String proxyServerName;
     private int playerCount = -1;
 
-    public CoreRemoteGameInstance(SkyWarsReloaded plugin, String proxyServerName, UUID id, GameTemplate gameTemplate, GameState state) {
+    public CoreRemoteGameInstance(SkyWarsReloaded plugin, UUID id, GameTemplate gameTemplate, String proxyServerName, GameState state) {
         super(plugin, id, gameTemplate);
         this.proxyServerName = proxyServerName;
         this.setState(state);

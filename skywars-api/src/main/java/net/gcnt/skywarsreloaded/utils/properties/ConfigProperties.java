@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.utils.properties;
 
 public enum ConfigProperties {
 
+    SERVER_NAME("server.name"),
     STORAGE_TYPE("storage.type"),
     STORAGE_HOSTNAME("storage.hostname"),
     STORAGE_PORT("storage.port"),
