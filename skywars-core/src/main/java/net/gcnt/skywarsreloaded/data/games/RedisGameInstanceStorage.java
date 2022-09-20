@@ -11,6 +11,7 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisPubSub;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -41,8 +42,13 @@ public class RedisGameInstanceStorage extends CoreRedisDB implements GameInstanc
 
     @Override
     public List<RemoteGameInstance> fetchGameInstances() {
-        //noinspection unchecked
-        return new ArrayList<RemoteGameInstance>(this.plugin.getGameInstanceManager().getGameInstancesList());
+        Collection<? extends GameInstance> gameInstancesList = this.plugin.getGameInstanceManager().getGameInstancesList();
+        ArrayList<RemoteGameInstance> instancesToReturn = new ArrayList<>(gameInstancesList.size());
+        for (GameInstance inst : gameInstancesList) {
+            // If this cast fails, the plugin is messed up anyway, so it may as well fail
+            instancesToReturn.add((RemoteGameInstance) inst);
+        }
+        return instancesToReturn;
     }
 
     @Override
