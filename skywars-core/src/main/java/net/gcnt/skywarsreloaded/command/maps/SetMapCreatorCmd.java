@@ -26,6 +26,11 @@ public class SetMapCreatorCmd extends Cmd {
             return true;
         }
 
+        if (plugin.getGameInstanceManager().isManagerRemote()) {
+            plugin.getMessages().getMessage(MessageProperties.ERROR_EDITING_GAME_FROM_LOBBY_SERVER.toString()).send(sender);
+            return true;
+        }
+
         final String templateName = args[0];
         GameTemplate template = plugin.getGameInstanceManager().getGameTemplateByName(templateName);
         if (template == null) {

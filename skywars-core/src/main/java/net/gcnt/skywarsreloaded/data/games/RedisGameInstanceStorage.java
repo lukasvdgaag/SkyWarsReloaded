@@ -40,7 +40,7 @@ public class RedisGameInstanceStorage extends CoreRedisDB implements GameInstanc
     }
 
     @Override
-    public List<RemoteGameInstance> getGameInstances() {
+    public List<RemoteGameInstance> fetchGameInstances() {
         //noinspection unchecked
         return new ArrayList<RemoteGameInstance>(this.plugin.getGameInstanceManager().getGameInstancesList());
     }

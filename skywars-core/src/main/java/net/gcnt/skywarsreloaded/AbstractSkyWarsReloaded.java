@@ -44,7 +44,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SWPlayerDataManager playerDataManager;
     private SchematicManager schematicManager;
     private SWCommandManager commandManager;
-    private GameInstanceManager instanceManager;
+    private GameInstanceManager<? extends GameInstance> instanceManager;
     private SWPlayerManager playerManager;
     private KitManager kitManager;
     private SWChestManager chestManager;
@@ -153,7 +153,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     @Override
     public void onDisable() {
-        GameInstanceManager gameInstanceManager = getGameInstanceManager();
+        GameInstanceManager<? extends GameInstance> gameInstanceManager = getGameInstanceManager();
 
         // Only remove instances if running locally
         if (gameInstanceManager instanceof LocalGameInstanceManager) {
@@ -256,12 +256,12 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public GameInstanceManager getGameInstanceManager() {
+    public GameInstanceManager<? extends GameInstance> getGameInstanceManager() {
         return this.instanceManager;
     }
 
     @Override
-    public void setGameInstanceManager(GameInstanceManager instanceManager) {
+    public void setGameInstanceManager(GameInstanceManager<? extends GameInstance> instanceManager) {
         this.instanceManager = instanceManager;
     }
 

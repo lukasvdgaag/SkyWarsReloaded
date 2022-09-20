@@ -19,10 +19,15 @@ public class TodoMapCmd extends Cmd {
 
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
+        if (plugin.getGameInstanceManager().isManagerRemote()) {
+            plugin.getMessages().getMessage(MessageProperties.ERROR_EDITING_GAME_FROM_LOBBY_SERVER.toString()).send(sender);
+            return true;
+        }
+
         SWPlayer player = (SWPlayer) sender;
         GameTemplate template;
         if (args.length == 0) {
-            GameInstance world = plugin.getGameInstanceManager().getGameWorldByName(player.getLocation().getWorld().getName());
+            GameInstance world = plugin.getGameInstanceManager().getGameInstanceByName(player.getLocation().getWorld().getName());
             if (world == null || !world.isEditing() || world.getTemplate() == null) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
                 return true;
@@ -49,7 +54,7 @@ public class TodoMapCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplatesCopy().forEach(template -> maps.add(template.getName()));
             return maps;
         }
         return new ArrayList<>();

@@ -29,8 +29,13 @@ public class SetSpawnCmd extends Cmd {
             return true;
         }
 
+        if (plugin.getGameInstanceManager().isManagerRemote()) {
+            plugin.getMessages().getMessage(MessageProperties.ERROR_EDITING_GAME_FROM_LOBBY_SERVER.toString()).send(sender);
+            return true;
+        }
+
         SWPlayer player = (SWPlayer) sender;
-        GameInstance world = plugin.getGameInstanceManager().getGameWorldByName(player.getLocation().getWorld().getName());
+        GameInstance world = plugin.getGameInstanceManager().getGameInstanceByName(player.getLocation().getWorld().getName());
         if (world == null || !world.isEditing()) {
             plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
             return true;
@@ -163,7 +168,7 @@ public class SetSpawnCmd extends Cmd {
             if (sender instanceof SWPlayer) {
                 SpawnType type = SpawnType.fromString(args[0]);
                 if (type == SpawnType.PLAYER) {
-                    GameInstance world = plugin.getGameInstanceManager().getGameWorldByName(((SWPlayer) sender).getLocation().getWorld().getName());
+                    GameInstance world = plugin.getGameInstanceManager().getGameInstanceByName(((SWPlayer) sender).getLocation().getWorld().getName());
                     if (world != null && world.isEditing() && world.getTemplate().getTeamSize() > 1) {
                         List<String> options = new ArrayList<>();
                         for (int i = 0; i < world.getTemplate().getTeamSpawnpoints().size() + 1; i++) {

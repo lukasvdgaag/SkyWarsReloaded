@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTeam;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.utils.scoreboards.SWBoard;
@@ -26,24 +27,26 @@ public abstract class AbstractScoreboardManager implements ScoreboardManager {
     @Override
     public String determineScoreboardFormat(SWPlayer player) {
         GameInstance gameWorld = player.getGameWorld();
-        if (gameWorld == null) return MessageProperties.SCOREBOARDS_LOBBY.toString();
+        if (!(gameWorld instanceof LocalGameInstance)) return MessageProperties.SCOREBOARDS_LOBBY.toString();
 
-        if (gameWorld.getState() == GameState.WAITING_CAGES || gameWorld.getState() == GameState.WAITING_LOBBY || gameWorld.getState() == GameState.COUNTDOWN) {
-            if (gameWorld.getState() == GameState.COUNTDOWN || (gameWorld.getWaitingPlayers().size() >= gameWorld.getTemplate().getMinPlayers())) {
+        LocalGameInstance localGameInstance = (LocalGameInstance) gameWorld;
+
+        if (localGameInstance.getState() == GameState.WAITING_CAGES || localGameInstance.getState() == GameState.WAITING_LOBBY || localGameInstance.getState() == GameState.COUNTDOWN) {
+            if (localGameInstance.getState() == GameState.COUNTDOWN || (localGameInstance.getWaitingPlayers().size() >= localGameInstance.getTemplate().getMinPlayers())) {
                 return MessageProperties.SCOREBOARDS_STARTING_SOON.toString();
             }
             return MessageProperties.SCOREBOARDS_WAITING.toString();
-        } else if (gameWorld.getState() == GameState.PLAYING) {
+        } else if (localGameInstance.getState() == GameState.PLAYING) {
             // todo add event formats.
             return MessageProperties.SCOREBOARDS_PLAYING.toString();
-        } else if (gameWorld.getState() == GameState.ENDING) {
+        } else if (localGameInstance.getState() == GameState.ENDING) {
             return MessageProperties.SCOREBOARDS_ENDING.toString();
         }
         return MessageProperties.SCOREBOARDS_LOBBY.toString();
     }
 
     @Override
-    public String prepareLine(SWPlayer player, String line, @Nullable GameInstance gameWorld) {
+    public String prepareLine(SWPlayer player, String line, @Nullable LocalGameInstance gameWorld) {
         if (line.trim().isEmpty()) return "";
 
         line = plugin.getUtils().colorize(line);
@@ -91,7 +94,10 @@ public abstract class AbstractScoreboardManager implements ScoreboardManager {
             scoreboards.put(player, board);
         }
 
-        GameInstance gameWorld = player.getGameWorld();
+        LocalGameInstance gameWorld = null;
+        if (player.getGameWorld() instanceof LocalGameInstance) {
+            gameWorld = (LocalGameInstance) player.getGameWorld();
+        }
 
         if (gameWorld != null && gameWorld.getState() == GameState.ENDING) {
             GameTeam winners = gameWorld.getWinningTeam();
@@ -136,7 +142,7 @@ public abstract class AbstractScoreboardManager implements ScoreboardManager {
     }
 
     @Override
-    public void updateAllPlayers(GameInstance gameWorld) {
+    public void updateAllPlayers(LocalGameInstance gameWorld) {
         for (GamePlayer player : gameWorld.getPlayersCopy()) {
             updatePlayer(player.getSWPlayer());
         }

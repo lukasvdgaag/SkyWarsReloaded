@@ -52,4 +52,9 @@ public class CoreRemoteGameInstanceManager extends CoreGameInstanceManager<Remot
     public void updateCachedGameInstance(RemoteGameInstance instance) {
         this.getGameInstances().put(instance.getId(), instance);
     }
+
+    @Override
+    public boolean isManagerRemote() {
+        return true;
+    }
 }

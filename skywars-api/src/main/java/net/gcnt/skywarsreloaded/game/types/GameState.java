@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.game.types;
 
 public enum GameState {
 
+    UNASSIGNED(false, false),
     DISABLED(false, false),
     WAITING_LOBBY(true, true),
     WAITING_CAGES(true, true),

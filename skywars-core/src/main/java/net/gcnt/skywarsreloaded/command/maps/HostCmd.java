@@ -38,6 +38,7 @@ public class HostCmd extends Cmd {
         sender.sendMessage(plugin.getWorldLoader().getClass().getName());
 
         GameInstance gameWorld = plugin.getGameInstanceManager().createGameWorld(template);
+        // todo move this game instance creation to the game instance manager
         plugin.getWorldLoader().generateWorldInstance(gameWorld).thenAccept((result) -> {
             System.out.println("World generation result: " + result);
             try {

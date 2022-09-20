@@ -3,7 +3,8 @@ package net.gcnt.skywarsreloaded.command.maps;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
+import net.gcnt.skywarsreloaded.manager.gameinstance.LocalGameInstanceManager;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
@@ -20,6 +21,12 @@ public class SetWorldSizeCmd extends Cmd {
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
         SWPlayer player = (SWPlayer) sender;
+        if (plugin.getGameInstanceManager().isManagerRemote()) {
+            plugin.getMessages().getMessage(MessageProperties.ERROR_EDITING_GAME_FROM_LOBBY_SERVER.toString()).send(sender);
+            return true;
+        }
+        final LocalGameInstanceManager gameInstanceManager = (LocalGameInstanceManager) plugin.getGameInstanceManager();
+
         GameTemplate template;
         int creatorArgStart = 1;
 
@@ -27,7 +34,7 @@ public class SetWorldSizeCmd extends Cmd {
             plugin.getMessages().getMessage(MessageProperties.MAPS_ENTER_WORLD_SIZE.toString()).send(sender);
             return true;
         } else if (args.length == 1) {
-            GameInstance world = plugin.getGameInstanceManager().getGameWorldByName(player.getLocation().getWorld().getName());
+            LocalGameInstance world = gameInstanceManager.getGameInstanceByName(player.getLocation().getWorld().getName());
             if (world == null || !world.isEditing() || world.getTemplate() == null) {
                 plugin.getMessages().getMessage(MessageProperties.ERROR_NO_TEMPLATE_WORLD_FOUND.toString()).send(sender);
                 return true;
@@ -36,7 +43,7 @@ public class SetWorldSizeCmd extends Cmd {
             creatorArgStart = 0;
         } else {
             final String templateName = args[0];
-            template = plugin.getGameInstanceManager().getGameTemplateByName(templateName);
+            template = gameInstanceManager.getGameTemplateByName(templateName);
             if (template == null) {
                 plugin.getMessages().getMessage(MessageProperties.MAPS_DOESNT_EXIST.toString()).send(sender);
                 return true;
@@ -55,8 +62,8 @@ public class SetWorldSizeCmd extends Cmd {
 
         template.setBorderRadius(size);
 
-        List<GameInstance> gameWorld = plugin.getGameInstanceManager().getGameWorlds(template);
-        for (GameInstance world : gameWorld) {
+        List<LocalGameInstance> gameWorld = gameInstanceManager.getGameInstancesByTemplate(template);
+        for (LocalGameInstance world : gameWorld) {
             if (world.isEditing()) {
                 plugin.getWorldLoader().updateWorldBorder(world);
             }
@@ -71,7 +78,7 @@ public class SetWorldSizeCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplatesCopy().forEach(template -> maps.add(template.getName()));
             return maps;
         }
         return new ArrayList<>();

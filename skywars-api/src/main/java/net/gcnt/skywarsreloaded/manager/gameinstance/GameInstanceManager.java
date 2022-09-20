@@ -95,4 +95,12 @@ public interface GameInstanceManager<G extends GameInstance> {
      * @return A {@link CompletableFuture<Boolean>} which completes when the save has succeeded or failed.
      */
     CompletableFuture<Boolean> saveInstanceToTemplate(G instance);
+
+    /**
+     * Check whether the game instance manager is managing remote games only.
+     *
+     * @return True if the game instance manager is managing remote games only, false otherwise.
+     */
+    boolean isManagerRemote();
+
 }
