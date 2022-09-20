@@ -26,7 +26,7 @@ public class SQLitePlayerStorage extends MySQLPlayerStorage {
     }
 
     @Override
-    public void setup() {
+    public void setup(String username, String password, int port) {
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {

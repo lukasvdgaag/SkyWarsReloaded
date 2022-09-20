@@ -21,8 +21,8 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
     public void createTable(Connection connection) throws SQLException {
         connection.createStatement().executeUpdate("CREATE TABLE `" + table + "` ( \n" +
                 "  `id` VARCHAR NOT NULL , \n" +
-                "  `template` INT NULL DEFAULT NULL , \n" +
-                "  `server` VARCHAR NULL DEFAULT NULL ,\n" +
+                "  `template` INT NULL DEFAULT NULL , \n" + WAIT // error on purpose here: isn't this supposed to be template_id?
+                "  `server` VARCHAR NULL DEFAULT NULL ,\n" + // and this server_id?
                 "  `playercount` INT NOT NULL DEFAULT '0' , \n" +
                 "  `state` VARCHAR NOT NULL , \n" +
                 "  `created_at` INT NOT NULL DEFAULT CURRENT_TIMESTAMP , \n" +

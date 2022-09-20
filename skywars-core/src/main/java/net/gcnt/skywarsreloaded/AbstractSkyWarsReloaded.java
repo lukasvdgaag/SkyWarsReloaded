@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded;
 
+import net.gcnt.skywarsreloaded.data.MySQLStorage;
 import net.gcnt.skywarsreloaded.data.Storage;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
@@ -14,6 +15,7 @@ import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
 import net.gcnt.skywarsreloaded.manager.gameinstance.LocalGameInstanceManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 import net.gcnt.skywarsreloaded.wrapper.server.SWServer;
@@ -88,7 +90,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         setMessages(getYAMLManager().loadConfig("messages", getDataFolder(), "messages.yml")); // requires yaml mgr
 
         setStorage(new SQLitePlayerStorage(this)); // requires config
-        getStorage().setup();
+        setupStorage();
 
         // Managers
         initServer();
@@ -140,6 +142,13 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         // todo
 
         this.postEnable();
+    }
+
+    private void setupStorage() {
+        String username = getConfig().getString(ConfigProperties.STORAGE_USERNAME.toString());
+        String password = getConfig().getString(ConfigProperties.STORAGE_PASSWORD.toString());
+        int port = getConfig().getInt(ConfigProperties.STORAGE_PORT.toString());
+        getStorage().setup(username, password, port);
     }
 
     @Override

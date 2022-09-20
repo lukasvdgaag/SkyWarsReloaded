@@ -4,6 +4,7 @@ storage:
   # * extension required
   type: MySQL
   hostname: localhost
+  port: 3306
   username: user
   password: pass
   database: skywarsreloaded

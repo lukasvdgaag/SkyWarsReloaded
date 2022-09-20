@@ -3,8 +3,9 @@ package net.gcnt.skywarsreloaded.utils.properties;
 public enum ConfigProperties {
 
     STORAGE_TYPE("storage.type"),
-    STORAGE_USERNAME("storage.username"),
     STORAGE_HOSTNAME("storage.hostname"),
+    STORAGE_PORT("storage.port"),
+    STORAGE_USERNAME("storage.username"),
     STORAGE_PASSWORD("storage.password"),
     STORAGE_DATABASE("storage.database"),
     STORAGE_USE_SSL("storage.use-ssl"),
