@@ -30,7 +30,7 @@ public class SetSpawnCmd extends Cmd {
         }
 
         if (plugin.getGameInstanceManager().isManagerRemote()) {
-            plugin.getMessages().getMessage(MessageProperties.ERROR_EDITING_GAME_FROM_LOBBY_SERVER.toString()).send(sender);
+            plugin.getMessages().getMessage(MessageProperties.ERROR_ACTION_NOT_FOR_LOBBY_SERVERS.toString()).send(sender);
             return true;
         }
 

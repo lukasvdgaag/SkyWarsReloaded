@@ -1,4 +1,11 @@
 server:
+  # Whether this server should use proxy mode.
+  # When you enable proxy mode, make sure you select the right server type and enter the correct name as described.
+  proxy: false
+  # When using Skywars in proxy mode, SWR needs to know what type of server this is in order
+  # to run certain processes. Options are: LOBBY and GAME.
+  # Please note that local games can NOT run on lobby servers.
+  type: "GAME"
   # If using a proxy like bungeecord or velocity, set the server name of this server (case-sensitive).
   # If this value is incorrect, skywars won't be able to send players to the games.
   name: "default"

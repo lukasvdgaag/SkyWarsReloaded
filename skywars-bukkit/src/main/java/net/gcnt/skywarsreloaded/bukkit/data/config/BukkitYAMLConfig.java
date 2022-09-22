@@ -286,6 +286,24 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     }
 
     @Override
+    public <E extends Enum<E>> E getEnum(Class<E> enumClass, String property) {
+        return getEnum(enumClass, property, null);
+    }
+
+    @Override
+    public <E extends Enum<E>> E getEnum(Class<E> enumClass, String property, String def) {
+        if (enumClass == null || !enumClass.isEnum()) return null;
+
+        String value = getString(property).toUpperCase();
+
+        try {
+            return Enum.valueOf(enumClass, value);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
     public void loadUnlockableData(Unlockable unlockable, String property) {
         if (!contains(property)) return;
         ConfigurationSection section = fileConfiguration.getConfigurationSection(property);

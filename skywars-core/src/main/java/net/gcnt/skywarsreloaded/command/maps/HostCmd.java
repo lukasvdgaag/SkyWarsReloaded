@@ -34,9 +34,6 @@ public class HostCmd extends Cmd {
             return true;
         }
 
-        sender.sendMessage("Hosting game: " + template.getName());
-        sender.sendMessage(plugin.getWorldLoader().getClass().getName());
-
         GameInstance gameWorld = plugin.getGameInstanceManager().createGameWorld(template);
         // todo move this game instance creation to the game instance manager
         plugin.getWorldLoader().generateWorldInstance(gameWorld).thenAccept((result) -> {

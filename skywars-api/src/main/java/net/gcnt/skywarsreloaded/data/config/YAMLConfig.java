@@ -77,6 +77,10 @@ public interface YAMLConfig {
 
     void loadUnlockableData(Unlockable unlockable, String property);
 
+    <E extends Enum<E>> E getEnum(Class<E> enumClass, String property);
+
+    <E extends Enum<E>> E getEnum(Class<E> enumClass, String property, String def);
+
     /**
      * Set a value to a key in the yaml config
      *

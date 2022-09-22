@@ -8,6 +8,8 @@ errors:
   must-hold-item: "&cYou must hold an item in your hand to continue."
   lobby-spawn-not-set: "&cYou must have set the lobby spawn before you can continue with this! Use &7/sw setlobby&c to set it."
   no-template-world-found: "&cThe world you're in either isn't a SkyWars template world, or it's not in edit mode."
+  action-not-for-lobby-servers: "&cThis action is not supported on proxy lobby servers."
+  action-not-for-game-servers: "&cThis action is not supported on proxy game servers."
 
 titles:
   maps:

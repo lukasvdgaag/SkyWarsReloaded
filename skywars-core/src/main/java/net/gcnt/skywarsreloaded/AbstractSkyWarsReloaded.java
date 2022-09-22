@@ -1,6 +1,5 @@
 package net.gcnt.skywarsreloaded;
 
-import net.gcnt.skywarsreloaded.data.MySQLStorage;
 import net.gcnt.skywarsreloaded.data.Storage;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
@@ -8,6 +7,7 @@ import net.gcnt.skywarsreloaded.data.games.MySQLGameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.player.SQLitePlayerStorage;
 import net.gcnt.skywarsreloaded.game.chest.filler.ChestFillerManager;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.*;
@@ -153,11 +153,11 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     @Override
     public void onDisable() {
-        GameInstanceManager<? extends GameInstance> gameInstanceManager = getGameInstanceManager();
-
         // Only remove instances if running locally
-        if (gameInstanceManager instanceof LocalGameInstanceManager) {
-            for (GameInstance gameInstance : gameInstanceManager.getGameInstancesList()) {
+        if (getGameInstanceManager() instanceof LocalGameInstanceManager) {
+            LocalGameInstanceManager gameInstanceManager = (LocalGameInstanceManager) getGameInstanceManager();
+
+            for (LocalGameInstance gameInstance : gameInstanceManager.getGameInstancesList()) {
                 gameInstanceManager.deleteGameInstance(gameInstance);
             }
         }

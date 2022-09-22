@@ -21,9 +21,9 @@ public class JoinCmd extends Cmd {
 
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
-        List<GameInstance> worlds = plugin.getGameInstanceManager().getGameWorlds().stream()
+        List<GameInstance> worlds = plugin.getGameInstanceManager().getGameInstancesList().stream()
                 .filter(GameInstance::canJoinGame)
-                .sorted(Comparator.comparingInt(o -> o.getAlivePlayers().size()))
+                .sorted(Comparator.comparingInt(GameInstance::getPlayerCount))
                 .collect(Collectors.toList());
 
         if (worlds.isEmpty()) {

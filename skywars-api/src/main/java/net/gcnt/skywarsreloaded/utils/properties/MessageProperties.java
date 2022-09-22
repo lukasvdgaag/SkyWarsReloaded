@@ -10,7 +10,8 @@ public enum MessageProperties {
     ERROR_MUST_HOLD_ITEM("errors.must-hold-item"),
     ERROR_LOBBY_SPAWN_NOT_SET("errors.lobby-spawn-not-set"),
     ERROR_NO_TEMPLATE_WORLD_FOUND("errors.no-template-world-found"),
-    ERROR_EDITING_GAME_FROM_LOBBY_SERVER("errors.editing-game-from-lobby-server"),
+    ERROR_ACTION_NOT_FOR_LOBBY_SERVERS("errors.action-not-for-lobby-servers"),
+    ERROR_ACTION_NOT_FOR_GAME_SERVERS("errors.action-not-for-game-servers"),
 
     KITS_ENTER_NAME("kits.enter-name"),
     KITS_ENTER_DESCRIPTION("kits.enter-description"),
