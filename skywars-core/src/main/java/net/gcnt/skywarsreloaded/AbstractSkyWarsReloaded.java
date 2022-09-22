@@ -1,6 +1,5 @@
 package net.gcnt.skywarsreloaded;
 
-import net.gcnt.skywarsreloaded.data.MySQLStorage;
 import net.gcnt.skywarsreloaded.data.Storage;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
@@ -38,6 +37,9 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private YAMLConfig config;
     private YAMLConfig messages;
     private YAMLConfig dataConfig;
+
+    // Hooks
+    private SWHookManager hookManager;
 
     // Managers
     private YAMLManager yamlManager;
@@ -109,8 +111,13 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         initScoreboardManager();
         initGuiManager();
         initInventoryManager();
+        initHookManager();
 
         setSchematicManager(new CoreSchematicManager(this));
+
+        // Hooks
+        registerDefaultHooks();
+        getHookManager().enableAllHooks();
 
         // Player data
         getPlayerManager().initAllPlayers();
@@ -144,13 +151,6 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         this.postEnable();
     }
 
-    private void setupStorage() {
-        String username = getConfig().getString(ConfigProperties.STORAGE_USERNAME.toString());
-        String password = getConfig().getString(ConfigProperties.STORAGE_PASSWORD.toString());
-        int port = getConfig().getInt(ConfigProperties.STORAGE_PORT.toString());
-        getStorage().setup(username, password, port);
-    }
-
     @Override
     public void onDisable() {
         GameInstanceManager<? extends GameInstance> gameInstanceManager = getGameInstanceManager();
@@ -161,6 +161,11 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
                 gameInstanceManager.deleteGameInstance(gameInstance);
             }
         }
+    }
+
+    @Override
+    public void registerDefaultHooks() {
+        // todo
     }
 
     // Getters and setters
@@ -216,8 +221,18 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
+    public SWHookManager getHookManager() {
+        return this.hookManager;
+    }
+
+    @Override
+    public void setHookManager(SWHookManager hookManager) {
+        this.hookManager = hookManager;
+    }
+
+    @Override
     public GameWorldLoader getWorldLoader() {
-        return worldLoader;
+        return this.worldLoader;
     }
 
     @Override
@@ -453,6 +468,13 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         return this.platformUtils;
     }
 
+    private void setupStorage() {
+        String username = getConfig().getString(ConfigProperties.STORAGE_USERNAME.toString());
+        String password = getConfig().getString(ConfigProperties.STORAGE_PASSWORD.toString());
+        int port = getConfig().getInt(ConfigProperties.STORAGE_PORT.toString());
+        getStorage().setup(username, password, port);
+    }
+
     /**
      * Override to run required initialization before core enable
      */
@@ -509,9 +531,9 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     protected abstract void initItemManager();
 
-    protected abstract void initInventoryManager();
-
     // Core initializers
+
+    protected abstract void initInventoryManager();
 
     protected void initGameInstanceStorage() {
         setGameInstanceStorage(new MySQLGameInstanceStorage(this));
@@ -523,5 +545,9 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     protected void initGuiManager() {
         setGuiManager(new CoreGuiManager(this));
+    }
+
+    private void initHookManager() {
+        setHookManager(new CoreSWHookManager(this));
     }
 }

@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
+import net.gcnt.skywarsreloaded.hook.SWHook;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
 import net.gcnt.skywarsreloaded.manager.*;
 import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
@@ -26,6 +27,19 @@ public interface SkyWarsReloaded {
     void onEnable();
 
     void onDisable();
+
+    /**
+     * Registers the default hooks that SkyWars uses for compatibility
+     * This method can be overridden if you wish to disable the default SkyWars hooks.
+     * <br><br>
+     * If you want to register plugin hooks into SkyWars that can be hooked after the {@link #onEnable()}
+     * is executed, we recommend using {@link #getHookManager()} then {@link SWHookManager#registerHook(SWHook)}
+     * <br><br>
+     * If you really need to register your own hooks into SkyWars that will run at enable time, we recommend
+     * overriding this method in your own SkyWars implementation and calling super.{@link #registerDefaultHooks()}
+     * before registering your own.
+     */
+    void registerDefaultHooks();
 
     SWLogger getLogger();
 
@@ -60,6 +74,11 @@ public interface SkyWarsReloaded {
 
     void setMessages(YAMLConfig config);
 
+    // Hooks
+
+    SWHookManager getHookManager();
+
+    void setHookManager(SWHookManager hookManager);
 
     // Other plugin managers
 
