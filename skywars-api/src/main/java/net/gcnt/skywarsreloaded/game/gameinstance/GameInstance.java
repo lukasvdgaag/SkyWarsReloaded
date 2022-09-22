@@ -31,6 +31,13 @@ public interface GameInstance {
     GameState getState();
 
     /**
+     * Get is a player is allowed to join the game
+     *
+     * @return True if a player can join, false otherwise
+     */
+    boolean canJoinGame();
+
+    /**
      * Get the total number of players in the instance.
      *
      * @return The number of players.

@@ -25,8 +25,6 @@ public interface LocalGameInstance extends GameInstance {
 
     String getWorldName();
 
-    boolean canJoinGame();
-
     boolean isSpawnAvailable();
 
     void setEditing(boolean edit);
