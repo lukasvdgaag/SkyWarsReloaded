@@ -27,7 +27,7 @@ public class AbstractSWEventListener implements SWEventListener {
     @Override
     public void onAsyncPlayerPreLogin(SWAsyncPlayerPreLoginEvent event) {
         SWPlayer player = this.plugin.getPlayerManager().initPlayer(event.getUUID());
-        this.plugin.getStorage().loadData(player);
+        this.plugin.getPlayerStorage().loadData(player);
     }
 
     @Override

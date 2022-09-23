@@ -6,6 +6,10 @@ public interface SWMessage {
 
     int getId();
 
+    String getChannel();
+
+    String setChannel(String channel);
+
     String getPayload();
 
     void setPayload(String payload);

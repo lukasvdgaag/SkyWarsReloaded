@@ -35,7 +35,7 @@ public abstract class CoreMySQLStorage<DataType> implements MySQLStorage<DataTyp
     }
 
     @Override
-    public void setup(String usernamem, String password, int port) {
+    public void setup(String username, String password, int port) {
         YAMLConfig yamlConfig = plugin.getConfig();
 
         String hostname = yamlConfig.getString(ConfigProperties.STORAGE_HOSTNAME.toString());

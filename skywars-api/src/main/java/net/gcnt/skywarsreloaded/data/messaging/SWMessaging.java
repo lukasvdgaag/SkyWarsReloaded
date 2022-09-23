@@ -8,10 +8,18 @@ public interface SWMessaging {
     void setup();
 
     /**
+     * Delete a message from the database.
+     *
+     * @param message     The message to delete.
+     * @param withReplies Whether to delete any replies to the message.
+     */
+    void removeMessage(SWMessage message, boolean withReplies);
+
+    /**
      * @param payload The payload of the message.
      * @return {@link SWMessage} an SWMessage
      */
-    SWMessage createMessage(String payload);
+    SWMessage createMessage(String channel, String payload);
 
     /**
      * Send a message over the messaging channel.
