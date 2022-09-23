@@ -1,5 +1,7 @@
 package net.gcnt.skywarsreloaded.listener;
 
+import net.gcnt.skywarsreloaded.event.SWMessageReceivedEvent;
+import net.gcnt.skywarsreloaded.event.SWMessageSentEvent;
 import net.gcnt.skywarsreloaded.wrapper.event.*;
 
 public interface SWEventListener {
@@ -31,5 +33,9 @@ public interface SWEventListener {
     void onEntityDamageByEntity(SWEntityDamageByEntityEvent event);
 
     void onPlayerDeath(SWPlayerDeathEvent event);
+
+    void onSWMessageReceived(SWMessageReceivedEvent event);
+
+    void onSWMessageSent(SWMessageSentEvent event);
 
 }

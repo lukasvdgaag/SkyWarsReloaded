@@ -1,6 +1,5 @@
 package net.gcnt.skywarsreloaded;
 
-import net.gcnt.skywarsreloaded.data.Storage;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.games.MySQLGameInstanceStorage;
@@ -35,7 +34,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private GameInstanceStorage instanceStorage;
 
     // Data
-    private Storage storage;
+    private PlayerStorage playerStorage;
     private YAMLConfig config;
     private YAMLConfig messages;
     private YAMLConfig dataConfig;
@@ -403,13 +402,13 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public Storage getPlayerStorage() {
-        return this.storage;
+    public PlayerStorage getPlayerStorage() {
+        return this.playerStorage;
     }
 
     @Override
     public void setPlayerStorage(PlayerStorage storage) {
-        this.storage = storage;
+        this.playerStorage = storage;
     }
 
     @Override

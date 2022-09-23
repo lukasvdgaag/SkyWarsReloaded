@@ -2,10 +2,13 @@ package net.gcnt.skywarsreloaded.listener;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.enums.DeathReason;
+import net.gcnt.skywarsreloaded.event.SWMessageReceivedEvent;
+import net.gcnt.skywarsreloaded.event.SWMessageSentEvent;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTeam;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.types.ChestType;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.unlockable.killmessages.KillMessageGroup;
@@ -111,12 +114,12 @@ public class AbstractSWEventListener implements SWEventListener {
 
     @Override
     public void onPlayerBlockPlace(SWBlockPlaceEvent event) {
-        if (cancelWhenWaitingInGame(event)) return;
+        if (cancelWhenWaitingInGame(event) || plugin.getGameInstanceManager().isManagerRemote()) return;
 
         // player is placing a chest
         if (event.getBlockTypeName().equalsIgnoreCase("CHEST") ||
                 event.getBlockTypeName().equalsIgnoreCase("TRAPPED_CHEST")) {
-            GameInstance gameWorld = plugin.getGameInstanceManager().getGameInstanceByName(event.getCoord().getWorld().getName());
+            LocalGameInstance gameWorld = (LocalGameInstance) plugin.getGameInstanceManager().getGameInstanceByName(event.getCoord().getWorld().getName());
             if (gameWorld == null || !gameWorld.isEditing()) return;
 
             final GameTemplate template = gameWorld.getTemplate();
@@ -149,11 +152,11 @@ public class AbstractSWEventListener implements SWEventListener {
 
     @Override
     public void onEntityDamage(SWEntityDamageEvent event) {
-        if (!(event.getEntity() instanceof SWPlayer)) return;
+        if (!(event.getEntity() instanceof SWPlayer) || plugin.getGameInstanceManager().isManagerRemote()) return;
 
         SWPlayer player = (SWPlayer) event.getEntity();
         if (cancelWhenWaitingInGame(player, event)) return;
-        GameInstance gameWorld = player.getGameWorld();
+        LocalGameInstance gameWorld = (LocalGameInstance) player.getGameWorld();
         if (gameWorld == null) return;
 
         GamePlayer gamePlayer = gameWorld.getPlayer(player);
@@ -209,7 +212,7 @@ public class AbstractSWEventListener implements SWEventListener {
 
     @Override
     public void onEntityDamageByEntity(SWEntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof SWPlayer)) return;
+        if (!(event.getEntity() instanceof SWPlayer) || plugin.getGameInstanceManager().isManagerRemote()) return;
 
         SWPlayer player = (SWPlayer) event.getEntity();
         if (cancelWhenWaitingInGame(player, event)) return;
@@ -224,7 +227,7 @@ public class AbstractSWEventListener implements SWEventListener {
         }
 
         if (tagger != null && !tagger.equals(player)) {
-            final GamePlayer gamePlayer = player.getGameWorld().getPlayer(player);
+            final GamePlayer gamePlayer = ((LocalGameInstance) player.getGameWorld()).getPlayer(player);
             gamePlayer.setLastTaggedBy(tagger);
         }
     }
@@ -254,5 +257,15 @@ public class AbstractSWEventListener implements SWEventListener {
             swEvent.setCancelled(true);
             return;
         }
+    }
+
+    @Override
+    public void onSWMessageReceived(SWMessageReceivedEvent event) {
+
+    }
+
+    @Override
+    public void onSWMessageSent(SWMessageSentEvent event) {
+
     }
 }

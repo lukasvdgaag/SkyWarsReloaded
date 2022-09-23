@@ -3,15 +3,25 @@ package net.gcnt.skywarsreloaded.data.messaging;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.CoreMySQLStorage;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
+import net.gcnt.skywarsreloaded.wrapper.scheduler.CoreSWRunnable;
+import net.gcnt.skywarsreloaded.wrapper.scheduler.SWRunnable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public class MySQLMessaging extends CoreMySQLStorage<SWMessage> implements SWMessaging {
 
+    private final HashMap<Integer, SWMessage> messages;
+    private SWRunnable updateTask;
+
     public MySQLMessaging(SkyWarsReloaded plugin) {
         super(plugin, "sw_messaging");
+
+        this.messages = new HashMap<>();
+        this.updateTask = null;
     }
 
     @Override
@@ -64,8 +74,7 @@ public class MySQLMessaging extends CoreMySQLStorage<SWMessage> implements SWMes
 
     @Override
     public SWMessage createMessage(String channel, String payload) {
-        // todo implement create message.
-        return null;
+        return new CoreSWMessage(plugin, channel, payload);
     }
 
     @Override
@@ -82,4 +91,66 @@ public class MySQLMessaging extends CoreMySQLStorage<SWMessage> implements SWMes
                 "FOREIGN KEY (`reply_to_id`) REFERENCES `" + table + "`(`id`) ON DELETE CASCADE ON UPDATE CASCADE) " +
                 "ENGINE = InnoDB; ");
     }
+
+    @Override
+    public void startFetching() {
+        updateTask = plugin.getScheduler().runAsyncTimer(new CoreSWRunnable() {
+            @Override
+            public void run() {
+                // todo add deleting messages that are older than 10 seconds, only for the main proxy lobby server.
+                String query = "SELECT * FROM `" + table + "` WHERE (`target_server` IS NULL OR `target_server`=?) AND (`timestamp` <= NOW() - INTERVAL 2 SECOND)";
+                try (Connection connection = getConnection();
+                     PreparedStatement statement = connection.prepareStatement(query)) {
+
+                    bindPropertyValue(statement, 1, plugin.getConfig().getString(ConfigProperties.SERVER_NAME.toString()));
+
+                    try (final ResultSet resultSet = statement.executeQuery()) {
+                        while (resultSet.next()) {
+                            int id = resultSet.getInt("id");
+                            if (!isCached(id)) continue;
+
+                            String payload = resultSet.getString("payload");
+                            String channel = resultSet.getString("channel");
+                            String originServer = resultSet.getString("origin_server");
+                            String targetServer = resultSet.getString("target_server");
+                            int replyToId = resultSet.getInt("reply_to_id");
+                            long timestamp = resultSet.getTimestamp("timestamp").getTime();
+
+                            SWMessage message = new CoreSWMessage(plugin, id, channel, payload, originServer, targetServer, replyToId, timestamp);
+                            cacheMessage(message);
+                            // todo throw message received event here.
+                        }
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 0, 20);
+    }
+
+    @Override
+    public void stopFetching() {
+        if (updateTask != null) {
+            updateTask.cancel();
+        }
+    }
+
+    public void cacheMessage(SWMessage message) {
+        if (!isCached(message.getId())) {
+            this.messages.put(message.getId(), message);
+        }
+    }
+
+    public boolean isCached(int id) {
+        return this.messages.containsKey(id);
+    }
+
+    public void removeCachedMessage(SWMessage message) {
+        this.messages.remove(message.getId());
+    }
+
+    public SWMessage getCachedMessage(SWMessage message) {
+        return this.messages.get(message.getId());
+    }
+
 }

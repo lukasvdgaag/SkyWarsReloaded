@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.data.messaging;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,20 +16,27 @@ public class CoreSWMessage implements SWMessage {
     private Long timestamp;
     private Integer id;
 
-    public CoreSWMessage(SkyWarsReloaded plugin, int id, long timestamp, String channel, String payload, String originServer, String target, int replyToId) {
+    public CoreSWMessage(SkyWarsReloaded plugin, String channel, String payload) {
+        this.plugin = plugin;
+        this.origin = plugin.getConfig().getString(ConfigProperties.SERVER_NAME.toString());
+        this.channel = channel;
+        this.payload = payload;
+    }
+
+    public CoreSWMessage(SkyWarsReloaded plugin, int id, String channel, String payload, String originServer, String targetServer, int replyToId, long timestamp) {
         this.plugin = plugin;
         this.id = id;
-        this.timestamp = timestamp;
         this.channel = channel;
         this.payload = payload;
         this.origin = originServer;
-        this.target = target;
+        this.target = targetServer;
         this.replyToId = replyToId;
+        this.timestamp = timestamp;
     }
 
     @Override
     public int getId() {
-        return 0;
+        return id;
     }
 
     @Override

@@ -36,4 +36,14 @@ public interface SWMessaging {
      */
     void replyMessage(SWMessage message, SWMessage replyTo);
 
+    /**
+     * Start the fetching of the messages.
+     */
+    void startFetching();
+
+    /**
+     * Stop fetching new messages.
+     */
+    void stopFetching();
+
 }
