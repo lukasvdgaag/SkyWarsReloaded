@@ -14,8 +14,6 @@ public interface SWMessage {
      */
     long getTimestamp();
 
-    void setTimestamp(long timestamp);
-
     @NotNull
     String getChannel();
 
