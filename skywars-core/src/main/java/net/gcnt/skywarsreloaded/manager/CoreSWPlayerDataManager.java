@@ -29,7 +29,7 @@ public class CoreSWPlayerDataManager implements SWPlayerDataManager {
 
     @Override
     public void loadAllPlayerData() {
-        final Storage storage = this.plugin.getStorage();
+        final Storage storage = this.plugin.getPlayerStorage();
         for (SWPlayer player : this.plugin.getPlayerManager().getPlayers()) {
             storage.loadData(player);
         }
