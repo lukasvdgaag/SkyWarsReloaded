@@ -28,6 +28,7 @@ import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.*;
 import org.bukkit.block.*;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -1055,7 +1056,13 @@ public class GameMap {
                 addTeamCard(Lists.newArrayList(spawnLocation));
             }
         } else {
-            for (String team : fc.getConfigurationSection("spawns").getKeys(false)) {
+            ConfigurationSection configSpawns = fc.getConfigurationSection("spawns");
+            if (configSpawns == null) {
+                SkyWarsReloaded.get().getLogger().warning("Invalid configuration section 'spawns'! This may cause an error below!");
+                configSpawns = fc.createSection("spawns");
+            }
+
+            for (String team : configSpawns.getKeys(false)) {
                 if (team.startsWith("team-")) {
                     // Get spawn location strings
                     List<String> spawns = fc.getStringList("spawns." + team);
