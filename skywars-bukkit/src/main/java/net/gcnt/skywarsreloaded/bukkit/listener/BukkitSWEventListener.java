@@ -5,7 +5,7 @@ import net.gcnt.skywarsreloaded.bukkit.managers.BukkitInventoryManager;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.event.BukkitSWPlayerFoodLevelChangeEvent;
 import net.gcnt.skywarsreloaded.enums.DeathReason;
-import net.gcnt.skywarsreloaded.listener.AbstractSWEventListener;
+import net.gcnt.skywarsreloaded.listener.AbstractSWOLDTOREMOVEEventListener;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BukkitSWEventListener extends AbstractSWEventListener implements Listener {
+public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener implements Listener {
 
     public BukkitSWEventListener(SkyWarsReloaded pluginIn) {
         super(pluginIn);

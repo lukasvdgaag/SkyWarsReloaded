@@ -5,7 +5,7 @@ import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
-import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
@@ -48,8 +48,8 @@ public class EditMapCmd extends Cmd {
         }
         final SWPlayer player = (SWPlayer) sender;
 
-        List<GameInstance> instances = plugin.getGameInstanceManager().getGameInstancesByTemplate(template);
-        for (GameInstance instance : instances) {
+        List<LocalGameInstance> instances = (List<LocalGameInstance>) plugin.getGameInstanceManager().getGameInstancesByTemplate(template);
+        for (LocalGameInstance instance : instances) {
             if (instance.isEditing()) {
                 msgConfig.getMessage(MessageProperties.MAPS_EDIT_EXISTING_WORLD.toString())
                         .replace("%template%", template.getName())
@@ -72,7 +72,7 @@ public class EditMapCmd extends Cmd {
         msgConfig.getMessage(MessageProperties.TITLES_MAPS_GENERATING_WORLD.toString())
                 .replace("%template%", template.getName())
                 .sendTitle(20, 600, 20, sender);
-        GameInstance world = plugin.getGameInstanceManager().createGameWorld(template);
+        LocalGameInstance world = (LocalGameInstance) plugin.getGameInstanceManager().createGameWorld(template);
         world.setEditing(true);
 
         // Create instance of the world given the template data, or create a new one if it doesn't exist.
@@ -104,7 +104,7 @@ public class EditMapCmd extends Cmd {
                 plugin.getWorldLoader().createBasePlatform(world);
             }
 
-            world.readyForEditing();
+            world.makeReadyForEditing();
 
             SWChestTier defaultChestType = plugin.getChestManager().getChestTierByName("normal");
             /*Collection<SWChestType> chests = template.getEnabledChestTypes();
@@ -152,7 +152,7 @@ public class EditMapCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplatesCopy().forEach(template -> maps.add(template.getName()));
             return maps;
         }
         return new ArrayList<>();

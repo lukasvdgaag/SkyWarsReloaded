@@ -19,36 +19,36 @@ import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.event.*;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
-public class AbstractSWEventListener implements SWEventListener {
+public class AbstractSWOLDTOREMOVEEventListener {
 
     public final SkyWarsReloaded plugin;
 
-    public AbstractSWEventListener(SkyWarsReloaded pluginIn) {
+    public AbstractSWOLDTOREMOVEEventListener(SkyWarsReloaded pluginIn) {
         this.plugin = pluginIn;
     }
 
-    @Override
+    
     public void onAsyncPlayerPreLogin(SWAsyncPlayerPreLoginEvent event) {
         SWPlayer player = this.plugin.getPlayerManager().initPlayer(event.getUUID());
         this.plugin.getPlayerStorage().loadData(player);
     }
 
-    @Override
+    
     public void onPlayerJoin(SWPlayerJoinEvent event) {
         event.getPlayer().fetchParentPlayer();
     }
 
-    @Override
+    
     public void onAsyncPlayerChat(SWAsyncPlayerChatEvent event) {
 
     }
 
-    @Override
+    
     public void onPlayerQuit(SWPlayerQuitEvent event) {
         this.plugin.getPlayerManager().removePlayer(event.getPlayer());
     }
 
-    @Override
+    
     public void onPlayerInteract(SWPlayerInteractEvent event) {
         if (event.getClickedBlockType().toLowerCase().contains("chest")) {
             if (event.getAction() == SWPlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
@@ -76,7 +76,7 @@ public class AbstractSWEventListener implements SWEventListener {
         return cancelWhenWaitingInGame(event.getPlayer(), (SWCancellable) event);
     }
 
-    @Override
+    
     public void onPlayerBlockBreak(SWBlockBreakEvent event) {
         if (cancelWhenWaitingInGame(event)) return;
 
@@ -112,7 +112,7 @@ public class AbstractSWEventListener implements SWEventListener {
         }
     }
 
-    @Override
+    
     public void onPlayerBlockPlace(SWBlockPlaceEvent event) {
         if (cancelWhenWaitingInGame(event) || plugin.getGameInstanceManager().isManagerRemote()) return;
 
@@ -138,7 +138,7 @@ public class AbstractSWEventListener implements SWEventListener {
 
     }
 
-    @Override
+    
     public void onPlayerDeath(SWPlayerDeathEvent event) {
         SWPlayer player = event.getPlayer();
         final GameInstance gameWorld = player.getGameWorld();
@@ -150,7 +150,7 @@ public class AbstractSWEventListener implements SWEventListener {
         event.setKeepInventory(false);
     }
 
-    @Override
+    
     public void onEntityDamage(SWEntityDamageEvent event) {
         if (!(event.getEntity() instanceof SWPlayer) || plugin.getGameInstanceManager().isManagerRemote()) return;
 
@@ -210,7 +210,7 @@ public class AbstractSWEventListener implements SWEventListener {
         gameWorld.preparePlayer(player);
     }
 
-    @Override
+    
     public void onEntityDamageByEntity(SWEntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof SWPlayer) || plugin.getGameInstanceManager().isManagerRemote()) return;
 
@@ -232,18 +232,18 @@ public class AbstractSWEventListener implements SWEventListener {
         }
     }
 
-    @Override
+    
     public void onPlayerFoodLevelChange(SWPlayerFoodLevelChangeEvent event) {
         cancelWhenWaitingInGame(event);
         event.setFoodLevel(20);
     }
 
-    @Override
+    
     public void onChunkLoad(SWChunkLoadEvent swEvent) {
 
     }
 
-    @Override
+    
     public void onWorldInit(SWWorldInitEvent swEvent) {
         SWWorld world = swEvent.getWorld();
         if (this.plugin.getGameInstanceManager().getGameTemplateByName(world.getName()) != null) {
@@ -251,7 +251,7 @@ public class AbstractSWEventListener implements SWEventListener {
         }
     }
 
-    @Override
+    
     public void onPlayerMove(SWPlayerMoveEvent swEvent) {
         if (swEvent.getPlayer().isFrozen()) {
             swEvent.setCancelled(true);
@@ -259,12 +259,12 @@ public class AbstractSWEventListener implements SWEventListener {
         }
     }
 
-    @Override
+    
     public void onSWMessageReceived(SWMessageReceivedEvent event) {
 
     }
 
-    @Override
+    
     public void onSWMessageSent(SWMessageSentEvent event) {
 
     }

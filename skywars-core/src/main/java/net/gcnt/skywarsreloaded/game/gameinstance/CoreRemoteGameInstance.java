@@ -23,6 +23,11 @@ public class CoreRemoteGameInstance extends AbstractGameInstance implements Remo
     }
 
     @Override
+    public boolean canJoinGame() {
+        return false;
+    }
+
+    @Override
     public int getPlayerCount() {
         return playerCount;
     }
