@@ -36,6 +36,15 @@ public interface SWServer {
      */
     SWInventory createInventory(String title, int size);
 
+    /**
+     * Create a new inventory with a specific inventory type.
+     *
+     * @param title         The title of the inventory
+     * @param inventoryType The type of inventory
+     * @return The new inventory
+     */
+    SWInventory createInventory(String title, String inventoryType);
+
     boolean isPluginEnabled(String plugin);
 
 }

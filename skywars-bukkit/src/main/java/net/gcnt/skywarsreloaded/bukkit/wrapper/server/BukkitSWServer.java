@@ -80,4 +80,9 @@ public class BukkitSWServer extends AbstractSWServer {
     public SWInventory createInventory(String title, int size) {
         return new BukkitSWInventory(plugin, title, size);
     }
+
+    @Override
+    public SWInventory createInventory(String title, String inventoryType) {
+        return new BukkitSWInventory(plugin, title, inventoryType);
+    }
 }

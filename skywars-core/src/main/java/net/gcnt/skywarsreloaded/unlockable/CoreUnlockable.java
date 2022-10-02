@@ -138,4 +138,11 @@ public abstract class CoreUnlockable implements Unlockable {
         SWVaultHook vaultHook = player.getPlugin().getHookManager().getHook(SWVaultHook.class);
         return (vaultHook.isEnabled() && vaultHook.hasBalance(player, getCost()));
     }
+
+    @Override
+    public void unlock(SWPlayer player) {
+        if (hasUnlocked(player)) return;
+
+        // todo add permission here, remove money from their balance, add to list of unlocked unlockables
+    }
 }

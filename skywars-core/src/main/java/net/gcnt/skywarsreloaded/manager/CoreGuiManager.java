@@ -1,10 +1,13 @@
 package net.gcnt.skywarsreloaded.manager;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.gui.ConfirmationGui;
 import net.gcnt.skywarsreloaded.gui.join.CoreJoinGameGui;
 import net.gcnt.skywarsreloaded.gui.join.CoreJoinTypeSelectorGui;
+import net.gcnt.skywarsreloaded.gui.kit.CoreKitSelectorGui;
 import net.gcnt.skywarsreloaded.gui.options.CoreOptionsGui;
 import net.gcnt.skywarsreloaded.gui.voting.CoreVotingGui;
+import net.gcnt.skywarsreloaded.utils.gui.SWConfirmationGui;
 import net.gcnt.skywarsreloaded.utils.gui.SWGui;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
@@ -47,7 +50,12 @@ public class CoreGuiManager implements SWGuiManager {
 
     @Override
     public SWGui createKitGui(SWPlayer player) {
-        return null;
+        return new CoreKitSelectorGui(plugin, player);
+    }
+
+    @Override
+    public SWConfirmationGui createConfirmationGui(SWPlayer player, String title) {
+        return new ConfirmationGui(plugin, title, player);
     }
 
     public void registerInventoryCreation(SWGui gui) {

@@ -14,6 +14,7 @@ public enum MessageProperties {
     ERROR_ACTION_NOT_FOR_GAME_SERVERS("errors.action-not-for-game-servers"),
 
     MENUS_KITS_TITLE("menus.kits.title"),
+    MENUS_CONFIRM_PURCHASE_TITLE("menus.confirm-purchase.title"),
 
     ITEMS_GENERAL_CLOSE("items.general.close"),
     ITEMS_KITS_DESELECT("items.kits.deselect"),
@@ -24,9 +25,12 @@ public enum MessageProperties {
     ITEMS_KITS_SELECTED("items.kits.selected"),
     ITEMS_KITS_LOCKED("items.kits.locked"),
     ITEMS_KITS_UNLOCKED("items.kits.unlocked"),
+    ITEMS_KITS_CONFIRM_PURCHASE("items.kits.confirm-purchase"),
+    ITEMS_KITS_DENY_PURCHASE("items.kits.deny-purchase"),
 
     KITS_SELECTED("kits.selected"),
     KITS_CANNOT_AFFORD("kits.cannot-afford"),
+    KITS_PURCHASED("kits.purchased"),
     KITS_ENTER_NAME("kits.enter-name"),
     KITS_ENTER_DESCRIPTION("kits.enter-description"),
     KITS_ENTER_DISPLAYNAME("kits.enter-displayname"),

@@ -71,16 +71,33 @@ items:
         - "{lore}"
         - ""
         - "{status}"
-
+    confirm-purchase:
+      display-name: "&a&lPURCHASE"
+      lore:
+        - "&7You are purchasing the kit"
+        - "&7{displayname}."
+        - ""
+        - "&5Cost: &a{cost} coins"
+        - ""
+        - "&8&oThis action cannot be undone."
+        - ""
+        - "&6Click to purchase."
+    deny-purchase:
+      display-name: "&c&lCANCEL"
+      lore:
+        - ""
+        - "&6Click to cancel."
 
 menus:
   kits:
     title: "SkyWars Kits"
-
+  confirm-purchase:
+    title: "Confirm Purchase"
 
 kits:
   selected: "&eYou selected the kit &6{kit}&e!"
   cannot-afford: "&cYou cannot afford this kit!"
+  purchased: "&eYou purchased the kit &6{kit}&a!"
   enter-name: "&cPlease enter a kit name."
   enter-description: "&cPlease enter the description of the kit."
   enter-displayname: "&cPlease enter the display name of the kit."

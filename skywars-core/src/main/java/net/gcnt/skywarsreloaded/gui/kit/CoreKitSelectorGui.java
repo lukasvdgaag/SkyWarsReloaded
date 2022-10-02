@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.gui.AbstractSWGui;
+import net.gcnt.skywarsreloaded.utils.gui.SWConfirmationGui;
 import net.gcnt.skywarsreloaded.utils.gui.SWGuiClickHandler;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
@@ -66,7 +67,6 @@ public class CoreKitSelectorGui extends AbstractSWGui {
     }
 
     public SWGuiClickHandler.ClickResult handleKitClick(SWKit kit) {
-        // todo add kit selection logic
         if (kit.getId().equals(player.getPlayerData().getKit())) {
             // player is selecting the kit they currently have selected.
             return SWGuiClickHandler.ClickResult.CANCELLED;
@@ -82,6 +82,7 @@ public class CoreKitSelectorGui extends AbstractSWGui {
         } else {
             if (kit.isEligible(player)) {
                 // todo add kit purchase logic
+                showPurchaseConfirmationDialog(kit);
             } else {
                 plugin.getMessages().getMessage(MessageProperties.KITS_CANNOT_AFFORD.toString())
                         .replace("{kit}", kit.getDisplayName())
@@ -92,8 +93,39 @@ public class CoreKitSelectorGui extends AbstractSWGui {
             // player does not have the kit unlocked, attempting to unlock it if it costs money and if they're eligible.
         }
 
-        player.sendMessage("You clicked on kit " + kit.getDisplayName());
         return SWGuiClickHandler.ClickResult.CANCELLED;
     }
+
+    public void showPurchaseConfirmationDialog(SWKit kit) {
+        final SWConfirmationGui confirmationGui = plugin.getGuiManager().createConfirmationGui(player, plugin.getMessages().getString(MessageProperties.MENUS_CONFIRM_PURCHASE_TITLE.toString()));
+        confirmationGui.addConfirmButton(MessageProperties.ITEMS_KITS_CONFIRM_PURCHASE.toString(), (gui, slot, clickType, isShift) -> {
+            if (!kit.isEligible(player)) {
+                plugin.getMessages().getMessage(MessageProperties.KITS_CANNOT_AFFORD.toString())
+                        .replace("{kit}", kit.getDisplayName())
+                        .replace("{cost}", kit.getCost() + "")
+                        .send(player);
+                return SWGuiClickHandler.ClickResult.CANCELLED;
+            } else {
+                kit.unlock(player);
+                player.getPlayerData().setKit(kit.getId());
+                plugin.getMessages().getMessage(MessageProperties.KITS_PURCHASED.toString())
+                        .replace("{kit}", kit.getDisplayName())
+                        .replace("{cost}", kit.getCost() + "")
+                        .send(player);
+                confirmationGui.close();
+
+                open();
+            }
+
+            return SWGuiClickHandler.ClickResult.CANCELLED;
+        });
+
+        confirmationGui.addCancelButton(MessageProperties.ITEMS_KITS_DENY_PURCHASE.toString(), (gui, slot, clickType, isShift) -> {
+            confirmationGui.close();
+            open();
+            return SWGuiClickHandler.ClickResult.CANCELLED;
+        });
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.manager;
 
+import net.gcnt.skywarsreloaded.utils.gui.SWConfirmationGui;
 import net.gcnt.skywarsreloaded.utils.gui.SWGui;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
@@ -15,6 +16,8 @@ public interface SWGuiManager {
     SWGui createVotingGui(SWPlayer player);
 
     SWGui createKitGui(SWPlayer player);
+
+    SWConfirmationGui createConfirmationGui(SWPlayer player, String title);
 
     void registerInventoryCreation(SWGui gui);
 

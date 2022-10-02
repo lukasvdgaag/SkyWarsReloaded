@@ -37,5 +37,20 @@ public interface Unlockable {
      */
     boolean isEligible(SWPlayer player);
 
+    /**
+     * Unlock the unlockable for a player.
+     *
+     * @param player The player to unlock the unlockable for.
+     */
+    void unlock(SWPlayer player);
+
+    /**
+     * Unlock the unlockable for a player.
+     *
+     * @param player The player to unlock the unlockable for.
+     * @param free   Whether the unlockable should be unlocked for free.
+     */
+    void unlock(SWPlayer player, boolean free);
+
 
 }

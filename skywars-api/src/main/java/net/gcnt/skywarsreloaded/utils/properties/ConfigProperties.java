@@ -22,6 +22,8 @@ public enum ConfigProperties {
 
     // items
     ITEMS_GENERAL_CLOSE("items.general.close"),
+    ITEMS_GENERAL_CONFIRM("items.general.confirm"),
+    ITEMS_GENERAL_DENY("items.general.deny"),
     ITEMS_KITS_DESELECT("items.kits.deselect"),
 
     // todo: messaging impl & auth

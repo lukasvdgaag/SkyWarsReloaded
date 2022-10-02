@@ -7,6 +7,7 @@ import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,6 +28,13 @@ public class BukkitSWInventory implements SWInventory {
         inventory = Bukkit.getServer().createInventory(null, size * 9, title);
 
         // todo add support for different inventory types in the future?
+    }
+
+    public BukkitSWInventory(SkyWarsReloaded plugin, String title, String inventoryType) {
+        this.plugin = plugin;
+        this.title = title;
+        this.size = 0;
+        inventory = Bukkit.getServer().createInventory(null, InventoryType.valueOf(inventoryType.toUpperCase()), title);
     }
 
     public BukkitSWInventory(SkyWarsReloaded plugin, Inventory bukkitInventory, String title) {

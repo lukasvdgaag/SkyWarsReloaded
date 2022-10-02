@@ -66,6 +66,10 @@ items:
   general:
     close:
       material: BOOK
+    confirm:
+      material: LIME_DYE
+    deny:
+      material: RED_DYE
   kits:
     deselect:
       material: BARRIER
