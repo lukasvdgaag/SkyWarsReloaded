@@ -53,6 +53,22 @@ menus:
   join:
     # Options: NAME, NAME-REVERSED, TEAMSIZE, TEAMSIZE-REVERSED, WAITING, WAITING-REVERSED
     sort-by: TEAMSIZE
+  kits:
+    # Options:
+    # - OUTLINED (leaves the border slots empty)
+    # - FILLED (fills every possible slot)
+    layout: OUTLINED
+    # Whether to automatically place kits in the menu based on their load orders.
+    # Enabling this will override custom menu positions, so be careful!
+    auto-layout: false
+
+items:
+  general:
+    close:
+      material: BOOK
+  kits:
+    deselect:
+      material: BARRIER
 
 game:
   # Timer values are in seconds

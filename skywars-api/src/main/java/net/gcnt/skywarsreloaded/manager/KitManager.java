@@ -17,8 +17,15 @@ public interface KitManager {
 
     List<SWKit> getKits();
 
+    SWKit getKitFromSlot(int slot);
+
     SWKit createKit(String id, Item icon);
 
     SWKit initKit(String id);
+
+    /**
+     * Fixes all duplicate kit menu slots and replaces duplicates with unique slots.
+     */
+    void fixKitSlots();
 
 }

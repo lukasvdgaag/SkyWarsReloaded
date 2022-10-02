@@ -2,6 +2,8 @@ package net.gcnt.skywarsreloaded.utils.gui;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.utils.Item;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
+import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
 
@@ -118,9 +120,21 @@ public abstract class AbstractSWGui implements SWGui {
         if (handler != null) handler.onClick(this, slot, clickType, isShiftClick);
     }
 
+    protected Item getCloseItem() {
+        return plugin.getConfig().getItem(ConfigProperties.ITEMS_GENERAL_CLOSE.toString(), plugin.getItemManager().createItem("BARRIER"))
+                .withMessages(plugin.getMessages().getItem(MessageProperties.ITEMS_GENERAL_CLOSE.toString()));
+    }
+
+    protected void addCloseButton(int slot) {
+        this.addButton(slot, getCloseItem(), (gui, slot1, clickType, isShiftClick) -> {
+            gui.close();
+            return SWGuiClickHandler.ClickResult.IGNORED;
+        });
+    }
+
     // Platform handlers
 
-    private void refreshInventory() {
+    protected void refreshInventory() {
         if (this.isViewing()) {
             this.close();
             this.open();

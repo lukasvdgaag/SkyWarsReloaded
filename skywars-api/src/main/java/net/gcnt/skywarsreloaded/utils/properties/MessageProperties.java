@@ -13,6 +13,18 @@ public enum MessageProperties {
     ERROR_ACTION_NOT_FOR_LOBBY_SERVERS("errors.action-not-for-lobby-servers"),
     ERROR_ACTION_NOT_FOR_GAME_SERVERS("errors.action-not-for-game-servers"),
 
+    MENUS_KITS_TITLE("menus.kits.title"),
+
+    ITEMS_GENERAL_CLOSE("items.general.close"),
+    ITEMS_KITS_DESELECT("items.kits.deselect"),
+
+    ITEMS_KITS_STATUS_SELECTED("items.kits.status.selected"),
+    ITEMS_KITS_STATUS_UNLOCKED("items.kits.status.unlocked"),
+    ITEMS_KITS_STATUS_LOCKED("items.kits.status.locked"),
+    ITEMS_KITS_SELECTED("items.kits.selected"),
+    ITEMS_KITS_LOCKED("items.kits.locked"),
+    ITEMS_KITS_UNLOCKED("items.kits.unlocked"),
+
     KITS_ENTER_NAME("kits.enter-name"),
     KITS_ENTER_DESCRIPTION("kits.enter-description"),
     KITS_ENTER_DISPLAYNAME("kits.enter-displayname"),

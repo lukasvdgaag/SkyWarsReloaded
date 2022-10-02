@@ -16,6 +16,7 @@ public class CoreSWPlayerData implements SWPlayerData {
     private String selectedWinEffect;
     private String selectedProjectileEffect;
     private String killMessagesTheme;
+    private String selectedKit;
 
     public CoreSWPlayerData() {
         this.initialized = false;
@@ -34,7 +35,8 @@ public class CoreSWPlayerData implements SWPlayerData {
                          String selectedKillEffectIn,
                          String selectedWinEffectIn,
                          String selectedProjectileEffectIn,
-                         String killMessagesThemeIn) {
+                         String killMessagesThemeIn,
+                         String selectedKit) {
         this.stats = statsIn;
         this.selectedSoloCage = selectedSoloCageIn;
         this.selectedTeamCage = selectedTeamCageIn;
@@ -43,6 +45,7 @@ public class CoreSWPlayerData implements SWPlayerData {
         this.selectedWinEffect = selectedWinEffectIn;
         this.selectedProjectileEffect = selectedProjectileEffectIn;
         this.killMessagesTheme = killMessagesThemeIn;
+        this.selectedKit = selectedKit;
         this.initialized = true;
     }
 
@@ -119,5 +122,15 @@ public class CoreSWPlayerData implements SWPlayerData {
     @Override
     public void setKillMessagesTheme(String value) {
         killMessagesTheme = value;
+    }
+
+    @Override
+    public String getKit() {
+        return this.selectedKit;
+    }
+
+    @Override
+    public void setKit(String kit) {
+        this.selectedKit = kit;
     }
 }

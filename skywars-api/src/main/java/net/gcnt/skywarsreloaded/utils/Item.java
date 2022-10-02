@@ -49,4 +49,6 @@ public interface Item {
 
     void setSkullOwner(String owner);
 
+    Item withMessages(Item item);
+
 }

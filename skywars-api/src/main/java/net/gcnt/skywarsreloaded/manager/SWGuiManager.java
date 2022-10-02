@@ -14,6 +14,8 @@ public interface SWGuiManager {
 
     SWGui createVotingGui(SWPlayer player);
 
+    SWGui createKitGui(SWPlayer player);
+
     void registerInventoryCreation(SWGui gui);
 
     void unregisterInventory(SWInventory inventory);

@@ -24,6 +24,60 @@ titles:
     won: "&6&lVICTORY!\n&7You were the last man standing!"
     lost: "&c&lGAME END\n&7You weren't victorious this time"
 
+items:
+  general:
+    close:
+      display-name: "&9Back"
+      lore:
+        - "&7Go back to the previous"
+        - "&7menu"
+  kits:
+    status:
+      selected: "&6This kit is selected"
+      unlocked: "&6Click to select this kit"
+      locked: "&6Click to buy this kit"
+    deselect:
+      display-name: "&e&lDeselect Kit"
+      lore:
+        - "&6Play without a selected kit"
+    selected:
+      display-name: "&a&l{displayname}"
+      lore:
+        - "&7{description}"
+        - ""
+        - "&5Contents:"
+        - "{lore}"
+        - ""
+        - "{status}"
+      enchantments:
+        - "DURABILITY"
+    unlocked:
+      display-name: "&e&l{displayname}"
+      lore:
+        - "&7{description}"
+        - ""
+        - "&5Contents:"
+        - "{lore}"
+        - ""
+        - "{status}"
+    locked:
+      display-name: "&c&l{displayname}"
+      lore:
+        - "&7{description}"
+        - ""
+        - "&5Cost: &a{cost} coins"
+        - ""
+        - "&5Contents:"
+        - "{lore}"
+        - ""
+        - "{status}"
+
+
+menus:
+  kits:
+    title: "SkyWars Kits"
+
+
 kits:
   enter-name: "&cPlease enter a kit name."
   enter-description: "&cPlease enter the description of the kit."

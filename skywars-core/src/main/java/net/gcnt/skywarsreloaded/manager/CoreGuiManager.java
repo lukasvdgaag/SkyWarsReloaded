@@ -45,6 +45,11 @@ public class CoreGuiManager implements SWGuiManager {
         return new CoreVotingGui(plugin, player);
     }
 
+    @Override
+    public SWGui createKitGui(SWPlayer player) {
+        return null;
+    }
+
     public void registerInventoryCreation(SWGui gui) {
         this.guiMap.put(gui.getInventory(), gui);
         plugin.getInventoryManager().registerInventory(gui.getInventory());

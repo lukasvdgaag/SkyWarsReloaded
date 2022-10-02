@@ -16,6 +16,14 @@ public enum ConfigProperties {
     STORAGE_DATABASE("storage.database"),
     STORAGE_USE_SSL("storage.use-ssl"),
 
+    // menus
+    MENUS_KITS_LAYOUT("menus.kits.layout"),
+    MENUS_KITS_AUTO_LAYOUT("menus.kits.auto-layout"),
+
+    // items
+    ITEMS_GENERAL_CLOSE("items.general.close"),
+    ITEMS_KITS_DESELECT("items.kits.deselect"),
+
     // todo: messaging impl & auth
 
     // Game instances

@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.utils.gui;
 
+@FunctionalInterface
 public interface SWGuiClickHandler {
 
     ClickResult onClick(SWGui gui, int slot, ClickType clickType, boolean isShift);

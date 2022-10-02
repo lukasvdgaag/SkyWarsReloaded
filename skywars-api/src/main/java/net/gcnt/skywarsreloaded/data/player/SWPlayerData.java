@@ -11,7 +11,8 @@ public interface SWPlayerData {
                   String selected_kill_effect,
                   String selected_win_effect,
                   String selected_projectile_particle,
-                  String kill_messages_theme);
+                  String kill_messages_theme,
+                  String selected_kit);
 
     SWPlayerStats getStats();
 
@@ -42,5 +43,9 @@ public interface SWPlayerData {
     String getKillMessagesTheme();
 
     void setKillMessagesTheme(String value);
+
+    String getKit();
+
+    void setKit(String kit);
 
 }

@@ -1,12 +1,13 @@
 package net.gcnt.skywarsreloaded.game.kits;
 
+import net.gcnt.skywarsreloaded.unlockable.Unlockable;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.util.HashMap;
 import java.util.List;
 
-public interface SWKit {
+public interface SWKit extends Unlockable {
 
     String getId();
 
