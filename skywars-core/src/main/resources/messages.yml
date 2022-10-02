@@ -79,6 +79,8 @@ menus:
 
 
 kits:
+  selected: "&eYou selected the kit &6{kit}&e!"
+  cannot-afford: "&cYou cannot afford this kit!"
   enter-name: "&cPlease enter a kit name."
   enter-description: "&cPlease enter the description of the kit."
   enter-displayname: "&cPlease enter the display name of the kit."

@@ -29,5 +29,13 @@ public interface Unlockable {
 
     boolean canUnlock(SWPlayer player);
 
+    /**
+     * Checks if a player is eligible to unlock this unlockable.
+     *
+     * @param player The player to check.
+     * @return True if the player is eligible to unlock this unlockable, false otherwise.
+     */
+    boolean isEligible(SWPlayer player);
+
 
 }

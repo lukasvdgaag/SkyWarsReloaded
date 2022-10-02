@@ -3,38 +3,39 @@ package net.gcnt.skywarsreloaded.manager;
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.hook.SWHook;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CoreSWHookManager implements SWHookManager {
 
-    private ArrayList<SWHook> hooks;
+    private final HashMap<Class<? extends SWHook>, SWHook> hooks;
 
-    public CoreSWHookManager(AbstractSkyWarsReloaded abstractSkyWarsReloaded) {
-        this.hooks = new ArrayList<>();
+    public CoreSWHookManager(AbstractSkyWarsReloaded plugin) {
+        this.hooks = new HashMap<>();
+    }
+
+    public <E extends SWHook> E getHook(Class<E> hookClass) {
+        // noinspection unchecked
+        return (E) hooks.get(hookClass);
     }
 
     @Override
     public void registerHook(SWHook hook) {
-        this.hooks.add(hook);
+        this.hooks.put(hook.getClass(), hook);
     }
 
     @Override
     public void unregisterHook(SWHook hook) {
-        this.hooks.remove(hook);
+        this.hooks.remove(hook.getClass());
     }
 
     @Override
     public void enableAllHooks() {
-        for (SWHook hook : this.hooks) {
-            hook.enable();
-        }
+        hooks.forEach((clazz, hook) -> hook.enable());
     }
 
     @Override
     public void disableAllHooks() {
-        for (SWHook hook : this.hooks) {
-            hook.disable();
-        }
+        hooks.forEach((clazz, hook) -> hook.disable());
     }
 
     @Override

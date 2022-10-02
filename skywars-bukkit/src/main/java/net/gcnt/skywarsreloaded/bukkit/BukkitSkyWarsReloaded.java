@@ -57,6 +57,13 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     }
 
     @Override
+    public void registerDefaultHooks() {
+        super.registerDefaultHooks();
+
+        getHookManager().registerHook(new BukkitSWVaultHook(this));
+    }
+
+    @Override
     public void initConsoleSender() {
         setConsoleSender(new BukkitSWConsoleSender(this.getBukkitPlugin().getServer().getConsoleSender()));
     }

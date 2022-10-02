@@ -36,4 +36,6 @@ public interface SWServer {
      */
     SWInventory createInventory(String title, int size);
 
+    boolean isPluginEnabled(String plugin);
+
 }

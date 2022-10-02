@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.unlockable;
 
 import net.gcnt.skywarsreloaded.data.player.PlayerStat;
+import net.gcnt.skywarsreloaded.hook.SWVaultHook;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.util.HashMap;
@@ -76,7 +77,6 @@ public abstract class CoreUnlockable implements Unlockable {
     @Override
     public boolean hasUnlocked(SWPlayer player) {
         if (!canUnlock(player)) return false;
-        final String permission = getPermissionPrefix() + getId();
 
         // Has permission -> true
         // todo add option to require all stats before able to buy.
@@ -110,7 +110,7 @@ public abstract class CoreUnlockable implements Unlockable {
         //      all stats = return true
 
 
-        if (!needsPermission() && player.hasPermission(permission)) {
+        if (!needsPermission() && player.hasPermission(getPermission())) {
             return true;
 
             // Doesn't have perm and unlockable needs it
@@ -125,5 +125,17 @@ public abstract class CoreUnlockable implements Unlockable {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean isEligible(SWPlayer player) {
+        if (hasUnlocked(player)) return true;
+
+        if (needsPermission() && !player.hasPermission(getPermission())) return false;
+
+        // checking if they are able to buy the unlockable
+        // there's no check for stats since you have to earn them manually...
+        SWVaultHook vaultHook = player.getPlugin().getHookManager().getHook(SWVaultHook.class);
+        return (vaultHook.isEnabled() && vaultHook.hasBalance(player, getCost()));
     }
 }

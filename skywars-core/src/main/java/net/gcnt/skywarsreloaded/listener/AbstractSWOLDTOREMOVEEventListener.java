@@ -27,28 +27,28 @@ public class AbstractSWOLDTOREMOVEEventListener {
         this.plugin = pluginIn;
     }
 
-    
+
     public void onAsyncPlayerPreLogin(SWAsyncPlayerPreLoginEvent event) {
         SWPlayer player = this.plugin.getPlayerManager().initPlayer(event.getUUID());
         this.plugin.getPlayerStorage().loadData(player);
     }
 
-    
+
     public void onPlayerJoin(SWPlayerJoinEvent event) {
         event.getPlayer().fetchParentPlayer();
     }
 
-    
+
     public void onAsyncPlayerChat(SWAsyncPlayerChatEvent event) {
 
     }
 
-    
+
     public void onPlayerQuit(SWPlayerQuitEvent event) {
         this.plugin.getPlayerManager().removePlayer(event.getPlayer());
     }
 
-    
+
     public void onPlayerInteract(SWPlayerInteractEvent event) {
         if (event.getClickedBlockType().toLowerCase().contains("chest")) {
             if (event.getAction() == SWPlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {
@@ -76,7 +76,7 @@ public class AbstractSWOLDTOREMOVEEventListener {
         return cancelWhenWaitingInGame(event.getPlayer(), (SWCancellable) event);
     }
 
-    
+
     public void onPlayerBlockBreak(SWBlockBreakEvent event) {
         if (cancelWhenWaitingInGame(event)) return;
 
@@ -112,7 +112,7 @@ public class AbstractSWOLDTOREMOVEEventListener {
         }
     }
 
-    
+
     public void onPlayerBlockPlace(SWBlockPlaceEvent event) {
         if (cancelWhenWaitingInGame(event) || plugin.getGameInstanceManager().isManagerRemote()) return;
 
@@ -138,7 +138,7 @@ public class AbstractSWOLDTOREMOVEEventListener {
 
     }
 
-    
+
     public void onPlayerDeath(SWPlayerDeathEvent event) {
         SWPlayer player = event.getPlayer();
         final GameInstance gameWorld = player.getGameWorld();
@@ -150,7 +150,7 @@ public class AbstractSWOLDTOREMOVEEventListener {
         event.setKeepInventory(false);
     }
 
-    
+
     public void onEntityDamage(SWEntityDamageEvent event) {
         if (!(event.getEntity() instanceof SWPlayer) || plugin.getGameInstanceManager().isManagerRemote()) return;
 
@@ -210,7 +210,7 @@ public class AbstractSWOLDTOREMOVEEventListener {
         gameWorld.preparePlayer(player);
     }
 
-    
+
     public void onEntityDamageByEntity(SWEntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof SWPlayer) || plugin.getGameInstanceManager().isManagerRemote()) return;
 
@@ -232,18 +232,18 @@ public class AbstractSWOLDTOREMOVEEventListener {
         }
     }
 
-    
+
     public void onPlayerFoodLevelChange(SWPlayerFoodLevelChangeEvent event) {
         cancelWhenWaitingInGame(event);
         event.setFoodLevel(20);
     }
 
-    
+
     public void onChunkLoad(SWChunkLoadEvent swEvent) {
 
     }
 
-    
+
     public void onWorldInit(SWWorldInitEvent swEvent) {
         SWWorld world = swEvent.getWorld();
         if (this.plugin.getGameInstanceManager().getGameTemplateByName(world.getName()) != null) {
@@ -251,7 +251,7 @@ public class AbstractSWOLDTOREMOVEEventListener {
         }
     }
 
-    
+
     public void onPlayerMove(SWPlayerMoveEvent swEvent) {
         if (swEvent.getPlayer().isFrozen()) {
             swEvent.setCancelled(true);
@@ -259,12 +259,12 @@ public class AbstractSWOLDTOREMOVEEventListener {
         }
     }
 
-    
+
     public void onSWMessageReceived(SWMessageReceivedEvent event) {
 
     }
 
-    
+
     public void onSWMessageSent(SWMessageSentEvent event) {
 
     }

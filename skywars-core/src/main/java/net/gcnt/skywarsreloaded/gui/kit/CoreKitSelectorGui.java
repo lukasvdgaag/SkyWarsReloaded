@@ -67,6 +67,31 @@ public class CoreKitSelectorGui extends AbstractSWGui {
 
     public SWGuiClickHandler.ClickResult handleKitClick(SWKit kit) {
         // todo add kit selection logic
+        if (kit.getId().equals(player.getPlayerData().getKit())) {
+            // player is selecting the kit they currently have selected.
+            return SWGuiClickHandler.ClickResult.CANCELLED;
+        }
+
+        if (kit.hasUnlocked(player)) {
+            // player has unlocked the kit, so selecting it.
+            player.getPlayerData().setKit(kit.getId());
+            plugin.getMessages().getMessage(MessageProperties.KITS_SELECTED.toString())
+                    .replace("{kit}", kit.getDisplayName())
+                    .send(player);
+            return SWGuiClickHandler.ClickResult.CANCELLED;
+        } else {
+            if (kit.isEligible(player)) {
+                // todo add kit purchase logic
+            } else {
+                plugin.getMessages().getMessage(MessageProperties.KITS_CANNOT_AFFORD.toString())
+                        .replace("{kit}", kit.getDisplayName())
+                        .replace("{cost}", kit.getCost() + "")
+                        .send(player);
+            }
+
+            // player does not have the kit unlocked, attempting to unlock it if it costs money and if they're eligible.
+        }
+
         player.sendMessage("You clicked on kit " + kit.getDisplayName());
         return SWGuiClickHandler.ClickResult.CANCELLED;
     }

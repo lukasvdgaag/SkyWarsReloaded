@@ -14,6 +14,8 @@ public interface SWHookManager {
      */
     void registerHook(SWHook hook);
 
+    <E extends SWHook> E getHook(Class<E> hookClass);
+
     /**
      * Unregisters a hook from SkyWars. Make sure you disable the hook as well, this method won't do that
      * for you.

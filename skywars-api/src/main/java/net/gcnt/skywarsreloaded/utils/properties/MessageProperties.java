@@ -25,6 +25,8 @@ public enum MessageProperties {
     ITEMS_KITS_LOCKED("items.kits.locked"),
     ITEMS_KITS_UNLOCKED("items.kits.unlocked"),
 
+    KITS_SELECTED("kits.selected"),
+    KITS_CANNOT_AFFORD("kits.cannot-afford"),
     KITS_ENTER_NAME("kits.enter-name"),
     KITS_ENTER_DESCRIPTION("kits.enter-description"),
     KITS_ENTER_DISPLAYNAME("kits.enter-displayname"),

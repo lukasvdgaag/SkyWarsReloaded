@@ -16,11 +16,18 @@ public interface SWHook {
     /**
      * Get if this specific hook is enabled and hooked into the target plugin.
      * A hook can be considered inactive if it meets one of the following conditions:
-     *  - The hook is manually instructed to unhook itself
-     *  - The hook was unable to find its target API on the server
+     * - The hook is manually instructed to unhook itself
+     * - The hook was unable to find its target API on the server
      *
      * @return True if the hook is active and working, false otherwise
      */
     boolean isEnabled();
+
+    /**
+     * Set the state of the hook
+     *
+     * @param state True if the hook is active and working, false otherwise
+     */
+    void setEnabled(boolean state);
 
 }

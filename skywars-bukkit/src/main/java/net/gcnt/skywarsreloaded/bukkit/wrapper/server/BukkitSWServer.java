@@ -2,9 +2,11 @@ package net.gcnt.skywarsreloaded.bukkit.wrapper.server;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.server.AbstractSWServer;
 import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
 
@@ -26,9 +28,22 @@ public class BukkitSWServer extends AbstractSWServer {
         this.worldCache = new HashMap<>();
     }
 
+    public Server getBukkitServer() {
+        return bukkitServer;
+    }
+
+    public OfflinePlayer getOfflinePlayer(SWPlayer player) {
+        return bukkitServer.getOfflinePlayer(player.getUuid());
+    }
+
     @Override
     public SWWorld getDefaultWorld() {
         return this.getWorld(defaultWorld);
+    }
+
+    @Override
+    public boolean isPluginEnabled(String pluginName) {
+        return bukkitServer.getPluginManager().isPluginEnabled(pluginName);
     }
 
     @Override

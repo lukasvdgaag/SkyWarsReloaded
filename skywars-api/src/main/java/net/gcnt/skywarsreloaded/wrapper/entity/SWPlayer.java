@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.wrapper.entity;
 
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.party.SWParty;
@@ -124,4 +125,7 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer, SWEntity {
     void openInventory(SWInventory inventory);
 
     void closeInventory();
+
+    SkyWarsReloaded getPlugin();
+
 }

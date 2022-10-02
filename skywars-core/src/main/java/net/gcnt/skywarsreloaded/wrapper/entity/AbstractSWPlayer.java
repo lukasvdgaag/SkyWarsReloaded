@@ -82,4 +82,9 @@ public abstract class AbstractSWPlayer extends AbstractSWEntity implements SWPla
     public boolean isFrozen() {
         return this.frozen.get();
     }
+
+    @Override
+    public SkyWarsReloaded getPlugin() {
+        return plugin;
+    }
 }
