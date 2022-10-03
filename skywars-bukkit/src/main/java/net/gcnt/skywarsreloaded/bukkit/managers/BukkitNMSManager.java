@@ -1,21 +1,21 @@
 package net.gcnt.skywarsreloaded.bukkit.managers;
 
-import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.protocol.BukkitNMS_12;
 import net.gcnt.skywarsreloaded.bukkit.protocol.BukkitNMS_13_15;
 import net.gcnt.skywarsreloaded.bukkit.protocol.BukkitNMS_16_18;
 import net.gcnt.skywarsreloaded.bukkit.protocol.BukkitNMS_8_11;
-import net.gcnt.skywarsreloaded.protocol.NMS;
 import net.gcnt.skywarsreloaded.manager.NMSManager;
+import net.gcnt.skywarsreloaded.protocol.NMS;
 import org.bukkit.Bukkit;
 
 public class BukkitNMSManager implements NMSManager {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final SkyWarsReloaded plugin;
+    private final BukkitSkyWarsReloaded plugin;
     private final NMS nms;
 
-    public BukkitNMSManager(SkyWarsReloaded pluginIn) {
+    public BukkitNMSManager(BukkitSkyWarsReloaded pluginIn) {
         this.plugin = pluginIn;
 
         int version = plugin.getUtils().getServerVersion();

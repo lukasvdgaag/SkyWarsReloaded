@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.game;
 
-import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
@@ -87,7 +87,7 @@ public interface GameTeam {
      *
      * @return Parent Game.
      */
-    GameInstance getGameWorld();
+    LocalGameInstance getGameWorld();
 
     /**
      * Get the size of the team.

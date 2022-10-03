@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
+import net.gcnt.skywarsreloaded.data.messaging.SWMessaging;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerStorage;
 import net.gcnt.skywarsreloaded.data.sql.SQLStorage;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
@@ -146,6 +147,10 @@ public interface SkyWarsReloaded {
     SWChestManager getChestManager();
 
     void setChestManager(SWChestManager chestManager);
+
+    SWMessaging getMessaging();
+
+    void setMessaging(SWMessaging messaging);
 
     // Console
 

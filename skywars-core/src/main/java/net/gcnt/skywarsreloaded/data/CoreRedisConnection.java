@@ -7,12 +7,12 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import java.time.Duration;
 
-public abstract class CoreRedisDB {
+public abstract class CoreRedisConnection {
 
     protected final SkyWarsReloaded plugin;
     private JedisPool jedisPool;
 
-    public CoreRedisDB(SkyWarsReloaded plugin) {
+    public CoreRedisConnection(SkyWarsReloaded plugin) {
         this.plugin = plugin;
     }
 

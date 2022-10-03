@@ -19,7 +19,7 @@ public class ListMapsCmd extends Cmd {
         plugin.getMessages().getMessage(MessageProperties.CHAT_HEADER.toString()).send(sender);
         plugin.getMessages().getMessage(MessageProperties.MAPS_LIST_HEADER.toString()).send(sender);
 
-        List<GameTemplate> templates = plugin.getGameInstanceManager().getGameTemplates();
+        List<GameTemplate> templates = plugin.getGameInstanceManager().getGameTemplatesCopy();
         if (templates.isEmpty()) {
             plugin.getMessages().getMessage(MessageProperties.MAPS_LIST_EMPTY.toString()).send(sender);
             return true;
@@ -27,7 +27,7 @@ public class ListMapsCmd extends Cmd {
 
         int gameCount;
         for (GameTemplate template : templates) {
-            gameCount = plugin.getGameInstanceManager().getGameWorlds(template).size();
+            gameCount = plugin.getGameInstanceManager().getGameInstancesByTemplate(template).size();
             plugin.getMessages().getMessage(MessageProperties.MAPS_LIST_LINE.toString())
                     .replace("%template%", template.getDisplayName())
                     .replace("%creator%", template.getCreator())

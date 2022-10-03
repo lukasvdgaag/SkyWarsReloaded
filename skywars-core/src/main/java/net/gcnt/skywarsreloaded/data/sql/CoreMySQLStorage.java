@@ -37,15 +37,15 @@ public class CoreMySQLStorage implements SQLStorage {
 
     @Override
     public void setup(YAMLConfig yamlConfig) {
-        String hostname = yamlConfig.getString(ConfigProperties.STORAGE_HOSTNAME.toString());
-        String database = yamlConfig.getString(ConfigProperties.STORAGE_DATABASE.toString());
-        int port = yamlConfig.getInt(ConfigProperties.STORAGE_PORT.toString());
+        String hostname = yamlConfig.getString(ConfigProperties.STORAGE_MYSQL_HOSTNAME.toString());
+        String database = yamlConfig.getString(ConfigProperties.STORAGE_MYSQL_DATABASE.toString());
+        int port = yamlConfig.getInt(ConfigProperties.STORAGE_MYSQL_PORT.toString());
 
         HikariConfig config = new HikariConfig();
-        String uri = "jdbc:mysql://" + hostname + ":" + port + "/" + database + "?useSSL=" + (yamlConfig.getBoolean(ConfigProperties.STORAGE_USE_SSL.toString()));
+        String uri = "jdbc:mysql://" + hostname + ":" + port + "/" + database + "?useSSL=" + (yamlConfig.getBoolean(ConfigProperties.STORAGE_MYSQL_USE_SSL.toString()));
         config.setJdbcUrl(uri);
-        config.setUsername(yamlConfig.getString(ConfigProperties.STORAGE_USERNAME.toString()));
-        config.setPassword(yamlConfig.getString(ConfigProperties.STORAGE_DATABASE.toString()));
+        config.setUsername(yamlConfig.getString(ConfigProperties.STORAGE_MYSQL_USERNAME.toString()));
+        config.setPassword(yamlConfig.getString(ConfigProperties.STORAGE_MYSQL_DATABASE.toString()));
         config.setMinimumIdle(this.minPoolSize);
         config.setMaximumPoolSize(this.maxPoolSize);
         config.setConnectionTimeout(4000);

@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.data.sql;
 
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.sql.Connection;
@@ -13,7 +14,7 @@ public abstract class CoreSQLTable<DataType> implements SQLTable<DataType> {
 
     public CoreSQLTable(SQLStorage storage, String table) {
         this.storage = storage;
-        this.table = table;
+        this.table = storage.getPlugin().getConfig().getString(ConfigProperties.STORAGE_MYSQL_TABLE_PREFIX.toString()) + table;
 
         storage.addTable(this);
     }

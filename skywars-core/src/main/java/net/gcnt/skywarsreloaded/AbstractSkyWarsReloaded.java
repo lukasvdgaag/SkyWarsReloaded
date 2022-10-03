@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
+import net.gcnt.skywarsreloaded.data.games.RedisGameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerStorage;
 import net.gcnt.skywarsreloaded.data.sql.CoreMySQLStorage;
 import net.gcnt.skywarsreloaded.data.sql.CoreSQLiteStorage;
@@ -100,8 +101,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         setMessages(getYAMLManager().loadConfig("messages", getDataFolder(), "messages.yml")); // requires yaml mgr
 
         // Storages
-        initMySQLStorage();
-        initSQLiteStorage();
+        initSQLStorage();
 
         initGameInstanceStorage();
         initPlayerStorage(); // requires config
@@ -565,17 +565,23 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         setHookManager(new CoreSWHookManager(this));
     }
 
-    protected void initMySQLStorage() {
+    protected void initSQLStorage() {
+        // enabling SQLite only if is enabled in the config.
         // enabling MySQL only if is enabled in the config.
         if (getConfig().getString(ConfigProperties.STORAGE_TYPE.toString()).equalsIgnoreCase("MySQL")) {
             setMySQLStorage(new CoreMySQLStorage(this));
+        } else {
+            // using SQLite as default option
+            setSQLiteStorage(new CoreSQLiteStorage(this));
         }
     }
 
-    protected void initSQLiteStorage() {
+    protected void initMessaging() {
         // enabling SQLite only if is enabled in the config.
-        if (getConfig().getString(ConfigProperties.STORAGE_TYPE.toString()).equalsIgnoreCase("SQLite")) {
+        if (getConfig().getString(ConfigProperties.MESSAGING_TYPE.toString()).equalsIgnoreCase("Redis")) {
             setSQLiteStorage(new CoreSQLiteStorage(this));
+        } else { // todo this
+            setMessaging(new RedisGameInstanceStorage(this));
         }
     }
 

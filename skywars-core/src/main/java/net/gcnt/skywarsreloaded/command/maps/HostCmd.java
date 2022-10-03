@@ -4,11 +4,13 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class HostCmd extends Cmd {
 
@@ -34,28 +36,31 @@ public class HostCmd extends Cmd {
             return true;
         }
 
-        GameInstance gameWorld = plugin.getGameInstanceManager().createGameWorld(template);
+        CompletableFuture<? extends GameInstance> gameWorldFuture = plugin.getGameInstanceManager().createGameWorld(template);
         // todo move this game instance creation to the game instance manager
-        plugin.getWorldLoader().generateWorldInstance(gameWorld).thenAccept((result) -> {
-            System.out.println("World generation result: " + result);
-            try {
-                if (result) {
-                    gameWorld.readyForGame();
+        gameWorldFuture.thenAccept(gameWorld -> {
+            if (gameWorld instanceof LocalGameInstance) {
+                LocalGameInstance localGame = (LocalGameInstance) gameWorld;
+                plugin.getWorldLoader().generateWorldInstance(localGame).thenAccept((result) -> {
+                    try {
+                        if (result) {
+                            localGame.makeReadyForGame();
 
-                    sender.sendMessage("Game world ready for game");
-                    plugin.getMessages().getMessage(MessageProperties.MAPS_HOSTED.toString())
-                            .replace("%template%", template.getName())
-                            .replace("%gameworld%", gameWorld.getId())
-                            .send(sender);
-                } else {
-                    plugin.getLogger().error("Could not create instance!");// todo send error
-                    sender.sendMessage("Internal server has occurred!");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+                            sender.sendMessage("Game world ready for game");
+                            plugin.getMessages().getMessage(MessageProperties.MAPS_HOSTED.toString())
+                                    .replace("%template%", template.getName())
+                                    .replace("%gameworld%", gameWorld.getId().toString())
+                                    .send(sender);
+                        } else {
+                            plugin.getLogger().error("Could not create instance!");// todo send error
+                            sender.sendMessage("Internal server has occurred!");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
             }
         });
-
         return true;
     }
 
@@ -63,7 +68,7 @@ public class HostCmd extends Cmd {
     public List<String> onTabCompletion(SWCommandSender sender, String[] args) {
         if (args.length == 1) {
             List<String> maps = new ArrayList<>();
-            plugin.getGameInstanceManager().getGameTemplates().forEach(template -> maps.add(template.getName()));
+            plugin.getGameInstanceManager().getGameTemplatesCopy().forEach(template -> maps.add(template.getName()));
             return maps;
         }
         return new ArrayList<>();

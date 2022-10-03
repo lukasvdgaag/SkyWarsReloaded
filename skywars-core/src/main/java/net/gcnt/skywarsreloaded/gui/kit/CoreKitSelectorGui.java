@@ -32,12 +32,12 @@ public class CoreKitSelectorGui extends AbstractSWGui {
             final boolean unlocked = kit.hasUnlocked(player);
             final boolean selected = kit.getId().equals(player.getPlayerData().getKit());
 
-            Item item = selected ? plugin.getMessages().getItem(MessageProperties.ITEMS_KITS_SELECTED.toString()) :
+            Item item = unlocked ? kit.getIcon() : kit.getUnavailableIcon();
+            Item messagesItem = selected ? plugin.getMessages().getItem(MessageProperties.ITEMS_KITS_SELECTED.toString()) :
                     unlocked ? plugin.getMessages().getItem(MessageProperties.ITEMS_KITS_UNLOCKED.toString()) :
                             plugin.getMessages().getItem(MessageProperties.ITEMS_KITS_LOCKED.toString());
 
-            if (unlocked) item.setMaterial(kit.getIcon().getMaterial());
-            else item.setMaterial(kit.getUnavailableIcon().getMaterial());
+            item.withMessages(messagesItem);
 
             item.setDisplayName(prepareKitLine(kit, item.getDisplayName(), unlocked, selected));
 

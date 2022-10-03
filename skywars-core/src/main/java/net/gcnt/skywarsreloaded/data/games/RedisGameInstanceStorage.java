@@ -1,7 +1,8 @@
 package net.gcnt.skywarsreloaded.data.games;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.data.CoreRedisDB;
+import net.gcnt.skywarsreloaded.data.CoreRedisConnection;
+import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.gameinstance.CoreRemoteGameInstance;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
@@ -26,10 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Description of redis structure:
- *  All skywars instance data is sent to lobbies using redis pub/sub
- *
+ * All skywars instance data is sent to lobbies using redis pub/sub
  */
-public class RedisGameInstanceStorage extends CoreRedisDB implements GameInstanceStorage {
+public class RedisGameInstanceStorage extends CoreRedisConnection implements GameInstanceStorage {
 
     private static final String REDIS_GAME_INSTANCE_CHANNEL = "swr:gameinstance:update";
     private static final int INSTANCE_TIMEOUT_TIME = 5;
@@ -46,13 +46,17 @@ public class RedisGameInstanceStorage extends CoreRedisDB implements GameInstanc
     }
 
     @Override
-    public void setup(String username, String password, int port) {
+    public void setup(YAMLConfig config) {
+        String hostname = plugin.getConfig().getString(ConfigProperties.MESSAGING_REDIS_HOSTNAME.toString());
+        String username = plugin.getConfig().getString(ConfigProperties.MESSAGING_REDIS_USERNAME.toString());
+        String password = plugin.getConfig().getString(ConfigProperties.MESSAGING_REDIS_PASSWORD.toString());
+        int port = plugin.getConfig().getInt(ConfigProperties.MESSAGING_REDIS_PORT.toString());
+
         JedisPoolConfig poolConfig = this.buildPoolConfig(5, 2);
-        // todo change host, user, password and port (config).
 
         if (password == null || password.equals("n/a")) this.plugin.getLogger().warn("The redis password is set to n/a, the connection will probably fail.");
 
-        this.setJedisPool(new JedisPool(poolConfig, "host", 37047, 10 * 1000, "user", password));
+        this.setJedisPool(new JedisPool(poolConfig, hostname, port, 10 * 1000, username, password));
         this.subscribeToRedisUpdates();
     }
 
@@ -68,7 +72,7 @@ public class RedisGameInstanceStorage extends CoreRedisDB implements GameInstanc
     }
 
     @Override
-    public RemoteGameInstance getGameInstanceById(String uuid) {
+    public RemoteGameInstance getGameInstanceById(UUID uuid) {
         return (RemoteGameInstance) this.plugin.getGameInstanceManager().getGameInstanceById(uuid);
     }
 

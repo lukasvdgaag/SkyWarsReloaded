@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.unlockable.cage;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.data.player.stats.UnlockableType;
 import net.gcnt.skywarsreloaded.unlockable.CoreUnlockable;
 
 import java.io.File;
@@ -17,6 +18,11 @@ public class SchematicCage extends CoreUnlockable implements Cage {
         if (!file.exists()) {
             throw new FileNotFoundException("Cage file " + file.getName() + " does not exist!");
         }
+    }
+
+    @Override
+    public UnlockableType getType() {
+        return UnlockableType.CAGE;
     }
 
     public File getFile() {

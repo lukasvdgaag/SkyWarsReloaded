@@ -2,18 +2,18 @@ package net.gcnt.skywarsreloaded.game.state;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
-import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 
 public class EndingStateHandler extends CoreGameStateHandler {
 
-    public EndingStateHandler(SkyWarsReloaded plugin, GameInstance gameWorld) {
+    public EndingStateHandler(SkyWarsReloaded plugin, LocalGameInstance gameWorld) {
         super(plugin, gameWorld);
     }
 
     @Override
     public void tickSecond() {
         if (gameInstance.getTimer() == 0) {
-            plugin.getGameInstanceManager().deleteGameWorld(gameInstance);
+            plugin.getGameInstanceManager().deleteGameInstance(gameInstance);
             return;
         }
 

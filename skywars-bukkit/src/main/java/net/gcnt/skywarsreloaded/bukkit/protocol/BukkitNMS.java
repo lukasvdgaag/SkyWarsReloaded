@@ -1,30 +1,12 @@
 package net.gcnt.skywarsreloaded.bukkit.protocol;
 
-import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
-import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
-import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.protocol.NMS;
-import net.gcnt.skywarsreloaded.utils.Item;
-import net.gcnt.skywarsreloaded.utils.SWCoord;
-import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
-import net.gcnt.skywarsreloaded.wrapper.server.SWGameRule;
-import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.inventory.ItemStack;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class BukkitNMS implements NMS {
-
+public abstract class BukkitNMS implements NMS {
+/*
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
-    private final SkyWarsReloaded plugin;
+    protected final SkyWarsReloaded plugin;
     private final int version;
 
     private Class<?> chatBaseComponent;
@@ -75,7 +57,7 @@ public class BukkitNMS implements NMS {
                 this.chatSerializer = chatBaseComponent.getDeclaredClasses()[0].getMethod("a", String.class);
                 this.sendPacket = typePlayerConnection.getMethod("sendPacket", Class.forName("net.minecraft.server." + serverVersion + ".Packet"));
             }
-            /* else {
+            *//* else {
                 Class<?> typeNMSPlayer = Class.forName("net.minecraft.server.level.EntityPlayer");
                 this.playerConnection = typeNMSPlayer.getField("b");
                 Class<?> typePlayerConnection = Class.forName("net.minecraft.server.network.PlayerConnection");
@@ -89,13 +71,13 @@ public class BukkitNMS implements NMS {
                 this.packetPlayOutChat = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutChat");
                 this.chatBaseComponent = Class.forName("net.minecraft.network.chat.IChatBaseComponent");
                 this.chatSerializer = chatBaseComponent.getDeclaredClasses()[0].getMethod("a", String.class);
-            }*/
+            }*//*
         } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     @SuppressWarnings("deprecation")
     public void setGameRule(SWWorld world, SWGameRule rule, Object value) {
         World bukkitWorld = Bukkit.getWorld(world.getName());
@@ -198,6 +180,6 @@ public class BukkitNMS implements NMS {
         } catch (Exception error) {
             error.printStackTrace();
         }
-    }
+    }*/
 
 }

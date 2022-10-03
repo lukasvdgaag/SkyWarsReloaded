@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.bukkit.protocol;
 
-import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
@@ -11,7 +11,7 @@ import org.bukkit.block.Chest;
 
 public class BukkitNMS_16_18 extends BukkitNMS_13_15 {
 
-    public BukkitNMS_16_18(SkyWarsReloaded plugin, String serverPackage) {
+    public BukkitNMS_16_18(BukkitSkyWarsReloaded plugin, String serverPackage) {
         super(plugin, serverPackage);
     }
 

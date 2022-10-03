@@ -6,8 +6,9 @@ import com.sk89q.worldedit.math.BlockVector3;
 import io.papermc.lib.PaperLib;
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.game.BukkitLocalGameInstance;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWChunkGenerator;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.utils.FileUtils;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
@@ -16,12 +17,9 @@ import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
-import org.bukkit.generator.ChunkGenerator;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 public class SchemWorldLoader extends BukkitWorldLoader {
@@ -42,7 +40,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public CompletableFuture<Boolean> generateWorldInstance(GameInstance gameWorld) throws IllegalStateException, IllegalArgumentException {
+    public CompletableFuture<Boolean> generateWorldInstance(LocalGameInstance gameWorld) throws IllegalStateException, IllegalArgumentException {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         System.out.println("Generating world instance for " + gameWorld.getTemplate().getName());
         this.createEmptyWorld(gameWorld).thenRun(() -> {
@@ -52,7 +50,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
         return future;
     }
 
-    protected void postWorldGenerateTask(GameInstance gameWorld, CompletableFuture<Boolean> future) {
+    protected void postWorldGenerateTask(LocalGameInstance gameWorld, CompletableFuture<Boolean> future) {
         System.out.println("Post world generate task for " + gameWorld.getTemplate().getName());
         boolean res = false;
         try {
@@ -66,7 +64,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public CompletableFuture<Void> createEmptyWorld(GameInstance gameWorld) {
+    public CompletableFuture<Void> createEmptyWorld(LocalGameInstance gameWorld) {
         System.out.println("Creating empty world for " + gameWorld.getTemplate().getName());
         WorldCreator creator = new WorldCreator(gameWorld.getWorldName());
         creator.generateStructures(false);
@@ -81,29 +79,14 @@ public class SchemWorldLoader extends BukkitWorldLoader {
         }
 
         // Override world generator
-        creator.generator(new ChunkGenerator() {
-            // todo check these methods on older and newer versions, and possibly use non-deprecated methods.
-            @NotNull
-            @Override
-            public ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid biome) {
-                ChunkData chunkData = createChunkData(world);
-                for (int x = 0; x < 16; x++) {
-                    for (int z = 0; z < 16; z++) {
-                        biome.setBiome(x, z, voidBiome);
-                    }
-                }
-                return chunkData;
-            }
-        });
+        creator.generator(((BukkitSWChunkGenerator) this.plugin.getNMSManager().getNMS().getChunkGenerator()).getGenerator());
 
         World createdWorld = creator.createWorld();
         assert createdWorld != null;
         CompletableFuture<Void> future = new CompletableFuture<>();
         // todo fix this for 1.16<
         PaperLib.getChunkAtAsync(createdWorld.getSpawnLocation()).thenAccept(chunk -> {
-            if (plugin.getUtils().getServerVersion() >= 16) {
-                chunk.addPluginChunkTicket(plugin.getBukkitPlugin());
-            }
+
             System.out.println("Chunk ticket added for " + gameWorld.getWorldName());
             future.complete(null);
         });
@@ -116,7 +99,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
      * @param gameWorld GameWorld to paste into
      * @return true if the schematic existed
      */
-    public CompletableFuture<Boolean> pasteTemplateSchematic(GameInstance gameWorld) throws IllegalStateException, IllegalArgumentException {
+    public CompletableFuture<Boolean> pasteTemplateSchematic(LocalGameInstance gameWorld) throws IllegalStateException, IllegalArgumentException {
         CompletableFuture<Boolean> futureFail = CompletableFuture.completedFuture(false);
         // todo: Later make this work with FAWE
         CompletableFuture<Boolean> futureOk = CompletableFuture.completedFuture(true);
@@ -152,7 +135,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public void deleteWorldInstance(GameInstance gameWorld) {
+    public void deleteWorldInstance(LocalGameInstance gameWorld) {
         if (gameWorld.getScheduler() != null) gameWorld.getScheduler().end();
 
         World world = ((BukkitLocalGameInstance) gameWorld).getBukkitWorld();
@@ -190,7 +173,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public void createBasePlatform(GameInstance gameWorld) {
+    public void createBasePlatform(LocalGameInstance gameWorld) {
         World world = ((BukkitLocalGameInstance) gameWorld).getBukkitWorld();
         if (world == null) return;
 
@@ -202,7 +185,7 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public CompletableFuture<Boolean> save(GameInstance gameWorld) {
+    public CompletableFuture<Boolean> save(LocalGameInstance gameWorld) {
         boolean successful = plugin.getSchematicManager().saveGameWorldToSchematic(gameWorld, plugin.getUtils()
                 .getWorldEditWorld(gameWorld.getWorldName()));
         return CompletableFuture.completedFuture(successful);

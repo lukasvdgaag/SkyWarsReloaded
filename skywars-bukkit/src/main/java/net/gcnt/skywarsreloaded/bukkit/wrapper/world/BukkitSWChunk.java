@@ -34,4 +34,8 @@ public class BukkitSWChunk implements SWChunk {
     public SWWorld getWorld() {
         return plugin.getServer().getWorld(chunk.getWorld().getName());
     }
+
+    public Chunk getChunk() {
+        return this.chunk;
+    }
 }

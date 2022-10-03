@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
@@ -16,14 +16,14 @@ import java.util.stream.Collectors;
 public class CoreGameTeam implements GameTeam {
 
     private final SkyWarsReloaded plugin;
-    private final GameInstance game;
+    private final LocalGameInstance game;
     private final String name;
     private final TeamColor color;
     private final List<CoreTeamSpawn> spawns;
     private List<GamePlayer> players;
     private final Map<UUID, Long> reservations;
 
-    public CoreGameTeam(SkyWarsReloaded pluginIn, GameInstance game, String name, TeamColor color, List<SWCoord> spawns) {
+    public CoreGameTeam(SkyWarsReloaded pluginIn, LocalGameInstance game, String name, TeamColor color, List<SWCoord> spawns) {
         this.plugin = pluginIn;
         this.game = game;
         this.name = name;
@@ -84,7 +84,7 @@ public class CoreGameTeam implements GameTeam {
     }
 
     @Override
-    public GameInstance getGameWorld() {
+    public LocalGameInstance getGameWorld() {
         return this.game;
     }
 

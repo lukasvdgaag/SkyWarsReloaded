@@ -11,16 +11,32 @@ server:
   name: "default"
 
 storage:
-  # The type of storage to use for player data.
-  # Could be: SQLite, MySQL, MongoDB*, Redis*
-  # * extension required
-  type: MySQL
-  hostname: localhost
-  port: 3306
-  username: user
-  password: pass
-  database: skywarsreloaded
-  use-ssl: true
+  # The type of SQL storage to use for player data.
+  # Could be: SQLite, MySQL
+  # SkywarsRelaoded supports MongoDB if using the extension
+  type: SQLite
+  mysql:
+    hostname: localhost
+    port: 3306
+    username: user
+    password: pass
+    database: skywarsreloaded
+    table-prefix: swr_
+    use-ssl: true
+
+# Messaging system
+# Whether to use redis for messaging.
+# This will be ignored when proxy mode is disabled in the server section.
+messaging:
+  # The type of messaging to use
+  # Could be: MySQL or Redis
+  # If you choose to use MySQL, make sure that the connection details under storage are correct.
+  type: Redis
+  redis:
+    hostname: localhost
+    username: user
+    password: pass
+    port: 27017
 
 # The number of instances of a map template that will be loaded when the server starts.
 game-instances:
@@ -61,6 +77,8 @@ menus:
     # Whether to automatically place kits in the menu based on their load orders.
     # Enabling this will override custom menu positions, so be careful!
     auto-layout: false
+    # Will enchant the kit icon that the player currently has selected
+    enchant-selected-kit: true
 
 items:
   general:
@@ -70,6 +88,9 @@ items:
       material: LIME_DYE
     deny:
       material: RED_DYE
+  game:
+    kit-selector:
+      material: PAPER
   kits:
     deselect:
       material: BARRIER

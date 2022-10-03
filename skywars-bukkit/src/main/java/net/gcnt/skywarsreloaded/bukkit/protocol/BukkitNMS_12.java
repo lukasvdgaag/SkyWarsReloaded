@@ -1,14 +1,21 @@
 package net.gcnt.skywarsreloaded.bukkit.protocol;
 
-import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWChunk;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.world.SWChunk;
+import net.gcnt.skywarsreloaded.wrapper.world.SWChunkGenerator;
+import org.bukkit.World;
+import org.bukkit.generator.ChunkGenerator;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Random;
 
 public class BukkitNMS_12 extends BukkitNMS_8_11 {
 
-    public BukkitNMS_12(SkyWarsReloaded plugin, String serverPackage) {
+    public BukkitNMS_12(BukkitSkyWarsReloaded plugin, String serverPackage) {
         super(plugin, serverPackage);
     }
 
@@ -48,5 +55,27 @@ public class BukkitNMS_12 extends BukkitNMS_8_11 {
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
             e.printStackTrace();
         }
+    }
+
+    @NotNull
+    @Override
+    public SWChunkGenerator getChunkGenerator() {
+        return new ChunkGenerator() {
+            @Override
+            public ChunkData generateChunkData(@NotNull World world, @NotNull Random random, int chunkX, int chunkZ, @NotNull BiomeGrid biome) {
+                ChunkData chunkData = createChunkData(world);
+                for (int x = 0; x < 16; x++) {
+                    for (int z = 0; z < 16; z++) {
+                        biome.setBiome(x, z, voidBiome);
+                    }
+                }
+                return chunkData;
+            }
+        };
+    }
+
+    @Override
+    public void addPluginChunkTicket(SWChunk chunk) {
+        ((BukkitSWChunk) chunk).getChunk().addPluginChunkTicket(plugin.getBukkitPlugin());
     }
 }

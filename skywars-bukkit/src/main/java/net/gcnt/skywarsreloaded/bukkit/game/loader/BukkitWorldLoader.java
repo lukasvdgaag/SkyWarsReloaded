@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.bukkit.game.loader;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.game.BukkitLocalGameInstance;
-import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.loader.AbstractWorldLoader;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -22,7 +22,7 @@ public abstract class BukkitWorldLoader extends AbstractWorldLoader {
     }
 
     @Override
-    public void updateWorldBorder(GameInstance gameWorld) {
+    public void updateWorldBorder(LocalGameInstance gameWorld) {
         World world = ((BukkitLocalGameInstance) gameWorld).getBukkitWorld();
         if (world == null) return;
 

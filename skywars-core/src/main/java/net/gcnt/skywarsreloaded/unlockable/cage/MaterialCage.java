@@ -1,6 +1,7 @@
 package net.gcnt.skywarsreloaded.unlockable.cage;
 
 import com.google.common.collect.Lists;
+import net.gcnt.skywarsreloaded.data.player.stats.UnlockableType;
 import net.gcnt.skywarsreloaded.game.cages.NormalCageShape;
 import net.gcnt.skywarsreloaded.unlockable.CoreUnlockable;
 
@@ -18,8 +19,8 @@ public class MaterialCage extends CoreUnlockable implements Cage {
     }
 
     @Override
-    public String getType() {
-        return "CAGE";
+    public UnlockableType getType() {
+        return UnlockableType.CAGE;
     }
 
     @Override

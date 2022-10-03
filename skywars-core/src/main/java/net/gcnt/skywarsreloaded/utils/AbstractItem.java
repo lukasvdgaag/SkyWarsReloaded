@@ -170,9 +170,6 @@ public abstract class AbstractItem implements Item {
         if (item.getLore() != null) {
             setLore(item.getLore());
         }
-        if (!item.getEnchantments().isEmpty()) {
-            setEnchantments(item.getEnchantments());
-        }
         return this;
     }
 }

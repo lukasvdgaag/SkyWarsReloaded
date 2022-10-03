@@ -9,22 +9,26 @@ public enum ConfigProperties {
 
     // Storage database implementation & auth
     STORAGE_TYPE("storage.type"),
-    STORAGE_HOSTNAME("storage.hostname"),
-    STORAGE_PORT("storage.port"),
-    STORAGE_USERNAME("storage.username"),
-    STORAGE_PASSWORD("storage.password"),
-    STORAGE_DATABASE("storage.database"),
-    STORAGE_USE_SSL("storage.use-ssl"),
+    STORAGE_MYSQL_HOSTNAME("storage.mysql.hostname"),
+    STORAGE_MYSQL_PORT("storage.mysql.port"),
+    STORAGE_MYSQL_USERNAME("storage.mysql.username"),
+    STORAGE_MYSQL_PASSWORD("storage.mysql.password"),
+    STORAGE_MYSQL_DATABASE("storage.mysql.database"),
+    STORAGE_MYSQL_TABLE_PREFIX("storage.mysql.table-prefix"),
+    STORAGE_MYSQL_USE_SSL("storage.mysql.use-ssl"),
+
+    // Messaging
+
+    MESSAGING_TYPE("messaging.type"),
+    MESSAGING_REDIS_HOSTNAME("messaging.redis.hostname"),
+    MESSAGING_REDIS_USERNAME("messaging.redis.username"),
+    MESSAGING_REDIS_PASSWORD("messaging.redis.password"),
+    MESSAGING_REDIS_PORT("messaging.redis.port"),
 
     // menus
     MENUS_KITS_LAYOUT("menus.kits.layout"),
     MENUS_KITS_AUTO_LAYOUT("menus.kits.auto-layout"),
-
-    // items
-    ITEMS_GENERAL_CLOSE("items.general.close"),
-    ITEMS_GENERAL_CONFIRM("items.general.confirm"),
-    ITEMS_GENERAL_DENY("items.general.deny"),
-    ITEMS_KITS_DESELECT("items.kits.deselect"),
+    MENUS_KITS_ENCHANT_SELECTED_KIT("menus.kits.enchant-selected-kit"),
 
     // todo: messaging impl & auth
 

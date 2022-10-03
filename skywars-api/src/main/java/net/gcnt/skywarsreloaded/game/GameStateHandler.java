@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 
 public interface GameStateHandler {
 
@@ -9,7 +9,7 @@ public interface GameStateHandler {
 
     void tickSecond();
 
-    GameInstance getGameInstance();
+    LocalGameInstance getGameInstance();
 
     SkyWarsReloaded getPlugin();
 

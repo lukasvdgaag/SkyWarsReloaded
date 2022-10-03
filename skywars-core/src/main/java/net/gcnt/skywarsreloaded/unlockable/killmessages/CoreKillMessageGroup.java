@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.unlockable.killmessages;
 
+import net.gcnt.skywarsreloaded.data.player.stats.UnlockableType;
 import net.gcnt.skywarsreloaded.enums.DeathReason;
 import net.gcnt.skywarsreloaded.unlockable.CoreUnlockable;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
@@ -20,8 +21,8 @@ public class CoreKillMessageGroup extends CoreUnlockable implements KillMessageG
     }
 
     @Override
-    public String getType() {
-        return "KILL_MESSAGE";
+    public UnlockableType getType() {
+        return UnlockableType.KILL_MESSAGE;
     }
 
     @Override

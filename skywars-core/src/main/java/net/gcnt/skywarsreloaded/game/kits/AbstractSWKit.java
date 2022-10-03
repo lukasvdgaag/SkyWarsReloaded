@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.game.kits;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
+import net.gcnt.skywarsreloaded.data.player.stats.UnlockableType;
 import net.gcnt.skywarsreloaded.unlockable.CoreUnlockable;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
@@ -45,8 +46,8 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
     }
 
     @Override
-    public String getType() {
-        return "KIT";
+    public UnlockableType getType() {
+        return UnlockableType.KIT;
     }
 
     @Override

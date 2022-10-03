@@ -4,6 +4,8 @@ import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.server.SWGameRule;
+import net.gcnt.skywarsreloaded.wrapper.world.SWChunk;
+import net.gcnt.skywarsreloaded.wrapper.world.SWChunkGenerator;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 
 public interface NMS {
@@ -17,5 +19,9 @@ public interface NMS {
     void sendJSONMessage(SWPlayer player, String message);
 
     void setChestOpen(SWCoord loc, boolean open);
+
+    SWChunkGenerator getChunkGenerator();
+
+    void addPluginChunkTicket(SWChunk chunk);
 
 }

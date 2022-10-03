@@ -63,7 +63,7 @@ public class SQLGameInstanceTable extends CoreSQLTable<GameInstance> implements 
     }
 
     @Override
-    public RemoteGameInstance getGameInstanceById(String uuid) {
+    public RemoteGameInstance getGameInstanceById(UUID uuid) {
         try (Connection conn = storage.getConnection();
              final PreparedStatement statement = conn.prepareStatement("SELECT * FROM `" + table + "` WHERE `id`=?")) {
             bindPropertyValue(statement, 1, uuid);

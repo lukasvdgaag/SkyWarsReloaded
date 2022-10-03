@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public interface GameInstanceManager<G extends GameInstance> {
@@ -74,7 +75,7 @@ public interface GameInstanceManager<G extends GameInstance> {
      *
      * @param instance GameWorld to remove.
      */
-    CompletableFuture<Void> deleteGameInstance(G instance);
+    CompletableFuture<Void> deleteGameInstance(GameInstance instance);
 
     /**
      * Get a GameWorld by its assigned world name.
@@ -103,5 +104,5 @@ public interface GameInstanceManager<G extends GameInstance> {
      */
     boolean isManagerRemote();
 
-    G getGameInstanceById(String uuid);
+    G getGameInstanceById(UUID uuid);
 }

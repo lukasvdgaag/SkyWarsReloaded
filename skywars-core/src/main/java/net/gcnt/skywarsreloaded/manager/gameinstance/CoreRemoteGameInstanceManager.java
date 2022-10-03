@@ -15,7 +15,9 @@ public class CoreRemoteGameInstanceManager extends CoreGameInstanceManager<Remot
 
     @Override
     public CompletableFuture<Boolean> saveInstanceToTemplate(RemoteGameInstance instance) {
-        return plugin.getWorldLoader().save(instance); // todo: request save to messaging handler (redis or sql)
+        final CompletableFuture<Boolean> booleanCompletableFuture = new CompletableFuture<>();
+        booleanCompletableFuture.complete(true);
+        return booleanCompletableFuture; // todo: request save to messaging handler (redis or sql)
     }
 
     @Override

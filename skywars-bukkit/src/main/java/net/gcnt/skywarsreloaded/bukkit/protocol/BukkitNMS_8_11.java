@@ -1,27 +1,35 @@
 package net.gcnt.skywarsreloaded.bukkit.protocol;
 
-import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWChunkGenerator;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.protocol.NMS;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.server.SWGameRule;
+import net.gcnt.skywarsreloaded.wrapper.world.SWChunk;
+import net.gcnt.skywarsreloaded.wrapper.world.SWChunkGenerator;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.generator.BlockPopulator;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Random;
 
 public class BukkitNMS_8_11 implements NMS {
 
-    protected final SkyWarsReloaded plugin;
+    protected final BukkitSkyWarsReloaded plugin;
     protected final String serverVersion;
     protected final int version;
 
@@ -40,7 +48,7 @@ public class BukkitNMS_8_11 implements NMS {
     protected Method sendPacket;
     protected Field playerConnection;
 
-    public BukkitNMS_8_11(SkyWarsReloaded plugin, String serverPackage) {
+    public BukkitNMS_8_11(BukkitSkyWarsReloaded plugin, String serverPackage) {
         this.plugin = plugin;
         this.serverVersion = serverPackage.substring(serverPackage.lastIndexOf('.') + 1);
         this.version = plugin.getUtils().getServerVersion();
@@ -65,6 +73,7 @@ public class BukkitNMS_8_11 implements NMS {
         this.blockPosition = Class.forName("net.minecraft.server." + serverVersion + ".BlockPosition");
         this.craftWorld = Class.forName("org.bukkit.craftbukkit." + serverVersion + ".CraftWorld");
         this.worldServer = Class.forName("net.minecraft.server." + serverVersion + ".WorldServer");
+        // todo: maybe?? this.chunkGenerator = todo;
         this.tileEntityChest = Class.forName("net.minecraft.server." + serverVersion + ".TileEntityChest");
         this.block = Class.forName("net.minecraft.server." + serverVersion + ".Block");
 
@@ -153,5 +162,36 @@ public class BukkitNMS_8_11 implements NMS {
         } catch (Exception error) {
             error.printStackTrace();
         }
+    }
+
+    public SWChunkGenerator getChunkGenerator() {
+        return new BukkitSWChunkGenerator(
+                new ChunkGenerator() {
+                    @Override
+                    public List<BlockPopulator> getDefaultPopulators(World world) {
+                        return List.of();
+                    }
+
+                    @Override
+                    public boolean canSpawn(World world, int x, int z) {
+                        return true;
+                    }
+
+                    @Override
+                    public byte[] generate(World world, Random random, int x, int z) {
+                        return new byte[32768];
+                    }
+
+                    @Override
+                    public Location getFixedSpawnLocation(World world, Random random) {
+                        return new Location(world, 0.0D, 64.0D, 0.0D);
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void addPluginChunkTicket(SWChunk chunk) {
+        // unsupported in 1.8
     }
 }

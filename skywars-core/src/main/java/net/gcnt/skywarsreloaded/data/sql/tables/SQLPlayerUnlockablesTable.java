@@ -57,7 +57,7 @@ public class SQLPlayerUnlockablesTable extends CoreSQLTable<SWPlayer> implements
             if (!hasUnlockable(conn, player, unlockable)) {
                 try (PreparedStatement ps = conn.prepareStatement("INSERT INTO `" + table + "` (`uuid`, `type`, `name`) VALUES (?, ?, ?)")) {
                     ps.setString(1, player.getUuid().toString());
-                    ps.setString(2, unlockable.getType());
+                    ps.setString(2, unlockable.getType().name());
                     ps.setString(3, unlockable.getId());
 
                     ps.executeUpdate();
@@ -74,7 +74,7 @@ public class SQLPlayerUnlockablesTable extends CoreSQLTable<SWPlayer> implements
             if (!hasUnlockable(conn, player, unlockable)) {
                 try (PreparedStatement ps = conn.prepareStatement("DELETE FROM `" + table + "` WHERE `uuid`=? AND `type`=? AND `name`=?")) {
                     ps.setString(1, player.getUuid().toString());
-                    ps.setString(2, unlockable.getType());
+                    ps.setString(2, unlockable.getType().name());
                     ps.setString(3, unlockable.getId());
 
                     ps.executeUpdate();
@@ -98,7 +98,7 @@ public class SQLPlayerUnlockablesTable extends CoreSQLTable<SWPlayer> implements
     private boolean hasUnlockable(Connection connection, SWPlayer player, Unlockable unlockable) {
         try (PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM `" + table + "` WHERE `uuid` = ? AND `type` = ? AND `name` = ?")) {
             ps.setString(1, player.getUuid().toString());
-            ps.setString(2, unlockable.getType());
+            ps.setString(2, unlockable.getType().name());
             ps.setString(3, unlockable.getId());
 
             try (ResultSet res = ps.executeQuery()) {
