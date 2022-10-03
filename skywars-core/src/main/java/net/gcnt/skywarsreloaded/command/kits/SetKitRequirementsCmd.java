@@ -3,7 +3,7 @@ package net.gcnt.skywarsreloaded.command.kits;
 import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.command.Cmd;
-import net.gcnt.skywarsreloaded.data.player.PlayerStat;
+import net.gcnt.skywarsreloaded.data.player.stats.PlayerStat;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.unlockable.Unlockable;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;

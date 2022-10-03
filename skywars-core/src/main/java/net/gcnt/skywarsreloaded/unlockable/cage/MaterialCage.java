@@ -19,6 +19,11 @@ public class MaterialCage extends CoreUnlockable implements Cage {
 
     @Override
     public String getType() {
+        return "CAGE";
+    }
+
+    @Override
+    public String getCageType() {
         return "material";
     }
 

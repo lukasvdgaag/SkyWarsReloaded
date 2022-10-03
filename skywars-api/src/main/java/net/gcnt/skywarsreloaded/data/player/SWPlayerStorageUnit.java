@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.data.player;
 
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
-public interface PlayerStorage {
+public interface SWPlayerStorageUnit {
 
     /**
      * Loads all data from storage (MySQL/MongoDB/YAML) into cache.

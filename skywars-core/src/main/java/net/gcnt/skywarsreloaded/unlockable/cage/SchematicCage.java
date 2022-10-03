@@ -29,7 +29,7 @@ public class SchematicCage extends CoreUnlockable implements Cage {
     }
 
     @Override
-    public String getType() {
+    public String getCageType() {
         return "schematic";
     }
 }

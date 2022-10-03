@@ -5,9 +5,9 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
+import net.gcnt.skywarsreloaded.game.cages.NormalCageShape;
 import net.gcnt.skywarsreloaded.unlockable.cage.Cage;
 import net.gcnt.skywarsreloaded.unlockable.cage.MaterialCage;
-import net.gcnt.skywarsreloaded.game.cages.NormalCageShape;
 import net.gcnt.skywarsreloaded.unlockable.cage.SchematicCage;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.BaseCageTypeProperties;
@@ -87,7 +87,7 @@ public class CoreCageManager implements CageManager {
 
     @Override
     public List<Cage> getCagesByType(String type) {
-        return this.cages.values().stream().filter(cage -> cage.getType().equals(type)).collect(Collectors.toList());
+        return this.cages.values().stream().filter(cage -> cage.getCageType().equals(type)).collect(Collectors.toList());
     }
 
     @Override
@@ -97,7 +97,7 @@ public class CoreCageManager implements CageManager {
 
     @Override
     public EditSession placeCage(Cage cage, SWCoord cageLocation) {
-        if (cage.getType().equals(BaseCageTypeProperties.SCHEMATIC)) {
+        if (cage.getCageType().equals(BaseCageTypeProperties.SCHEMATIC)) {
             SchematicCage schematicCage = (SchematicCage) cage;
 
             Clipboard clipboard = plugin.getSchematicManager().getSchematic(schematicCage.getFile());

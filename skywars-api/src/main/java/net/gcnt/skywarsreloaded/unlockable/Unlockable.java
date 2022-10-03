@@ -1,11 +1,13 @@
 package net.gcnt.skywarsreloaded.unlockable;
 
-import net.gcnt.skywarsreloaded.data.player.PlayerStat;
+import net.gcnt.skywarsreloaded.data.player.stats.PlayerStat;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.util.Map;
 
 public interface Unlockable {
+
+    String getType();
 
     String getId();
 

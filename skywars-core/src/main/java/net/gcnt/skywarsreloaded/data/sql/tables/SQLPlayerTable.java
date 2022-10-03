@@ -1,8 +1,10 @@
 package net.gcnt.skywarsreloaded.data.sql.tables;
 
-import net.gcnt.skywarsreloaded.data.player.PlayerStorage;
-import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
-import net.gcnt.skywarsreloaded.data.player.SWPlayerStats;
+import net.gcnt.skywarsreloaded.data.player.SWPlayerStorage;
+import net.gcnt.skywarsreloaded.data.player.SWUnlockablesStorage;
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerData;
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerStats;
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerUnlockables;
 import net.gcnt.skywarsreloaded.data.sql.CoreSQLTable;
 import net.gcnt.skywarsreloaded.data.sql.SQLStorage;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
@@ -12,14 +14,31 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SQLPlayerTable extends CoreSQLTable<SWPlayer> implements PlayerStorage {
+public class SQLPlayerTable extends CoreSQLTable<SWPlayer> implements SWPlayerStorage {
 
-    private final SQLPlayerStatsTable statsTable;
+    protected SQLPlayerStatsTable statsTable;
+    protected SQLPlayerUnlockablesTable unlockablesTable;
 
     public SQLPlayerTable(SQLStorage storage) {
         super(storage, "sw_player_data");
 
+        initStatsTable();
+        initUnlockablesTable();
+    }
+
+    @Override
+    public void initStatsTable() {
         this.statsTable = new SQLPlayerStatsTable(storage);
+    }
+
+    @Override
+    public void initUnlockablesTable() {
+        this.unlockablesTable = new SQLPlayerUnlockablesTable(storage);
+    }
+
+    @Override
+    public SWUnlockablesStorage getUnlockablesStorage() {
+        return this.unlockablesTable;
     }
 
     @Override
@@ -41,49 +60,45 @@ public class SQLPlayerTable extends CoreSQLTable<SWPlayer> implements PlayerStor
         ps.setString(1, player.getUuid().toString());
         ps.executeUpdate();
 
-        SWPlayerData swpd = storage.getPlugin().getPlayerDataManager().createSWPlayerDataInstance();
-        SWPlayerStats swps = storage.getPlugin().getPlayerDataManager().createSWPlayerStatsInstance();
-        swps.initData(0, 0, 0, 0, 0, 0);
-        swpd.initData(swps, null, null, null, null, null, null, null, null);
-        player.setPlayerData(swpd);
+        SWPlayerData playerData = storage.getPlugin().getPlayerDataManager().createSWPlayerDataInstance();
+        SWPlayerStats stats = storage.getPlugin().getPlayerDataManager().createSWPlayerStatsInstance();
+        SWPlayerUnlockables unlockables = storage.getPlugin().getPlayerDataManager().createSWPlayerUnlockablesInstance(player);
+        stats.initData(0, 0, 0, 0, 0, 0);
+        playerData.initData(stats, unlockables, null, null, null, null, null, null, null, null);
+        player.setPlayerData(playerData);
     }
 
     @Override
     public void loadData(SWPlayer player) {
-        try (Connection conn = storage.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM `" + table + "` WHERE `uuid`=?");
+        try (Connection conn = storage.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT * FROM `" + table + "` WHERE `uuid`=?")) {
             ps.setString(1, player.getUuid().toString());
-            ResultSet res = ps.executeQuery();
 
-            if (!res.next()) {
-                createDefault(player, conn);
-                return;
+            try (ResultSet res = ps.executeQuery()) {
+                if (!res.next()) {
+                    createDefault(player, conn);
+                    return;
+                }
+
+                SWPlayerData playerData = storage.getPlugin().getPlayerDataManager().createSWPlayerDataInstance();
+                SWPlayerStats stats = storage.getPlugin().getPlayerDataManager().createSWPlayerStatsInstance();
+                SWPlayerUnlockables unlockables = storage.getPlugin().getPlayerDataManager().createSWPlayerUnlockablesInstance(player);
+                playerData.initData(stats,
+                        unlockables,
+                        res.getString("selected_solo_cage"),
+                        res.getString("selected_team_cage"),
+                        res.getString("selected_particle"),
+                        res.getString("selected_kill_effect"),
+                        res.getString("selected_win_effect"),
+                        res.getString("selected_projectile_effect"),
+                        res.getString("selected_kill_messages_theme"),
+                        res.getString("selected_kit")
+                );
+                // unlockables
+                player.setPlayerData(playerData);
+                statsTable.loadData(player);
+                unlockablesTable.loadData(player);
             }
-
-            SWPlayerData swpd = storage.getPlugin().getPlayerDataManager().createSWPlayerDataInstance();
-            SWPlayerStats swps = storage.getPlugin().getPlayerDataManager().createSWPlayerStatsInstance();
-            swps.initData(
-                    res.getInt("solo_wins"),
-                    res.getInt("solo_kills"),
-                    res.getInt("solo_games"),
-                    res.getInt("team_wins"),
-                    res.getInt("team_kills"),
-                    res.getInt("team_games")
-            );
-            swpd.initData(swps,
-                    res.getString("selected_solo_cage"),
-                    res.getString("selected_team_cage"),
-                    res.getString("selected_particle"),
-                    res.getString("selected_kill_effect"),
-                    res.getString("selected_win_effect"),
-                    res.getString("selected_projectile_effect"),
-                    res.getString("selected_kill_messages_theme"),
-                    res.getString("selected_kit")
-            );
-            // unlockables
-            player.setPlayerData(swpd);
-            res.close();
-            ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

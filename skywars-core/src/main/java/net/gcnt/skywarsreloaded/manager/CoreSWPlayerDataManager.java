@@ -2,7 +2,13 @@ package net.gcnt.skywarsreloaded.manager;
 
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.data.player.*;
+import net.gcnt.skywarsreloaded.data.player.CoreSWPlayerData;
+import net.gcnt.skywarsreloaded.data.player.CoreSWPlayerStats;
+import net.gcnt.skywarsreloaded.data.player.CoreSWPlayerUnlockables;
+import net.gcnt.skywarsreloaded.data.player.SWPlayerStorageUnit;
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerData;
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerStats;
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerUnlockables;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 public class CoreSWPlayerDataManager implements SWPlayerDataManager {
@@ -24,8 +30,13 @@ public class CoreSWPlayerDataManager implements SWPlayerDataManager {
     }
 
     @Override
+    public SWPlayerUnlockables createSWPlayerUnlockablesInstance(SWPlayer player) {
+        return new CoreSWPlayerUnlockables(plugin, player);
+    }
+
+    @Override
     public void loadAllPlayerData() {
-        final PlayerStorage storage = this.plugin.getPlayerStorage();
+        final SWPlayerStorageUnit storage = this.plugin.getPlayerStorage();
         for (SWPlayer player : this.plugin.getPlayerManager().getPlayers()) {
             storage.loadData(player);
         }

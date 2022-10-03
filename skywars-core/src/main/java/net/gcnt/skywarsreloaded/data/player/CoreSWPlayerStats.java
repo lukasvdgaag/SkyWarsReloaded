@@ -1,5 +1,8 @@
 package net.gcnt.skywarsreloaded.data.player;
 
+import net.gcnt.skywarsreloaded.data.player.stats.PlayerStat;
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerStats;
+
 public class CoreSWPlayerStats implements SWPlayerStats {
 
     private boolean initialized;
@@ -15,6 +18,7 @@ public class CoreSWPlayerStats implements SWPlayerStats {
         this.initialized = false;
     }
 
+    @Override
     public void initData(int solo_wins,
                          int solo_kills,
                          int solo_games,

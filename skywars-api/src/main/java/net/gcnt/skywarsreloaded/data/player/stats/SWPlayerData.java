@@ -1,10 +1,11 @@
-package net.gcnt.skywarsreloaded.data.player;
+package net.gcnt.skywarsreloaded.data.player.stats;
 
 public interface SWPlayerData {
 
     boolean isInitialized();
 
     void initData(SWPlayerStats stats,
+                  SWPlayerUnlockables unlockables,
                   String selected_solo_cage,
                   String selected_team_cage,
                   String selected_particle,
@@ -15,6 +16,8 @@ public interface SWPlayerData {
                   String selected_kit);
 
     SWPlayerStats getStats();
+
+    SWPlayerUnlockables getUnlockables();
 
     String getSoloCage();
 

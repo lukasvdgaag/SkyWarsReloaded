@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.data.player;
+package net.gcnt.skywarsreloaded.data.player.stats;
 
 import net.gcnt.skywarsreloaded.unlockable.Unlockable;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
@@ -14,5 +14,7 @@ public interface SWPlayerUnlockables {
     List<Unlockable> getUnlocked(SWPlayer player);
 
     boolean isUnlocked(Unlockable unlockable);
+
+    void initUnlockable(String type, String id);
 
 }

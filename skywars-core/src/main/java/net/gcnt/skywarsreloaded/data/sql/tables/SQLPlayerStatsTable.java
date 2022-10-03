@@ -1,8 +1,8 @@
 package net.gcnt.skywarsreloaded.data.sql.tables;
 
-import net.gcnt.skywarsreloaded.data.player.PlayerStorage;
-import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
-import net.gcnt.skywarsreloaded.data.player.SWPlayerStats;
+import net.gcnt.skywarsreloaded.data.player.SWPlayerStorageUnit;
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerData;
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerStats;
 import net.gcnt.skywarsreloaded.data.sql.CoreSQLTable;
 import net.gcnt.skywarsreloaded.data.sql.SQLStorage;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
@@ -12,7 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SQLPlayerStatsTable extends CoreSQLTable<SWPlayer> implements PlayerStorage {
+public class SQLPlayerStatsTable extends CoreSQLTable<SWPlayer> implements SWPlayerStorageUnit {
 
     public SQLPlayerStatsTable(SQLStorage storage) {
         super(storage, "sw_player_stats");
@@ -54,9 +54,9 @@ public class SQLPlayerStatsTable extends CoreSQLTable<SWPlayer> implements Playe
                     return;
                 }
 
-                SWPlayerData swpd = player.getPlayerData();
-                SWPlayerStats swps = storage.getPlugin().getPlayerDataManager().createSWPlayerStatsInstance();
-                swps.initData(
+                SWPlayerData playerData = player.getPlayerData();
+                SWPlayerStats stats = storage.getPlugin().getPlayerDataManager().createSWPlayerStatsInstance();
+                stats.initData(
                         res.getInt("solo_wins"),
                         res.getInt("solo_kills"),
                         res.getInt("solo_games"),
@@ -64,7 +64,7 @@ public class SQLPlayerStatsTable extends CoreSQLTable<SWPlayer> implements Playe
                         res.getInt("team_kills"),
                         res.getInt("team_games")
                 );
-                player.setPlayerData(swpd);
+                player.setPlayerData(playerData);
             }
         } catch (SQLException e) {
             e.printStackTrace();

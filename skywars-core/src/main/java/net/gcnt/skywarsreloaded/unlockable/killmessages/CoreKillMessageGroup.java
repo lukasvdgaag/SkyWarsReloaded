@@ -20,6 +20,11 @@ public class CoreKillMessageGroup extends CoreUnlockable implements KillMessageG
     }
 
     @Override
+    public String getType() {
+        return "KILL_MESSAGE";
+    }
+
+    @Override
     public HashMap<DeathReason, List<String>> getMessages() {
         return messages;
     }

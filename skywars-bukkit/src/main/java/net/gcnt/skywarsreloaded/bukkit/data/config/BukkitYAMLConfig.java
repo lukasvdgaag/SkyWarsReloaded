@@ -3,7 +3,7 @@ package net.gcnt.skywarsreloaded.bukkit.data.config;
 import net.gcnt.skywarsreloaded.AbstractSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.data.config.AbstractYAMLConfig;
-import net.gcnt.skywarsreloaded.data.player.PlayerStat;
+import net.gcnt.skywarsreloaded.data.player.stats.PlayerStat;
 import net.gcnt.skywarsreloaded.unlockable.Unlockable;
 import net.gcnt.skywarsreloaded.utils.*;
 import net.gcnt.skywarsreloaded.utils.properties.KitProperties;

@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.data.player;
+package net.gcnt.skywarsreloaded.data.player.stats;
 
 public enum PlayerStat {
 

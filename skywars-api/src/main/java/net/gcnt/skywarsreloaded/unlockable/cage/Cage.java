@@ -4,7 +4,6 @@ import net.gcnt.skywarsreloaded.unlockable.Unlockable;
 
 public interface Cage extends Unlockable {
 
-    String getType();
-
+    String getCageType();
 
 }

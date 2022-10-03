@@ -1,5 +1,9 @@
 package net.gcnt.skywarsreloaded.data.player;
 
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerData;
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerStats;
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerUnlockables;
+
 /**
  * Stats and player cosmetics for a currently connected player
  */
@@ -8,6 +12,7 @@ public class CoreSWPlayerData implements SWPlayerData {
     private boolean initialized;
 
     private SWPlayerStats stats;
+    private SWPlayerUnlockables unlockables;
 
     private String selectedSoloCage;
     private String selectedTeamCage;
@@ -29,6 +34,7 @@ public class CoreSWPlayerData implements SWPlayerData {
 
     @Override
     public void initData(SWPlayerStats statsIn,
+                         SWPlayerUnlockables unlockablesIn,
                          String selectedSoloCageIn,
                          String selectedTeamCageIn,
                          String selectedParticleIn,
@@ -38,6 +44,7 @@ public class CoreSWPlayerData implements SWPlayerData {
                          String killMessagesThemeIn,
                          String selectedKit) {
         this.stats = statsIn;
+        this.unlockables = unlockablesIn;
         this.selectedSoloCage = selectedSoloCageIn;
         this.selectedTeamCage = selectedTeamCageIn;
         this.selectedParticle = selectedParticleIn;
@@ -52,6 +59,11 @@ public class CoreSWPlayerData implements SWPlayerData {
     @Override
     public SWPlayerStats getStats() {
         return stats;
+    }
+
+    @Override
+    public SWPlayerUnlockables getUnlockables() {
+        return unlockables;
     }
 
     @Override

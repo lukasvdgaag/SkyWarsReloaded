@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.game.cages;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
+import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerData;
 import net.gcnt.skywarsreloaded.game.TeamCage;
 import net.gcnt.skywarsreloaded.game.TeamSpawn;
 import net.gcnt.skywarsreloaded.unlockable.cage.MaterialCage;

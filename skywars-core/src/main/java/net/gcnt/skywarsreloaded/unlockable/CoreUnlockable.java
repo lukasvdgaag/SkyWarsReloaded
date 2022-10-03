@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.unlockable;
 
-import net.gcnt.skywarsreloaded.data.player.PlayerStat;
+import net.gcnt.skywarsreloaded.data.player.stats.PlayerStat;
 import net.gcnt.skywarsreloaded.hook.SWVaultHook;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
@@ -144,5 +144,10 @@ public abstract class CoreUnlockable implements Unlockable {
         if (hasUnlocked(player)) return;
 
         // todo add permission here, remove money from their balance, add to list of unlocked unlockables
+    }
+
+    @Override
+    public void unlock(SWPlayer player, boolean free) {
+
     }
 }
