@@ -1,8 +1,5 @@
 package net.gcnt.skywarsreloaded.data.sql;
 
-import net.gcnt.skywarsreloaded.data.mysql.SQLStorage;
-import net.gcnt.skywarsreloaded.data.mysql.SQLTable;
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 

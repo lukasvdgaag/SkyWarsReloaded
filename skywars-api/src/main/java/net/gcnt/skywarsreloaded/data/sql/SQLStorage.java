@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.data.mysql;
+package net.gcnt.skywarsreloaded.data.sql;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.Storage;

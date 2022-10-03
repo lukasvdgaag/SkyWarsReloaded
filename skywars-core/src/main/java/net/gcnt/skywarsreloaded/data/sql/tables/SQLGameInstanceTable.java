@@ -1,7 +1,8 @@
-package net.gcnt.skywarsreloaded.data.games;
+package net.gcnt.skywarsreloaded.data.sql.tables;
 
-import net.gcnt.skywarsreloaded.data.mysql.SQLStorage;
+import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.sql.CoreSQLTable;
+import net.gcnt.skywarsreloaded.data.sql.SQLStorage;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.gameinstance.CoreRemoteGameInstance;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
@@ -17,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SQLGameInstanceStorage extends CoreSQLTable<GameInstance> implements GameInstanceStorage {
+public class SQLGameInstanceTable extends CoreSQLTable<GameInstance> implements GameInstanceStorage {
 
     private SWRunnable updateTask;
 
-    public SQLGameInstanceStorage(SQLStorage storage) {
+    public SQLGameInstanceTable(SQLStorage storage) {
         super(storage, "sw_game_instances");
 
         updateTask = null;

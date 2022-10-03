@@ -1,6 +1,6 @@
 package net.gcnt.skywarsreloaded.data.messaging;
 
-import net.gcnt.skywarsreloaded.data.CoreMySQLStorage;
+import net.gcnt.skywarsreloaded.data.sql.CoreMySQLStorage;
 import net.gcnt.skywarsreloaded.data.sql.CoreSQLTable;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.CoreSWRunnable;

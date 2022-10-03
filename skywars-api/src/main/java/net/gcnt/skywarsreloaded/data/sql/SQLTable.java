@@ -1,4 +1,4 @@
-package net.gcnt.skywarsreloaded.data.mysql;
+package net.gcnt.skywarsreloaded.data.sql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

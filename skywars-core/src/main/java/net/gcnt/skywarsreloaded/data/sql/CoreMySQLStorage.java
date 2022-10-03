@@ -1,11 +1,9 @@
-package net.gcnt.skywarsreloaded.data;
+package net.gcnt.skywarsreloaded.data.sql;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
-import net.gcnt.skywarsreloaded.data.mysql.SQLStorage;
-import net.gcnt.skywarsreloaded.data.mysql.SQLTable;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 
 import java.sql.Connection;
@@ -13,16 +11,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CoreSQLiteStorage implements SQLStorage {
+public class CoreMySQLStorage implements SQLStorage {
 
     protected final SkyWarsReloaded plugin;
+    protected final int minPoolSize;
+    protected final int maxPoolSize;
+    protected HikariDataSource ds;
     private final List<SQLTable<?>> tables;
 
-    public CoreSQLiteStorage(SkyWarsReloaded plugin) {
-        this.plugin = plugin;
-        this.tables = new ArrayList<>();
+    public CoreMySQLStorage(SkyWarsReloaded plugin) {
+        this(plugin, 3, 20);
     }
 
+    public CoreMySQLStorage(SkyWarsReloaded plugin, int minPoolSize, int maxPoolSize) {
+        this.plugin = plugin;
+        this.minPoolSize = minPoolSize;
+        this.maxPoolSize = maxPoolSize;
+        this.tables = new ArrayList<>();
+    }
 
     @Override
     public Connection getConnection() throws SQLException {

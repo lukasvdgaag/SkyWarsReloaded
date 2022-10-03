@@ -1,7 +1,10 @@
-package net.gcnt.skywarsreloaded.data.player;
+package net.gcnt.skywarsreloaded.data.sql.tables;
 
-import net.gcnt.skywarsreloaded.data.mysql.SQLStorage;
+import net.gcnt.skywarsreloaded.data.player.PlayerStorage;
+import net.gcnt.skywarsreloaded.data.player.SWPlayerData;
+import net.gcnt.skywarsreloaded.data.player.SWPlayerStats;
 import net.gcnt.skywarsreloaded.data.sql.CoreSQLTable;
+import net.gcnt.skywarsreloaded.data.sql.SQLStorage;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.sql.Connection;
@@ -9,9 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SQLPlayerStorage extends CoreSQLTable<SWPlayer> implements PlayerStorage {
+public class SQLPlayerTable extends CoreSQLTable<SWPlayer> implements PlayerStorage {
 
-    public SQLPlayerStorage(SQLStorage storage) {
+    public SQLPlayerTable(SQLStorage storage) {
         super(storage, "sw_player_data");
     }
 

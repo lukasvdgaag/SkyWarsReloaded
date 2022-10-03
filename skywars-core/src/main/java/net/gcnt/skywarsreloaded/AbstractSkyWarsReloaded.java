@@ -1,12 +1,14 @@
 package net.gcnt.skywarsreloaded;
 
-import net.gcnt.skywarsreloaded.data.CoreMySQLStorage;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
-import net.gcnt.skywarsreloaded.data.games.SQLGameInstanceStorage;
-import net.gcnt.skywarsreloaded.data.mysql.SQLStorage;
 import net.gcnt.skywarsreloaded.data.player.PlayerStorage;
-import net.gcnt.skywarsreloaded.data.player.SQLitePlayerStorage;
+import net.gcnt.skywarsreloaded.data.sql.CoreMySQLStorage;
+import net.gcnt.skywarsreloaded.data.sql.CoreSQLiteStorage;
+import net.gcnt.skywarsreloaded.data.sql.SQLStorage;
+import net.gcnt.skywarsreloaded.data.sql.tables.SQLGameInstanceTable;
+import net.gcnt.skywarsreloaded.data.sql.tables.SQLPlayerTable;
+import net.gcnt.skywarsreloaded.data.sql.tables.SQLitePlayerTable;
 import net.gcnt.skywarsreloaded.game.chest.filler.ChestFillerManager;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
@@ -17,6 +19,7 @@ import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
 import net.gcnt.skywarsreloaded.manager.gameinstance.LocalGameInstanceManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 import net.gcnt.skywarsreloaded.wrapper.server.SWServer;
@@ -59,7 +62,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private CageManager cageManager;
     private UnlockablesManager unlockablesManager;
     private EntityManager entityManager;
-    private SWEventListener eventListener;
+    private SWEventListener<?> eventListener;
     private GameWorldLoader worldLoader;
     private ScoreboardManager scoreboardManager;
     private ItemManager itemManager;
@@ -101,7 +104,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         initSQLiteStorage();
 
         initGameInstanceStorage();
-        setPlayerStorage(new SQLitePlayerStorage(this)); // requires config
+        initPlayerStorage(); // requires config
 
         // Managers
         initServer();
@@ -435,12 +438,12 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public SWEventListener getEventListener() {
+    public SWEventListener<?> getEventListener() {
         return this.eventListener;
     }
 
     @Override
-    public void setEventListener(SWEventListener listener) {
+    public void setEventListener(SWEventListener<?> listener) {
         this.eventListener = listener;
     }
 
@@ -538,7 +541,16 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     protected abstract void initInventoryManager();
 
     protected void initGameInstanceStorage() {
-        setGameInstanceStorage(new SQLGameInstanceStorage(getMySQLStorage()));
+        setGameInstanceStorage(new SQLGameInstanceTable(getMySQLStorage()));
+    }
+
+    protected void initPlayerStorage() {
+        // selecting the right storage type based on the config.
+        if (getConfig().getString(ConfigProperties.STORAGE_TYPE.toString()).equalsIgnoreCase("MySQL")) {
+            setPlayerStorage(new SQLPlayerTable(getMySQLStorage()));
+        } else {
+            setPlayerStorage(new SQLitePlayerTable(getSQLiteStorage()));
+        }
     }
 
     protected void initChestFillerManager() {
@@ -554,11 +566,17 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     protected void initMySQLStorage() {
-        setMySQLStorage(new CoreMySQLStorage(this));
+        // enabling MySQL only if is enabled in the config.
+        if (getConfig().getString(ConfigProperties.STORAGE_TYPE.toString()).equalsIgnoreCase("MySQL")) {
+            setMySQLStorage(new CoreMySQLStorage(this));
+        }
     }
 
     protected void initSQLiteStorage() {
-//        setSQLiteStorage(new CoreSQLiteStorage(this)); // todo
+        // enabling SQLite only if is enabled in the config.
+        if (getConfig().getString(ConfigProperties.STORAGE_TYPE.toString()).equalsIgnoreCase("SQLite")) {
+            setSQLiteStorage(new CoreSQLiteStorage(this));
+        }
     }
 
 }
