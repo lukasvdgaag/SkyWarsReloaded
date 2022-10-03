@@ -14,20 +14,18 @@ import java.sql.SQLException;
 
 public class SQLPlayerTable extends CoreSQLTable<SWPlayer> implements PlayerStorage {
 
+    private final SQLPlayerStatsTable statsTable;
+
     public SQLPlayerTable(SQLStorage storage) {
         super(storage, "sw_player_data");
+
+        this.statsTable = new SQLPlayerStatsTable(storage);
     }
 
     @Override
     public void createTable(Connection connection) throws SQLException {
         connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS `" + table + "` (" +
                 "`uuid`   VARCHAR(255)  NOT NULL UNIQUE," +
-                "`solo_wins`  INT(6) DEFAULT 0," +
-                "`solo_kills` INT(10) DEFAULT 0," +
-                "`solo_games` INT(10) DEFAULT 0," +
-                "`team_wins` INT(10) DEFAULT 0," +
-                "`team_kills` INT(10) DEFAULT 0," +
-                "`team_games` INT(10) DEFAULT 0," +
                 "`selected_solo_cage` VARCHAR(100) DEFAULT NULL," +
                 "`selected_team_cage` VARCHAR(100) DEFAULT NULL," +
                 "`selected_particle` VARCHAR(100) DEFAULT NULL," +

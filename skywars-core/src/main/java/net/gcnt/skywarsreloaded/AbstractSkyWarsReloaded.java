@@ -8,7 +8,7 @@ import net.gcnt.skywarsreloaded.data.sql.CoreSQLiteStorage;
 import net.gcnt.skywarsreloaded.data.sql.SQLStorage;
 import net.gcnt.skywarsreloaded.data.sql.tables.SQLGameInstanceTable;
 import net.gcnt.skywarsreloaded.data.sql.tables.SQLPlayerTable;
-import net.gcnt.skywarsreloaded.data.sql.tables.SQLitePlayerTable;
+import net.gcnt.skywarsreloaded.data.sql.tables.sqlite.SQLitePlayerTable;
 import net.gcnt.skywarsreloaded.game.chest.filler.ChestFillerManager;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;

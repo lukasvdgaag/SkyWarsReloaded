@@ -1,5 +1,8 @@
 package net.gcnt.skywarsreloaded.data.sql;
 
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
+
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -29,6 +32,7 @@ public abstract class CoreSQLTable<DataType> implements SQLTable<DataType> {
         else if (value instanceof Double) statement.setDouble(paramPosition, (Double) value);
         else if (value instanceof Boolean) statement.setBoolean(paramPosition, (Boolean) value);
         else if (value instanceof Float) statement.setFloat(paramPosition, (Float) value);
+        else if (value instanceof SWPlayer) statement.setString(paramPosition, ((SWPlayer) value).getUuid().toString());
         else statement.setString(paramPosition, value.toString());
     }
 
@@ -36,8 +40,19 @@ public abstract class CoreSQLTable<DataType> implements SQLTable<DataType> {
      * Does nothing by default
      */
     @Override
-    public void setProperty(String property, Object value, DataType object) {
+    public void setProperty(String property, Object value, DataType data) {
+        try (Connection conn = storage.getConnection()) {
+            PreparedStatement ps = conn.prepareStatement("UPDATE `" + table + "` SET ?=? WHERE `uuid`=?");
 
+            ps.setString(1, property);
+            bindPropertyValue(ps, 2, value);
+            bindPropertyValue(ps, 3, data);
+
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
