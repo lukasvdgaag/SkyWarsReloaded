@@ -13,24 +13,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CoreMySQLStorage implements SQLStorage {
+public class CoreSQLiteStorage implements SQLStorage {
 
     protected final SkyWarsReloaded plugin;
-    protected final int minPoolSize;
-    protected final int maxPoolSize;
-    protected HikariDataSource ds;
     private final List<SQLTable<?>> tables;
 
-    public CoreMySQLStorage(SkyWarsReloaded plugin) {
-        this(plugin, 3, 20);
-    }
-
-    public CoreMySQLStorage(SkyWarsReloaded plugin, int minPoolSize, int maxPoolSize) {
+    public CoreSQLiteStorage(SkyWarsReloaded plugin) {
         this.plugin = plugin;
-        this.minPoolSize = minPoolSize;
-        this.maxPoolSize = maxPoolSize;
         this.tables = new ArrayList<>();
     }
+
 
     @Override
     public Connection getConnection() throws SQLException {

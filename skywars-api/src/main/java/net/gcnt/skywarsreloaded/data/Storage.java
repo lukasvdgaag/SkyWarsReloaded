@@ -1,7 +1,9 @@
 package net.gcnt.skywarsreloaded.data;
 
+import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
+
 public interface Storage {
 
-    void setup(String username, String password, int port);
+    void setup(YAMLConfig config);
 
 }

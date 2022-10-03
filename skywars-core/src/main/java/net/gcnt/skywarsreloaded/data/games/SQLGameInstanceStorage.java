@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.data.games;
 
-import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.data.CoreMySQLStorage;
+import net.gcnt.skywarsreloaded.data.mysql.SQLStorage;
+import net.gcnt.skywarsreloaded.data.sql.CoreSQLTable;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.gameinstance.CoreRemoteGameInstance;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
@@ -17,12 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> implements GameInstanceStorage {
+public class SQLGameInstanceStorage extends CoreSQLTable<GameInstance> implements GameInstanceStorage {
 
     private SWRunnable updateTask;
 
-    public MySQLGameInstanceStorage(SkyWarsReloaded plugin) {
-        super(plugin, "sw_game_instances");
+    public SQLGameInstanceStorage(SQLStorage storage) {
+        super(storage, "sw_game_instances");
 
         updateTask = null;
     }
@@ -43,7 +43,7 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
 
     @Override
     public void removeGameInstance(UUID uuid) {
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement("DELETE FROM `" + table + "` WHERE `id`=?")) {
+        try (Connection conn = storage.getConnection(); PreparedStatement ps = conn.prepareStatement("DELETE FROM `" + table + "` WHERE `id`=?")) {
             ps.setString(1, uuid.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
@@ -53,7 +53,7 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
 
     @Override
     public void removeOldInstances() {
-        try (Connection conn = getConnection();
+        try (Connection conn = storage.getConnection();
              final Statement statement = conn.createStatement()) {
             statement.executeUpdate("DELETE FROM `" + table + "` WHERE `updated_at` <= NOW() - INTERVAL 5 SECOND");
         } catch (SQLException e) {
@@ -63,7 +63,7 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
 
     @Override
     public RemoteGameInstance getGameInstanceById(String uuid) {
-        try (Connection conn = getConnection();
+        try (Connection conn = storage.getConnection();
              final PreparedStatement statement = conn.prepareStatement("SELECT * FROM `" + table + "` WHERE `id`=?")) {
             bindPropertyValue(statement, 1, uuid);
 
@@ -81,7 +81,7 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
     @Override
     public List<RemoteGameInstance> fetchGameInstances() {
         List<RemoteGameInstance> instances = new ArrayList<>();
-        try (Connection conn = getConnection();
+        try (Connection conn = storage.getConnection();
              final Statement statement = conn.createStatement();
              final ResultSet resultSet = statement.executeQuery("SELECT * FROM `" + table + "`)")) {
             while (resultSet.next()) {
@@ -98,15 +98,15 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
 
     protected RemoteGameInstance getRemoteInstanceFromResultSet(ResultSet resultSet) throws SQLException {
         String template_id = resultSet.getString("template_id");
-        final GameTemplate template = plugin.getGameInstanceManager().getGameTemplateByName(template_id);
+        final GameTemplate template = storage.getPlugin().getGameInstanceManager().getGameTemplateByName(template_id);
         // Trying to load a game instance with a template that doesn't exist on this server.
         if (resultSet.getString("template") != null && template == null) {
-            plugin.getLogger().error("Failed to load game instance " + resultSet.getString("id") + " because the template " + template_id + " doesn't exist on this server.");
+            storage.getPlugin().getLogger().error("Failed to load game instance " + resultSet.getString("id") + " because the template " + template_id + " doesn't exist on this server.");
             return null;
         }
 
         return new CoreRemoteGameInstance(
-                plugin,
+                storage.getPlugin(),
                 UUID.fromString(resultSet.getString("id")), template, resultSet.getString("server_id"),
                 GameState.valueOf(resultSet.getString("state"))
         );
@@ -115,12 +115,12 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
     @Override
     public List<RemoteGameInstance> getGameInstancesByTemplate(GameTemplate template) {
         List<RemoteGameInstance> instances = new ArrayList<>();
-        try (Connection conn = getConnection(); final PreparedStatement statement = conn.prepareStatement("SELECT * FROM `" + table + "` WHERE `template_id` = ?")) {
+        try (Connection conn = storage.getConnection(); final PreparedStatement statement = conn.prepareStatement("SELECT * FROM `" + table + "` WHERE `template_id` = ?")) {
             bindPropertyValue(statement, 1, template.getName());
             try (final ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     RemoteGameInstance instance = new CoreRemoteGameInstance(
-                            plugin,
+                            storage.getPlugin(),
                             UUID.fromString(resultSet.getString("id")), template, resultSet.getString("server_id"),
                             GameState.valueOf(resultSet.getString("state"))
                     );
@@ -136,7 +136,7 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
 
     @Override
     public void updateGameInstance(LocalGameInstance gameInstance) {
-        try (Connection conn = getConnection();
+        try (Connection conn = storage.getConnection();
              final PreparedStatement statement = conn.prepareStatement("INSERT INTO `" + table + "` (`id`, `template_id`, `server_id`, `playercount`, `state`) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE template_id=?,server_id=?,playercount=?,state=?")) {
 
             UUID id = gameInstance.getId();
@@ -164,11 +164,11 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
 
     @Override
     public void startAutoUpdating() {
-        this.updateTask = plugin.getScheduler().runAsyncTimer(new CoreSWRunnable() {
+        this.updateTask = storage.getPlugin().getScheduler().runAsyncTimer(new CoreSWRunnable() {
             @Override
             public void run() {
                 List<RemoteGameInstance> fetchedInstances = fetchGameInstances();
-                RemoteGameInstanceManager instanceManager = (RemoteGameInstanceManager) plugin.getGameInstanceManager();
+                RemoteGameInstanceManager instanceManager = (RemoteGameInstanceManager) storage.getPlugin().getGameInstanceManager();
 
                 // decaching instances that are no longer in the database
                 for (RemoteGameInstance instance : instanceManager.getGameInstancesList()) {
@@ -198,7 +198,7 @@ public class MySQLGameInstanceStorage extends CoreMySQLStorage<GameInstance> imp
 
     @Override
     public void removeGameInstance(GameInstance gameInstance) {
-        try (Connection conn = getConnection();
+        try (Connection conn = storage.getConnection();
              PreparedStatement ps = conn.prepareStatement("DELETE FROM `" + table + "` WHERE `id`=?")) {
             bindPropertyValue(ps, 1, gameInstance.getId());
             ps.executeUpdate();

@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.data.messaging;
 
-import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.CoreMySQLStorage;
+import net.gcnt.skywarsreloaded.data.sql.CoreSQLTable;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.CoreSWRunnable;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWRunnable;
@@ -12,13 +12,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class MySQLMessaging extends CoreMySQLStorage<SWMessage> implements SWMessaging {
+public class MySQLMessaging extends CoreSQLTable<SWMessage> implements SWMessaging {
 
     private final HashMap<Integer, SWMessage> messages;
     private SWRunnable updateTask;
 
-    public MySQLMessaging(SkyWarsReloaded plugin) {
-        super(plugin, "sw_messaging");
+    public MySQLMessaging(CoreMySQLStorage storage) {
+        super(storage, "sw_messaging");
 
         this.messages = new HashMap<>();
         this.updateTask = null;
@@ -26,17 +26,12 @@ public class MySQLMessaging extends CoreMySQLStorage<SWMessage> implements SWMes
 
     @Override
     public void setup() {
-        String username = plugin.getConfig().getString(ConfigProperties.STORAGE_USERNAME.toString());
-        String password = plugin.getConfig().getString(ConfigProperties.STORAGE_PASSWORD.toString());
-        int port = plugin.getConfig().getInt(ConfigProperties.STORAGE_PORT.toString());
-
-        this.setup(username, password, port);
     }
 
     @Override
     public void removeMessage(SWMessage message, boolean withReplies) {
         String query = "DELETE FROM `" + table + "` WHERE `id`=?" + (withReplies ? " OR `reply_to_id`=?" : "");
-        try (Connection connection = getConnection();
+        try (Connection connection = storage.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, message.getId());
             if (withReplies) {
@@ -52,7 +47,7 @@ public class MySQLMessaging extends CoreMySQLStorage<SWMessage> implements SWMes
     @Override
     public void sendMessage(SWMessage message) {
         String query = "INSERT INTO `" + table + "` (`payload`, `channel`, `origin_server`, `target_server`, `reply_to_id` VALUES (?, ?, ?, ?, ?)";
-        try (Connection connection = getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = storage.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
             bindPropertyValue(statement, 1, message.getPayload());
             bindPropertyValue(statement, 2, message.getChannel());
             bindPropertyValue(statement, 3, message.getOriginServer());
@@ -74,7 +69,7 @@ public class MySQLMessaging extends CoreMySQLStorage<SWMessage> implements SWMes
 
     @Override
     public SWMessage createMessage(String channel, String payload) {
-        return new CoreSWMessage(plugin, channel, payload);
+        return new CoreSWMessage(storage.getPlugin(), channel, payload);
     }
 
     @Override
@@ -94,15 +89,15 @@ public class MySQLMessaging extends CoreMySQLStorage<SWMessage> implements SWMes
 
     @Override
     public void startFetching() {
-        updateTask = plugin.getScheduler().runAsyncTimer(new CoreSWRunnable() {
+        updateTask = storage.getPlugin().getScheduler().runAsyncTimer(new CoreSWRunnable() {
             @Override
             public void run() {
                 // todo add deleting messages that are older than 10 seconds, only for the main proxy lobby server.
                 String query = "SELECT * FROM `" + table + "` WHERE (`target_server` IS NULL OR `target_server`=?) AND (`timestamp` <= NOW() - INTERVAL 2 SECOND)";
-                try (Connection connection = getConnection();
+                try (Connection connection = storage.getConnection();
                      PreparedStatement statement = connection.prepareStatement(query)) {
 
-                    bindPropertyValue(statement, 1, plugin.getConfig().getString(ConfigProperties.SERVER_NAME.toString()));
+                    bindPropertyValue(statement, 1, storage.getPlugin().getConfig().getString(ConfigProperties.SERVER_NAME.toString()));
 
                     try (final ResultSet resultSet = statement.executeQuery()) {
                         while (resultSet.next()) {
@@ -116,7 +111,7 @@ public class MySQLMessaging extends CoreMySQLStorage<SWMessage> implements SWMes
                             int replyToId = resultSet.getInt("reply_to_id");
                             long timestamp = resultSet.getTimestamp("timestamp").getTime();
 
-                            SWMessage message = new CoreSWMessage(plugin, id, channel, payload, originServer, targetServer, replyToId, timestamp);
+                            SWMessage message = new CoreSWMessage(storage.getPlugin(), id, channel, payload, originServer, targetServer, replyToId, timestamp);
                             cacheMessage(message);
                             // todo throw message received event here.
                         }

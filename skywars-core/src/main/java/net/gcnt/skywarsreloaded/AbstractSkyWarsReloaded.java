@@ -1,8 +1,10 @@
 package net.gcnt.skywarsreloaded;
 
+import net.gcnt.skywarsreloaded.data.CoreMySQLStorage;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
-import net.gcnt.skywarsreloaded.data.games.MySQLGameInstanceStorage;
+import net.gcnt.skywarsreloaded.data.games.SQLGameInstanceStorage;
+import net.gcnt.skywarsreloaded.data.mysql.SQLStorage;
 import net.gcnt.skywarsreloaded.data.player.PlayerStorage;
 import net.gcnt.skywarsreloaded.data.player.SQLitePlayerStorage;
 import net.gcnt.skywarsreloaded.game.chest.filler.ChestFillerManager;
@@ -15,7 +17,6 @@ import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
 import net.gcnt.skywarsreloaded.manager.gameinstance.LocalGameInstanceManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
 import net.gcnt.skywarsreloaded.utils.SWLogger;
-import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWScheduler;
 import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 import net.gcnt.skywarsreloaded.wrapper.server.SWServer;
@@ -41,6 +42,10 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     // Hooks
     private SWHookManager hookManager;
+
+    // storage
+    private SQLStorage mysqlStorage;
+    private SQLStorage sqliteStorage;
 
     // Managers
     private YAMLManager yamlManager;
@@ -84,7 +89,6 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
             this.onDisable();
             return;
         }
-        initGameInstanceStorage();
 
         // Data and configs
         initYAMLManager();
@@ -92,8 +96,12 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         setDataConfig(getYAMLManager().loadConfig("data", getDataFolder(), "data.yml")); // requires yaml mgr
         setMessages(getYAMLManager().loadConfig("messages", getDataFolder(), "messages.yml")); // requires yaml mgr
 
+        // Storages
+        initMySQLStorage();
+        initSQLiteStorage();
+
+        initGameInstanceStorage();
         setPlayerStorage(new SQLitePlayerStorage(this)); // requires config
-        setupStorage();
 
         // Managers
         initServer();
@@ -469,13 +477,6 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         return this.platformUtils;
     }
 
-    private void setupStorage() {
-        String username = getConfig().getString(ConfigProperties.STORAGE_USERNAME.toString());
-        String password = getConfig().getString(ConfigProperties.STORAGE_PASSWORD.toString());
-        int port = getConfig().getInt(ConfigProperties.STORAGE_PORT.toString());
-        getPlayerStorage().setup(username, password, port);
-    }
-
     /**
      * Override to run required initialization before core enable
      */
@@ -537,7 +538,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     protected abstract void initInventoryManager();
 
     protected void initGameInstanceStorage() {
-        setGameInstanceStorage(new MySQLGameInstanceStorage(this));
+        setGameInstanceStorage(new SQLGameInstanceStorage(getMySQLStorage()));
     }
 
     protected void initChestFillerManager() {
@@ -548,7 +549,16 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         setGuiManager(new CoreGuiManager(this));
     }
 
-    private void initHookManager() {
+    protected void initHookManager() {
         setHookManager(new CoreSWHookManager(this));
     }
+
+    protected void initMySQLStorage() {
+        setMySQLStorage(new CoreMySQLStorage(this));
+    }
+
+    protected void initSQLiteStorage() {
+//        setSQLiteStorage(new CoreSQLiteStorage(this)); // todo
+    }
+
 }

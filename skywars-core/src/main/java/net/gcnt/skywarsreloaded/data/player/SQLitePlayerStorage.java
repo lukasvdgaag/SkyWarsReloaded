@@ -1,21 +1,21 @@
 package net.gcnt.skywarsreloaded.data.player;
 
-import net.gcnt.skywarsreloaded.SkyWarsReloaded;
+import net.gcnt.skywarsreloaded.data.mysql.SQLStorage;
 
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class SQLitePlayerStorage extends MySQLPlayerStorage {
+public class SQLitePlayerStorage extends SQLPlayerStorage {
 
     private final String url;
     private final String fileName;
 
-    public SQLitePlayerStorage(SkyWarsReloaded plugin) {
-        super(plugin);
+    public SQLitePlayerStorage(SQLStorage storage) {
+        super(storage);
         this.fileName = "playerdata.db";
-        this.url = "jdbc:sqlite:" + plugin.getDataFolder() + File.separator + fileName;
+        this.url = "jdbc:sqlite:" + storage.getPlugin().getDataFolder() + File.separator + fileName;
     }
 
     @Override

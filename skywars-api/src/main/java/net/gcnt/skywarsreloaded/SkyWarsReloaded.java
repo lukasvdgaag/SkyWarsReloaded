@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
+import net.gcnt.skywarsreloaded.data.mysql.SQLStorage;
 import net.gcnt.skywarsreloaded.data.player.PlayerStorage;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
@@ -154,6 +155,14 @@ public interface SkyWarsReloaded {
 
 
     // Player Data
+
+    SQLStorage getMySQLStorage();
+
+    void setMySQLStorage(SQLStorage storage);
+
+    SQLStorage getSQLiteStorage();
+
+    void setSQLiteStorage(SQLStorage storage);
 
     PlayerStorage getPlayerStorage();
 

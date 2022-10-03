@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.data.player;
 
-import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.data.CoreMySQLStorage;
+import net.gcnt.skywarsreloaded.data.mysql.SQLStorage;
+import net.gcnt.skywarsreloaded.data.sql.CoreSQLTable;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 import java.sql.Connection;
@@ -9,10 +9,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class MySQLPlayerStorage extends CoreMySQLStorage<SWPlayer> implements PlayerStorage {
+public class SQLPlayerStorage extends CoreSQLTable<SWPlayer> implements PlayerStorage {
 
-    public MySQLPlayerStorage(SkyWarsReloaded plugin) {
-        super(plugin, "sw_player_data");
+    public SQLPlayerStorage(SQLStorage storage) {
+        super(storage, "sw_player_data");
     }
 
     @Override
@@ -40,16 +40,16 @@ public class MySQLPlayerStorage extends CoreMySQLStorage<SWPlayer> implements Pl
         ps.setString(1, player.getUuid().toString());
         ps.executeUpdate();
 
-        SWPlayerData swpd = this.plugin.getPlayerDataManager().createSWPlayerDataInstance();
-        SWPlayerStats swps = this.plugin.getPlayerDataManager().createSWPlayerStatsInstance();
+        SWPlayerData swpd = storage.getPlugin().getPlayerDataManager().createSWPlayerDataInstance();
+        SWPlayerStats swps = storage.getPlugin().getPlayerDataManager().createSWPlayerStatsInstance();
         swps.initData(0, 0, 0, 0, 0, 0);
-        swpd.initData(swps, null, null, null, null, null, null, null);
+        swpd.initData(swps, null, null, null, null, null, null, null, null);
         player.setPlayerData(swpd);
     }
 
     @Override
     public void loadData(SWPlayer player) {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = storage.getConnection()) {
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM `" + table + "` WHERE `uuid`=?");
             ps.setString(1, player.getUuid().toString());
             ResultSet res = ps.executeQuery();
@@ -59,8 +59,8 @@ public class MySQLPlayerStorage extends CoreMySQLStorage<SWPlayer> implements Pl
                 return;
             }
 
-            SWPlayerData swpd = this.plugin.getPlayerDataManager().createSWPlayerDataInstance();
-            SWPlayerStats swps = this.plugin.getPlayerDataManager().createSWPlayerStatsInstance();
+            SWPlayerData swpd = storage.getPlugin().getPlayerDataManager().createSWPlayerDataInstance();
+            SWPlayerStats swps = storage.getPlugin().getPlayerDataManager().createSWPlayerStatsInstance();
             swps.initData(
                     res.getInt("solo_wins"),
                     res.getInt("solo_kills"),
@@ -76,8 +76,10 @@ public class MySQLPlayerStorage extends CoreMySQLStorage<SWPlayer> implements Pl
                     res.getString("selected_kill_effect"),
                     res.getString("selected_win_effect"),
                     res.getString("selected_projectile_effect"),
-                    res.getString("selected_kill_messages_theme")
+                    res.getString("selected_kill_messages_theme"),
+                    res.getString("selected_kit")
             );
+            // unlockables
             player.setPlayerData(swpd);
             res.close();
             ps.close();
@@ -91,7 +93,7 @@ public class MySQLPlayerStorage extends CoreMySQLStorage<SWPlayer> implements Pl
         SWPlayerData swpd = player.getPlayerData();
         SWPlayerStats swps = swpd.getStats();
 
-        try (Connection conn = getConnection()) {
+        try (Connection conn = storage.getConnection()) {
             PreparedStatement ps = conn.prepareStatement("UPDATE `" + table + "` SET solo_wins=?, solo_kills=?, solo_games=?, team_wins=?, team_kills=?, team_games=? WHERE `uuid`=?");
             ps.setInt(1, swps.getSoloWins());
             ps.setInt(2, swps.getSoloKills());
@@ -111,7 +113,7 @@ public class MySQLPlayerStorage extends CoreMySQLStorage<SWPlayer> implements Pl
 
     @Override
     public void setProperty(String property, Object value, SWPlayer player) {
-        try (Connection conn = getConnection()) {
+        try (Connection conn = storage.getConnection()) {
             PreparedStatement ps = conn.prepareStatement("UPDATE `" + table + "` SET ?=? WHERE `uuid`=?");
 
             ps.setString(1, property);
