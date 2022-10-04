@@ -1,8 +1,8 @@
-package net.gcnt.skywarsreloaded.data.games;
+package net.gcnt.skywarsreloaded.data.redis;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
-import net.gcnt.skywarsreloaded.data.CoreRedisConnection;
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
+import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.gameinstance.CoreRemoteGameInstance;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
@@ -14,10 +14,6 @@ import net.gcnt.skywarsreloaded.manager.gameinstance.RemoteGameInstanceManager;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.CoreSWRunnable;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWRunnable;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisPubSub;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,35 +25,33 @@ import java.util.concurrent.ConcurrentHashMap;
  * Description of redis structure:
  * All skywars instance data is sent to lobbies using redis pub/sub
  */
-public class RedisGameInstanceStorage extends CoreRedisConnection implements GameInstanceStorage {
+public class RedisGameInstanceStorage implements GameInstanceStorage, SWRedisMessenger {
 
-    private static final String REDIS_GAME_INSTANCE_CHANNEL = "swr:gameinstance:update";
+    // Static
     private static final int INSTANCE_TIMEOUT_TIME = 5;
+
+    // Finals
+    private final String REDIS_GAME_INSTANCE_CHANNEL;
+    private final String REDIS_GAME_INSTANCE_UPDATE_CHANNEL;
+    private final SkyWarsReloaded plugin;
+    private final CoreSWRedisConnection redisConnection;
 
     // Runtime data
     private final ConcurrentHashMap<UUID, Long> lastUpdateTimes;
-    private JedisPubSub redisPubSubConnection;
-    private Thread pubSubThread;
     private SWRunnable swRunnable;
 
-    public RedisGameInstanceStorage(SkyWarsReloaded plugin) {
-        super(plugin);
+    public RedisGameInstanceStorage(SkyWarsReloaded plugin, CoreSWRedisConnection redisConnection) {
+        this.plugin = plugin;
+        this.redisConnection = redisConnection;
         this.lastUpdateTimes = new ConcurrentHashMap<>();
+
+        this.REDIS_GAME_INSTANCE_CHANNEL = redisConnection.REDIS_BASE_CHANNEL + ".gameinstance";
+        this.REDIS_GAME_INSTANCE_UPDATE_CHANNEL = this.REDIS_GAME_INSTANCE_CHANNEL + ".update";
     }
 
     @Override
     public void setup(YAMLConfig config) {
-        String hostname = plugin.getConfig().getString(ConfigProperties.MESSAGING_REDIS_HOSTNAME.toString());
-        String username = plugin.getConfig().getString(ConfigProperties.MESSAGING_REDIS_USERNAME.toString());
-        String password = plugin.getConfig().getString(ConfigProperties.MESSAGING_REDIS_PASSWORD.toString());
-        int port = plugin.getConfig().getInt(ConfigProperties.MESSAGING_REDIS_PORT.toString());
-
-        JedisPoolConfig poolConfig = this.buildPoolConfig(5, 2);
-
-        if (password == null || password.equals("n/a")) this.plugin.getLogger().warn("The redis password is set to n/a, the connection will probably fail.");
-
-        this.setJedisPool(new JedisPool(poolConfig, hostname, port, 10 * 1000, username, password));
-        this.subscribeToRedisUpdates();
+        subscribeToRedisUpdates();
     }
 
     @Override
@@ -84,7 +78,7 @@ public class RedisGameInstanceStorage extends CoreRedisConnection implements Gam
 
     @Override
     public void updateGameInstance(LocalGameInstance gameInstance) {
-        this.getJedisPool().getResource().publish(REDIS_GAME_INSTANCE_CHANNEL,
+        this.redisConnection.getConnection().publish(REDIS_GAME_INSTANCE_CHANNEL,
                 GameInstanceUpdateSerializer.serialize(
                         gameInstance.getId(),
                         gameInstance.getTemplate().getName(),
@@ -112,7 +106,7 @@ public class RedisGameInstanceStorage extends CoreRedisConnection implements Gam
 
     @Override
     public void removeGameInstance(UUID uuid) {
-        this.getJedisPool().getResource().publish(REDIS_GAME_INSTANCE_CHANNEL, uuid + ":remove");
+        this.redisConnection.getConnection().publish(REDIS_GAME_INSTANCE_CHANNEL, uuid + ":remove");
     }
 
     @Override
@@ -138,89 +132,47 @@ public class RedisGameInstanceStorage extends CoreRedisConnection implements Gam
     }
 
     public void subscribeToRedisUpdates() {
-        redisPubSubConnection = new JedisPubSub() {
-            @Override
-            public void onMessage(String channel, String message) {
-                if (channel.equals(REDIS_GAME_INSTANCE_CHANNEL)) {
-                    String[] parts = message.split(":");
+        this.redisConnection.registerMessenger(this);
+        this.redisConnection.registerPubSubListener(REDIS_GAME_INSTANCE_CHANNEL, this::onPubSubMessage);
+    }
 
-                    // Allow removing of instance instantly
-                    if (parts.length < 2) {
-                        plugin.getLogger().warn("Received invalid redis message!\nData: " + message);
-                        return;
-                    }
-                    if (parts[1].equalsIgnoreCase("remove")) {
-                        UUID uuid;
-                        try {
-                            uuid = UUID.fromString(parts[0]);
-                        } catch (Exception ex) {
-                            plugin.getLogger().warn("Received invalid redis message!\nData: " + message);
-                            return;
-                        }
-                        ((RemoteGameInstanceManager) plugin.getGameInstanceManager()).removeCachedGameInstance(uuid);
-                        lastUpdateTimes.remove(uuid);
-                        return;
-                    }
+    public void onPubSubMessage(String channel, String message) {
+        if (channel.equals(REDIS_GAME_INSTANCE_CHANNEL)) {
+            String[] parts = message.split(".");
 
-                    // Update or add new instance to cache
-                    if (parts.length < 5) {
-                        plugin.getLogger().warn("Received invalid redis message!\nData: " + message);
-                        return;
-                    }
-                    RemoteGameInstance deserializedInstance;
-                    try {
-                        deserializedInstance = GameInstanceUpdateSerializer.deserialize(plugin, message);
-                    } catch (InvalidGameInstanceUpdateFormat ex) {
-                        ex.printStackTrace();
-                        return;
-                    }
-
-                    // todo: handle deserializedInstance
-                }
+            // Allow removing of instance instantly
+            if (parts.length < 2) {
+                plugin.getLogger().warn("Received invalid redis message!\nData: " + message);
+                return;
             }
-        };
-
-        pubSubThread = new Thread(() -> {
-            boolean brokenConnection = false;
-            // As long as the thread hasn't been manually stopped or damaged, keep re-trying
-            while (!Thread.interrupted() && !this.getJedisPool().isClosed()) {
-                try (Jedis jedis = this.getJedisPool().getResource()) {
-                    // Log info to console if connection failed
-                    if (brokenConnection) {
-                        this.plugin.getLogger().warn("Reconnecting after connection fail...");
-                        brokenConnection = false;
-                    }
-
-                    // Will lock the thread on this call
-                    jedis.subscribe(redisPubSubConnection, REDIS_GAME_INSTANCE_CHANNEL);
-
-                    // This will fire only if subscribe() unlocks - aka fails
-                    this.plugin.getLogger().warn("Connection closed!");
+            if (parts[1].equalsIgnoreCase("remove")) {
+                UUID uuid;
+                try {
+                    uuid = UUID.fromString(parts[0]);
                 } catch (Exception ex) {
-                    // Set the broken flag to true in order for the reconnection warning to be logged
-                    brokenConnection = true;
-                    this.plugin.getLogger().warn("Connection to redis was interrupted! Attempting reconnection in 5 seconds...");
-
-                    // Try unsubscribing anyway to clean up connections
-                    try {
-                        redisPubSubConnection.unsubscribe();
-                    } catch (Exception ignored) {
-                    }
-
-                    // Wait 5 seconds before reconnection attempt
-                    try {
-                        // No we are not busy waiting here, this is just to prevent spamming reconnection
-                        // attempts faster than once every 5 seconds
-                        // noinspection BusyWait
-                        Thread.sleep(5 * 1000);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        return;
-                    }
+                    plugin.getLogger().warn("Received invalid redis message!\nData: " + message);
+                    return;
                 }
+                ((RemoteGameInstanceManager) plugin.getGameInstanceManager()).removeCachedGameInstance(uuid);
+                lastUpdateTimes.remove(uuid);
+                return;
             }
-        });
-        pubSubThread.start();
+
+            // Update or add new instance to cache
+            if (parts.length < 5) {
+                plugin.getLogger().warn("Received invalid redis message!\nData: " + message);
+                return;
+            }
+            RemoteGameInstance deserializedInstance;
+            try {
+                deserializedInstance = GameInstanceUpdateSerializer.deserialize(plugin, message);
+            } catch (InvalidGameInstanceUpdateFormat ex) {
+                ex.printStackTrace();
+                return;
+            }
+
+            // todo: handle deserializedInstance
+        }
     }
 
     static class GameInstanceUpdateSerializer {

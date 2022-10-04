@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
-import net.gcnt.skywarsreloaded.data.games.RedisGameInstanceStorage;
+import net.gcnt.skywarsreloaded.data.redis.RedisGameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerStorage;
 import net.gcnt.skywarsreloaded.data.sql.CoreMySQLStorage;
 import net.gcnt.skywarsreloaded.data.sql.CoreSQLiteStorage;
