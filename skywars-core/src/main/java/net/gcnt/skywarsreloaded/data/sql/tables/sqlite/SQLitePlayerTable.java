@@ -25,7 +25,18 @@ public class SQLitePlayerTable extends SQLPlayerTable {
                     "selected_win_effect TEXT DEFAULT NULL," +
                     "selected_projectile_effect TEXT DEFAULT NULL," +
                     "selected_kill_messages_theme TEXT DEFAULT NULL," +
-                    "selected_kit TEXT DEFAULT NULL " + ")");
+                    "selected_kit TEXT DEFAULT NULL)");
         }
     }
+
+    @Override
+    public void initStatsTable() {
+        this.statsTable = new SQLitePlayerStatsTable(storage);
+    }
+
+    @Override
+    public void initUnlockablesTable() {
+        this.statsTable = new SQLitePlayerUnlockablesTable(storage);
+    }
+
 }

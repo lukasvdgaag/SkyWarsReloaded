@@ -81,4 +81,13 @@ public class BukkitItemManager implements ItemManager {
         }
         return null;
     }
+
+    @Override
+    public Item getItemFromConfig(String path) {
+        final Item item = plugin.getConfig().getItem(path);
+        if (item != null) {
+            item.withMessages(plugin.getMessages().getItem(path));
+        }
+        return item;
+    }
 }

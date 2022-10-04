@@ -7,9 +7,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class SQLitePlayerStatsTable extends SQLPlayerStatsTable {
+public class SQLitePlayerUnlockablesTable extends SQLPlayerStatsTable {
 
-    public SQLitePlayerStatsTable(SQLStorage storage) {
+    public SQLitePlayerUnlockablesTable(SQLStorage storage) {
         super(storage);
     }
 
@@ -18,12 +18,9 @@ public class SQLitePlayerStatsTable extends SQLPlayerStatsTable {
         try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `" + table + "` (" +
                     "uuid TEXT NOT NULL UNIQUE PRIMARY KEY," +
-                    "solo_wins  INT DEFAULT 0," +
-                    "solo_kills INT DEFAULT 0," +
-                    "solo_games INT DEFAULT 0," +
-                    "team_wins  INT DEFAULT 0," +
-                    "team_kills INT DEFAULT 0," +
-                    "team_games INT DEFAULT 0," + ")");
+                    "type TEXT NOT NULL," +
+                    "name TEXT NOT NULL," +
+                    "timestamp INT DEFAULT CURRENT_TIMESTAMP" + ")");
         }
     }
 }

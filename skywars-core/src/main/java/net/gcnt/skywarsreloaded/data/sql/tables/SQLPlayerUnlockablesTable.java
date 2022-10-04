@@ -23,8 +23,8 @@ public class SQLPlayerUnlockablesTable extends CoreSQLTable<SWPlayer> implements
     public void createTable(Connection connection) throws SQLException {
         connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS `" + table + "` (" +
                 "`uuid`   VARCHAR(255)  NOT NULL UNIQUE," +
-                "`type`  INT(6) NOT NULL," +
-                "`name` INT(10) NOT NULL," +
+                "`type`   VARCHAR(30) NOT NULL," +
+                "`name`   VARCHAR(255) NOT NULL," +
                 "`timestamp` TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
                 "KEY (`uuid`))");
     }

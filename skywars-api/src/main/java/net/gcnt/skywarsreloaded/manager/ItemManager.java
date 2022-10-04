@@ -12,5 +12,7 @@ public interface ItemManager {
 
     Item getItem(Map<?, ?> map);
 
+    Item getItemFromConfig(String path);
+
 
 }
