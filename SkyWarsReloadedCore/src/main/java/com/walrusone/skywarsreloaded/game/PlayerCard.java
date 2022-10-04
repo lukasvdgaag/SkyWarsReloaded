@@ -26,27 +26,28 @@ public class PlayerCard {
     private Vote health;
 
     public PlayerCard(TeamCard tCard, UUID uuid, CoordLoc spawn) {
+        this.tCard = tCard;
+        this.spawn = spawn;
         this.uuid = uuid;
         this.joinIndex = -1;
-        this.tCard = tCard;
         this.kitVote = null;
         this.gameTime = null;
         this.weather = null;
         this.chestVote = null;
         this.modifier = null;
         this.health = null;
-        this.spawn = spawn;
         this.dead = false;
     }
 
     public void reset() {
+        this.uuid = null;
+        this.joinIndex = -1;
         this.kitVote = null;
         this.gameTime = null;
         this.weather = null;
         this.chestVote = null;
         this.modifier = null;
-        this.uuid = null;
-        this.joinIndex = -1;
+        this.health = null;
         this.dead = false;
     }
 

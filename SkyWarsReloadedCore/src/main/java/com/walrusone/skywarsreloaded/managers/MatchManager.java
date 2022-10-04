@@ -625,11 +625,14 @@ public class MatchManager {
             for (TeamCard teamCard : gameMap.getTeamCards()) {
                 if (teamCard != winners) {
                     for (PlayerCard pCard : teamCard.getPlayerCards()) {
-                        Player pLoser = pCard.getPlayer();
+                        UUID pLoserUuid = pCard.getUUID();
 
-                        if (pLoser != null) {
-                            final PlayerStat loserData = PlayerStat.getPlayerStats(pLoser.getUniqueId().toString());
+                        if (pLoserUuid != null) {
+                            final PlayerStat loserData = PlayerStat.getPlayerStats(pLoserUuid.toString());
                             if (loserData != null) {
+                                if (debug) {
+                                    Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Adding loss to " + pLoserUuid);
+                                }
                                 loserData.setLosts(loserData.getLosses() + 1);
                             }
                         }
@@ -711,9 +714,13 @@ public class MatchManager {
             for (final Player player : gameMap.getAllPlayers()) {
                 new BukkitRunnable() {
                     public void run() {
-                        PlayerStat toSave = PlayerStat.getPlayerStats(player.getUniqueId().toString());
+                        String uuidStr = player.getUniqueId().toString();
+                        PlayerStat toSave = PlayerStat.getPlayerStats(uuidStr);
                         if (toSave != null) {
+                            toSave.saveStats();
                             DataStorage.get().saveStats(toSave);
+                            // If player is no longer online, delete cache
+                            if (!player.isOnline()) PlayerStat.removePlayer(uuidStr);
                         }
                     }
                 }.runTaskAsynchronously(SkyWarsReloaded.get());
