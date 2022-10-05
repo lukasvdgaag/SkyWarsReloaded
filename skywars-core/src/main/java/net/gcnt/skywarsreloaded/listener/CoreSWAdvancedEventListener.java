@@ -27,6 +27,11 @@ public abstract class CoreSWAdvancedEventListener<T extends SWEvent> implements 
     }
 
     @Override
+    public SWListenerPriority getPriority() {
+        return this.priority;
+    }
+
+    @Override
     public Class<T> getEventClass() {
         return typeClass;
     }
