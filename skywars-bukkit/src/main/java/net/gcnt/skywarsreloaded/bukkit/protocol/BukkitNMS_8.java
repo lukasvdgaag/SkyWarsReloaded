@@ -211,4 +211,9 @@ public class BukkitNMS_8 implements NMS {
     public void addPluginChunkTicket(SWChunk chunk) {
         // unsupported in 1.8 - 1.11
     }
+
+    @Override
+    public String getVoidGeneratorSettings() {
+        return "3;minecraft:air;2";
+    }
 }

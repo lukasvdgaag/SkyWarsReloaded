@@ -58,4 +58,9 @@ public class BukkitNMS_16_19 extends BukkitNMS_14_15 {
         if (open) chest.open();
         else chest.close();
     }
+
+    @Override
+    public String getVoidGeneratorSettings() {
+        return "{ \"type\": \"minecraft:flat\", \"settings\": { \"biome\": \"minecraft:void\", \"lakes\": false, \"features\": false, \"layers\": [{ \"block\": \"minecraft:air\", \"height\": 1 }] } }";
+    }
 }

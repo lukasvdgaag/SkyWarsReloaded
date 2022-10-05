@@ -5,20 +5,11 @@ import net.gcnt.skywarsreloaded.bukkit.game.BukkitLocalGameInstance;
 import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.loader.AbstractWorldLoader;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 
 public abstract class BukkitWorldLoader extends AbstractWorldLoader {
 
-    protected Biome voidBiome;
-
     public BukkitWorldLoader(SkyWarsReloaded plugin) {
         super(plugin);
-
-        final int version = plugin.getUtils().getServerVersion();
-
-        if (version >= 13) Biome.valueOf("THE_VOID");
-        else if (version >= 9) voidBiome = Biome.valueOf("VOID");
-        else voidBiome = Biome.valueOf("FOREST");
     }
 
     @Override

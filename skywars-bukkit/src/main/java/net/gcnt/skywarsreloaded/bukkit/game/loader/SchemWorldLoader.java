@@ -16,7 +16,6 @@ import net.gcnt.skywarsreloaded.utils.properties.InternalProperties;
 import net.gcnt.skywarsreloaded.utils.properties.RuntimeDataProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import org.bukkit.*;
-import org.bukkit.block.Biome;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,12 +28,6 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     public SchemWorldLoader(BukkitSkyWarsReloaded pluginIn) {
         super(pluginIn);
         this.plugin = pluginIn;
-
-        final int version = pluginIn.getUtils().getServerVersion();
-
-        if (version >= 13) voidBiome = Biome.valueOf("THE_VOID");
-        else if (version >= 9) voidBiome = Biome.valueOf("VOID");
-        else voidBiome = Biome.valueOf("FOREST");
 
     }
 
@@ -70,12 +63,8 @@ public class SchemWorldLoader extends BukkitWorldLoader {
         creator.type(WorldType.FLAT);
 
         // Apply generator settings based on the MC version
-        int version = this.plugin.getUtils().getServerVersion();
-        if (version >= 16) {
-            creator.generatorSettings("{ \"type\": \"minecraft:flat\", \"settings\": { \"biome\": \"minecraft:void\", \"lakes\": false, \"features\": false, \"layers\": [{ \"block\": \"minecraft:air\", \"height\": 1 }] } }");
-        } else {
-            creator.generatorSettings("3;minecraft:air;2");
-        }
+        String generatorSettings = this.plugin.getNMSManager().getNMS().getVoidGeneratorSettings();
+        creator.generatorSettings(generatorSettings);
 
         // Override world generator
         creator.generator(((BukkitSWChunkGenerator) this.plugin.getNMSManager().getNMS().getChunkGenerator()).getGenerator());
@@ -129,6 +118,8 @@ public class SchemWorldLoader extends BukkitWorldLoader {
         }
 
         System.out.println("Pasting the actual schematic for " + gameWorld.getTemplate().getName());
+        // The returned EditSession is already auto-closed using a try-w/ statement inside pasteSchematic()
+        //noinspection resource
         plugin.getSchematicManager().pasteSchematic(clip, new BukkitWorld(world), BlockVector3.at(0, 0, 0), true);
         return futureOk;
     }

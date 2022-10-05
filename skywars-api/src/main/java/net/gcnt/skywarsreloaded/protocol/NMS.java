@@ -24,4 +24,5 @@ public interface NMS {
 
     void addPluginChunkTicket(SWChunk chunk);
 
+    String getVoidGeneratorSettings();
 }

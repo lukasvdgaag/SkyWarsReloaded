@@ -78,7 +78,6 @@ public class CoreSchematicManager implements SchematicManager {
                     .createPaste(editSession)
                     .to(location)
                     .ignoreAirBlocks(ignoreAir)
-                    // configure here
                     .build();
 
             Operations.complete(operation);
