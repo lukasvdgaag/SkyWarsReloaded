@@ -16,6 +16,7 @@ import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
@@ -27,12 +28,13 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 
-public class BukkitNMS_8_11 implements NMS {
+public class BukkitNMS_8 implements NMS {
 
     protected final BukkitSkyWarsReloaded plugin;
     protected final String serverVersion;
     protected final int version;
 
+    // Reflection
     protected Class<?> chatBaseComponent;
     protected Class<?> packetPlayOutChat;
     @SuppressWarnings("rawtypes")
@@ -48,32 +50,39 @@ public class BukkitNMS_8_11 implements NMS {
     protected Method sendPacket;
     protected Field playerConnection;
 
-    public BukkitNMS_8_11(BukkitSkyWarsReloaded plugin, String serverPackage) {
+    // Versioned types
+    protected Biome voidBiome;
+
+    public BukkitNMS_8(BukkitSkyWarsReloaded plugin, String serverPackage) {
         this.plugin = plugin;
         this.serverVersion = serverPackage.substring(serverPackage.lastIndexOf('.') + 1);
         this.version = plugin.getUtils().getServerVersion();
 
         try {
-            this.init();
-        } catch (ClassNotFoundException | NoSuchFieldException | NoSuchMethodException e) {
+            this.initReflection();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            this.initVersionedAPI();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public void init() throws ClassNotFoundException, NoSuchFieldException, NoSuchMethodException {
+    public void initReflection() throws ClassNotFoundException, NoSuchFieldException, NoSuchMethodException {
         // 1.8.8 - 1.15.2
         //Classes
         Class<?> typeNMSPlayer = Class.forName("net.minecraft.server." + serverVersion + ".EntityPlayer");
         Class<?> typePlayerConnection = Class.forName("net.minecraft.server." + serverVersion + ".PlayerConnection");
         this.chatBaseComponent = Class.forName("net.minecraft.server." + serverVersion + ".IChatBaseComponent");
         this.packetPlayOutChat = Class.forName("net.minecraft.server." + serverVersion + ".PacketPlayOutChat");
-        if (version >= 12) this.chatMessageType = (Class<Enum>) Class.forName("net.minecraft.server." + serverVersion + ".ChatMessageType");
 
         this.blockPosition = Class.forName("net.minecraft.server." + serverVersion + ".BlockPosition");
         this.craftWorld = Class.forName("org.bukkit.craftbukkit." + serverVersion + ".CraftWorld");
         this.worldServer = Class.forName("net.minecraft.server." + serverVersion + ".WorldServer");
-        // todo: maybe?? this.chunkGenerator = todo;
         this.tileEntityChest = Class.forName("net.minecraft.server." + serverVersion + ".TileEntityChest");
         this.block = Class.forName("net.minecraft.server." + serverVersion + ".Block");
 
@@ -83,6 +92,11 @@ public class BukkitNMS_8_11 implements NMS {
         // Methods
         this.chatSerializer = chatBaseComponent.getDeclaredClasses()[0].getMethod("a", String.class);
         this.sendPacket = typePlayerConnection.getMethod("sendPacket", Class.forName("net.minecraft.server." + serverVersion + ".Packet"));
+    }
+
+    public void initVersionedAPI() {
+        // Versioned enums
+        voidBiome = Biome.valueOf("FOREST"); // VOID doesn't exist in 1.8 - 1.11
     }
 
     @Override
@@ -164,6 +178,7 @@ public class BukkitNMS_8_11 implements NMS {
         }
     }
 
+    @Override
     public SWChunkGenerator getChunkGenerator() {
         return new BukkitSWChunkGenerator(
                 new ChunkGenerator() {
@@ -177,10 +192,9 @@ public class BukkitNMS_8_11 implements NMS {
                         return true;
                     }
 
-                    @Override
-                    public byte[] generate(World world, Random random, int x, int z) {
-                        return new byte[32768];
-                    }
+                    // @Override - can't officially override since we are using the latest API which doesn't use
+                    // this method anymore. It should still override at runtime if this chunk generator is used.
+                    // todo: add back
 
                     @Override
                     public Location getFixedSpawnLocation(World world, Random random) {
@@ -192,6 +206,6 @@ public class BukkitNMS_8_11 implements NMS {
 
     @Override
     public void addPluginChunkTicket(SWChunk chunk) {
-        // unsupported in 1.8
+        // unsupported in 1.8 - 1.11
     }
 }

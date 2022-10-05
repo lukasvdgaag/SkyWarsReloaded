@@ -25,7 +25,6 @@ import java.util.concurrent.CompletableFuture;
 public class SchemWorldLoader extends BukkitWorldLoader {
 
     private final BukkitSkyWarsReloaded plugin;
-    private final Biome voidBiome;
 
     public SchemWorldLoader(BukkitSkyWarsReloaded pluginIn) {
         super(pluginIn);
@@ -84,9 +83,9 @@ public class SchemWorldLoader extends BukkitWorldLoader {
         World createdWorld = creator.createWorld();
         assert createdWorld != null;
         CompletableFuture<Void> future = new CompletableFuture<>();
-        // todo fix this for 1.16<
-        PaperLib.getChunkAtAsync(createdWorld.getSpawnLocation()).thenAccept(chunk -> {
 
+        // This won't do anything in 1.11 or lower -> will be laggier
+        PaperLib.getChunkAtAsync(createdWorld.getSpawnLocation()).thenAccept(chunk -> {
             System.out.println("Chunk ticket added for " + gameWorld.getWorldName());
             future.complete(null);
         });

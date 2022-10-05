@@ -8,16 +8,17 @@ import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.Player;
 
-public class BukkitNMS_16_18 extends BukkitNMS_13_15 {
+public class BukkitNMS_16_19 extends BukkitNMS_14_15 {
 
-    public BukkitNMS_16_18(BukkitSkyWarsReloaded plugin, String serverPackage) {
+    public BukkitNMS_16_19(BukkitSkyWarsReloaded plugin, String serverPackage) {
         super(plugin, serverPackage);
     }
 
     @Override
-    public void init() {
-
+    public void initReflection() {
+        // Don't do reflection for latest version of the API
     }
 
     @Override
@@ -25,7 +26,9 @@ public class BukkitNMS_16_18 extends BukkitNMS_13_15 {
         if (!(player instanceof BukkitSWPlayer)) return;
         BukkitSWPlayer bukkitSWPlayer = (BukkitSWPlayer) player;
 
-        bukkitSWPlayer.getPlayer().spigot().sendMessage(
+        Player bukkitPlayer = bukkitSWPlayer.getPlayer();
+        if (bukkitPlayer == null) return;
+        bukkitPlayer.spigot().sendMessage(
                 net.md_5.bungee.api.ChatMessageType.ACTION_BAR,
                 player.getUuid(),
                 new net.md_5.bungee.api.chat.TextComponent(message)
@@ -37,7 +40,9 @@ public class BukkitNMS_16_18 extends BukkitNMS_13_15 {
         if (!(player instanceof BukkitSWPlayer)) return;
         BukkitSWPlayer bukkitSWPlayer = (BukkitSWPlayer) player;
 
-        bukkitSWPlayer.getPlayer().spigot().sendMessage(
+        Player bukkitPlayer = bukkitSWPlayer.getPlayer();
+        if (bukkitPlayer == null) return;
+        bukkitPlayer.spigot().sendMessage(
                 net.md_5.bungee.api.ChatMessageType.SYSTEM,
                 new net.md_5.bungee.api.chat.TextComponent(message));
 

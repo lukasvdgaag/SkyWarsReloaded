@@ -10,13 +10,22 @@ import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
-public class BukkitNMS_13_15 extends BukkitNMS_12 {
+public class BukkitNMS_13 extends BukkitNMS_12 {
 
-    public BukkitNMS_13_15(BukkitSkyWarsReloaded plugin, String serverPackage) {
+    public BukkitNMS_13(BukkitSkyWarsReloaded plugin, String serverPackage) {
         super(plugin, serverPackage);
+    }
+
+    @Override
+    public void initVersionedAPI() {
+        super.initVersionedAPI();
+
+        // Versioned enums
+        voidBiome = Biome.valueOf("THE_VOID");
     }
 
     @Override
