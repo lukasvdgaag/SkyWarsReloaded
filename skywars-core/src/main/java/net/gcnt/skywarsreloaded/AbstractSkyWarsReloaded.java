@@ -2,8 +2,8 @@ package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
-import net.gcnt.skywarsreloaded.data.redis.RedisGameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerStorage;
+import net.gcnt.skywarsreloaded.data.redis.RedisGameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.sql.CoreMySQLStorage;
 import net.gcnt.skywarsreloaded.data.sql.CoreSQLiteStorage;
 import net.gcnt.skywarsreloaded.data.sql.SQLStorage;
@@ -15,6 +15,7 @@ import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.SWEventListener;
+import net.gcnt.skywarsreloaded.listener.minecraft.*;
 import net.gcnt.skywarsreloaded.manager.*;
 import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
 import net.gcnt.skywarsreloaded.manager.gameinstance.LocalGameInstanceManager;
@@ -600,6 +601,21 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         } else { // todo this
             setMessaging(new RedisGameInstanceStorage(this));
         }
+    }
+
+    protected void initSWEventListeners() {
+        new CoreSWBlockBreakListener(this);
+        new CoreSWBlockPlaceListener(this);
+        new CoreSWDeathListener(this);
+        new CoreSWEntityDamageListener(this);
+        new CoreSWEntityDamageByEntityListener(this);
+        new CoreSWFoodLevelChangeListener(this);
+        new CoreSWInteractionListener(this);
+        new CoreSWJoinListener(this);
+        new CoreSWMoveListener(this);
+        new CoreSWPreLoginListener(this);
+        new CoreSWQuitListener(this);
+        new CoreSWWorldInitListener(this);
     }
 
 }

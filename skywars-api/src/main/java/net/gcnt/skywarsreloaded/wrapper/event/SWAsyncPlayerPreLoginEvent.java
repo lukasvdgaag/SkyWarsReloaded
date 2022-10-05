@@ -1,9 +1,11 @@
 package net.gcnt.skywarsreloaded.wrapper.event;
 
+import net.gcnt.skywarsreloaded.event.SWEvent;
+
 import java.net.InetAddress;
 import java.util.UUID;
 
-public interface SWAsyncPlayerPreLoginEvent {
+public interface SWAsyncPlayerPreLoginEvent extends SWEvent {
 
     String getName();
 
