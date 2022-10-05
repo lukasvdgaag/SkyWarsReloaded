@@ -2,7 +2,7 @@ package net.gcnt.skywarsreloaded.manager;
 
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.event.SWEvent;
-import net.gcnt.skywarsreloaded.listener.SWAdvancedEventListener;
+import net.gcnt.skywarsreloaded.listener.SWEventListener;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class CoreSWEventManager implements SWEventManager {
 
     private final SkyWarsReloaded plugin;
-    private final ArrayList<SWAdvancedEventListener<?>> listeners;
+    private final ArrayList<SWEventListener<?>> listeners;
 
     public CoreSWEventManager(SkyWarsReloaded plugin) {
         this.plugin = plugin;
@@ -20,14 +20,14 @@ public class CoreSWEventManager implements SWEventManager {
     }
 
     @Override
-    public void unregisterListener(SWAdvancedEventListener<?> listener) {
+    public void unregisterListener(SWEventListener<?> listener) {
         synchronized (listeners) {
             this.listeners.remove(listener);
         }
     }
 
     @Override
-    public void registerListener(SWAdvancedEventListener<?> listener) {
+    public void registerListener(SWEventListener<?> listener) {
         synchronized (listeners) {
             if (!this.listeners.contains(listener)) {
                 this.listeners.add(listener);
@@ -39,13 +39,13 @@ public class CoreSWEventManager implements SWEventManager {
     public <T extends SWEvent> void callEvent(T event) {
         @SuppressWarnings("unchecked")
         Class<T> eventClass = (Class<T>) event.getClass();
-        List<SWAdvancedEventListener<T>> relevantEventListeners;
+        List<SWEventListener<T>> relevantEventListeners;
         synchronized (listeners) {
             //noinspection unchecked
             relevantEventListeners = this.listeners.stream()
                     .filter(listener -> listener.getEventClass().isAssignableFrom(eventClass))
                     .sorted(Comparator.comparingInt(listener -> listener.getPriority().ordinal()))
-                    .map(listener -> (SWAdvancedEventListener<T>) listener)
+                    .map(listener -> (SWEventListener<T>) listener)
                     .collect(Collectors.toList());
         }
         relevantEventListeners.forEach(listener -> listener.onEvent(event));

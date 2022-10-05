@@ -110,6 +110,10 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
     @EventHandler
     public void onPlayerBlockBreakEvent(BlockBreakEvent event) {
+
+        // this.plugin.getEventManager().callEvent(new CoreSWBlockBreakEvent(...));
+
+
         // Get data
         SWPlayer p = this.getPlayerFromBukkitPlayer(event.getPlayer());
         Block block = event.getBlock();

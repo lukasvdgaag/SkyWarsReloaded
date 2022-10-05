@@ -69,7 +69,7 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     }
 
     @Override
-    public void initEventListener() {
+    public void initPlatformEventListeners() {
         BukkitSWEventListener bukkitEventListener = new BukkitSWEventListener(this);
         this.plugin.getServer().getPluginManager().registerEvents(bukkitEventListener, this.plugin);
         setEventListener(bukkitEventListener);

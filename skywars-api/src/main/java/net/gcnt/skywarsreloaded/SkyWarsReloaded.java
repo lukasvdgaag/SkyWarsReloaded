@@ -179,6 +179,12 @@ public interface SkyWarsReloaded {
 
     void setGameInstanceStorage(GameInstanceStorage instanceStorage);
 
+    // Events
+
+    void setEventManager(SWEventManager eventManager);
+
+    SWEventManager getEventManager();
+
     // Listeners
 
     void setPlatformUtils(PlatformUtils utils);

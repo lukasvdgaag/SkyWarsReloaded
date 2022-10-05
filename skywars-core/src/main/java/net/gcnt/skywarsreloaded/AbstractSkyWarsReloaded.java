@@ -70,6 +70,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SWChestFillerManager chestFillerManager;
     private SWGuiManager guiManager;
     private SWInventoryManager inventoryManager;
+    private SWEventManager eventManager;
 
     // others
     private SWCommandSender consoleSender;
@@ -154,8 +155,10 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         getCommandManager().registerKitCommands();
         initCommands(); // Register commands to the platform
 
-        // Events - Init objects and register event listener to the platform
-        initEventListener();
+        // Events
+        initEventManager();
+        initSWEventListeners();
+        initPlatformEventListeners(); // Registers event listeners for the platform specified
 
         // Plugin messaging
         // todo
@@ -433,6 +436,16 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
+    public void setEventManager(SWEventManager eventManager) {
+        this.eventManager = eventManager;
+    }
+
+    @Override
+    public SWEventManager getEventManager() {
+        return this.eventManager;
+    }
+
+    @Override
     public void setPlatformUtils(PlatformUtils utils) {
         this.platformUtils = utils;
     }
@@ -502,7 +515,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     protected abstract void initConsoleSender();
 
-    protected abstract void initEventListener();
+    protected abstract void initPlatformEventListeners();
 
     protected abstract void initGameInstanceManager();
 
@@ -563,6 +576,10 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     protected void initHookManager() {
         setHookManager(new CoreSWHookManager(this));
+    }
+
+    private void initEventManager() {
+        setEventManager(new CoreSWEventManager(this));
     }
 
     protected void initSQLStorage() {
