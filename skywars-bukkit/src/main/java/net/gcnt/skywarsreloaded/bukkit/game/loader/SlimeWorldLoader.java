@@ -14,6 +14,7 @@ import net.gcnt.skywarsreloaded.bukkit.game.BukkitLocalGameInstance;
 import net.gcnt.skywarsreloaded.game.GamePlayer;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
@@ -50,7 +51,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public CompletableFuture<Boolean> generateWorldInstance(GameInstance gameWorld) {
+    public CompletableFuture<Boolean> generateWorldInstance(LocalGameInstance gameWorld) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         this.plugin.getScheduler().runAsync(() -> {
             try {
@@ -67,7 +68,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
                 }
 
                 SlimeWorld templateWorld = slimeWorldManagerPlugin.loadWorld(slimeLoader, templateName, true, propertyMap);
-                SlimeWorld tmpWorld = templateWorld.clone(gameWorld.getId());
+                SlimeWorld tmpWorld = templateWorld.clone(gameWorld.getId().toString());
 
                 // This method must be called synchronously
                 plugin.getScheduler().callSyncMethod(() -> {
@@ -104,7 +105,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public CompletableFuture<Void> createEmptyWorld(GameInstance gameWorld) {
+    public CompletableFuture<Void> createEmptyWorld(LocalGameInstance gameWorld) {
         // Create a new and empty property map
         SlimePropertyMap properties = new SlimePropertyMap();
 
@@ -121,7 +122,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public void deleteWorldInstance(GameInstance gameWorld) {
+    public void deleteWorldInstance(LocalGameInstance gameWorld) {
         String spawnLocationStr = this.plugin.getDataConfig().getString(RuntimeDataProperties.LOBBY_SPAWN.toString(), null);
         SWCoord coord = null;
         try {
@@ -144,11 +145,11 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     @Override
     public void deleteMap(GameTemplate gameTemplate, boolean forceUnloadInstances) {
         if (forceUnloadInstances) {
-            for (GameInstance gameWorld : this.plugin.getGameInstanceManager().getGameWorldsByTemplate(gameTemplate)) {
+            for (GameInstance gameWorld : this.plugin.getGameInstanceManager().getGameInstancesByTemplate(gameTemplate)) {
                 if (!gameWorld.getState().equals(GameState.DISABLED)) {
                     // todo gameWorld.forceStop();
                 }
-                gameWorld.getWorld().unload(false);
+                ((LocalGameInstance) gameWorld).getWorld().unload(false);
             }
         }
 
@@ -160,7 +161,7 @@ public class SlimeWorldLoader extends BukkitWorldLoader {
     }
 
     @Override
-    public CompletableFuture<Boolean> save(GameInstance gameWorld) {
+    public CompletableFuture<Boolean> save(LocalGameInstance gameWorld) {
         boolean successful = true;
         try {
             assert gameWorld instanceof BukkitLocalGameInstance;
