@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
+import net.gcnt.skywarsreloaded.data.messaging.SWMessaging;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerStorage;
 import net.gcnt.skywarsreloaded.data.redis.RedisGameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.redis.SWRedisConnection;
@@ -15,7 +16,7 @@ import net.gcnt.skywarsreloaded.game.chest.filler.ChestFillerManager;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
-import net.gcnt.skywarsreloaded.listener.SWEventListener;
+import net.gcnt.skywarsreloaded.listener.PlatformSWEventListener;
 import net.gcnt.skywarsreloaded.listener.minecraft.*;
 import net.gcnt.skywarsreloaded.manager.*;
 import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
@@ -50,9 +51,11 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private SWHookManager hookManager;
 
     // storage
-    private SQLStorage mysqlStorage;
-    private SQLStorage sqliteStorage;
+    private SQLStorage sqlStorage;
     private SWRedisConnection redisConnection;
+
+    // Messaging
+    private SWMessaging messaging;
 
     // Managers
     private YAMLManager yamlManager;
@@ -66,7 +69,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     private CageManager cageManager;
     private UnlockablesManager unlockablesManager;
     private EntityManager entityManager;
-    private SWEventListener<?> eventListener;
+    private PlatformSWEventListener platformEventListener;
     private GameWorldLoader worldLoader;
     private ScoreboardManager scoreboardManager;
     private ItemManager itemManager;
@@ -454,13 +457,13 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
-    public SWEventListener<?> getEventListener() {
-        return this.eventListener;
+    public PlatformSWEventListener getPlatformEventListener() {
+        return this.platformEventListener;
     }
 
     @Override
-    public void setEventListener(SWEventListener<?> listener) {
-        this.eventListener = listener;
+    public void setPlatformEventListener(PlatformSWEventListener listener) {
+        this.platformEventListener = listener;
     }
 
     public SWScheduler getScheduler() {
@@ -504,6 +507,26 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     @Override
     public void setRedisConnection(SWRedisConnection redisConnection) {
         this.redisConnection = redisConnection;
+    }
+
+    @Override
+    public SWMessaging getMessaging() {
+        return messaging;
+    }
+
+    @Override
+    public void setMessaging(SWMessaging messaging) {
+        this.messaging = messaging;
+    }
+
+    @Override
+    public SQLStorage getSQLStorage() {
+        return sqlStorage;
+    }
+
+    @Override
+    public void setSQLStorage(SQLStorage storage) {
+        this.sqlStorage = storage;
     }
 
     /**
@@ -570,16 +593,16 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         if (getConfig().getString(ConfigProperties.MESSAGING_TYPE.toString()).equalsIgnoreCase("Redis")) {
             setGameInstanceStorage(new RedisGameInstanceStorage(this, getRedisConnection()));
         } else {
-            setGameInstanceStorage(new SQLGameInstanceTable(getMySQLStorage()));
+            setGameInstanceStorage(new SQLGameInstanceTable(getSQLStorage()));
         }
     }
 
     protected void initPlayerStorage() {
         // selecting the right storage type based on the config.
         if (getConfig().getString(ConfigProperties.STORAGE_TYPE.toString()).equalsIgnoreCase("MySQL")) {
-            setPlayerStorage(new SQLPlayerTable(getMySQLStorage()));
+            setPlayerStorage(new SQLPlayerTable(getSQLStorage()));
         } else {
-            setPlayerStorage(new SQLitePlayerTable(getSQLiteStorage()));
+            setPlayerStorage(new SQLitePlayerTable(getSQLStorage()));
         }
     }
 
@@ -603,20 +626,20 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         // enabling SQLite only if is enabled in the config.
         // enabling MySQL only if is enabled in the config.
         if (getConfig().getString(ConfigProperties.STORAGE_TYPE.toString()).equalsIgnoreCase("MySQL")) {
-            setMySQLStorage(new CoreMySQLStorage(this));
+            setSQLStorage(new CoreMySQLStorage(this));
         } else {
             // using SQLite as default option
-            setSQLiteStorage(new CoreSQLiteStorage(this));
+            setSQLStorage(new CoreSQLiteStorage(this));
         }
     }
 
     protected void initMessaging() {
         // enabling SQLite only if is enabled in the config.
-        if (getConfig().getString(ConfigProperties.MESSAGING_TYPE.toString()).equalsIgnoreCase("Redis")) {
-            setSQLiteStorage(new CoreSQLiteStorage(this));
-        } else { // todo this
-//            setMessaging(new RedisGameInstanceStorage(this, getRedisConnection()));
-        }
+//        if (getConfig().getString(ConfigProperties.MESSAGING_TYPE.toString()).equalsIgnoreCase("Redis")) {
+//            setSQLStorage(new CoreSQLiteStorage(this));
+//        } else { // todo this
+////            setMessaging(new RedisGameInstanceStorage(this, getRedisConnection()));
+//        }
     }
 
     protected void initSWEventListeners() {

@@ -57,7 +57,7 @@ public class BukkitSWInventory implements SWInventory {
 
     @Override
     public Item getItem(int slot) {
-        return BukkitItem.fromBukkit(plugin, inventory.getItem(slot));
+        return new BukkitItem(plugin, inventory.getItem(slot));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class BukkitSWInventory implements SWInventory {
 
         for (int i = 0; i < bukkitContents.length; i++) {
             final ItemStack item = bukkitContents[i];
-            contents[i] = item == null || item.getType() == Material.AIR ? null : BukkitItem.fromBukkit(plugin, item);
+            contents[i] = item == null || item.getType() == Material.AIR ? null : new BukkitItem(plugin, item);
         }
 
         return contents;

@@ -9,7 +9,7 @@ import net.gcnt.skywarsreloaded.data.sql.SQLStorage;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.hook.SWHook;
-import net.gcnt.skywarsreloaded.listener.SWEventListener;
+import net.gcnt.skywarsreloaded.listener.PlatformSWEventListener;
 import net.gcnt.skywarsreloaded.manager.*;
 import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
 import net.gcnt.skywarsreloaded.utils.PlatformUtils;
@@ -162,13 +162,9 @@ public interface SkyWarsReloaded {
 
     // Player Data
 
-    SQLStorage getMySQLStorage();
+    SQLStorage getSQLStorage();
 
-    void setMySQLStorage(SQLStorage storage);
-
-    SQLStorage getSQLiteStorage();
-
-    void setSQLiteStorage(SQLStorage storage);
+    void setSQLStorage(SQLStorage storage);
 
     SWRedisConnection getRedisConnection();
 
@@ -194,9 +190,9 @@ public interface SkyWarsReloaded {
 
     void setPlatformUtils(PlatformUtils utils);
 
-    SWEventListener<?> getEventListener();
+    PlatformSWEventListener getPlatformEventListener();
 
-    void setEventListener(SWEventListener<?> listener);
+    void setPlatformEventListener(PlatformSWEventListener listener);
 
     // Messaging
 

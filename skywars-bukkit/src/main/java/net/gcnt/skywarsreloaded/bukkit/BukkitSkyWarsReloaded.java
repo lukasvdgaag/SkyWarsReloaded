@@ -16,6 +16,7 @@ import net.gcnt.skywarsreloaded.manager.CoreSWCommandManager;
 import net.gcnt.skywarsreloaded.manager.CoreUnlockablesManager;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -72,7 +73,7 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     public void initPlatformEventListeners() {
         BukkitSWEventListener bukkitEventListener = new BukkitSWEventListener(this);
         this.plugin.getServer().getPluginManager().registerEvents(bukkitEventListener, this.plugin);
-        setEventListener(bukkitEventListener);
+        setPlatformEventListener(bukkitEventListener);
     }
 
     @Override
@@ -199,6 +200,6 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
 
     @Override
     public void disableSkyWars() {
-
+        HandlerList.unregisterAll((BukkitSWEventListener) this.getPlatformEventListener());
     }
 }

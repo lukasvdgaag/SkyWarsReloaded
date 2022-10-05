@@ -24,11 +24,6 @@ titles:
     won: "&6&lVICTORY!\n&7You were the last man standing!"
     lost: "&c&lGAME END\n&7You weren't victorious this time"
 
-  ConfigProperties.ITEMS_GENERAL_CLOSE;
-  MessageProperties.ITEMS_GENERAL_CLOSE;
-  
-  ItemProperties.GENERAL_CLOSE;
-
 items:
   general:
     close:

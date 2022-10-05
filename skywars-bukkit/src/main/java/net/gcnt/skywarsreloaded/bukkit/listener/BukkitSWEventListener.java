@@ -5,6 +5,7 @@ import net.gcnt.skywarsreloaded.bukkit.managers.BukkitInventoryManager;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.event.BukkitSWPlayerFoodLevelChangeEvent;
 import net.gcnt.skywarsreloaded.enums.DeathReason;
+import net.gcnt.skywarsreloaded.listener.PlatformSWEventListener;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BukkitSWEventListener implements Listener {
+public class BukkitSWEventListener implements Listener, PlatformSWEventListener {
 
     private final SkyWarsReloaded plugin;
 
@@ -190,7 +191,7 @@ public class BukkitSWEventListener implements Listener {
 
         SWPlayerFoodLevelChangeEvent swEvent = new BukkitSWPlayerFoodLevelChangeEvent(
                 event, p, event.getFoodLevel(),
-                BukkitItem.fromBukkit(plugin, event.getItem())
+                new BukkitItem(plugin, event.getItem())
         );
         plugin.getEventManager().callEvent(swEvent);
     }
@@ -245,7 +246,7 @@ public class BukkitSWEventListener implements Listener {
 
         List<Item> drops = new ArrayList<>();
         for (ItemStack stack : event.getDrops()) {
-            drops.add(BukkitItem.fromBukkit(plugin, stack));
+            drops.add(new BukkitItem(plugin, stack));
         }
 
         // Fire core event
@@ -302,7 +303,7 @@ public class BukkitSWEventListener implements Listener {
                 event.getSlot(),
                 event.getRawSlot(),
                 event.isShiftClick(),
-                BukkitItem.fromBukkit(plugin, event.getCurrentItem())
+                new BukkitItem(plugin, event.getCurrentItem())
         );
         plugin.getEventManager().callEvent(swEvent);
 

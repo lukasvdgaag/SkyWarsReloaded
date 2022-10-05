@@ -11,8 +11,6 @@ public class BukkitNMS_9_11 extends BukkitNMS_8 {
 
     @Override
     public void initVersionedAPI() {
-        super.initVersionedAPI();
-
         // Versioned enums
         voidBiome = Biome.valueOf("VOID");
     }

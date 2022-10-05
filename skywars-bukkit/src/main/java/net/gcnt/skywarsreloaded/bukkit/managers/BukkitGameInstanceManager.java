@@ -3,7 +3,7 @@ package net.gcnt.skywarsreloaded.bukkit.managers;
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.game.BukkitLocalGameInstance;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
-import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.manager.gameinstance.CoreLocalGameInstanceManager;
 
 import java.util.UUID;
@@ -16,8 +16,8 @@ public class BukkitGameInstanceManager extends CoreLocalGameInstanceManager {
     }
 
     @Override
-    public CompletableFuture<GameInstance> createGameWorld(GameTemplate data) {
-        GameInstance localGameInstance = new BukkitLocalGameInstance((BukkitSkyWarsReloaded) plugin, UUID.randomUUID().toString(), data);
+    public CompletableFuture<LocalGameInstance> createGameWorld(GameTemplate data) {
+        LocalGameInstance localGameInstance = new BukkitLocalGameInstance((BukkitSkyWarsReloaded) plugin, UUID.randomUUID(), data);
         this.registerGameWorld(localGameInstance);
         return CompletableFuture.completedFuture(localGameInstance);
     }

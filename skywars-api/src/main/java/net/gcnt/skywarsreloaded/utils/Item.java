@@ -1,5 +1,7 @@
 package net.gcnt.skywarsreloaded.utils;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.awt.*;
 import java.util.List;
 
@@ -41,10 +43,7 @@ public interface Item {
 
     void setColor(Color color);
 
-    void clearCachedItem();
-
-    void cacheItem();
-
+    @Nullable
     String getSkullOwner();
 
     void setSkullOwner(String owner);

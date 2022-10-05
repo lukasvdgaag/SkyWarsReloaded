@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.bukkit.protocol;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.item.BukkitSWEnchantmentType;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.player.BukkitSWPlayer;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWChunkGenerator;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
@@ -9,6 +10,7 @@ import net.gcnt.skywarsreloaded.protocol.NMS;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.item.SWEnchantmentType;
 import net.gcnt.skywarsreloaded.wrapper.server.SWGameRule;
 import net.gcnt.skywarsreloaded.wrapper.world.SWChunk;
 import net.gcnt.skywarsreloaded.wrapper.world.SWChunkGenerator;
@@ -18,6 +20,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
@@ -215,5 +218,10 @@ public class BukkitNMS_8 implements NMS {
     @Override
     public String getVoidGeneratorSettings() {
         return "3;minecraft:air;2";
+    }
+
+    @Override
+    public SWEnchantmentType getEnchantment(String name) {
+        return new BukkitSWEnchantmentType(Enchantment.getByName(name));
     }
 }

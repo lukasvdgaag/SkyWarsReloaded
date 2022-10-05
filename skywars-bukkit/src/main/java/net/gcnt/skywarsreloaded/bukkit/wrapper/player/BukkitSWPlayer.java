@@ -55,7 +55,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
             else item = player.getInventory().getItemInMainHand();
         } else item = player.getInventory().getItemInHand();
         if (item == null || item.getType() == Material.AIR) return null;
-        return BukkitItem.fromBukkit(plugin, item);
+        return new BukkitItem(plugin, item);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
         Item[] items = new Item[contents.length];
         for (int i = 0; i < 36; i++) {
             ItemStack item = contents[i];
-            items[i] = BukkitItem.fromBukkit(plugin, item == null || item.getType() == Material.AIR ? null : item);
+            items[i] = new BukkitItem(plugin, item == null || item.getType() == Material.AIR ? null : item);
         }
         return items;
     }
@@ -79,13 +79,13 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     @Override
     public Item getSlot(int slot) throws NullPointerException {
         if (this.player == null) throw new NullPointerException("Bukkit player is null");
-        return BukkitItem.fromBukkit(plugin, player.getInventory().getItem(slot));
+        return new BukkitItem(plugin, player.getInventory().getItem(slot));
     }
 
     @Override
     public Item getHelmet() throws NullPointerException {
         if (this.player == null) throw new NullPointerException("Bukkit player is null");
-        return BukkitItem.fromBukkit(plugin, player.getInventory().getHelmet());
+        return new BukkitItem(plugin, player.getInventory().getHelmet());
     }
 
     @Override
@@ -97,7 +97,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     @Override
     public Item getChestplate() throws NullPointerException {
         if (this.player == null) throw new NullPointerException("Bukkit player is null");
-        return BukkitItem.fromBukkit(plugin, player.getInventory().getChestplate());
+        return new BukkitItem(plugin, player.getInventory().getChestplate());
     }
 
     @Override
@@ -109,7 +109,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     @Override
     public Item getLeggings() throws NullPointerException {
         if (this.player == null) throw new NullPointerException("Bukkit player is null");
-        return BukkitItem.fromBukkit(plugin, player.getInventory().getLeggings());
+        return new BukkitItem(plugin, player.getInventory().getLeggings());
     }
 
     @Override
@@ -121,7 +121,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     @Override
     public Item getBoots() throws NullPointerException {
         if (this.player == null) throw new NullPointerException("Bukkit player is null");
-        return BukkitItem.fromBukkit(plugin, player.getInventory().getBoots());
+        return new BukkitItem(plugin, player.getInventory().getBoots());
     }
 
     @Override

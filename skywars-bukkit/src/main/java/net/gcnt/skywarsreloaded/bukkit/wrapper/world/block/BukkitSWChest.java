@@ -22,7 +22,7 @@ public class BukkitSWChest extends BukkitSWBlock implements SWChest {
         final Item[] contents = new Item[bukkitContents.length];
 
         for (int i = 0; i < bukkitContents.length; i++) {
-            contents[i] = BukkitItem.fromBukkit(this.plugin, bukkitContents[i]);
+            contents[i] = new BukkitItem(this.plugin, bukkitContents[i]);
         }
 
         return contents;

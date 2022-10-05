@@ -2,16 +2,20 @@ package net.gcnt.skywarsreloaded.bukkit.protocol;
 
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
+import net.gcnt.skywarsreloaded.bukkit.wrapper.item.BukkitSWEnchantmentType;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.world.BukkitSWWorld;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.wrapper.item.SWEnchantmentType;
 import net.gcnt.skywarsreloaded.wrapper.server.SWGameRule;
 import net.gcnt.skywarsreloaded.wrapper.world.SWWorld;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 public class BukkitNMS_13 extends BukkitNMS_12 {
@@ -22,8 +26,6 @@ public class BukkitNMS_13 extends BukkitNMS_12 {
 
     @Override
     public void initVersionedAPI() {
-        super.initVersionedAPI();
-
         // Versioned enums
         voidBiome = Biome.valueOf("THE_VOID");
     }
@@ -66,11 +68,16 @@ public class BukkitNMS_13 extends BukkitNMS_12 {
 
     @Override
     public void setBlock(SWCoord loc, Item item) {
-        if (loc.getWorld() == null || !(loc.getWorld() instanceof BukkitSWWorld) || !(item instanceof BukkitItem)) return;
+        if (loc == null || !(loc.getWorld() instanceof BukkitSWWorld) || !(item instanceof BukkitItem)) return;
         World world = ((BukkitSWWorld) loc.getWorld()).getBukkitWorld();
         ItemStack itemStack = ((BukkitItem) item).getBukkitItem();
 
         Block bukkitBlock = world.getBlockAt(loc.x(), loc.y(), loc.z());
         bukkitBlock.setType(itemStack.getType());
+    }
+
+    @Override
+    public SWEnchantmentType getEnchantment(String name) {
+        return new BukkitSWEnchantmentType(Enchantment.getByKey(NamespacedKey.minecraft(name)));
     }
 }

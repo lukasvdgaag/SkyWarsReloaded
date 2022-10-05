@@ -20,10 +20,13 @@ public abstract class AbstractKitManager implements KitManager {
     static {
         LAYOUT_FILLED = new Integer[54];
         LAYOUT_OUTLINED = new Integer[28];
+
+        int lastOutlinedIndex = 0;
         for (int i = 0; i < 54; i++) {
             LAYOUT_FILLED[i] = i;
             if (i > 9 && i < 45 && i % 9 != 0 && i % 9 != 8) {
-                LAYOUT_OUTLINED[i] = i;
+                LAYOUT_OUTLINED[lastOutlinedIndex] = i;
+                lastOutlinedIndex++;
             }
         }
     }

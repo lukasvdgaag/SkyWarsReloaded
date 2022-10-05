@@ -9,9 +9,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 
+import java.util.UUID;
+
 public class BukkitLocalGameInstance extends AbstractLocalGameInstance {
 
-    public BukkitLocalGameInstance(BukkitSkyWarsReloaded plugin, String id, GameTemplate gameData) {
+    public BukkitLocalGameInstance(BukkitSkyWarsReloaded plugin, UUID id, GameTemplate gameData) {
         super(plugin, id, gameData);
     }
 

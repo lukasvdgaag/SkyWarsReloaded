@@ -5,7 +5,6 @@ import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.types.SpawnType;
-import net.gcnt.skywarsreloaded.utils.AbstractItem;
 import net.gcnt.skywarsreloaded.utils.Message;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
@@ -140,7 +139,7 @@ public class SetSpawnCmd extends Cmd {
 
                 if (result.isSuccess()) {
                     plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_SET_SPAWN_PLAYER.toString()).replace("%template%", template.getName()).sendTitle(player);
-                    location.getWorld().setBlockAt(blockLocation, AbstractItem.getItem("BEACON"));
+                    location.getWorld().setBlockAt(blockLocation, plugin.getItemManager().createItem("BEACON"));
                     player.teleport(player.getLocation().add(0, 1, 0));
                 } else {
                     plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_SET_SPAWN_PLAYER_FAIL.toString()).replace("%template%", template.getName()).sendTitle(player);

@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.protocol;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.item.SWEnchantmentType;
 import net.gcnt.skywarsreloaded.wrapper.server.SWGameRule;
 import net.gcnt.skywarsreloaded.wrapper.world.SWChunk;
 import net.gcnt.skywarsreloaded.wrapper.world.SWChunkGenerator;
@@ -25,4 +26,7 @@ public interface NMS {
     void addPluginChunkTicket(SWChunk chunk);
 
     String getVoidGeneratorSettings();
+
+    SWEnchantmentType getEnchantment(String name);
+
 }

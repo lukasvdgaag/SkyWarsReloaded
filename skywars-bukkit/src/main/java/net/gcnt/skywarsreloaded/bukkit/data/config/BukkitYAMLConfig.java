@@ -220,7 +220,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public Item getItem(String category) {
-        return getItem(category, new BukkitItem(plugin, null));
+        return getItem(category, new BukkitItem(plugin, "STONE"));
     }
 
     @Override
