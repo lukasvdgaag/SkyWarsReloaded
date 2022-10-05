@@ -11,8 +11,8 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 
-public class CoreSWRedisConnection implements SWRedisConnection{
-    public final String REDIS_BASE_CHANNEL = "swr";
+public class CoreSWRedisConnection implements SWRedisConnection {
+    public static final String REDIS_BASE_CHANNEL = "swr";
 
     protected final SkyWarsReloaded plugin;
 
@@ -27,6 +27,7 @@ public class CoreSWRedisConnection implements SWRedisConnection{
         this.registeredListeners = new HashMap<>();
     }
 
+    @Override
     public Jedis getConnection() {
         return jedisPool.getResource();
     }

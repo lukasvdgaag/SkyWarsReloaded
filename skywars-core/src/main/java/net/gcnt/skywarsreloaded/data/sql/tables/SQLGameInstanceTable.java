@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.data.sql.tables;
 
+import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.sql.CoreSQLTable;
 import net.gcnt.skywarsreloaded.data.sql.SQLStorage;
@@ -26,6 +27,10 @@ public class SQLGameInstanceTable extends CoreSQLTable<GameInstance> implements 
         super(storage, "sw_game_instances");
 
         updateTask = null;
+    }
+
+    @Override
+    public void setup(YAMLConfig config) {
     }
 
     @Override
@@ -207,5 +212,4 @@ public class SQLGameInstanceTable extends CoreSQLTable<GameInstance> implements 
             e.printStackTrace();
         }
     }
-
 }

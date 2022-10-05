@@ -1,5 +1,7 @@
 package net.gcnt.skywarsreloaded.data.redis;
 
+import redis.clients.jedis.Jedis;
+
 import java.util.function.BiConsumer;
 
 public interface SWRedisConnection {
@@ -8,5 +10,7 @@ public interface SWRedisConnection {
 
     // BiConsumer<String channel, String message>
     void registerPubSubListener(String channel, BiConsumer<String, String> consumer);
+
+    Jedis getConnection();
 
 }

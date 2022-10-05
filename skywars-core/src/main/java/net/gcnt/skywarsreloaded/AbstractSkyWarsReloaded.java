@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerStorage;
 import net.gcnt.skywarsreloaded.data.redis.RedisGameInstanceStorage;
+import net.gcnt.skywarsreloaded.data.redis.SWRedisConnection;
 import net.gcnt.skywarsreloaded.data.sql.CoreMySQLStorage;
 import net.gcnt.skywarsreloaded.data.sql.CoreSQLiteStorage;
 import net.gcnt.skywarsreloaded.data.sql.SQLStorage;
@@ -51,6 +52,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     // storage
     private SQLStorage mysqlStorage;
     private SQLStorage sqliteStorage;
+    private SWRedisConnection redisConnection;
 
     // Managers
     private YAMLManager yamlManager;
@@ -494,6 +496,16 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         return this.platformUtils;
     }
 
+    @Override
+    public SWRedisConnection getRedisConnection() {
+        return redisConnection;
+    }
+
+    @Override
+    public void setRedisConnection(SWRedisConnection redisConnection) {
+        this.redisConnection = redisConnection;
+    }
+
     /**
      * Override to run required initialization before core enable
      */
@@ -555,7 +567,11 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     protected abstract void initInventoryManager();
 
     protected void initGameInstanceStorage() {
-        setGameInstanceStorage(new SQLGameInstanceTable(getMySQLStorage()));
+        if (getConfig().getString(ConfigProperties.MESSAGING_TYPE.toString()).equalsIgnoreCase("Redis")) {
+            setGameInstanceStorage(new RedisGameInstanceStorage(this, getRedisConnection()));
+        } else {
+            setGameInstanceStorage(new SQLGameInstanceTable(getMySQLStorage()));
+        }
     }
 
     protected void initPlayerStorage() {
@@ -599,7 +615,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         if (getConfig().getString(ConfigProperties.MESSAGING_TYPE.toString()).equalsIgnoreCase("Redis")) {
             setSQLiteStorage(new CoreSQLiteStorage(this));
         } else { // todo this
-            setMessaging(new RedisGameInstanceStorage(this));
+//            setMessaging(new RedisGameInstanceStorage(this, getRedisConnection()));
         }
     }
 

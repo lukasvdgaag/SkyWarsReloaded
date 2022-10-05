@@ -34,18 +34,18 @@ public class RedisGameInstanceStorage implements GameInstanceStorage, SWRedisMes
     private final String REDIS_GAME_INSTANCE_CHANNEL;
     private final String REDIS_GAME_INSTANCE_UPDATE_CHANNEL;
     private final SkyWarsReloaded plugin;
-    private final CoreSWRedisConnection redisConnection;
+    private final SWRedisConnection redisConnection;
 
     // Runtime data
     private final ConcurrentHashMap<UUID, Long> lastUpdateTimes;
     private SWRunnable swRunnable;
 
-    public RedisGameInstanceStorage(SkyWarsReloaded plugin, CoreSWRedisConnection redisConnection) {
+    public RedisGameInstanceStorage(SkyWarsReloaded plugin, SWRedisConnection redisConnection) {
         this.plugin = plugin;
         this.redisConnection = redisConnection;
         this.lastUpdateTimes = new ConcurrentHashMap<>();
 
-        this.REDIS_GAME_INSTANCE_CHANNEL = redisConnection.REDIS_BASE_CHANNEL + ".gameinstance";
+        this.REDIS_GAME_INSTANCE_CHANNEL = CoreSWRedisConnection.REDIS_BASE_CHANNEL + ".gameinstance";
         this.REDIS_GAME_INSTANCE_UPDATE_CHANNEL = this.REDIS_GAME_INSTANCE_CHANNEL + ".update";
     }
 

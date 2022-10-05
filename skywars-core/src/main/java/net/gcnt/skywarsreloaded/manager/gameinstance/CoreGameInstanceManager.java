@@ -73,7 +73,7 @@ public abstract class CoreGameInstanceManager<G extends GameInstance> implements
     @Override
     public G getGameInstanceById(UUID uuid) {
         if (uuid == null) return null;
-        return gameInstances.get(UUID.fromString(uuid));
+        return gameInstances.get(uuid);
     }
 
     @Override
@@ -126,7 +126,7 @@ public abstract class CoreGameInstanceManager<G extends GameInstance> implements
     public abstract CompletableFuture<G> createGameWorld(GameTemplate data);
 
     @Override
-    public CompletableFuture<Void> deleteGameInstance(GameInstance world) {
+    public CompletableFuture<Void> deleteGameInstance(LocalGameInstance world) {
         this.getGameInstances().remove(world.getId());
 
         return CompletableFuture.completedFuture(null);

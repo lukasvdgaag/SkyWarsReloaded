@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded.manager.gameinstance;
 
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 
 import java.util.Collection;
 import java.util.List;
@@ -75,7 +76,7 @@ public interface GameInstanceManager<G extends GameInstance> {
      *
      * @param instance GameWorld to remove.
      */
-    CompletableFuture<Void> deleteGameInstance(GameInstance instance);
+    CompletableFuture<Void> deleteGameInstance(LocalGameInstance instance);
 
     /**
      * Get a GameWorld by its assigned world name.

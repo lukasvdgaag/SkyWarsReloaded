@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.messaging.SWMessaging;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerStorage;
+import net.gcnt.skywarsreloaded.data.redis.SWRedisConnection;
 import net.gcnt.skywarsreloaded.data.sql.SQLStorage;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
@@ -168,6 +169,10 @@ public interface SkyWarsReloaded {
     SQLStorage getSQLiteStorage();
 
     void setSQLiteStorage(SQLStorage storage);
+
+    SWRedisConnection getRedisConnection();
+
+    void setRedisConnection(SWRedisConnection redisConnection);
 
     SWPlayerStorage getPlayerStorage();
 

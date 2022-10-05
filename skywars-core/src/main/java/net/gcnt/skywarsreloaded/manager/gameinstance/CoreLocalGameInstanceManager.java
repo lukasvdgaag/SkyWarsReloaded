@@ -29,7 +29,7 @@ public abstract class CoreLocalGameInstanceManager extends CoreGameInstanceManag
     @Override
     public CompletableFuture<Void> deleteGameInstance(LocalGameInstance world) {
         plugin.getWorldLoader().deleteWorldInstance(world);
-        return super.deleteGameInstance(world);
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override

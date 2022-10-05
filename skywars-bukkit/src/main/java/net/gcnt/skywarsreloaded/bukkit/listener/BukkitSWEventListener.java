@@ -5,7 +5,6 @@ import net.gcnt.skywarsreloaded.bukkit.managers.BukkitInventoryManager;
 import net.gcnt.skywarsreloaded.bukkit.utils.BukkitItem;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.event.BukkitSWPlayerFoodLevelChangeEvent;
 import net.gcnt.skywarsreloaded.enums.DeathReason;
-import net.gcnt.skywarsreloaded.listener.AbstractSWOLDTOREMOVEEventListener;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
@@ -37,10 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener implements Listener {
+public class BukkitSWEventListener implements Listener {
 
-    public BukkitSWEventListener(SkyWarsReloaded pluginIn) {
-        super(pluginIn);
+    private final SkyWarsReloaded plugin;
+
+    public BukkitSWEventListener(SkyWarsReloaded plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler
@@ -51,7 +52,8 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
         // Fire event
         SWAsyncPlayerPreLoginEvent swEvent = new CoreSWAsyncPlayerPreLoginEvent(event.getUniqueId(), event.getName(),
                 event.getAddress(), result, null);
-        this.onAsyncPlayerPreLogin(swEvent);
+
+        plugin.getEventManager().callEvent(swEvent);
 
         // Update changes
         SWAsyncPlayerPreLoginEvent.Result updatedResult = swEvent.getResult();
@@ -69,7 +71,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
         // Fire Event
         SWPlayerJoinEvent swEvent = new CoreSWPlayerJoinEvent(p, event.getJoinMessage());
-        this.onPlayerJoin(swEvent);
+        plugin.getEventManager().callEvent(swEvent);
     }
 
     @EventHandler
@@ -79,7 +81,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
         // Fire Event
         SWPlayerQuitEvent swEvent = new CoreSWPlayerQuitEvent(p, event.getQuitMessage());
-        this.onPlayerQuit(swEvent);
+        plugin.getEventManager().callEvent(swEvent);
     }
 
     @EventHandler
@@ -100,7 +102,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
         // Fire Event
         SWPlayerInteractEvent swEvent = new CoreSWPlayerInteractEvent(p, location, blockType, action);
-        this.onPlayerInteract(swEvent);
+        plugin.getEventManager().callEvent(swEvent);
 
         // Update changes
         if (swEvent.isCancelled()) {
@@ -110,10 +112,6 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
     @EventHandler
     public void onPlayerBlockBreakEvent(BlockBreakEvent event) {
-
-        // this.plugin.getEventManager().callEvent(new CoreSWBlockBreakEvent(...));
-
-
         // Get data
         SWPlayer p = this.getPlayerFromBukkitPlayer(event.getPlayer());
         Block block = event.getBlock();
@@ -123,7 +121,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
         // Fire core event
         SWBlockBreakEvent swEvent = new CoreSWBlockBreakEvent(p, coord, wName);
-        this.onPlayerBlockBreak(swEvent);
+        plugin.getEventManager().callEvent(swEvent);
 
         // Update changes
         if (swEvent.isCancelled()) {
@@ -136,7 +134,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
         SWPlayer p = this.getPlayerFromBukkitPlayer(e.getPlayer());
 
         SWAsyncPlayerChatEvent swEvent = new CoreSWAsyncPlayerChatEvent(p, e.getMessage());
-        this.onAsyncPlayerChat(swEvent);
+        plugin.getEventManager().callEvent(swEvent);
 
         e.setMessage(swEvent.getMessage());
         if (swEvent.isCancelled()) {
@@ -155,7 +153,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
         // Fire core event
         SWBlockPlaceEvent swEvent = new CoreSWBlockPlaceEvent(p, coord, wName);
-        this.onPlayerBlockPlace(swEvent);
+        plugin.getEventManager().callEvent(swEvent);
 
         // Update changes
         if (swEvent.isCancelled()) {
@@ -172,7 +170,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
         // Fire core event
         SWChunkLoadEvent swEvent = new CoreSWChunkLoadEvent(world, x, z, event.isNewChunk());
-        this.onChunkLoad(swEvent);
+        plugin.getEventManager().callEvent(swEvent);
     }
 
     @EventHandler
@@ -182,7 +180,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
         // Fire core event
         SWWorldInitEvent swEvent = new CoreSWWorldInitEvent(world);
-        this.onWorldInit(swEvent);
+        plugin.getEventManager().callEvent(swEvent);
     }
 
     @EventHandler
@@ -190,8 +188,11 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
         Player player = (Player) event.getEntity();
         SWPlayer p = this.getPlayerFromBukkitPlayer(player);
 
-        SWPlayerFoodLevelChangeEvent swEvent = new BukkitSWPlayerFoodLevelChangeEvent(event, p, event.getFoodLevel(), BukkitItem.fromBukkit(plugin, event.getItem()));
-        this.onPlayerFoodLevelChange(swEvent);
+        SWPlayerFoodLevelChangeEvent swEvent = new BukkitSWPlayerFoodLevelChangeEvent(
+                event, p, event.getFoodLevel(),
+                BukkitItem.fromBukkit(plugin, event.getItem())
+        );
+        plugin.getEventManager().callEvent(swEvent);
     }
 
     @EventHandler
@@ -210,7 +211,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
         // Fire core event
         SWPlayerMoveEvent swEvent = new CoreSWPlayerMoveEvent(p, coordFrom, coordTo);
-        this.onPlayerMove(swEvent);
+        plugin.getEventManager().callEvent(swEvent);
 
         // Update changes
         if (swEvent.isCancelled()) {
@@ -228,7 +229,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
         // Fire core event
         SWEntityDamageEvent swEvent = new CoreSWEntityDamageEvent(entity, damage, finalDamage, reason);
-        this.onEntityDamage(swEvent);
+        plugin.getEventManager().callEvent(swEvent);
 
         // Update changes
         if (swEvent.isCancelled()) {
@@ -249,7 +250,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
         // Fire core event
         SWPlayerDeathEvent swEvent = new CoreSWPlayerDeathEvent(p, event.getDeathMessage(), event.getKeepInventory(), drops);
-        this.onPlayerDeath(swEvent);
+        plugin.getEventManager().callEvent(swEvent);
 
         // Update changes
         event.setDeathMessage(swEvent.getDeathMessage());
@@ -269,7 +270,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
         // Fire core event
         SWEntityDamageByEntityEvent swEvent = new CoreSWEntityDamageByEntityEvent(entity, damager, damage, finalDamage, reason);
-        this.onEntityDamageByEntity(swEvent);
+        plugin.getEventManager().callEvent(swEvent);
 
         // Update changes
         if (swEvent.isCancelled()) {
@@ -280,13 +281,7 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        // todo: wrap event and handle in core
         SWInventory inv = ((BukkitInventoryManager) this.plugin.getInventoryManager()).getSWInventory(event.getInventory());
-        SWGui gui = this.plugin.getGuiManager().getActiveGui(inv);
-        if (gui == null) return;
-
-        event.setCancelled(true);
-
         SWGuiClickHandler.ClickType clickType;
         switch (event.getClick()) {
             case RIGHT:
@@ -300,6 +295,27 @@ public class BukkitSWEventListener extends AbstractSWOLDTOREMOVEEventListener im
                 clickType = SWGuiClickHandler.ClickType.PRIMARY;
                 break;
         }
+
+        CoreSWInventoryClickEvent swEvent = new CoreSWInventoryClickEvent(
+                inv,
+                clickType,
+                event.getSlot(),
+                event.getRawSlot(),
+                event.isShiftClick(),
+                BukkitItem.fromBukkit(plugin, event.getCurrentItem())
+        );
+        plugin.getEventManager().callEvent(swEvent);
+
+        if (swEvent.isCancelled()) {
+            event.setCancelled(true);
+        }
+        event.setCurrentItem(((BukkitItem) swEvent.getCurrentItem()).getBukkitItem());
+
+
+        SWGui gui = this.plugin.getGuiManager().getActiveGui(inv);
+        if (gui == null) return;
+
+        event.setCancelled(true);
 
         gui.handleClick(event.getSlot(), clickType, event.isShiftClick());
     }
