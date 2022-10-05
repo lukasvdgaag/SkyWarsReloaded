@@ -194,7 +194,10 @@ public class BukkitNMS_8 implements NMS {
 
                     // @Override - can't officially override since we are using the latest API which doesn't use
                     // this method anymore. It should still override at runtime if this chunk generator is used.
-                    // todo: add back
+                    public byte[] generate(World world, Random random, int x, int z) {
+                        // Empty block data for the entire chunk
+                        return new byte[16 * 16 * 128];
+                    }
 
                     @Override
                     public Location getFixedSpawnLocation(World world, Random random) {
