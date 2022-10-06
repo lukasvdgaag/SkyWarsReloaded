@@ -8,7 +8,10 @@ import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisPubSub;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.BiConsumer;
 
 public class CoreSWRedisConnection implements SWRedisConnection {
@@ -20,10 +23,12 @@ public class CoreSWRedisConnection implements SWRedisConnection {
     private JedisPool jedisPool;
     private JedisPubSub redisPubSubConnection;
     private Thread pubSubThread;
-    private HashMap<String, BiConsumer<String, String>> registeredListeners;
+    private List<SWRedisMessenger> messengers;
+    private HashMap<String, ConcurrentLinkedQueue<BiConsumer<String, String>>> registeredListeners;
 
     public CoreSWRedisConnection(SkyWarsReloaded plugin) {
         this.plugin = plugin;
+        this.messengers = new ArrayList<>();
         this.registeredListeners = new HashMap<>();
     }
 
@@ -68,7 +73,13 @@ public class CoreSWRedisConnection implements SWRedisConnection {
         redisPubSubConnection = new JedisPubSub() {
             @Override
             public void onMessage(String channel, String message) {
-
+                String partialChannel = "";
+                for (String channelPart : channel.split("\\.")) {
+                    partialChannel += "." + channelPart;
+                    registeredListeners.get(partialChannel).forEach(listener -> {
+                        listener.accept(channel, message);
+                    });
+                }
             }
         };
 
@@ -117,12 +128,17 @@ public class CoreSWRedisConnection implements SWRedisConnection {
 
     @Override
     public void registerMessenger(SWRedisMessenger messenger) {
-        // todo
+        this.messengers.add(messenger);
     }
 
     @Override
     public void registerPubSubListener(String channel, BiConsumer<String, String> consumer) {
-        // todo
+        ConcurrentLinkedQueue<BiConsumer<String, String>> listeners = this.registeredListeners.get(channel);
+        if (listeners == null) {
+            listeners = new ConcurrentLinkedQueue<>();
+            this.registeredListeners.put(channel, listeners);
+        }
+        listeners.add(consumer);
     }
 
     private void setJedisPool(JedisPool jedisPool) {

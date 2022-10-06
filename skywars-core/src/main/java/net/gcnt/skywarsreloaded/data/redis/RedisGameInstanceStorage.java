@@ -54,6 +54,11 @@ public class RedisGameInstanceStorage implements GameInstanceStorage, SWRedisMes
         subscribeToRedisUpdates();
     }
 
+    public void subscribeToRedisUpdates() {
+        this.redisConnection.registerMessenger(this);
+        this.redisConnection.registerPubSubListener(REDIS_GAME_INSTANCE_CHANNEL, this::onPubSubMessage);
+    }
+
     @Override
     public List<RemoteGameInstance> fetchGameInstances() {
         Collection<? extends GameInstance> gameInstancesList = this.plugin.getGameInstanceManager().getGameInstancesList();
@@ -129,11 +134,6 @@ public class RedisGameInstanceStorage implements GameInstanceStorage, SWRedisMes
     @Override
     public void stopAutoUpdating() {
         if (swRunnable != null) swRunnable.cancel();
-    }
-
-    public void subscribeToRedisUpdates() {
-        this.redisConnection.registerMessenger(this);
-        this.redisConnection.registerPubSubListener(REDIS_GAME_INSTANCE_CHANNEL, this::onPubSubMessage);
     }
 
     public void onPubSubMessage(String channel, String message) {
