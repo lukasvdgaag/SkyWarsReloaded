@@ -14,18 +14,40 @@ import java.util.List;
 
 public abstract class AbstractKitManager implements KitManager {
 
-    public static Integer[] LAYOUT_FILLED;
-    public static Integer[] LAYOUT_OUTLINED;
+    public static Integer[] LAYOUT_FILLED_MAP_TO_INV_SLOTS;
+    public static Integer[] LAYOUT_OUTLINED_MAP_TO_INV_SLOTS;
 
     static {
-        LAYOUT_FILLED = new Integer[54];
-        LAYOUT_OUTLINED = new Integer[28];
+        // 9 x 5 layout
+        // . . . . . . . . .
+        // . . . . . . . . .
+        // . . . . . . . . .
+        // . . . . . . . . .
+        // . . . . . . . . .
+        LAYOUT_FILLED_MAP_TO_INV_SLOTS = new Integer[9 * 5];
+
+        // 7 x 3 inventory inner layout
+        // # # # # # # # # #
+        // # . . . . . . . #
+        // # . . . . . . . #
+        // # . . . . . . . #
+        // # # # # # # # # #
+        LAYOUT_OUTLINED_MAP_TO_INV_SLOTS = new Integer[7 * 3];
 
         int lastOutlinedIndex = 0;
-        for (int i = 0; i < 54; i++) {
-            LAYOUT_FILLED[i] = i;
-            if (i > 9 && i < 45 && i % 9 != 0 && i % 9 != 8) {
-                LAYOUT_OUTLINED[lastOutlinedIndex] = i;
+        for (int slot = 0; slot < 9 * 6; slot++) {
+            // Direct 1:1 mapping of layout entry to slot since it takes
+            // up the full inventory of 5 lines
+            if (slot < 9 * 5) {
+                LAYOUT_FILLED_MAP_TO_INV_SLOTS[slot] = slot;
+            }
+
+            // Past the first line &&
+            // Before the 5th line &&
+            // Not in the first column &&
+            // Not in the last column
+            if (slot > 9 && slot < 9 * 5 && slot % 9 != 0 && slot % 9 != 8) {
+                LAYOUT_OUTLINED_MAP_TO_INV_SLOTS[lastOutlinedIndex] = slot;
                 lastOutlinedIndex++;
             }
         }
@@ -134,7 +156,7 @@ public abstract class AbstractKitManager implements KitManager {
 
         boolean useAutoLayout = plugin.getConfig().getBoolean(ConfigProperties.MENUS_KITS_AUTO_LAYOUT.toString());
         final String layoutType = plugin.getConfig().getString(ConfigProperties.MENUS_KITS_LAYOUT.toString(), "OUTLINED");
-        final Integer[] layout = layoutType.equalsIgnoreCase("FILLED") ? LAYOUT_FILLED : LAYOUT_OUTLINED;
+        final Integer[] layout = layoutType.equalsIgnoreCase("FILLED") ? LAYOUT_FILLED_MAP_TO_INV_SLOTS : LAYOUT_OUTLINED_MAP_TO_INV_SLOTS;
 
         for (SWKit kit : kits.values()) {
             int slot = kit.getSlot();
