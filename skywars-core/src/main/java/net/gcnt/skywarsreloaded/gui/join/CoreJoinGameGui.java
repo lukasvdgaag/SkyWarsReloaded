@@ -15,21 +15,17 @@ public class CoreJoinGameGui extends AbstractSWGui {
 
     public CoreJoinGameGui(SkyWarsReloaded plugin, SWPlayer player) {
         // todo: title
-        super(plugin, "TEMP §a§lTEST TITLE §c§lFOR TESTING UWU", 6, player);
+        super(plugin, "Game Selector", 6, player);
 
         // Back button
         final Item backItem = plugin.getItemManager().createItem("BARRIER");
-        this.addButton(45, backItem, this::handleBackButton);
+        this.addButton(49, backItem, this::handleBackButton);
 
         createTemplateItems(plugin);
 
         // Refresh button
         final Item refreshItem = plugin.getItemManager().createItem("SUNFLOWER");
-        this.addButton(48, refreshItem, this::handleBackButton);
-
-        // Join random
-        final Item randomItem = plugin.getItemManager().createItem("SUNFLOWER");
-        this.addButton(50, randomItem, this::handleBackButton);
+        this.addButton(49, refreshItem, this::handleBackButton);
     }
 
     private void createTemplateItems(SkyWarsReloaded plugin) {
