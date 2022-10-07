@@ -6,9 +6,8 @@ import net.gcnt.skywarsreloaded.manager.ItemManager;
 import net.gcnt.skywarsreloaded.utils.Item;
 
 import java.awt.*;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BukkitItemManager implements ItemManager {
 
@@ -23,8 +22,17 @@ public class BukkitItemManager implements ItemManager {
     @Override
     public void loadDefaultItems() {
         this.defaultItems.clear();
-        plugin.getConfig().getKeys("items").forEach(itemGroup -> {
-            plugin.getConfig().getKeys(itemGroup).forEach(itemId -> {
+
+        Set<String> groups = new HashSet<>();
+        groups.addAll(plugin.getConfig().getKeys("items"));
+        groups.addAll(plugin.getMessages().getKeys("items"));
+
+        groups.forEach(itemGroup -> {
+            Set<String> items = new HashSet<>();
+            items.addAll(plugin.getConfig().getKeys("items." + itemGroup));
+            items.addAll(plugin.getMessages().getKeys("items." + itemGroup));
+
+            items.forEach(itemId -> {
                 String fullPath = "items." + itemGroup + "." + itemId;
                 loadDefaultItem(fullPath);
             });
@@ -53,8 +61,8 @@ public class BukkitItemManager implements ItemManager {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Item getItem(Map<?, ?> map) {
-        if (!map.containsKey("material")) return null;
+    public Item getItem(Map<String, Object> map) {
+        if (!map.containsKey("material")) map.put("material", "STONE");
 
         try {
             Item item = createItem((String) map.get("material"));

@@ -18,7 +18,7 @@ public class MySQLMessaging extends CoreSQLTable<SWMessage> implements SWMessagi
     private SWRunnable updateTask;
 
     public MySQLMessaging(CoreMySQLStorage storage) {
-        super(storage, "sw_messaging");
+        super(storage, "messaging");
 
         this.messages = new HashMap<>();
         this.updateTask = null;

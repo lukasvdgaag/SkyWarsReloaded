@@ -21,7 +21,7 @@ public class CoreJoinGameGui extends AbstractSWGui {
     private int nextSlot = 0;
 
     public CoreJoinGameGui(SkyWarsReloaded plugin, SWPlayer player) {
-        super(plugin, "Game Selector", 6, player);
+        super(plugin, "Game Selector", 6 * 9, player);
 
         addCloseButton(49);
         createTemplateItems(plugin);

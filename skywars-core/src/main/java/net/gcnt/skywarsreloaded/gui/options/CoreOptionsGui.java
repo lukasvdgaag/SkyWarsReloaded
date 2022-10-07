@@ -8,6 +8,6 @@ public class CoreOptionsGui extends AbstractSWGui {
 
     public CoreOptionsGui(SkyWarsReloaded plugin, SWPlayer player) {
         // todo: title
-        super(plugin, "", 3, player);
+        super(plugin, "", 3 * 9, player);
     }
 }

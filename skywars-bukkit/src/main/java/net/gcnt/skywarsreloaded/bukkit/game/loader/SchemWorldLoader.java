@@ -34,30 +34,24 @@ public class SchemWorldLoader extends BukkitWorldLoader {
     @Override
     public CompletableFuture<Boolean> generateWorldInstance(LocalGameInstance gameWorld) throws IllegalStateException, IllegalArgumentException {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        System.out.println("Generating world instance for " + gameWorld.getTemplate().getName());
         this.createEmptyWorld(gameWorld).thenRun(() -> {
-            System.out.println("running sync");
             plugin.getScheduler().runSync(() -> postWorldGenerateTask(gameWorld, future));
         });
         return future;
     }
 
     protected void postWorldGenerateTask(LocalGameInstance gameWorld, CompletableFuture<Boolean> future) {
-        System.out.println("Post world generate task for " + gameWorld.getTemplate().getName());
         boolean res = false;
         try {
             res = pasteTemplateSchematic(gameWorld).get();
-            System.out.println("Result: " + res);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("COMPLETED");
         future.complete(res);
     }
 
     @Override
     public CompletableFuture<Void> createEmptyWorld(LocalGameInstance gameWorld) {
-        System.out.println("Creating empty world for " + gameWorld.getTemplate().getName());
         WorldCreator creator = new WorldCreator(gameWorld.getWorldName());
         creator.generateStructures(false);
         creator.type(WorldType.FLAT);
@@ -75,7 +69,6 @@ public class SchemWorldLoader extends BukkitWorldLoader {
 
         // This won't do anything in 1.11 or lower -> will be laggier
         PaperLib.getChunkAtAsync(createdWorld.getSpawnLocation()).thenAccept(chunk -> {
-            System.out.println("Chunk ticket added for " + gameWorld.getWorldName());
             future.complete(null);
         });
         return future;
@@ -91,21 +84,17 @@ public class SchemWorldLoader extends BukkitWorldLoader {
         CompletableFuture<Boolean> futureFail = CompletableFuture.completedFuture(false);
         // todo: Later make this work with FAWE
         CompletableFuture<Boolean> futureOk = CompletableFuture.completedFuture(true);
-        System.out.println("Pasting template schematic for " + gameWorld.getTemplate().getName());
-
 
         File schemFolder = new File(plugin.getDataFolder(), FolderProperties.WORLD_SCHEMATICS_FOLDER.toString());
         String schemFileName = gameWorld.getTemplate().getName() + ".schem";
 
         File schemFile = new File(schemFolder, schemFileName);
         if (!schemFile.exists()) {
-            System.out.println("Schematic file not found for " + gameWorld.getTemplate().getName());
             return futureFail;
         }
 
         Clipboard clip = plugin.getSchematicManager().getSchematic(schemFolder, schemFileName);
         if (clip == null) {
-            System.out.println("Clipboard not found for " + gameWorld.getTemplate().getName());
             return futureFail; // todo throw error?
         }
 
@@ -117,7 +106,6 @@ public class SchemWorldLoader extends BukkitWorldLoader {
             ));
         }
 
-        System.out.println("Pasting the actual schematic for " + gameWorld.getTemplate().getName());
         // The returned EditSession is already auto-closed using a try-w/ statement inside pasteSchematic()
         //noinspection resource
         plugin.getSchematicManager().pasteSchematic(clip, new BukkitWorld(world), BlockVector3.at(0, 0, 0), true);

@@ -31,7 +31,6 @@ public class CoreSWEntityDamageListener {
         GamePlayer gamePlayer = gameWorld.getPlayer(player);
         if (gamePlayer.isSpectating() || !gamePlayer.isAlive()) {
             event.setCancelled(true);
-            System.out.println(gamePlayer.getSWPlayer().getName() + " is spectating");
             return;
         }
 

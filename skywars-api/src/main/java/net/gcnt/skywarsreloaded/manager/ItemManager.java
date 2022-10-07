@@ -12,7 +12,7 @@ public interface ItemManager {
 
     Item createItem(String material, int amount);
 
-    Item getItem(Map<?, ?> map);
+    Item getItem(Map<String, Object> map);
 
     Item getItemFromConfig(String path);
 

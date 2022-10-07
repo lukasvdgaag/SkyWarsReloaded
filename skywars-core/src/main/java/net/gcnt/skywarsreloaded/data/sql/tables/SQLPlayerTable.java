@@ -20,7 +20,7 @@ public class SQLPlayerTable extends CoreSQLTable<SWPlayer> implements SWPlayerSt
     protected SQLPlayerUnlockablesTable unlockablesTable;
 
     public SQLPlayerTable(SQLStorage storage) {
-        super(storage, "sw_player_data");
+        super(storage, "player_data");
 
         initStatsTable();
         initUnlockablesTable();

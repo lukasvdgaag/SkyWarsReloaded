@@ -255,6 +255,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     @Override
     public void fetchParentPlayer() {
         this.player = Bukkit.getPlayer(this.getUuid());
+        if (this.player != null) this.inventory = new BukkitSWInventory(plugin, player.getInventory(), "Inventory");
     }
 
     @Override

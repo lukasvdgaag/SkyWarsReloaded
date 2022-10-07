@@ -16,6 +16,8 @@ public class CoreSWInventoryClickListener {
     }
 
     public void onClick(CoreSWInventoryClickEvent event) {
+        CoreSWEventListener.cancelWhenWaitingInGame(event);
+
         SWInventory inv = event.getInventory();
         SWGui gui = this.plugin.getGuiManager().getActiveGui(inv);
         if (gui == null) return;

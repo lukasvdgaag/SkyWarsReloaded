@@ -297,6 +297,7 @@ public class BukkitSWEventListener implements Listener, PlatformSWEventListener 
         }
 
         CoreSWInventoryClickEvent swEvent = new CoreSWInventoryClickEvent(
+                this.getPlayerFromBukkitPlayer((Player) event.getWhoClicked()),
                 inv,
                 clickType,
                 event.getSlot(),

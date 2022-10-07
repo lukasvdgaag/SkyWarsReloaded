@@ -17,7 +17,7 @@ public class CoreKitSelectorGui extends AbstractSWGui {
     public CoreKitSelectorGui(SkyWarsReloaded plugin, SWPlayer player) {
         super(plugin,
                 plugin.getMessages().getString(MessageProperties.MENUS_KITS_TITLE.toString(), "Kit Selector"),
-                54,
+                6 * 9,
                 player);
 
         this.loadItems();

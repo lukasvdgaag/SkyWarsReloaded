@@ -93,7 +93,7 @@ public class BukkitItem extends AbstractItem {
 
     @Override
     public List<String> getLore() {
-        return itemStack.hasItemMeta() ? itemStack.getItemMeta().getLore() : new ArrayList<>();
+        return itemStack.hasItemMeta() ? itemStack.getItemMeta().getLore() : null;
     }
 
     @Override

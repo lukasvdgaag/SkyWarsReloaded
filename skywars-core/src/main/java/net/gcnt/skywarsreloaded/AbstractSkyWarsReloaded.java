@@ -132,6 +132,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         initInventoryManager();
         initHookManager();
 
+        // setting up all SQL tables.
+        getSQLStorage().setup(getConfig());
         setSchematicManager(new CoreSchematicManager(this));
 
         getItemManager().loadDefaultItems();

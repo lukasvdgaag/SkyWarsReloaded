@@ -31,7 +31,6 @@ public class SimpleChestTier extends AbstractSWChestTier {
     }
 
     public HashMap<Integer, List<Item>> getContents(ChestType type) {
-        inventoryContents.forEach((key, value) -> System.out.println("type found: " + key.getId()));
         return inventoryContents.get(type);
     }
 
@@ -78,7 +77,6 @@ public class SimpleChestTier extends AbstractSWChestTier {
         }
 
         // Apply it to the data map
-        System.out.println("Storing chest content of type " + chestType.getId());
         inventoryContents.put(chestType, gameTypeItems);
     }
 

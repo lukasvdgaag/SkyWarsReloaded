@@ -31,8 +31,8 @@ public enum ConfigProperties {
     MENUS_KITS_ENCHANT_SELECTED_KIT("menus.kits.enchant-selected-kit"),
 
     // items
-    ITEMS_GAME_KIT_SELECTOR_SLOT("menus.game.kit-selector.slot"),
-    ITEMS_GAME_LEAVE_SLOT("menus.game.leave.slot"),
+    ITEMS_GAME_KIT_SELECTOR_SLOT("items.game.kit-selector.slot"),
+    ITEMS_GAME_LEAVE_SLOT("items.game.leave.slot"),
     // todo: messaging impl & auth
 
     // Game instances

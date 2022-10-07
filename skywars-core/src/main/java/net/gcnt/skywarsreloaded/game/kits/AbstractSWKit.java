@@ -217,6 +217,7 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
             // armor init
             try {
                 this.helmet = config.getItem(KitProperties.HELMET.toString());
+                System.out.println(helmet);
             } catch (Exception e) {
                 plugin.getLogger().error(String.format("Failed to load helmet for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
             }

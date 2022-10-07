@@ -23,6 +23,7 @@ public class BukkitEffect extends AbstractEffect {
 
     @Override
     public void applyToPlayer(SWPlayer player) {
+        if (effect == null) return;
         Player p = ((BukkitSWPlayer) player).getPlayer();
         p.addPotionEffect(effect);
     }

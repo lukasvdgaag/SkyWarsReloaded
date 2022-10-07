@@ -25,7 +25,7 @@ public class BukkitSWInventory implements SWInventory {
         this.plugin = plugin;
         this.title = title;
         this.size = size;
-        inventory = Bukkit.getServer().createInventory(null, size * 9, title);
+        inventory = Bukkit.getServer().createInventory(null, size, title);
 
         // todo add support for different inventory types in the future?
     }
@@ -51,7 +51,6 @@ public class BukkitSWInventory implements SWInventory {
 
     @Override
     public void setItem(int slot, Item item) {
-        System.out.println("setting item... " + ((BukkitItem) item).getBukkitItem());
         inventory.setItem(slot, ((BukkitItem) item).getBukkitItem());
     }
 

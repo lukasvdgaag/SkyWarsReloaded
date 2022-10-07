@@ -15,6 +15,7 @@ public class CoreSQLiteStorage implements SQLStorage {
     protected final SkyWarsReloaded plugin;
     private final List<SQLTable<?>> tables;
     private final String databaseUrl;
+    private Connection connection;
 
     public CoreSQLiteStorage(SkyWarsReloaded plugin) {
         this.plugin = plugin;
@@ -24,9 +25,11 @@ public class CoreSQLiteStorage implements SQLStorage {
 
     @Override
     public Connection getConnection() throws SQLException {
-        Connection con = DriverManager.getConnection(databaseUrl);
-        con.setAutoCommit(true);
-        return con;
+        if (connection != null && !connection.isClosed()) return this.connection;
+
+        this.connection = DriverManager.getConnection(databaseUrl);
+        this.connection.setAutoCommit(true);
+        return this.connection;
     }
 
     @Override
