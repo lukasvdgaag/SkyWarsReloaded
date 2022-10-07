@@ -77,6 +77,8 @@ public interface LocalGameInstance extends GameInstance {
 
     void preparePlayer(SWPlayer player);
 
+    void preparePlayerInventory(SWPlayer player);
+
     List<GamePlayer> getPlayersCopy();
 
     List<GamePlayer> getAlivePlayers();

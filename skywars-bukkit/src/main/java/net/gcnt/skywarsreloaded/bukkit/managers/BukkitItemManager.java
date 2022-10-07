@@ -6,15 +6,37 @@ import net.gcnt.skywarsreloaded.manager.ItemManager;
 import net.gcnt.skywarsreloaded.utils.Item;
 
 import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class BukkitItemManager implements ItemManager {
 
     private final SkyWarsReloaded plugin;
+    private final HashMap<String, Item> defaultItems;
 
     public BukkitItemManager(SkyWarsReloaded plugin) {
         this.plugin = plugin;
+        this.defaultItems = new HashMap<>();
+    }
+
+    @Override
+    public void loadDefaultItems() {
+        this.defaultItems.clear();
+        plugin.getConfig().getKeys("items").forEach(itemGroup -> {
+            plugin.getConfig().getKeys(itemGroup).forEach(itemId -> {
+                String fullPath = "items." + itemGroup + "." + itemId;
+                loadDefaultItem(fullPath);
+            });
+        });
+    }
+
+    private void loadDefaultItem(String path) {
+        this.defaultItems.put(path, getItemFromConfig(path));
+    }
+
+    private boolean isDefaultLoaded(String property) {
+        return this.defaultItems.containsKey(property);
     }
 
     @Override
@@ -28,7 +50,6 @@ public class BukkitItemManager implements ItemManager {
         item.setAmount(amount);
         return item;
     }
-
 
     @Override
     @SuppressWarnings("unchecked")
@@ -84,6 +105,8 @@ public class BukkitItemManager implements ItemManager {
 
     @Override
     public Item getItemFromConfig(String path) {
+        if (isDefaultLoaded(path)) return this.defaultItems.get(path);
+
         final Item item = plugin.getConfig().getItem(path);
         if (item != null) {
             item.withMessages(plugin.getMessages().getItem(path));

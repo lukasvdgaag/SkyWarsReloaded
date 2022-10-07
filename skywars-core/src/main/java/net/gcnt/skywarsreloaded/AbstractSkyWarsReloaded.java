@@ -134,6 +134,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
         setSchematicManager(new CoreSchematicManager(this));
 
+        getItemManager().loadDefaultItems();
+
         // Hooks
         registerDefaultHooks();
         getHookManager().enableAllHooks();
@@ -650,6 +652,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         new CoreSWEntityDamageByEntityListener(this);
         new CoreSWFoodLevelChangeListener(this);
         new CoreSWInteractionListener(this);
+        new CoreSWInventoryClickListener(this);
         new CoreSWJoinListener(this);
         new CoreSWMoveListener(this);
         new CoreSWPreLoginListener(this);

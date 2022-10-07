@@ -5,8 +5,8 @@ import net.gcnt.skywarsreloaded.command.Cmd;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
-import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.sender.SWCommandSender;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class SetKitContentsCmd extends Cmd {
         }
 
         HashMap<Integer, Item> items = new HashMap<>();
-        final Item[] inventory = swp.getInventory();
+        final Item[] inventory = swp.getInventory().getContents();
         for (int i = 0; i < inventory.length; i++) {
             if (inventory[i] != null) items.put(i, inventory[i]);
         }

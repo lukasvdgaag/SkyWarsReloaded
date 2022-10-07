@@ -33,10 +33,14 @@ items:
         - "&7menu"
 
   game:
+    leave:
+      display-name: "&cLeave Game"
+      lore:
+        - "&7Click to leave this game"
     kit-selector:
       display-name: "&bKit Selector"
       lore:
-        - "&7Open the kit selection menu"
+        - "&7Click to open the kit selection menu"
 
   kits:
     status:

@@ -25,7 +25,7 @@ public interface SWPlayer extends SWCommandSender, SWOfflinePlayer, SWEntity {
 
     Item getItemInHand(boolean offHand);
 
-    Item[] getInventory();
+    SWInventory getInventory();
 
     void setSlot(int slot, Item item);
 
