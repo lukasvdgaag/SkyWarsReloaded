@@ -7,7 +7,7 @@ public enum ItemProperties {
     GENERAL_DENY("items.general.deny"),
 
     GAME_KIT_SELECTOR("items.game.kit-selector"),
-    GAME_KIT_LEAVE("items.game.leave"),
+    GAME_GAME_LEAVE("items.game.leave"),
 
     KITS_DESELECT("items.kits.deselect");
 

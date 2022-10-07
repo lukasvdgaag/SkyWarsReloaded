@@ -287,7 +287,7 @@ public abstract class AbstractLocalGameInstance extends AbstractGameInstance imp
             inventory.setItem(kitSelectionSlot, kitSelectionItem);
 
             // leave item
-            Item leaveItem = plugin.getItemManager().getItemFromConfig(ItemProperties.GAME_KIT_LEAVE.toString());
+            Item leaveItem = plugin.getItemManager().getItemFromConfig(ItemProperties.GAME_GAME_LEAVE.toString());
             int leaveSlot = plugin.getConfig().getInt(ConfigProperties.ITEMS_GAME_LEAVE_SLOT.toString());
             inventory.setItem(leaveSlot, leaveItem);
         }
