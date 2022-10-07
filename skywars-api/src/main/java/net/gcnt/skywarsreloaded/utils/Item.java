@@ -31,6 +31,10 @@ public interface Item {
 
     void setItemFlags(List<String> itemFlags);
 
+    void addItemFlag(String flag);
+
+    void addAllItemFlags();
+
     short getDurability();
 
     void setDurability(short durability);
