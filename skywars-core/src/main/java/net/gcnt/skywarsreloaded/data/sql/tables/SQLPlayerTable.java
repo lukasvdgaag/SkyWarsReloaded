@@ -60,7 +60,7 @@ public class SQLPlayerTable extends CoreSQLTable<SWPlayer> implements SWPlayerSt
         ps.setString(1, player.getUuid().toString());
         ps.executeUpdate();
 
-        SWPlayerData playerData = storage.getPlugin().getPlayerDataManager().createSWPlayerDataInstance();
+        SWPlayerData playerData = storage.getPlugin().getPlayerDataManager().createSWPlayerDataInstance(player);
         SWPlayerStats stats = storage.getPlugin().getPlayerDataManager().createSWPlayerStatsInstance();
         SWPlayerUnlockables unlockables = storage.getPlugin().getPlayerDataManager().createSWPlayerUnlockablesInstance(player);
         stats.initData(0, 0, 0, 0, 0, 0);
@@ -80,7 +80,7 @@ public class SQLPlayerTable extends CoreSQLTable<SWPlayer> implements SWPlayerSt
                     return;
                 }
 
-                SWPlayerData playerData = storage.getPlugin().getPlayerDataManager().createSWPlayerDataInstance();
+                SWPlayerData playerData = storage.getPlugin().getPlayerDataManager().createSWPlayerDataInstance(player);
                 SWPlayerStats stats = storage.getPlugin().getPlayerDataManager().createSWPlayerStatsInstance();
                 SWPlayerUnlockables unlockables = storage.getPlugin().getPlayerDataManager().createSWPlayerUnlockablesInstance(player);
                 playerData.initData(stats,
@@ -107,21 +107,22 @@ public class SQLPlayerTable extends CoreSQLTable<SWPlayer> implements SWPlayerSt
     @Override
     public void saveData(SWPlayer player) {
         SWPlayerData swpd = player.getPlayerData();
-        SWPlayerStats swps = swpd.getStats();
 
-        try (Connection conn = storage.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement("UPDATE `" + table + "` SET solo_wins=?, solo_kills=?, solo_games=?, team_wins=?, team_kills=?, team_games=? WHERE `uuid`=?");
-            ps.setInt(1, swps.getSoloWins());
-            ps.setInt(2, swps.getSoloKills());
-            ps.setInt(3, swps.getSoloGamesPlayed());
-            ps.setInt(4, swps.getTeamKills());
-            ps.setInt(5, swps.getTeamWins());
-            ps.setInt(6, swps.getTeamGamesPlayed());
+        try (Connection conn = storage.getConnection();
+             PreparedStatement ps = conn.prepareStatement("UPDATE `" + table + "` SET selected_solo_cage=?, selected_team_cage=?, selected_particle=?, " +
+                     "selected_kill_effect=?, selected_win_effect=?, selected_projectile_effect=?, selected_kill_messages_theme=?, selected_kit=? WHERE `uuid`=?")) {
+            ps.setString(1, swpd.getSoloCage());
+            ps.setString(2, swpd.getTeamCage());
+            ps.setString(3, swpd.getParticle());
+            ps.setString(4, swpd.getKillEffect());
+            ps.setString(5, swpd.getWinEffect());
+            ps.setString(6, swpd.getProjectileParticle());
+            ps.setString(7, swpd.getKillMessagesTheme());
+            ps.setString(8, swpd.getKit());
 
-            ps.setString(7, player.getUuid().toString());
+            ps.setString(9, player.getUuid().toString());
 
             ps.executeUpdate();
-            ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

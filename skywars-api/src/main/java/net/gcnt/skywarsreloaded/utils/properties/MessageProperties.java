@@ -31,6 +31,7 @@ public enum MessageProperties {
     KITS_SELECTED("kits.selected"),
     KITS_CANNOT_AFFORD("kits.cannot-afford"),
     KITS_PURCHASED("kits.purchased"),
+    KITS_DESELECT("kits.deselect"),
     KITS_ENTER_NAME("kits.enter-name"),
     KITS_ENTER_DESCRIPTION("kits.enter-description"),
     KITS_ENTER_DISPLAYNAME("kits.enter-displayname"),

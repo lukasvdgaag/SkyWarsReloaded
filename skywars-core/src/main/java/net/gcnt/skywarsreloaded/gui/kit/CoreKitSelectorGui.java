@@ -6,8 +6,10 @@ import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.gui.AbstractSWGui;
 import net.gcnt.skywarsreloaded.utils.gui.SWConfirmationGui;
+import net.gcnt.skywarsreloaded.utils.gui.SWGui;
 import net.gcnt.skywarsreloaded.utils.gui.SWGuiClickHandler;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
+import net.gcnt.skywarsreloaded.utils.properties.ItemProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
@@ -26,8 +28,8 @@ public class CoreKitSelectorGui extends AbstractSWGui {
     }
 
     public void loadItems() {
-        System.out.println("loading items");
         addCloseButton(49);
+        addDeselectButton();
 
         for (SWKit kit : plugin.getKitManager().getKits()) {
             final int kitSlot = kit.getSlot();
@@ -58,17 +60,24 @@ public class CoreKitSelectorGui extends AbstractSWGui {
             }
             item.setLore(newLore);
 
-            System.out.println(selected);
 
             if (hasButton(kitSlot)) {
-                System.out.println("updating");
                 updateButton(kitSlot, item);
             } else {
-                System.out.println("adding");
                 addButton(kitSlot, item, (gui, slot, clickType, isShift) -> handleKitClick(kit));
             }
         }
-        System.out.println(" ");
+    }
+
+    public void addDeselectButton() {
+        Item item = player.getPlayerData().getKit() == null ? null : plugin.getItemManager().getItemFromConfig(ItemProperties.KITS_DESELECT.toString());
+
+        if (hasButton(46)) {
+            if (item == null) removeButton(46);
+            else updateButton(46, item);
+        } else {
+            if (item != null) addButton(46, item, this::handleDeselect);
+        }
     }
 
     public String prepareKitLine(SWKit kit, String s, boolean unlocked, boolean selected) {
@@ -142,6 +151,13 @@ public class CoreKitSelectorGui extends AbstractSWGui {
             open();
             return SWGuiClickHandler.ClickResult.CANCELLED;
         });
+    }
+
+    public SWGuiClickHandler.ClickResult handleDeselect(SWGui gui, int slot, SWGuiClickHandler.ClickType clickType, boolean isShift) {
+        player.getPlayerData().setKit(null);
+        plugin.getMessages().getMessage(MessageProperties.KITS_DESELECT.toString()).send(player);
+        player.closeInventory();
+        return SWGuiClickHandler.ClickResult.CANCELLED;
     }
 
 

@@ -20,8 +20,8 @@ public class CoreSWPlayerDataManager implements SWPlayerDataManager {
     }
 
     @Override
-    public SWPlayerData createSWPlayerDataInstance() {
-        return new CoreSWPlayerData();
+    public SWPlayerData createSWPlayerDataInstance(SWPlayer player) {
+        return new CoreSWPlayerData(plugin, player);
     }
 
     @Override
