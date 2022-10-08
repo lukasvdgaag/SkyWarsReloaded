@@ -113,7 +113,7 @@ public class BukkitItemManager implements ItemManager {
 
     @Override
     public Item getItemFromConfig(String path) {
-        if (isDefaultLoaded(path)) return this.defaultItems.get(path);
+        if (isDefaultLoaded(path)) return this.defaultItems.get(path).clone();
 
         final Item item = plugin.getConfig().getItem(path);
         if (item != null) {

@@ -1,11 +1,13 @@
 package net.gcnt.skywarsreloaded.gui.kit;
 
+import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.gui.AbstractSWGui;
 import net.gcnt.skywarsreloaded.utils.gui.SWConfirmationGui;
 import net.gcnt.skywarsreloaded.utils.gui.SWGuiClickHandler;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
@@ -24,10 +26,12 @@ public class CoreKitSelectorGui extends AbstractSWGui {
     }
 
     public void loadItems() {
+        System.out.println("loading items");
         addCloseButton(49);
 
         for (SWKit kit : plugin.getKitManager().getKits()) {
-            if (kit.getSlot() == -1) continue;
+            final int kitSlot = kit.getSlot();
+            if (kitSlot == -1) continue;
 
             final boolean unlocked = kit.hasUnlocked(player);
             final boolean selected = kit.getId().equals(player.getPlayerData().getKit());
@@ -38,8 +42,11 @@ public class CoreKitSelectorGui extends AbstractSWGui {
                             plugin.getMessages().getItem(MessageProperties.ITEMS_KITS_LOCKED.toString());
 
             item.withMessages(messagesItem);
-
             item.setDisplayName(prepareKitLine(kit, item.getDisplayName(), unlocked, selected));
+
+            if (selected && plugin.getConfig().getBoolean(ConfigProperties.MENUS_KITS_ENCHANT_SELECTED_KIT.toString())) {
+                item.setEnchantments(Lists.newArrayList("unbreaking"));
+            }
 
             List<String> newLore = new ArrayList<>();
             for (String line : item.getLore()) {
@@ -51,8 +58,17 @@ public class CoreKitSelectorGui extends AbstractSWGui {
             }
             item.setLore(newLore);
 
-            addButton(kit.getSlot(), item, (gui, slot, clickType, isShift) -> handleKitClick(kit));
+            System.out.println(selected);
+
+            if (hasButton(kitSlot)) {
+                System.out.println("updating");
+                updateButton(kitSlot, item);
+            } else {
+                System.out.println("adding");
+                addButton(kitSlot, item, (gui, slot, clickType, isShift) -> handleKitClick(kit));
+            }
         }
+        System.out.println(" ");
     }
 
     public String prepareKitLine(SWKit kit, String s, boolean unlocked, boolean selected) {
@@ -78,6 +94,7 @@ public class CoreKitSelectorGui extends AbstractSWGui {
             plugin.getMessages().getMessage(MessageProperties.KITS_SELECTED.toString())
                     .replace("{kit}", kit.getDisplayName())
                     .send(player);
+            plugin.getScheduler().runSyncLater(this::loadItems, 1);
             return SWGuiClickHandler.ClickResult.CANCELLED;
         } else {
             if (kit.isEligible(player)) {

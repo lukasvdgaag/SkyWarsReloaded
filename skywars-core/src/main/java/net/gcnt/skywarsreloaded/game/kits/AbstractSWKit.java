@@ -72,7 +72,7 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
 
     @Override
     public Item getIcon() {
-        return icon;
+        return icon.clone();
     }
 
     @Override
@@ -82,7 +82,7 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
 
     @Override
     public Item getUnavailableIcon() {
-        return unavailableIcon;
+        return unavailableIcon.clone();
     }
 
     @Override

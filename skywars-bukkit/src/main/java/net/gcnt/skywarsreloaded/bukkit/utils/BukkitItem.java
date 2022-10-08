@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.bukkit.utils;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.item.BukkitSWEnchantmentType;
 import net.gcnt.skywarsreloaded.utils.AbstractItem;
+import net.gcnt.skywarsreloaded.utils.Item;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -245,4 +246,8 @@ public class BukkitItem extends AbstractItem {
         return this.itemStack;
     }
 
+    @Override
+    public Item clone() {
+        return new BukkitItem(plugin, itemStack.clone());
+    }
 }

@@ -14,4 +14,6 @@ public abstract class AbstractItem implements Item {
         }
         return this;
     }
+
+    public abstract Item clone();
 }

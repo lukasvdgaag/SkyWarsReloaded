@@ -76,6 +76,7 @@ public abstract class CoreUnlockable implements Unlockable {
 
     @Override
     public boolean hasUnlocked(SWPlayer player) {
+        if (player.getPlayerData().getUnlockables().isUnlocked(this)) return true;
         if (!canUnlock(player)) return false;
 
         // Has permission -> true
@@ -141,13 +142,21 @@ public abstract class CoreUnlockable implements Unlockable {
 
     @Override
     public void unlock(SWPlayer player) {
-        if (hasUnlocked(player)) return;
-
-        // todo add permission here, remove money from their balance, add to list of unlocked unlockables
+        unlock(player, false);
     }
 
     @Override
     public void unlock(SWPlayer player, boolean free) {
+        if (hasUnlocked(player)) return;
 
+        if (!free && cost > 0) {
+            final SWVaultHook hook = player.getPlugin().getHookManager().getHook(SWVaultHook.class);
+            if (hook != null) {
+                hook.withdraw(player, getCost());
+            }
+        }
+
+        player.getPlayerData().getUnlockables().addUnlockable(this);
+        // todo add permission here?
     }
 }

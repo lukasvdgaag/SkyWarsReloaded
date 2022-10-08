@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.List;
 
-public interface Item {
+public interface Item extends Cloneable {
 
     String getMaterial();
 
@@ -53,5 +53,7 @@ public interface Item {
     void setSkullOwner(String owner);
 
     Item withMessages(Item item);
+
+    Item clone();
 
 }

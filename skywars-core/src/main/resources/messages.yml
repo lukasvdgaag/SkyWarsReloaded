@@ -53,8 +53,6 @@ items:
         - "&6Play without a selected kit"
     selected:
       display-name: "&a&l{displayname}"
-      enchantments:
-        - "durability"
       lore:
         - "&7{description}"
         - ""

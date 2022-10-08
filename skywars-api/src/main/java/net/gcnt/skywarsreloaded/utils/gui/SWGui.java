@@ -65,6 +65,8 @@ public interface SWGui {
 
     void removeButton(int slot);
 
+    boolean hasButton(int slot);
+
     SWPlayer getPlayer();
 
     SWInventory getInventory();
