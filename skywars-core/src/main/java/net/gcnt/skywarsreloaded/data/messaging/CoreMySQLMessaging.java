@@ -27,7 +27,7 @@ public class CoreMySQLMessaging extends CoreSQLTable<SWMessage> implements SWMyS
     private SWRunnable cleanupTask;
 
     public CoreMySQLMessaging(CoreMySQLStorage storage) {
-        super(storage, "sw_messaging");
+        super(storage, storage.getPlugin().getConfig().getString(ConfigProperties.STORAGE_MYSQL_TABLE_PREFIX.toString()) + "messaging");
 
         this.cachedOutgoing = new ConcurrentHashMap<>();
         this.updateTask = null;
