@@ -12,9 +12,9 @@ public class CoreSWMessage implements SWMessage {
     private String channel;
     private String payload;
     private String target;
-    private Integer replyToId;
+    private int replyToId;
     private Long timestamp;
-    private Integer id;
+    private int id;
 
     public CoreSWMessage(SkyWarsReloaded plugin, String channel, String payload) {
         this.plugin = plugin;
@@ -37,6 +37,11 @@ public class CoreSWMessage implements SWMessage {
     @Override
     public int getId() {
         return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -80,12 +85,12 @@ public class CoreSWMessage implements SWMessage {
     }
 
     @Override
-    public @Nullable Integer getReplyToId() {
+    public @Nullable int getReplyToId() {
         return this.replyToId;
     }
 
     @Override
-    public void setReplyToId(@Nullable Integer replyToId) {
+    public void setReplyToId(@Nullable int replyToId) {
         this.replyToId = replyToId;
     }
 

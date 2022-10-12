@@ -63,4 +63,5 @@ public interface SWScheduler {
 
     SWRunnable createRunnable(Runnable runnable);
 
+    void cancelAll();
 }

@@ -3,13 +3,11 @@ package net.gcnt.skywarsreloaded.bukkit.wrapper.scheduler;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.BukkitSkyWarsReloaded;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.AbstractSWScheduler;
-import net.gcnt.skywarsreloaded.wrapper.scheduler.CoreSWRunnable;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWRunnable;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BukkitSWScheduler extends AbstractSWScheduler {
@@ -72,5 +70,10 @@ public class BukkitSWScheduler extends AbstractSWScheduler {
                 runnable.run();
             }
         };
+    }
+
+    @Override
+    public void cancelAll() {
+        bukkitPlugin.getServer().getScheduler().cancelTasks(bukkitPlugin);
     }
 }

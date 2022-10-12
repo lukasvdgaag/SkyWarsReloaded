@@ -2,7 +2,10 @@ package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
+import net.gcnt.skywarsreloaded.data.messaging.LocalMessaging;
+import net.gcnt.skywarsreloaded.data.messaging.CoreMySQLMessaging;
 import net.gcnt.skywarsreloaded.data.messaging.SWMessaging;
+import net.gcnt.skywarsreloaded.data.messaging.SWMySQLMessaging;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerStorage;
 import net.gcnt.skywarsreloaded.data.redis.RedisGameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.redis.SWRedisConnection;
@@ -112,6 +115,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
         initGameInstanceStorage();
         initPlayerStorage(); // requires config
+        initMessaging();
 
         // Managers
         initServer();
@@ -634,12 +638,24 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     protected void initMessaging() {
-        // enabling SQLite only if is enabled in the config.
-//        if (getConfig().getString(ConfigProperties.MESSAGING_TYPE.toString()).equalsIgnoreCase("Redis")) {
-//            setSQLStorage(new CoreSQLiteStorage(this));
-//        } else { // todo this
-////            setMessaging(new RedisGameInstanceStorage(this, getRedisConnection()));
-//        }
+        if (getConfig().getBoolean(ConfigProperties.SERVER_PROXY.toString())) {
+            if (getConfig().getString(ConfigProperties.MESSAGING_TYPE.toString()).equalsIgnoreCase("redis")) {
+                // set redis messaging system
+            }
+            else {
+                if (!(getSQLStorage() instanceof SWMySQLMessaging)) {
+                    getLogger().error("MySQL has not been set up for this server. Please change 'storage.type' to 'MySQL' and enter valid credentials to use MySQL messaging.");
+                    disableSkyWars();
+                }
+                else {
+                    setMessaging(new CoreMySQLMessaging((CoreMySQLStorage) getSQLStorage()));
+                }
+            }
+        }
+        else {
+            // local only
+            setMessaging(new LocalMessaging(this));
+        }
     }
 
     protected void initSWEventListeners() {

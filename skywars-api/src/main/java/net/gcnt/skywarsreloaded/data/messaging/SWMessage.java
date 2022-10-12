@@ -7,6 +7,8 @@ public interface SWMessage {
 
     int getId();
 
+    void setId(int id);
+
     /**
      * Gets the time at which the message was sent
      *
@@ -30,9 +32,9 @@ public interface SWMessage {
     void setTargetServer(String targetServerName);
 
     @Nullable
-    Integer getReplyToId();
+    int getReplyToId();
 
-    void setReplyToId(@Nullable Integer replyToId);
+    void setReplyToId(@Nullable int replyToId);
 
     void send();
 

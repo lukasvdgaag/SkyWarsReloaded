@@ -1,19 +1,13 @@
 package net.gcnt.skywarsreloaded.data.messaging;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface SWMessaging {
 
     /**
      * Set up the messaging environment.
      */
     void setup();
-
-    /**
-     * Delete a message from the database.
-     *
-     * @param message     The message to delete.
-     * @param withReplies Whether to delete any replies to the message.
-     */
-    void removeMessage(SWMessage message, boolean withReplies);
 
     /**
      * @param payload The payload of the message.
@@ -25,8 +19,9 @@ public interface SWMessaging {
      * Send a message over the messaging channel.
      *
      * @param message The message to send.
+     * @return
      */
-    void sendMessage(SWMessage message);
+    CompletableFuture<SWMessage> sendMessage(SWMessage message);
 
     /**
      * Reply to a received message.
@@ -37,13 +32,18 @@ public interface SWMessaging {
     void replyMessage(SWMessage message, SWMessage replyTo);
 
     /**
-     * Start the fetching of the messages.
+     * Start listening for incoming messages.
      */
-    void startFetching();
+    void startListening();
 
     /**
-     * Stop fetching new messages.
+     * Stop listening for new messages.
      */
-    void stopFetching();
+    void stopListening();
+
+    /**
+     * Start the cleaning of cached messages.
+     */
+    void startCleaning();
 
 }

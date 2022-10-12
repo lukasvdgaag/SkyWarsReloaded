@@ -201,5 +201,6 @@ public class BukkitSkyWarsReloaded extends AbstractSkyWarsReloaded {
     @Override
     public void disableSkyWars() {
         HandlerList.unregisterAll((BukkitSWEventListener) this.getPlatformEventListener());
+        this.getScheduler().cancelAll();
     }
 }

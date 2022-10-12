@@ -2,6 +2,8 @@ package net.gcnt.skywarsreloaded.data.messaging;
 
 import net.gcnt.skywarsreloaded.data.sql.CoreMySQLStorage;
 import net.gcnt.skywarsreloaded.data.sql.CoreSQLTable;
+import net.gcnt.skywarsreloaded.event.CoreSWMessageReceivedEvent;
+import net.gcnt.skywarsreloaded.event.CoreSWMessageSentEvent;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.CoreSWRunnable;
 import net.gcnt.skywarsreloaded.wrapper.scheduler.SWRunnable;
@@ -10,22 +12,32 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class MySQLMessaging extends CoreSQLTable<SWMessage> implements SWMessaging {
+public class CoreMySQLMessaging extends CoreSQLTable<SWMessage> implements SWMySQLMessaging {
 
-    private final HashMap<Integer, SWMessage> messages;
+    private final long CLEANUP_TIMEOUT = 30 * 1000; // 30s
+    private final ConcurrentHashMap<SWMessage, CompletableFuture<SWMessage>> cachedOutgoing;
+    private int lastFetchedId;
     private SWRunnable updateTask;
+    private SWRunnable cleanupTask;
 
-    public MySQLMessaging(CoreMySQLStorage storage) {
+    public CoreMySQLMessaging(CoreMySQLStorage storage) {
         super(storage, "sw_messaging");
 
-        this.messages = new HashMap<>();
+        this.cachedOutgoing = new ConcurrentHashMap<>();
         this.updateTask = null;
+        this.cleanupTask = null;
     }
 
     @Override
     public void setup() {
+        this.startListening();
+        this.startCleaning(); // lukas getting busy
     }
 
     @Override
@@ -33,9 +45,9 @@ public class MySQLMessaging extends CoreSQLTable<SWMessage> implements SWMessagi
         String query = "DELETE FROM `" + table + "` WHERE `id`=?" + (withReplies ? " OR `reply_to_id`=?" : "");
         try (Connection connection = storage.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, message.getId());
+            bindPropertyValue(statement, 1, message.getId());
             if (withReplies) {
-                statement.setInt(2, message.getId());
+                bindPropertyValue(statement, 2, message.getId());
             }
 
             statement.executeUpdate();
@@ -45,8 +57,11 @@ public class MySQLMessaging extends CoreSQLTable<SWMessage> implements SWMessagi
     }
 
     @Override
-    public void sendMessage(SWMessage message) {
-        String query = "INSERT INTO `" + table + "` (`payload`, `channel`, `origin_server`, `target_server`, `reply_to_id` VALUES (?, ?, ?, ?, ?)";
+    public CompletableFuture<SWMessage> sendMessage(SWMessage message) {
+        CompletableFuture<SWMessage> callback = new CompletableFuture<>();
+
+        String query = "INSERT INTO `" + table + "` (`payload`, `channel`, `origin_server`, `target_server`, `reply_to_id` VALUES (?, ?, ?, ?, ?);" +
+                "SELECT `id` FROM `" + table + "` ORDER BY timestamp DESC LIMIT 1";
         try (Connection connection = storage.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
             bindPropertyValue(statement, 1, message.getPayload());
             bindPropertyValue(statement, 2, message.getChannel());
@@ -54,10 +69,18 @@ public class MySQLMessaging extends CoreSQLTable<SWMessage> implements SWMessagi
             bindPropertyValue(statement, 4, message.getTargetServer());
             bindPropertyValue(statement, 5, message.getReplyToId());
 
-            statement.executeUpdate();
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                message.setId(resultSet.getInt("id"));
+                this.cachedOutgoing.put(message, callback);
+            }
+
+            CoreSWMessageSentEvent event = new CoreSWMessageSentEvent(message);
+            storage.getPlugin().getEventManager().callEvent(event);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return callback;
     }
 
     @Override
@@ -88,21 +111,26 @@ public class MySQLMessaging extends CoreSQLTable<SWMessage> implements SWMessagi
     }
 
     @Override
-    public void startFetching() {
+    public void startListening() {
         updateTask = storage.getPlugin().getScheduler().runAsyncTimer(new CoreSWRunnable() {
             @Override
             public void run() {
                 // todo add deleting messages that are older than 10 seconds, only for the main proxy lobby server.
-                String query = "SELECT * FROM `" + table + "` WHERE (`target_server` IS NULL OR `target_server`=?) AND (`timestamp` <= NOW() - INTERVAL 2 SECOND)";
+                String query = "SELECT * FROM `" + table + "` " +
+                        "WHERE (`target_server` IS NULL OR `target_server` = ?) " +
+                        "   AND (`origin_server` != ) " +
+                        "   AND `id` > ? " +
+                        "   AND (`timestamp` >= NOW() - INTERVAL 2 SECOND)";
+
                 try (Connection connection = storage.getConnection();
                      PreparedStatement statement = connection.prepareStatement(query)) {
 
                     bindPropertyValue(statement, 1, storage.getPlugin().getConfig().getString(ConfigProperties.SERVER_NAME.toString()));
+                    bindPropertyValue(statement, 2, lastFetchedId);
 
                     try (final ResultSet resultSet = statement.executeQuery()) {
                         while (resultSet.next()) {
                             int id = resultSet.getInt("id");
-                            if (!isCached(id)) continue;
 
                             String payload = resultSet.getString("payload");
                             String channel = resultSet.getString("channel");
@@ -112,8 +140,18 @@ public class MySQLMessaging extends CoreSQLTable<SWMessage> implements SWMessagi
                             long timestamp = resultSet.getTimestamp("timestamp").getTime();
 
                             SWMessage message = new CoreSWMessage(storage.getPlugin(), id, channel, payload, originServer, targetServer, replyToId, timestamp);
-                            cacheMessage(message);
-                            // todo throw message received event here.
+                            lastFetchedId = id;
+
+                            if (message.getReplyToId() != -1) {
+                                cachedOutgoing.entrySet().stream()
+                                        .filter(entry -> entry.getKey().getId() == message.getReplyToId())
+                                        .map(Map.Entry::getValue)
+                                        .findAny()
+                                        .ifPresent(foundFuture -> foundFuture.complete(message));
+                            }
+
+                            CoreSWMessageReceivedEvent event = new CoreSWMessageReceivedEvent(message);
+                            storage.getPlugin().getEventManager().callEvent(event);
                         }
                     }
                 } catch (SQLException e) {
@@ -124,28 +162,28 @@ public class MySQLMessaging extends CoreSQLTable<SWMessage> implements SWMessagi
     }
 
     @Override
-    public void stopFetching() {
+    public void startCleaning() {
+        cleanupTask = storage.getPlugin().getScheduler().runAsyncTimer(new CoreSWRunnable() {
+            @Override
+            public void run() {
+
+                List<SWMessage> toRemove = new ArrayList<>();
+                cachedOutgoing.forEach((msg, future) -> {
+                    if (System.currentTimeMillis() - msg.getTimestamp() > CLEANUP_TIMEOUT) {
+                        toRemove.add(msg);
+                    }
+                });
+
+                for (SWMessage msg : toRemove) cachedOutgoing.remove(msg);
+            }
+        }, 0, 200);
+    }
+
+    @Override
+    public void stopListening() {
         if (updateTask != null) {
             updateTask.cancel();
         }
-    }
-
-    public void cacheMessage(SWMessage message) {
-        if (!isCached(message.getId())) {
-            this.messages.put(message.getId(), message);
-        }
-    }
-
-    public boolean isCached(int id) {
-        return this.messages.containsKey(id);
-    }
-
-    public void removeCachedMessage(SWMessage message) {
-        this.messages.remove(message.getId());
-    }
-
-    public SWMessage getCachedMessage(SWMessage message) {
-        return this.messages.get(message.getId());
     }
 
 }
