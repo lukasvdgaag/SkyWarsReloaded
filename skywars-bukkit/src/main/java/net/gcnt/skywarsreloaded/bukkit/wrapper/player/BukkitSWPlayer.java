@@ -19,6 +19,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
 
     @Nullable
     private Player player;
+    private SWInventory inventory;
 
     public BukkitSWPlayer(BukkitSkyWarsReloaded plugin, UUID uuid, boolean online) {
         super(plugin, uuid, online);
@@ -27,6 +28,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     public BukkitSWPlayer(BukkitSkyWarsReloaded plugin, Player playerIn, boolean online) {
         this(plugin, playerIn.getUniqueId(), online);
         this.player = playerIn;
+        this.inventory = new BukkitSWInventory(plugin, player.getInventory(), "Inventory");
     }
 
     @Nullable
@@ -59,15 +61,10 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     }
 
     @Override
-    public Item[] getInventory() throws NullPointerException {
+    public SWInventory getInventory() throws NullPointerException {
         if (this.player == null) throw new NullPointerException("Bukkit player is null");
-        final ItemStack[] contents = player.getInventory().getContents();
-        Item[] items = new Item[contents.length];
-        for (int i = 0; i < 36; i++) {
-            ItemStack item = contents[i];
-            items[i] = new BukkitItem(plugin, item == null || item.getType() == Material.AIR ? null : item);
-        }
-        return items;
+
+        return this.inventory;
     }
 
     @Override
@@ -258,6 +255,7 @@ public class BukkitSWPlayer extends AbstractSWPlayer {
     @Override
     public void fetchParentPlayer() {
         this.player = Bukkit.getPlayer(this.getUuid());
+        if (this.player != null) this.inventory = new BukkitSWInventory(plugin, player.getInventory(), "Inventory");
     }
 
     @Override

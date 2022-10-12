@@ -30,6 +30,9 @@ public enum ConfigProperties {
     MENUS_KITS_AUTO_LAYOUT("menus.kits.auto-layout"),
     MENUS_KITS_ENCHANT_SELECTED_KIT("menus.kits.enchant-selected-kit"),
 
+    // items
+    ITEMS_GAME_KIT_SELECTOR_SLOT("items.game.kit-selector.slot"),
+    ITEMS_GAME_LEAVE_SLOT("items.game.leave.slot"),
     // todo: messaging impl & auth
 
     // Game instances

@@ -9,7 +9,6 @@ import net.gcnt.skywarsreloaded.listener.PlatformSWEventListener;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
-import net.gcnt.skywarsreloaded.utils.gui.SWGui;
 import net.gcnt.skywarsreloaded.utils.gui.SWGuiClickHandler;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWEntity;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
@@ -298,6 +297,7 @@ public class BukkitSWEventListener implements Listener, PlatformSWEventListener 
         }
 
         CoreSWInventoryClickEvent swEvent = new CoreSWInventoryClickEvent(
+                this.getPlayerFromBukkitPlayer((Player) event.getWhoClicked()),
                 inv,
                 clickType,
                 event.getSlot(),
@@ -311,14 +311,6 @@ public class BukkitSWEventListener implements Listener, PlatformSWEventListener 
             event.setCancelled(true);
         }
         event.setCurrentItem(((BukkitItem) swEvent.getCurrentItem()).getBukkitItem());
-
-
-        SWGui gui = this.plugin.getGuiManager().getActiveGui(inv);
-        if (gui == null) return;
-
-        event.setCancelled(true);
-
-        gui.handleClick(event.getSlot(), clickType, event.isShiftClick());
     }
 
     // Utils

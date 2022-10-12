@@ -7,7 +7,7 @@ import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 public interface SWPlayerDataManager {
 
-    SWPlayerData createSWPlayerDataInstance();
+    SWPlayerData createSWPlayerDataInstance(SWPlayer player);
 
     SWPlayerStats createSWPlayerStatsInstance();
 

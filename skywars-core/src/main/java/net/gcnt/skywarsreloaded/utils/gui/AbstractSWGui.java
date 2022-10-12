@@ -65,7 +65,7 @@ public abstract class AbstractSWGui implements SWGui {
      */
     @Override
     public SWGui addButton(int slot, Item item, SWGuiClickHandler handler) {
-        if (this.clickHandlers.containsKey(slot)) {
+        if (hasButton(slot)) {
             this.plugin.getLogger().error(String.format("Attempted to add a button to an already existing slot %d", slot));
             return this;
         }
@@ -79,6 +79,11 @@ public abstract class AbstractSWGui implements SWGui {
     public void removeButton(int slot) {
         this.clickHandlers.remove(slot);
         this.inventory.setItem(slot, null);
+    }
+
+    @Override
+    public boolean hasButton(int slot) {
+        return this.clickHandlers.containsKey(slot);
     }
 
     @Override
@@ -125,6 +130,7 @@ public abstract class AbstractSWGui implements SWGui {
     }
 
     protected void addCloseButton(int slot) {
+        if (hasButton(slot)) return;
         this.addButton(slot, getCloseItem(), (gui, slot1, clickType, isShiftClick) -> {
             gui.close();
             return SWGuiClickHandler.ClickResult.IGNORED;

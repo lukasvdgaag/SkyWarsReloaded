@@ -1,11 +1,15 @@
 package net.gcnt.skywarsreloaded.gui.kit;
 
+import com.google.common.collect.Lists;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.gui.AbstractSWGui;
 import net.gcnt.skywarsreloaded.utils.gui.SWConfirmationGui;
+import net.gcnt.skywarsreloaded.utils.gui.SWGui;
 import net.gcnt.skywarsreloaded.utils.gui.SWGuiClickHandler;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
+import net.gcnt.skywarsreloaded.utils.properties.ItemProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
@@ -17,7 +21,7 @@ public class CoreKitSelectorGui extends AbstractSWGui {
     public CoreKitSelectorGui(SkyWarsReloaded plugin, SWPlayer player) {
         super(plugin,
                 plugin.getMessages().getString(MessageProperties.MENUS_KITS_TITLE.toString(), "Kit Selector"),
-                54,
+                6 * 9,
                 player);
 
         this.loadItems();
@@ -25,9 +29,11 @@ public class CoreKitSelectorGui extends AbstractSWGui {
 
     public void loadItems() {
         addCloseButton(49);
+        addDeselectButton();
 
         for (SWKit kit : plugin.getKitManager().getKits()) {
-            if (kit.getSlot() == -1) continue;
+            final int kitSlot = kit.getSlot();
+            if (kitSlot == -1) continue;
 
             final boolean unlocked = kit.hasUnlocked(player);
             final boolean selected = kit.getId().equals(player.getPlayerData().getKit());
@@ -38,8 +44,11 @@ public class CoreKitSelectorGui extends AbstractSWGui {
                             plugin.getMessages().getItem(MessageProperties.ITEMS_KITS_LOCKED.toString());
 
             item.withMessages(messagesItem);
-
             item.setDisplayName(prepareKitLine(kit, item.getDisplayName(), unlocked, selected));
+
+            if (selected && plugin.getConfig().getBoolean(ConfigProperties.MENUS_KITS_ENCHANT_SELECTED_KIT.toString())) {
+                item.setEnchantments(Lists.newArrayList("unbreaking"));
+            }
 
             List<String> newLore = new ArrayList<>();
             for (String line : item.getLore()) {
@@ -51,7 +60,23 @@ public class CoreKitSelectorGui extends AbstractSWGui {
             }
             item.setLore(newLore);
 
-            addButton(kit.getSlot(), item, (gui, slot, clickType, isShift) -> handleKitClick(kit));
+
+            if (hasButton(kitSlot)) {
+                updateButton(kitSlot, item);
+            } else {
+                addButton(kitSlot, item, (gui, slot, clickType, isShift) -> handleKitClick(kit));
+            }
+        }
+    }
+
+    public void addDeselectButton() {
+        Item item = player.getPlayerData().getKit() == null ? null : plugin.getItemManager().getItemFromConfig(ItemProperties.KITS_DESELECT.toString());
+
+        if (hasButton(46)) {
+            if (item == null) removeButton(46);
+            else updateButton(46, item);
+        } else {
+            if (item != null) addButton(46, item, this::handleDeselect);
         }
     }
 
@@ -78,6 +103,7 @@ public class CoreKitSelectorGui extends AbstractSWGui {
             plugin.getMessages().getMessage(MessageProperties.KITS_SELECTED.toString())
                     .replace("{kit}", kit.getDisplayName())
                     .send(player);
+            plugin.getScheduler().runSyncLater(this::loadItems, 1);
             return SWGuiClickHandler.ClickResult.CANCELLED;
         } else {
             if (kit.isEligible(player)) {
@@ -125,6 +151,13 @@ public class CoreKitSelectorGui extends AbstractSWGui {
             open();
             return SWGuiClickHandler.ClickResult.CANCELLED;
         });
+    }
+
+    public SWGuiClickHandler.ClickResult handleDeselect(SWGui gui, int slot, SWGuiClickHandler.ClickType clickType, boolean isShift) {
+        player.getPlayerData().setKit(null);
+        plugin.getMessages().getMessage(MessageProperties.KITS_DESELECT.toString()).send(player);
+        player.closeInventory();
+        return SWGuiClickHandler.ClickResult.CANCELLED;
     }
 
 

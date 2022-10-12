@@ -5,7 +5,7 @@ import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.gui.SWGuiClickHandler;
 import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
 
-public interface SWInventoryClickEvent extends SWEvent, SWCancellable {
+public interface SWInventoryClickEvent extends SWEvent, SWCancellable, SWPlayerEvent {
 
     SWInventory getInventory();
 

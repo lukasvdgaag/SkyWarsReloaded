@@ -1,12 +1,14 @@
 display-name: Boom
-icon: TNT
-unavailable-icon: BARRIER
+icon:
+  material: TNT
+unavailable-icon:
+  material: TNT
 description: TNT says Boom!
-slot: 1
 lore:
-  - ''
-  - ''
-  - ''
+  - '&8- &7Diamond Boots &8(&aProtection I&8)'
+  - '&8- &7TNT &b(6x)'
+  - '&8- &7Lever'
+  - '&8- &7Redstone &b(4x)'
 requirements:
   permission: false # needs permission
   cost: -1 # or needs to pay 1k cash -- set to -1 to make non-buyable with coins.
@@ -22,7 +24,7 @@ contents:
     boots:
       material: DIAMOND_BOOTS
       enchantments:
-        - PROTECTION_ENVIRONMENTAL:1
+        - "protection:1"
   inventory:
     '1':
       material: TNT
@@ -38,4 +40,4 @@ contents:
 
 effects: # list of option effects to be applied to the player during the game.
   # format: <TYPE>:[duration]:[amount]
-  - STRENGTH:1
+  - "strength:1"

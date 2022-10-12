@@ -130,7 +130,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
         mapList.forEach(map -> {
             if (map != null) {
-                final Item item = plugin.getItemManager().getItem(map);
+                final Item item = plugin.getItemManager().getItem((Map<String, Object>) map);
                 if (item != null) items.add(item);
             }
         });
@@ -175,15 +175,15 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
             BukkitItem item = (BukkitItem) value;
             fileConfiguration.set(property + ".material", item.getMaterial());
             if (item.getAmount() != 1) fileConfiguration.set(property + ".amount", item.getAmount());
-            if (item.getDamage() != 0) fileConfiguration.set(property + ".damage", item.getDamage());
-            if (item.getDurability() != -1) fileConfiguration.set(property + ".durability", item.getDurability());
-            if (item.getDisplayName() != null) fileConfiguration.set(property + ".display-name", item.getDisplayName());
-            if (!item.getLore().isEmpty()) fileConfiguration.set(property + ".lore", item.getLore());
+            if (item.getDamage() > 0) fileConfiguration.set(property + ".damage", item.getDamage());
+            if (item.getDurability() > 0) fileConfiguration.set(property + ".durability", item.getDurability());
+            if (item.getDisplayName() != null && item.getDisplayName().equals("")) fileConfiguration.set(property + ".display-name", item.getDisplayName());
+            if (item.getLore() != null) fileConfiguration.set(property + ".lore", item.getLore());
             if (!item.getEnchantments().isEmpty())
                 fileConfiguration.set(property + ".enchantments", item.getEnchantments());
             if (!item.getItemFlags().isEmpty()) fileConfiguration.set(property + ".item-flags", item.getItemFlags());
             if (item.getSkullOwner() != null) fileConfiguration.set(property + ".owner", item.getSkullOwner());
-            if (item.getColor() != null) fileConfiguration.set(property + ".color", item.getColor().getRGB());
+            if (item.getColor() != null) fileConfiguration.set(property + ".color", "#" + Integer.toHexString(item.getColor().getRGB()).substring(2));
         } else {
             fileConfiguration.set(property, value);
         }
@@ -202,7 +202,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     @Override
     public Set<String> getKeys(String property) {
         final ConfigurationSection sect = fileConfiguration.getConfigurationSection(property);
-        if (sect == null) return null;
+        if (sect == null) return new HashSet<>();
         return sect.getKeys(false);
     }
 
@@ -210,9 +210,12 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
     public Item getItem(String category, Item def) {
         if (!contains(category)) return def;
         ConfigurationSection section = fileConfiguration.getConfigurationSection(category);
-        if (section == null || !section.isSet("material")) return def;
+        if (section == null) return def;
 
         Map<String, Object> map = section.getValues(true);
+        if (map.isEmpty()) return def;
+
+        if (!map.containsKey("material")) map.put("material", def == null ? "STONE" : def.getMaterial());
         final Item item = plugin.getItemManager().getItem(map);
 
         return item == null ? def : item;
@@ -220,7 +223,7 @@ public class BukkitYAMLConfig extends AbstractYAMLConfig {
 
     @Override
     public Item getItem(String category) {
-        return getItem(category, new BukkitItem(plugin, "STONE"));
+        return getItem(category, null);
     }
 
     @Override

@@ -72,7 +72,7 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
 
     @Override
     public Item getIcon() {
-        return icon;
+        return icon.clone();
     }
 
     @Override
@@ -82,7 +82,7 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
 
     @Override
     public Item getUnavailableIcon() {
-        return unavailableIcon;
+        return unavailableIcon.clone();
     }
 
     @Override
@@ -217,6 +217,7 @@ public abstract class AbstractSWKit extends CoreUnlockable implements SWKit {
             // armor init
             try {
                 this.helmet = config.getItem(KitProperties.HELMET.toString());
+                System.out.println(helmet);
             } catch (Exception e) {
                 plugin.getLogger().error(String.format("Failed to load helmet for kit %s. Ignoring it. (%s)", id, e.getClass().getName() + ": " + e.getLocalizedMessage()));
             }

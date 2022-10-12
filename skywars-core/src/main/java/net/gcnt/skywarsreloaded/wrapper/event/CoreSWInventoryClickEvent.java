@@ -2,10 +2,12 @@ package net.gcnt.skywarsreloaded.wrapper.event;
 
 import net.gcnt.skywarsreloaded.utils.Item;
 import net.gcnt.skywarsreloaded.utils.gui.SWGuiClickHandler;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
 
 public class CoreSWInventoryClickEvent implements SWInventoryClickEvent {
 
+    private final SWPlayer player;
     private final SWInventory inventory;
     private final SWGuiClickHandler.ClickType clickType;
     private final boolean isShiftClick;
@@ -14,8 +16,8 @@ public class CoreSWInventoryClickEvent implements SWInventoryClickEvent {
     private Item currentItem;
     private boolean cancelled;
 
-
-    public CoreSWInventoryClickEvent(SWInventory inventory, SWGuiClickHandler.ClickType clickType, int slot, int rawSlot, boolean isShiftClick, Item currentItem) {
+    public CoreSWInventoryClickEvent(SWPlayer player, SWInventory inventory, SWGuiClickHandler.ClickType clickType, int slot, int rawSlot, boolean isShiftClick, Item currentItem) {
+        this.player = player;
         this.inventory = inventory;
         this.clickType = clickType;
         this.slot = slot;
@@ -69,4 +71,8 @@ public class CoreSWInventoryClickEvent implements SWInventoryClickEvent {
         this.currentItem = item;
     }
 
+    @Override
+    public SWPlayer getPlayer() {
+        return player;
+    }
 }

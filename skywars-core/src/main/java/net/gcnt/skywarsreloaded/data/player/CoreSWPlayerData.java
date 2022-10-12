@@ -1,14 +1,18 @@
 package net.gcnt.skywarsreloaded.data.player;
 
+import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerData;
 import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerStats;
 import net.gcnt.skywarsreloaded.data.player.stats.SWPlayerUnlockables;
+import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 
 /**
  * Stats and player cosmetics for a currently connected player
  */
 public class CoreSWPlayerData implements SWPlayerData {
 
+    private final SkyWarsReloaded plugin;
+    private final SWPlayer player;
     private boolean initialized;
 
     private SWPlayerStats stats;
@@ -23,7 +27,9 @@ public class CoreSWPlayerData implements SWPlayerData {
     private String killMessagesTheme;
     private String selectedKit;
 
-    public CoreSWPlayerData() {
+    public CoreSWPlayerData(SkyWarsReloaded plugin, SWPlayer player) {
+        this.plugin = plugin;
+        this.player = player;
         this.initialized = false;
     }
 
@@ -74,6 +80,7 @@ public class CoreSWPlayerData implements SWPlayerData {
     @Override
     public void setSoloCage(String value) {
         selectedSoloCage = value;
+        plugin.getPlayerStorage().saveData(player);
     }
 
     @Override
@@ -84,6 +91,7 @@ public class CoreSWPlayerData implements SWPlayerData {
     @Override
     public void setTeamCage(String value) {
         selectedTeamCage = value;
+        plugin.getPlayerStorage().saveData(player);
     }
 
     @Override
@@ -94,6 +102,7 @@ public class CoreSWPlayerData implements SWPlayerData {
     @Override
     public void setParticle(String value) {
         selectedParticle = value;
+        plugin.getPlayerStorage().saveData(player);
     }
 
     @Override
@@ -104,6 +113,7 @@ public class CoreSWPlayerData implements SWPlayerData {
     @Override
     public void setKillEffect(String value) {
         selectedKillEffect = value;
+        plugin.getPlayerStorage().saveData(player);
     }
 
     @Override
@@ -114,6 +124,7 @@ public class CoreSWPlayerData implements SWPlayerData {
     @Override
     public void setWinEffect(String value) {
         selectedWinEffect = value;
+        plugin.getPlayerStorage().saveData(player);
     }
 
     @Override
@@ -124,6 +135,7 @@ public class CoreSWPlayerData implements SWPlayerData {
     @Override
     public void setProjectileParticle(String value) {
         selectedProjectileEffect = value;
+        plugin.getPlayerStorage().saveData(player);
     }
 
     @Override
@@ -134,6 +146,7 @@ public class CoreSWPlayerData implements SWPlayerData {
     @Override
     public void setKillMessagesTheme(String value) {
         killMessagesTheme = value;
+        plugin.getPlayerStorage().saveData(player);
     }
 
     @Override
@@ -144,5 +157,6 @@ public class CoreSWPlayerData implements SWPlayerData {
     @Override
     public void setKit(String kit) {
         this.selectedKit = kit;
+        plugin.getPlayerStorage().saveData(player);
     }
 }

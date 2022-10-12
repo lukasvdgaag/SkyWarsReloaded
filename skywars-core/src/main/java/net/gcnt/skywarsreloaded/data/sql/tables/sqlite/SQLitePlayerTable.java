@@ -16,7 +16,7 @@ public class SQLitePlayerTable extends SQLPlayerTable {
     @Override
     public void createTable(Connection connection) throws SQLException {
         try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS `" + table + "` (" +
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS " + table + " (" +
                     "uuid TEXT NOT NULL UNIQUE PRIMARY KEY," +
                     "selected_solo_cage TEXT DEFAULT NULL," +
                     "selected_team_cage TEXT DEFAULT NULL," +
@@ -36,7 +36,7 @@ public class SQLitePlayerTable extends SQLPlayerTable {
 
     @Override
     public void initUnlockablesTable() {
-        this.statsTable = new SQLitePlayerUnlockablesTable(storage);
+        this.unlockablesTable = new SQLitePlayerUnlockablesTable(storage);
     }
 
 }

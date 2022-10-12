@@ -47,7 +47,12 @@ public class BukkitSWKit extends AbstractSWKit {
         getContents().forEach((slot, item) -> inventory.put(slot, item == null ? null : ((BukkitItem) item).getBukkitItem()));
 
         this.effects = new ArrayList<>();
-        getEffects().forEach(s -> effects.add(new BukkitEffect(plugin, s)));
+        getEffects().forEach(s -> {
+            try {
+                effects.add(new BukkitEffect(plugin, s));
+            } catch (Exception ignored) {
+            }
+        });
     }
 
     @Override

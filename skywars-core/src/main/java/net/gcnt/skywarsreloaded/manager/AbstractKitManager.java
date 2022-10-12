@@ -24,7 +24,7 @@ public abstract class AbstractKitManager implements KitManager {
         // . . . . . . . . .
         // . . . . . . . . .
         // . . . . . . . . .
-        LAYOUT_FILLED_MAP_TO_INV_SLOTS = new Integer[9 * 5];
+        LAYOUT_FILLED_MAP_TO_INV_SLOTS = new Integer[9 * 6];
 
         // 7 x 3 inventory inner layout
         // # # # # # # # # #
@@ -32,7 +32,7 @@ public abstract class AbstractKitManager implements KitManager {
         // # . . . . . . . #
         // # . . . . . . . #
         // # # # # # # # # #
-        LAYOUT_OUTLINED_MAP_TO_INV_SLOTS = new Integer[7 * 3];
+        LAYOUT_OUTLINED_MAP_TO_INV_SLOTS = new Integer[7 * 4];
 
         int lastOutlinedIndex = 0;
         for (int slot = 0; slot < 9 * 6; slot++) {
@@ -132,7 +132,7 @@ public abstract class AbstractKitManager implements KitManager {
 
         // Add default files on first install
         if (files.length < 1) {
-            this.createKit("default", null);
+            plugin.getYAMLManager().loadConfig("kit-def", dir, "default.yml", "/kits/default.yml");
         }
     }
 

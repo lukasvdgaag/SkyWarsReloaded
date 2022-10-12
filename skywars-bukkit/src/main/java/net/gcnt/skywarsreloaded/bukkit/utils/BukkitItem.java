@@ -3,6 +3,7 @@ package net.gcnt.skywarsreloaded.bukkit.utils;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.bukkit.wrapper.item.BukkitSWEnchantmentType;
 import net.gcnt.skywarsreloaded.utils.AbstractItem;
+import net.gcnt.skywarsreloaded.utils.Item;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -93,7 +94,7 @@ public class BukkitItem extends AbstractItem {
 
     @Override
     public List<String> getLore() {
-        return itemStack.hasItemMeta() ? itemStack.getItemMeta().getLore() : new ArrayList<>();
+        return itemStack.hasItemMeta() ? itemStack.getItemMeta().getLore() : null;
     }
 
     @Override
@@ -142,6 +143,28 @@ public class BukkitItem extends AbstractItem {
                 plugin.getLogger().error("Flag with name '" + flag + "' could not be resolved for item " + itemStack.getType().name() + ". Ignoring it.");
             }
         });
+        itemStack.setItemMeta(meta);
+    }
+
+    @Override
+    public void addItemFlag(String flag) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) return;
+
+        try {
+            meta.addItemFlags(ItemFlag.valueOf(flag));
+        } catch (Exception e) {
+            plugin.getLogger().error("Flag with name '" + flag + "' could not be resolved for item " + itemStack.getType().name() + ". Ignoring it.");
+        }
+        itemStack.setItemMeta(meta);
+    }
+
+    @Override
+    public void addAllItemFlags() {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) return;
+
+        meta.addItemFlags(ItemFlag.values());
         itemStack.setItemMeta(meta);
     }
 
@@ -223,4 +246,8 @@ public class BukkitItem extends AbstractItem {
         return this.itemStack;
     }
 
+    @Override
+    public Item clone() {
+        return new BukkitItem(plugin, itemStack.clone());
+    }
 }

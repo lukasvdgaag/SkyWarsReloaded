@@ -4,6 +4,7 @@ import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.*;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
 import net.gcnt.skywarsreloaded.game.chest.filler.SWChestFiller;
+import net.gcnt.skywarsreloaded.game.kits.SWKit;
 import net.gcnt.skywarsreloaded.game.state.EndingStateHandler;
 import net.gcnt.skywarsreloaded.game.state.PlayingStateHandler;
 import net.gcnt.skywarsreloaded.game.state.WaitingStateHandler;
@@ -13,8 +14,10 @@ import net.gcnt.skywarsreloaded.game.types.TeamColor;
 import net.gcnt.skywarsreloaded.party.SWParty;
 import net.gcnt.skywarsreloaded.utils.*;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
+import net.gcnt.skywarsreloaded.utils.properties.ItemProperties;
 import net.gcnt.skywarsreloaded.utils.properties.MessageProperties;
 import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
+import net.gcnt.skywarsreloaded.wrapper.server.SWInventory;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -164,7 +167,8 @@ public abstract class AbstractLocalGameInstance extends AbstractGameInstance imp
         if (!canJoinGame())
             throw new IllegalStateException("Game is not joinable, the main skywars plugins or extensions " + "should always check if the instance is joinable before calling this method. (user id: " + uuid + " | game id: " + this.id + ")");
 
-        if (!this.isSpawnAvailable() && !ignoreAvailableSpawns) throw new IllegalStateException("No spawns are available");
+        if (!this.isSpawnAvailable() && !ignoreAvailableSpawns)
+            throw new IllegalStateException("No spawns are available");
 
         SWPlayer swp = plugin.getPlayerManager().getPlayerByUUID(uuid);
         if (swp == null) swp = plugin.getPlayerManager().getPlayerByUUID(uuid);
@@ -247,7 +251,7 @@ public abstract class AbstractLocalGameInstance extends AbstractGameInstance imp
 
     @Override
     public void preparePlayer(SWPlayer player) {
-        player.clearInventory();
+        preparePlayerInventory(player);
         player.setHealth(20);
         player.setFoodLevel(20);
         player.clearBodyArrows();
@@ -267,6 +271,35 @@ public abstract class AbstractLocalGameInstance extends AbstractGameInstance imp
             } else {
                 // adventure mode when waiting/ending
                 player.setGameMode(2);
+            }
+        }
+    }
+
+    @Override
+    public void preparePlayerInventory(SWPlayer player) {
+        GamePlayer gp = getPlayer(player);
+
+        player.clearInventory();
+
+        if (!gp.isSpectating()) {
+            if (getState().isWaiting()) {
+                SWInventory inventory = player.getInventory();
+
+                // kit selection item
+                Item kitSelectionItem = plugin.getItemManager().getItemFromConfig(ItemProperties.GAME_KIT_SELECTOR.toString());
+                int kitSelectionSlot = plugin.getConfig().getInt(ConfigProperties.ITEMS_GAME_KIT_SELECTOR_SLOT.toString());
+                inventory.setItem(kitSelectionSlot, kitSelectionItem);
+
+                // leave item
+                Item leaveItem = plugin.getItemManager().getItemFromConfig(ItemProperties.GAME_GAME_LEAVE.toString());
+                int leaveSlot = plugin.getConfig().getInt(ConfigProperties.ITEMS_GAME_LEAVE_SLOT.toString());
+                inventory.setItem(leaveSlot, leaveItem);
+            } else if (getState() == GameState.PLAYING) {
+                final String selectedKitId = player.getPlayerData().getKit();
+                if (selectedKitId != null) {
+                    final SWKit kitByName = plugin.getKitManager().getKitByName(selectedKitId);
+                    if (kitByName != null) kitByName.giveToPlayer(player);
+                }
             }
         }
     }
@@ -367,12 +400,10 @@ public abstract class AbstractLocalGameInstance extends AbstractGameInstance imp
     @Override
     public void fillChests() {
         SWChestTier chestTier = this.getChestTier();
-        System.out.println("chestTier = " + chestTier);
         // Default chest tier to normal if none supplied // todo: make voted
         if (chestTier == null) chestTier = plugin.getChestManager().getChestTierByName("normal");
 
         final SWChestFiller filler = chestTier.getChestFiller();
-        System.out.println("filler.getClass().getName() = " + filler.getClass().getName());
         for (Map.Entry<SWCoord, ChestType> chest : this.gameTemplate.getChests().entrySet()) {
             filler.fillChest(chestTier, this, chest.getKey(), chest.getValue());
         }

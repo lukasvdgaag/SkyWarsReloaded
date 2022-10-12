@@ -16,7 +16,7 @@ import java.sql.SQLException;
 public class SQLPlayerUnlockablesTable extends CoreSQLTable<SWPlayer> implements SWPlayerStorageUnit, SWUnlockablesStorage {
 
     public SQLPlayerUnlockablesTable(SQLStorage storage) {
-        super(storage, "sw_player_unlockables");
+        super(storage, "player_unlockables");
     }
 
     @Override

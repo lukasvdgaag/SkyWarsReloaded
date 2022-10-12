@@ -15,7 +15,7 @@ import java.sql.SQLException;
 public class SQLPlayerStatsTable extends CoreSQLTable<SWPlayer> implements SWPlayerStorageUnit {
 
     public SQLPlayerStatsTable(SQLStorage storage) {
-        super(storage, "sw_player_stats");
+        super(storage, "player_stats");
     }
 
     @Override

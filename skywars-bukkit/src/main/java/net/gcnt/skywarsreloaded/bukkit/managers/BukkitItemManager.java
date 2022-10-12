@@ -7,14 +7,44 @@ import net.gcnt.skywarsreloaded.utils.Item;
 
 import java.awt.*;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BukkitItemManager implements ItemManager {
 
     private final SkyWarsReloaded plugin;
+    private final HashMap<String, Item> defaultItems;
 
     public BukkitItemManager(SkyWarsReloaded plugin) {
         this.plugin = plugin;
+        this.defaultItems = new HashMap<>();
+    }
+
+    @Override
+    public void loadDefaultItems() {
+        this.defaultItems.clear();
+
+        Set<String> groups = new HashSet<>();
+        groups.addAll(plugin.getConfig().getKeys("items"));
+        groups.addAll(plugin.getMessages().getKeys("items"));
+
+        groups.forEach(itemGroup -> {
+            Set<String> items = new HashSet<>();
+            items.addAll(plugin.getConfig().getKeys("items." + itemGroup));
+            items.addAll(plugin.getMessages().getKeys("items." + itemGroup));
+
+            items.forEach(itemId -> {
+                String fullPath = "items." + itemGroup + "." + itemId;
+                loadDefaultItem(fullPath);
+            });
+        });
+    }
+
+    private void loadDefaultItem(String path) {
+        this.defaultItems.put(path, getItemFromConfig(path));
+    }
+
+    private boolean isDefaultLoaded(String property) {
+        return this.defaultItems.containsKey(property);
     }
 
     @Override
@@ -29,11 +59,10 @@ public class BukkitItemManager implements ItemManager {
         return item;
     }
 
-
     @Override
     @SuppressWarnings("unchecked")
-    public Item getItem(Map<?, ?> map) {
-        if (!map.containsKey("material")) return null;
+    public Item getItem(Map<String, Object> map) {
+        if (!map.containsKey("material")) map.put("material", "STONE");
 
         try {
             Item item = createItem((String) map.get("material"));
@@ -84,6 +113,8 @@ public class BukkitItemManager implements ItemManager {
 
     @Override
     public Item getItemFromConfig(String path) {
+        if (isDefaultLoaded(path)) return this.defaultItems.get(path).clone();
+
         final Item item = plugin.getConfig().getItem(path);
         if (item != null) {
             item.withMessages(plugin.getMessages().getItem(path));

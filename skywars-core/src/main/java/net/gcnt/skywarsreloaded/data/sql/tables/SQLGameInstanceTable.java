@@ -24,7 +24,7 @@ public class SQLGameInstanceTable extends CoreSQLTable<GameInstance> implements 
     private SWRunnable updateTask;
 
     public SQLGameInstanceTable(SQLStorage storage) {
-        super(storage, "sw_game_instances");
+        super(storage, "game_instances");
 
         updateTask = null;
     }

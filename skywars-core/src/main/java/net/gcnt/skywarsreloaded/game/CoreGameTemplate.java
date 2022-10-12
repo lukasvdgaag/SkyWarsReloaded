@@ -238,11 +238,6 @@ public class CoreGameTemplate implements GameTemplate {
         config.set(MapDataProperties.ENABLED.toString(), enabled);
         config.set(MapDataProperties.BORDER_RADIUS.toString(), borderRadius);
 
-        System.out.println("enabledChestTypes is null ? " + (enabledChestTiers == null));
-        for (SWChestTier enabledChestTier : enabledChestTiers) {
-            System.out.println("enabledChestTier = " + enabledChestTier);
-        }
-
         config.set(MapDataProperties.ENABLED_CHESTTIERS.toString(), enabledChestTiers.stream().map(SWChestTier::getName).collect(Collectors.toList()));
 
         config.set(MapDataProperties.IS_TEAMSIZE_SETUP.toString(), isTeamsizeSetup);

@@ -8,6 +8,6 @@ public class CoreJoinTypeSelectorGui extends AbstractSWGui {
 
     public CoreJoinTypeSelectorGui(SkyWarsReloaded plugin, SWPlayer player) {
         // todo: title
-        super(plugin, "", 3, player);
+        super(plugin, "", 3 * 9, player);
     }
 }

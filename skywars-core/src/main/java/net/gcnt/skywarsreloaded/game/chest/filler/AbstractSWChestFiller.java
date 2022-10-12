@@ -29,7 +29,6 @@ public abstract class AbstractSWChestFiller implements SWChestFiller {
 
     @Override
     public void fillChest(SWChestTier chestTier, LocalGameInstance gameInstance, SWCoord coord, ChestType chestType) {
-        System.out.println("FILLING CHEST!");
         if (gameInstance == null) {
             return;
         }

@@ -89,7 +89,11 @@ items:
     deny:
       material: RED_DYE
   game:
+    leave:
+      slot: 8
+      material: RED_BED
     kit-selector:
+      slot: 0
       material: PAPER
   kits:
     deselect:

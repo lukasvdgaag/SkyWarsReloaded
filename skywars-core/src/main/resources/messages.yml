@@ -33,10 +33,14 @@ items:
         - "&7menu"
 
   game:
+    leave:
+      display-name: "&cLeave Game"
+      lore:
+        - "&7Click to leave this game"
     kit-selector:
       display-name: "&bKit Selector"
       lore:
-        - "&7Open the kit selection menu"
+        - "&7Click to open the kit selection menu"
 
   kits:
     status:
@@ -103,6 +107,7 @@ kits:
   selected: "&eYou selected the kit &6{kit}&e!"
   cannot-afford: "&cYou cannot afford this kit!"
   purchased: "&eYou purchased the kit &6{kit}&a!"
+  deselect: "&eYou deselected your current kit!"
   enter-name: "&cPlease enter a kit name."
   enter-description: "&cPlease enter the description of the kit."
   enter-displayname: "&cPlease enter the display name of the kit."

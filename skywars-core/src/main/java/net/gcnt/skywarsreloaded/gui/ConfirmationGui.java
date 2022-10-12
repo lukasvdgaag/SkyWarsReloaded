@@ -11,7 +11,7 @@ import net.gcnt.skywarsreloaded.wrapper.entity.SWPlayer;
 public class ConfirmationGui extends AbstractSWGui implements SWConfirmationGui {
 
     public ConfirmationGui(SkyWarsReloaded plugin, String title, SWPlayer player) {
-        super(plugin, title, 5, player);
+        super(plugin, title, 5 * 9, player);
     }
 
     public void addConfirmButton(String configMessageProperty, SWGuiClickHandler handler) {
