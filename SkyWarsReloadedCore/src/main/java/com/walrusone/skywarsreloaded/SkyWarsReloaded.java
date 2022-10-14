@@ -161,7 +161,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException
                 | IllegalArgumentException e) {
             this.getLogger().severe("Could not find support for this CraftBukkit version: " + version + ". Now disabling the plugin!");
-            this.getLogger().info("Check for updates at https://gaagjescraft.net/download/skywars");
+            this.getLogger().info("Check for updates at https://gcnt.net/download/skywars");
             this.setEnabled(false);
             return;
         }

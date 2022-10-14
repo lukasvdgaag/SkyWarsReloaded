@@ -26,7 +26,7 @@ public class GCNTUpdater {
     private static final AtomicReference<String> latestVersion = new AtomicReference<>("");
     private static final AtomicReference<String> lastRelease = new AtomicReference<>("");
     private static final AtomicReference<String> updateVersion = new AtomicReference<>("");
-    private static final AtomicReference<String> updateURL = new AtomicReference<>("https://my.gaagjescraft.net/plugins/SkyWarsReloaded");
+    private static final AtomicReference<String> updateURL = new AtomicReference<>("https://my.gcnt.net/plugins/SkyWarsReloaded");
 
     public String getUpdateURL() {
         return updateURL.get();
@@ -34,7 +34,7 @@ public class GCNTUpdater {
 
     public void checkForUpdate() {
         try {
-            URL url = new URL("https://my.gaagjescraft.net/inc/php/pluginChecker.php?plugin=" + pluginName);
+            URL url = new URL("https://my.gcnt.net/inc/php/pluginChecker.php?plugin=" + pluginName);
             URLConnection urlConnection = url.openConnection();
             urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
 

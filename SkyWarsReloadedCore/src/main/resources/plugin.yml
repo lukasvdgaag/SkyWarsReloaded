@@ -2,7 +2,7 @@ name: Skywars
 main: com.walrusone.skywarsreloaded.SkyWarsReloaded
 version: ${project.version}
 api-version: 1.13
-website: https://gaagjescraft.net/
+website: https://gcnt.net/
 author: GaagjesCraft Network Team (GCNT)
 softdepend:
   - Vault
@@ -21,19 +21,19 @@ commands:
   skywars:
     description: This is the main plugin command.
     aliases: [sw]
-    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here https://gaagjescraft.net/discord !
+    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here https://gcnt.net/discord !
   swparty:
     description: This is the main party command.
     aliases: [swp]
-    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here https://gaagjescraft.net/discord !
+    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here https://gcnt.net/discord !
   swkit:
     description: This is the main party command.
     aliases: [swk]
-    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here https://gaagjescraft.net/discord !
+    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here https://gcnt.net/discord !
   swmap:
     description: This is the main party command.
     aliases: [swm]
-    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here https://gaagjescraft.net/discord !
+    usage: /<command> [args]. Get this error? Then check your console as there was an error somewhere. Please report it here https://gcnt.net/discord !
 permissions:
   sw.*:
     description: Gives access to all sw commands

@@ -252,7 +252,7 @@ parties:
 holograms:
   # Whether you want to enable holograms in your server
   # Please know that after enabling this option you will have to RESTART your server!
-  # Want to learn how to create holograms? Read this: https://gaagjescraft.net/skywars/creating-holograms
+  # Want to learn how to create holograms? Read this: https://gcnt.net/skywars/creating-holograms
   enabled: false
 
 

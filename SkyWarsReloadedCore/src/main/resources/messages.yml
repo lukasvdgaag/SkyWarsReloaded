@@ -395,7 +395,7 @@ scoreboards:
       - '&fStarting the countdown if'
       - '&a{players_needed} &fmore players join'
       - ''
-      - '&egaagjescraft.net'
+      - '&egcnt.net'
   waitboard-countdown:
     lines:
       - '&e&lSKYWARS'
@@ -405,7 +405,7 @@ scoreboards:
       - ''
       - '&fStarting in: &a{waitingtimer}'
       - ''
-      - '&egaagjescraft.net'
+      - '&egcnt.net'
   playboard:
     lines:
       - '&e&lSKYWARS'
@@ -420,7 +420,7 @@ scoreboards:
       - '&fMap: &a{mapname}'
       - '&fTime: &a{time}'
       - ''
-      - '&egaagjescraft.net'
+      - '&egcnt.net'
   endboard:
     lines:
       - '&e&lSKYWARS'
@@ -438,7 +438,7 @@ scoreboards:
       - ''
       - '&cRestarting in: &7{restarttime}'
       - ''
-      - '&egaagjescraft.net'
+      - '&egcnt.net'
   lobbyboard:
     lines:
       - '&e&lSKYWARS'
@@ -447,7 +447,7 @@ scoreboards:
       - '&fKills: &a{kills}'
       - '&fXP: &a{xp}'
       - ''
-      - '&egaagjescraft.net'
+      - '&egcnt.net'
 leaderboard:
   header: '&9>>>&3==&1==&3== &5Leaderboard &1==&3==&1==&9<<<'
   header2: '&b#Rank &aName: &eWins/&4Losses &eKills/&4Deaths &eXP'

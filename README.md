@@ -1,12 +1,12 @@
-![Logo](https://gaagjescraft.net/inc/img/logo-expanded.png)
+![Logo](https://gcnt.net/inc/img/logo-expanded.png)
 
 # SkyWarsReloaded
 The most popular Skywars plugin ever built for Spigot and Bukkit!
 
 This plugin is based off the of the old SkywarsReloaded plugin (4.1.3), but adds more features, fixes, and 1.14-1.16 support! You can just update to this version without removing any of your current Skywars files. Everything works the same. Please note that the official/old Skywars plugin is no longer maintained. We will, however, continue to maintain this version until further notice!
 
-[Link to the SpigotMC download page](https://gaagjescraft.net/swr)<br>
-Check out the extension: [SkyWarsReloaded Extension](https://gaagjescraft.net/swre)
+[Link to the SpigotMC download page](https://gcnt.net/swr)<br>
+Check out the extension: [SkyWarsReloaded Extension](https://gcnt.net/swre)
 
 *Want to see what we are working on or planning to add? Check out the [SkyWarsReloaded project board](https://github.com/users/lukasvdgaag/projects/2)!
 
@@ -54,4 +54,4 @@ When asking for help, provide the necessary context required for people to help 
 3. An image or recording of your problem in-game, if possible.
 4. A description of what you have already tried.. We don't want to waste your time.
 
-[![Discord Logo](https://upload.wikimedia.org/wikipedia/sco/thumb/9/98/Discord_logo.svg/905px-Discord_logo.svg.png)](https://gaagjescraft.net/discord)
+[![Discord Logo](https://upload.wikimedia.org/wikipedia/sco/thumb/9/98/Discord_logo.svg/905px-Discord_logo.svg.png)](https://gcnt.net/discord)
