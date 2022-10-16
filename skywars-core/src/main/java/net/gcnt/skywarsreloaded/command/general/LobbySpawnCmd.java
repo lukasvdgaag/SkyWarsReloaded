@@ -23,8 +23,8 @@ public class LobbySpawnCmd extends Cmd {
 
     @Override
     public boolean run(SWCommandSender sender, String[] args) {
-        if ((plugin.getConfig().getBoolean(ConfigProperties.SERVER_PROXY.toString()) &&
-                plugin.getConfig().getEnum(SWServerType.class, ConfigProperties.SERVER_TYPE.toString()) == SWServerType.GAME)) {
+        if ((plugin.getConfig().getBoolean(ConfigProperties.PROXY_ENABLED.toString()) &&
+                plugin.getConfig().getEnum(SWServerType.class, ConfigProperties.PROXY_SERVER_TYPE.toString()) == SWServerType.GAME)) {
             // server is on proxy mode and is set to be a game server, disallow this command.
             plugin.getMessages().getMessage(MessageProperties.ERROR_ACTION_NOT_FOR_GAME_SERVERS.toString()).send(sender);
             return true;

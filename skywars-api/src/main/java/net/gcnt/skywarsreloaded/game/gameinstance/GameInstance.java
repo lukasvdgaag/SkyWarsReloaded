@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.game.gameinstance;
 
+import com.google.gson.JsonObject;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 
@@ -48,6 +49,8 @@ public interface GameInstance {
 
     boolean isEditing();
 
-
     CompletableFuture<Void> requestEditSession();
+
+    JsonObject toJSON();
+
 }

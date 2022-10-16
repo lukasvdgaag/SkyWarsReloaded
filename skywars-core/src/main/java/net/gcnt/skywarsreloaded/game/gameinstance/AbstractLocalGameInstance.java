@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.game.gameinstance;
 
+import com.google.gson.JsonObject;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.*;
 import net.gcnt.skywarsreloaded.game.chest.SWChestTier;
@@ -588,5 +589,12 @@ public abstract class AbstractLocalGameInstance extends AbstractGameInstance imp
             gp.getSWPlayer().sendMessage("§aThe game has started! §eGood luck!");
         }
         getScheduler().setGameStateHandler(new PlayingStateHandler(plugin, this));
+    }
+
+    @Override
+    public JsonObject toJSON() {
+        JsonObject obj = super.toJSON();
+        obj.addProperty("timer", getTimer());
+        return obj;
     }
 }

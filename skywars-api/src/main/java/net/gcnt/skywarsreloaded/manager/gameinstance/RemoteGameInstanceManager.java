@@ -21,4 +21,10 @@ public interface RemoteGameInstanceManager extends GameInstanceManager<RemoteGam
 
     void updateCachedGameInstance(RemoteGameInstance instance);
 
+    // servers
+
+    void loadRemoteServers();
+
+    void updateRemoteServer(String id, int activeGames, int playerCount);
+
 }

@@ -3,9 +3,11 @@ package net.gcnt.skywarsreloaded.utils.properties;
 public enum ConfigProperties {
 
     // Server info
-    SERVER_NAME("server.name"),
-    SERVER_PROXY("server.proxy"),
-    SERVER_TYPE("server.type"),
+    PROXY_ENABLED("proxy.enabled"),
+    PROXY_SERVER_NAME("proxy.server-name"),
+    PROXY_SERVER_TYPE("proxy.server-type"),
+    PROXY_SERVERS("proxy.servers"),
+    PROXY_SERVERS_MAX_GAMES(".max-games"), // sub property
 
     // Storage database implementation & auth
     STORAGE_TYPE("storage.type"),
@@ -37,6 +39,7 @@ public enum ConfigProperties {
 
     // Game instances
     GAME_INSTANCES("game-instances"),
+    GAME_INSTANCES_MAX_INSTANCES("game-instances.max-instances"),
     GAME_INSTANCES_LOCAL_MODE("game-instances.local-mode"),
     GAME_INSTANCES_LOCAL_MODE_IDLE_INSTANCES("game-instances.local-mode.idle-instances"),
     GAME_INSTANCES_PROXY_MODE("game-instances.proxy-mode"),

@@ -13,6 +13,8 @@ public interface SWServer {
      */
     SWWorld getDefaultWorld();
 
+    int getPlayerCount();
+
     /**
      * Get a world by its name
      *

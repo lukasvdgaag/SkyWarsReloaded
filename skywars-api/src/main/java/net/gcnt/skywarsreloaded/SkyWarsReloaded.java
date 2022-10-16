@@ -2,6 +2,7 @@ package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
+import net.gcnt.skywarsreloaded.data.messaging.SWMessageCreator;
 import net.gcnt.skywarsreloaded.data.messaging.SWMessaging;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerStorage;
 import net.gcnt.skywarsreloaded.data.redis.SWRedisConnection;
@@ -152,6 +153,10 @@ public interface SkyWarsReloaded {
     SWMessaging getMessaging();
 
     void setMessaging(SWMessaging messaging);
+
+    SWMessageCreator getMessageCreator();
+
+    void setMessageCreator(SWMessageCreator messageCreator);
 
     // Console
 

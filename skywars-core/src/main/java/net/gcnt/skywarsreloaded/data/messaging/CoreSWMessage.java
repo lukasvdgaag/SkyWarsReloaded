@@ -1,29 +1,33 @@
 package net.gcnt.skywarsreloaded.data.messaging;
 
+import com.google.gson.JsonObject;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class CoreSWMessage implements SWMessage {
 
     private final SkyWarsReloaded plugin;
     private final String origin;
     private String channel;
-    private String payload;
+    private JsonObject payload;
     private String target;
     private int replyToId;
     private Long timestamp;
     private int id;
 
-    public CoreSWMessage(SkyWarsReloaded plugin, String channel, String payload) {
+    public CoreSWMessage(SkyWarsReloaded plugin, String channel, JsonObject payload) {
         this.plugin = plugin;
-        this.origin = plugin.getConfig().getString(ConfigProperties.SERVER_NAME.toString());
+        this.origin = plugin.getConfig().getString(ConfigProperties.PROXY_SERVER_NAME.toString());
         this.channel = channel;
         this.payload = payload;
     }
 
-    public CoreSWMessage(SkyWarsReloaded plugin, int id, String channel, String payload, String originServer, String targetServer, int replyToId, long timestamp) {
+    public CoreSWMessage(SkyWarsReloaded plugin, SWMessageCreator.MessageChannel channel, JsonObject payload) {
+        this(plugin, channel.getId(), payload);
+    }
+
+    public CoreSWMessage(SkyWarsReloaded plugin, int id, String channel, JsonObject payload, String originServer, String targetServer, int replyToId, long timestamp) {
         this.plugin = plugin;
         this.id = id;
         this.channel = channel;
@@ -60,12 +64,12 @@ public class CoreSWMessage implements SWMessage {
     }
 
     @Override
-    public String getPayload() {
+    public JsonObject getPayload() {
         return this.payload;
     }
 
     @Override
-    public void setPayload(String payload) {
+    public void setPayload(JsonObject payload) {
         this.payload = payload;
     }
 
@@ -85,18 +89,18 @@ public class CoreSWMessage implements SWMessage {
     }
 
     @Override
-    public @Nullable int getReplyToId() {
+    public int getReplyToId() {
         return this.replyToId;
     }
 
     @Override
-    public void setReplyToId(@Nullable int replyToId) {
+    public void setReplyToId(int replyToId) {
         this.replyToId = replyToId;
     }
 
     @Override
     public void send() {
         this.timestamp = System.currentTimeMillis();
-        // todo: plugin.getMessaging().
+        plugin.getMessaging().sendMessage(this);
     }
 }

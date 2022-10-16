@@ -87,7 +87,7 @@ public class RedisGameInstanceStorage implements GameInstanceStorage, SWRedisMes
                 GameInstanceUpdateSerializer.serialize(
                         gameInstance.getId(),
                         gameInstance.getTemplate().getName(),
-                        this.plugin.getConfig().getString(ConfigProperties.SERVER_NAME.toString()),
+                        this.plugin.getConfig().getString(ConfigProperties.PROXY_SERVER_NAME.toString()),
                         gameInstance.getPlayerCount(),
                         gameInstance.getState()
                 ));

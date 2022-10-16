@@ -77,6 +77,11 @@ public class BukkitSWServer extends AbstractSWServer {
     }
 
     @Override
+    public int getPlayerCount() {
+        return bukkitServer.getOnlinePlayers().size();
+    }
+
+    @Override
     public SWInventory createInventory(String title, int size) {
         return new BukkitSWInventory(plugin, title, size);
     }

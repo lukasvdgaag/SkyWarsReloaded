@@ -1,14 +1,23 @@
-server:
+proxy:
   # Whether this server should use proxy mode.
   # When you enable proxy mode, make sure you select the right server type and enter the correct name as described.
-  proxy: false
+  enabled: false
   # When using Skywars in proxy mode, SWR needs to know what type of server this is in order
   # to run certain processes. Options are: LOBBY and GAME.
   # Please note that local games can NOT run on lobby servers.
-  type: "GAME"
+  server-type: "GAME"
   # If using a proxy like bungeecord or velocity, set the server name of this server (case-sensitive).
   # If this value is incorrect, skywars won't be able to send players to the games.
-  name: "default"
+  server-name: "default"
+  # A list of game servers that will connect to the lobby server.
+  # You only need to add a list of servers when the server-type is LOBBY.
+  # Server names must match their bungeecord or velocity server name.
+  servers:
+    sw1: # The name of the server
+      # How many games can run on this server at once.
+      max-games: 2
+    sw2:
+      max-games: 3
 
 storage:
   # The type of SQL storage to use for player data.
@@ -40,6 +49,8 @@ messaging:
 
 # The number of instances of a map template that will be loaded when the server starts.
 game-instances:
+  # The number of instances that can maximum be running at once on this server.
+  max-instances: 2
   # Instance options for when the plugin is running on only one server
   local-mode:
     idle-instances: 3

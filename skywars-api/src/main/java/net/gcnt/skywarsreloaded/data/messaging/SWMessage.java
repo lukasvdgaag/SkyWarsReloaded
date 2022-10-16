@@ -1,7 +1,7 @@
 package net.gcnt.skywarsreloaded.data.messaging;
 
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public interface SWMessage {
 
@@ -21,9 +21,9 @@ public interface SWMessage {
 
     void setChannel(@NotNull String channel);
 
-    String getPayload();
+    JsonObject getPayload();
 
-    void setPayload(String payload);
+    void setPayload(JsonObject payload);
 
     String getOriginServer();
 
@@ -31,10 +31,9 @@ public interface SWMessage {
 
     void setTargetServer(String targetServerName);
 
-    @Nullable
     int getReplyToId();
 
-    void setReplyToId(@Nullable int replyToId);
+    void setReplyToId(int replyToId);
 
     void send();
 

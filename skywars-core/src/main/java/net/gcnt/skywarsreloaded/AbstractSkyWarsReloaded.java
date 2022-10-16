@@ -2,10 +2,7 @@ package net.gcnt.skywarsreloaded;
 
 import net.gcnt.skywarsreloaded.data.config.YAMLConfig;
 import net.gcnt.skywarsreloaded.data.games.GameInstanceStorage;
-import net.gcnt.skywarsreloaded.data.messaging.LocalMessaging;
-import net.gcnt.skywarsreloaded.data.messaging.CoreMySQLMessaging;
-import net.gcnt.skywarsreloaded.data.messaging.SWMessaging;
-import net.gcnt.skywarsreloaded.data.messaging.SWMySQLMessaging;
+import net.gcnt.skywarsreloaded.data.messaging.*;
 import net.gcnt.skywarsreloaded.data.player.SWPlayerStorage;
 import net.gcnt.skywarsreloaded.data.redis.RedisGameInstanceStorage;
 import net.gcnt.skywarsreloaded.data.redis.SWRedisConnection;
@@ -21,6 +18,7 @@ import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.game.loader.GameWorldLoader;
 import net.gcnt.skywarsreloaded.listener.PlatformSWEventListener;
 import net.gcnt.skywarsreloaded.listener.minecraft.*;
+import net.gcnt.skywarsreloaded.listener.skywars.CoreSWMessageReceivedListener;
 import net.gcnt.skywarsreloaded.manager.*;
 import net.gcnt.skywarsreloaded.manager.gameinstance.GameInstanceManager;
 import net.gcnt.skywarsreloaded.manager.gameinstance.LocalGameInstanceManager;
@@ -59,6 +57,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
 
     // Messaging
     private SWMessaging messaging;
+    private SWMessageCreator messageCreator;
 
     // Managers
     private YAMLManager yamlManager;
@@ -116,6 +115,7 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         initGameInstanceStorage();
         initPlayerStorage(); // requires config
         initMessaging();
+        initMessageCreator();
 
         // Managers
         initServer();
@@ -528,6 +528,16 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     @Override
+    public SWMessageCreator getMessageCreator() {
+        return messageCreator;
+    }
+
+    @Override
+    public void setMessageCreator(SWMessageCreator messageCreator) {
+        this.messageCreator = messageCreator;
+    }
+
+    @Override
     public SQLStorage getSQLStorage() {
         return sqlStorage;
     }
@@ -626,8 +636,12 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         setHookManager(new CoreSWHookManager(this));
     }
 
-    private void initEventManager() {
+    protected void initEventManager() {
         setEventManager(new CoreSWEventManager(this));
+    }
+
+    protected void initMessageCreator() {
+        setMessageCreator(new CoreSWMessageCreator(this));
     }
 
     protected void initSQLStorage() {
@@ -642,21 +656,18 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
     }
 
     protected void initMessaging() {
-        if (getConfig().getBoolean(ConfigProperties.SERVER_PROXY.toString())) {
+        if (getConfig().getBoolean(ConfigProperties.PROXY_ENABLED.toString())) {
             if (getConfig().getString(ConfigProperties.MESSAGING_TYPE.toString()).equalsIgnoreCase("redis")) {
                 // set redis messaging system
-            }
-            else {
+            } else {
                 if (!(getSQLStorage() instanceof SWMySQLMessaging)) {
                     getLogger().error("MySQL has not been set up for this server. Please change 'storage.type' to 'MySQL' and enter valid credentials to use MySQL messaging.");
                     disableSkyWars();
-                }
-                else {
+                } else {
                     setMessaging(new CoreMySQLMessaging((CoreMySQLStorage) getSQLStorage()));
                 }
             }
-        }
-        else {
+        } else {
             // local only
             setMessaging(new LocalMessaging(this));
         }
@@ -676,6 +687,8 @@ public abstract class AbstractSkyWarsReloaded implements SkyWarsReloaded {
         new CoreSWPreLoginListener(this);
         new CoreSWQuitListener(this);
         new CoreSWWorldInitListener(this);
+
+        new CoreSWMessageReceivedListener(this);
     }
 
 }

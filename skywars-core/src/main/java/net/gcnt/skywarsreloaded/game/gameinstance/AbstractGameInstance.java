@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.game.gameinstance;
 
+import com.google.gson.JsonObject;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.types.GameState;
@@ -54,5 +55,16 @@ public abstract class AbstractGameInstance implements GameInstance {
     @Override
     public CompletableFuture<Void> requestEditSession() {
         return null;
+    }
+
+    @Override
+    public JsonObject toJSON() {
+        JsonObject json = new JsonObject();
+        json.addProperty("id", this.id.toString());
+        json.addProperty("template", this.gameTemplate.getName());
+        json.addProperty("state", this.state.name());
+        json.addProperty("players", this.getPlayerCount());
+        json.addProperty("editing", this.isEditing());
+        return json;
     }
 }

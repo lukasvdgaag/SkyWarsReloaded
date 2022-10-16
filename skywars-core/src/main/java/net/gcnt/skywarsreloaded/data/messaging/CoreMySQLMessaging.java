@@ -125,7 +125,7 @@ public class CoreMySQLMessaging extends CoreSQLTable<SWMessage> implements SWMyS
                 try (Connection connection = storage.getConnection();
                      PreparedStatement statement = connection.prepareStatement(query)) {
 
-                    bindPropertyValue(statement, 1, storage.getPlugin().getConfig().getString(ConfigProperties.SERVER_NAME.toString()));
+                    bindPropertyValue(statement, 1, storage.getPlugin().getConfig().getString(ConfigProperties.PROXY_SERVER_NAME.toString()));
                     bindPropertyValue(statement, 2, lastFetchedId);
 
                     try (final ResultSet resultSet = statement.executeQuery()) {
