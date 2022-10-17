@@ -82,6 +82,13 @@ public abstract class CoreGameInstanceManager<G extends GameInstance> implements
     }
 
     @Override
+    public List<G> getIdleGameInstances() {
+        return this.getGameInstancesList().stream()
+                .filter(inst -> inst.getTemplate() == null)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public boolean deleteGameTemplate(String gameId, boolean deleteMap) {
         GameTemplate template = this.getGameTemplateByName(gameId);
         this.getGameTemplates().remove(gameId);

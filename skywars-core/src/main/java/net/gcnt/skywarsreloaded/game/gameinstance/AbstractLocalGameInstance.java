@@ -51,12 +51,38 @@ public abstract class AbstractLocalGameInstance extends AbstractGameInstance imp
         this.worldName = "swr-" + id;
         this.winningTeam = null;
         this.chestType = ChestType.ISLAND;
-        loadTeams();
+        setTemplate(gameTemplate);
     }
 
     @Override
     public List<GameTeam> getTeams() {
         return teams;
+    }
+
+    @Override
+    public void setTemplate(GameTemplate template) {
+        if (template == null) {
+            setIdle();
+        }
+        super.setTemplate(template);
+
+        if (gameTemplate != null) {
+            loadTeams();
+        }
+    }
+
+    @Override
+    public void setIdle() {
+        setState(GameState.UNASSIGNED);
+        plugin.getSchematicManager().clearGameWorld(this);
+        this.teams.clear();
+        this.players.clear();
+        this.votedChestTiers.clear();
+        this.selectedEditingChestType.clear();
+        this.winningTeam = null;
+        this.scheduler = null;
+        this.chestType = ChestType.ISLAND;
+        this.timer = 0;
     }
 
     @Override

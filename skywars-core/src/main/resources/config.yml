@@ -75,6 +75,8 @@ game-instances:
 world-loader:
   # Whether to automatically use slime worlds if SlimeWorldManager (SWM) is detected.
   enable-swm: true
+  # The additional number of blocks to be added to the template's border radius to clear the world.
+  additional-clear-radius: 30
 
 menus:
   join:

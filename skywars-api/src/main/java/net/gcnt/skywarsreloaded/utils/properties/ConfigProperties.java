@@ -63,6 +63,7 @@ public enum ConfigProperties {
 
     // World loader
     ENABLE_SLIME_WORLD_MANAGER("world-loader.enable-swm"),
+    WORLD_LOADER_ADDITIONAL_CLEAR_RADIUS("world-loader.additional-clear-radius"),
     SLIME_WORLD_LOADER("world-loader.swm-loader"),
 
     // Parties

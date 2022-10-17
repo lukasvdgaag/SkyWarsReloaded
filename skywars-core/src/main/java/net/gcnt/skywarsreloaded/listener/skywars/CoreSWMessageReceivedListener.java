@@ -9,6 +9,7 @@ import net.gcnt.skywarsreloaded.game.gameinstance.CoreRemoteGameInstance;
 import net.gcnt.skywarsreloaded.game.types.GameState;
 import net.gcnt.skywarsreloaded.listener.CoreSWEventListener;
 import net.gcnt.skywarsreloaded.manager.gameinstance.RemoteGameInstanceManager;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 
 import java.util.UUID;
 
@@ -66,6 +67,9 @@ public class CoreSWMessageReceivedListener {
         // todo check if this is the a game server
         // if game server, check if the maximum number of active games is not yet reached
         // then create the game and send a game creation response with the created game.
+        if (!plugin.getConfig().getString(ConfigProperties.PROXY_SERVER_TYPE.toString()).equalsIgnoreCase("GAME")) return;
+
+
     }
 
 }

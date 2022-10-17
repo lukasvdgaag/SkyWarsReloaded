@@ -40,6 +40,13 @@ public interface GameInstanceManager<G extends GameInstance> {
     List<G> getGameInstancesByTemplate(GameTemplate template);
 
     /**
+     * Get a list of idle instances that have no assigned template.
+     *
+     * @return List of idle instances.
+     */
+    List<G> getIdleGameInstances();
+
+    /**
      * Delete a game template from the skywars registry and optionally from the active storage method
      *
      * @param gameId       The template name to delete

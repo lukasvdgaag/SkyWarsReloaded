@@ -35,6 +35,8 @@ public interface LocalGameInstance extends GameInstance {
 
     void endGame();
 
+    void setIdle();
+
     List<GamePlayer> getTopKillers();
 
     GameScheduler getScheduler();

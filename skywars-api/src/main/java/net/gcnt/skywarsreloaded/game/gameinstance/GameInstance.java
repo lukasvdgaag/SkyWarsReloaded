@@ -18,16 +18,24 @@ public interface GameInstance {
 
     /**
      * Gets the {@link GameTemplate} used to create the instance.
+     * This can be null if this instance is idle and not yet assigned.
      *
      * @return The instance template
      */
     GameTemplate getTemplate();
 
     /**
+     * Sets the {@link GameTemplate} used to create this instance..
+     *
+     * @param template The template to set
+     */
+    void setTemplate(GameTemplate template);
+
+    /**
      * Gets the {@link GameState} of the instance. The state will be EDIT_MODE if the instance is being used to
      * edit the {@link GameTemplate} of this instance.
      *
-     * @return
+     * @return The state of the instance
      */
     GameState getState();
 
@@ -45,12 +53,32 @@ public interface GameInstance {
      */
     int getPlayerCount();
 
+    /**
+     * Sets the {@link GameState} of the instance.
+     *
+     * @param state The state to set
+     */
     void setState(GameState state);
 
+    /**
+     * Gets if the instance is being used to edit the {@link GameTemplate} of this instance.
+     *
+     * @return True when editing, false otherwise.
+     */
     boolean isEditing();
 
+    /**
+     * Requests an edit session for this instance. This will return a {@link CompletableFuture} that will be completed
+     *
+     * @return A {@link CompletableFuture} that will be completed when the edit session is ready.
+     */
     CompletableFuture<Void> requestEditSession();
 
+    /**
+     * Gets the {@link JsonObject} representation of the instance.
+     *
+     * @return The instance as a JsonObject
+     */
     JsonObject toJSON();
 
 }

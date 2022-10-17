@@ -6,6 +6,7 @@ import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.*;
+import com.sk89q.worldedit.function.block.BlockReplace;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
@@ -13,10 +14,13 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.gameinstance.GameInstance;
+import net.gcnt.skywarsreloaded.game.gameinstance.LocalGameInstance;
 import net.gcnt.skywarsreloaded.utils.CoreSWCoord;
 import net.gcnt.skywarsreloaded.utils.SWCoord;
+import net.gcnt.skywarsreloaded.utils.properties.ConfigProperties;
 import net.gcnt.skywarsreloaded.utils.properties.FolderProperties;
 
 import java.io.File;
@@ -121,6 +125,40 @@ public class CoreSchematicManager implements SchematicManager {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public boolean clearGameWorld(LocalGameInstance instance) {
+        if (instance == null || instance.getWorldName() == null) return false;
+
+        int borderSize = instance.getTemplate() == null ? 100 : instance.getTemplate().getBorderRadius();
+        borderSize += plugin.getConfig().getInt(ConfigProperties.WORLD_LOADER_ADDITIONAL_CLEAR_RADIUS.toString());
+
+        SWCoord lowest = new CoreSWCoord(-borderSize, 0, -borderSize);
+        SWCoord highest = new CoreSWCoord(borderSize, plugin.getUtils().getBuildLimit(), borderSize);
+
+        final World world = plugin.getUtils().getWorldEditWorld(instance.getWorldName());
+        CuboidRegion reg = new CuboidRegion(
+                world,
+                BlockVector3.at(lowest.x(), lowest.y(), lowest.z()),
+                BlockVector3.at(highest.x(), highest.y(), highest.z())
+        );
+
+        try (EditSession session = this.getNewEditSession(world)) {
+            if (session == null) return false;
+
+            ForwardExtentCopy copy = new ForwardExtentCopy(world, reg, session, reg.getMinimumPoint());
+            copy.setSourceFunction(new BlockReplace(session, BlockTypes.AIR.getDefaultState()));
+            copy.setRemovingEntities(true);
+            copy.setCopyingEntities(false);
+            copy.setCopyingBiomes(false);
+
+            Operations.complete(copy);
+            return true;
+        } catch (WorldEditException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override

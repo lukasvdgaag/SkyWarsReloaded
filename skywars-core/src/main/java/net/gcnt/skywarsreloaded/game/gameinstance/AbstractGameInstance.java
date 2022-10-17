@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.game.GameTemplate;
 import net.gcnt.skywarsreloaded.game.types.GameState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -15,12 +16,12 @@ public abstract class AbstractGameInstance implements GameInstance {
 
     // Static Properties
     protected final UUID id;
-    protected final GameTemplate gameTemplate;
+    protected GameTemplate gameTemplate;
 
     // Instance runtime data
     private GameState state;
 
-    public AbstractGameInstance(SkyWarsReloaded plugin, UUID id, GameTemplate gameTemplate) {
+    public AbstractGameInstance(SkyWarsReloaded plugin, UUID id, @Nullable GameTemplate gameTemplate) {
         this.plugin = plugin;
         this.id = id;
         this.gameTemplate = gameTemplate;
@@ -35,6 +36,11 @@ public abstract class AbstractGameInstance implements GameInstance {
     @Override
     public GameTemplate getTemplate() {
         return this.gameTemplate;
+    }
+
+    @Override
+    public void setTemplate(GameTemplate template) {
+        this.gameTemplate = template;
     }
 
     @Override
