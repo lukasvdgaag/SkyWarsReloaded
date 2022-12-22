@@ -1,5 +1,7 @@
 package net.gcnt.skywarsreloaded.data.messaging;
 
+import com.google.gson.JsonObject;
+
 import java.util.concurrent.CompletableFuture;
 
 public interface SWMessaging {
@@ -13,7 +15,7 @@ public interface SWMessaging {
      * @param payload The payload of the message.
      * @return {@link SWMessage} an SWMessage
      */
-    SWMessage createMessage(String channel, String payload);
+    SWMessage createMessage(String channel, JsonObject payload);
 
     /**
      * Send a message over the messaging channel.

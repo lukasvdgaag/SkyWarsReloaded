@@ -1,5 +1,7 @@
 package net.gcnt.skywarsreloaded.data.messaging;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import net.gcnt.skywarsreloaded.data.sql.CoreMySQLStorage;
 import net.gcnt.skywarsreloaded.data.sql.CoreSQLTable;
 import net.gcnt.skywarsreloaded.event.CoreSWMessageReceivedEvent;
@@ -91,7 +93,7 @@ public class CoreMySQLMessaging extends CoreSQLTable<SWMessage> implements SWMyS
     }
 
     @Override
-    public SWMessage createMessage(String channel, String payload) {
+    public SWMessage createMessage(String channel, JsonObject payload) {
         return new CoreSWMessage(storage.getPlugin(), channel, payload);
     }
 
@@ -132,7 +134,7 @@ public class CoreMySQLMessaging extends CoreSQLTable<SWMessage> implements SWMyS
                         while (resultSet.next()) {
                             int id = resultSet.getInt("id");
 
-                            String payload = resultSet.getString("payload");
+                            JsonObject payload = new Gson().fromJson(resultSet.getString("payload"), JsonObject.class);
                             String channel = resultSet.getString("channel");
                             String originServer = resultSet.getString("origin_server");
                             String targetServer = resultSet.getString("target_server");

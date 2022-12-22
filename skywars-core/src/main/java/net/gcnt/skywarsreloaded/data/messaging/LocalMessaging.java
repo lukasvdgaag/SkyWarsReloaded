@@ -1,5 +1,6 @@
 package net.gcnt.skywarsreloaded.data.messaging;
 
+import com.google.gson.JsonObject;
 import net.gcnt.skywarsreloaded.SkyWarsReloaded;
 import net.gcnt.skywarsreloaded.event.CoreSWMessageReceivedEvent;
 import net.gcnt.skywarsreloaded.event.CoreSWMessageSentEvent;
@@ -31,7 +32,7 @@ public class LocalMessaging implements SWMessaging {
     }
 
     @Override
-    public SWMessage createMessage(String channel, String payload) {
+    public SWMessage createMessage(String channel, JsonObject payload) {
         return new CoreSWMessage(plugin, channel, payload);
     }
 
