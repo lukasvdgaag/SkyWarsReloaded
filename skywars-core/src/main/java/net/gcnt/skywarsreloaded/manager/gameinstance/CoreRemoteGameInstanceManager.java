@@ -132,6 +132,11 @@ public class CoreRemoteGameInstanceManager extends CoreGameInstanceManager<Remot
 
     @Override
     public void updateCachedGameInstance(RemoteGameInstance instance) {
+        if (this.getGameInstances().containsKey(instance.getId())) {
+
+            this.getGameInstances().put(instance.getId(), instance);
+        }
+
         this.getGameInstances().put(instance.getId(), instance);
     }
 
