@@ -154,7 +154,7 @@ public abstract class AbstractLocalGameInstance extends AbstractGameInstance imp
 
     @Override
     public Map<UUID, ChestType> getSelectedEditingChestTypes() {
-        return null;
+        return this.selectedEditingChestType;
     }
 
     private int getObjectCount(Collection<?> collection, Object object) {

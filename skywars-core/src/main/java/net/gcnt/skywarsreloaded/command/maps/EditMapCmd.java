@@ -72,41 +72,44 @@ public class EditMapCmd extends Cmd {
         msgConfig.getMessage(MessageProperties.TITLES_MAPS_GENERATING_WORLD.toString())
                 .replace("%template%", template.getName())
                 .sendTitle(20, 600, 20, sender);
-        LocalGameInstance world = (LocalGameInstance) plugin.getGameInstanceManager().createGameWorld(template);
-        world.setEditing(true);
 
-        // Create instance of the world given the template data, or create a new one if it doesn't exist.
-        CompletableFuture<Boolean> templateExistsFuture;
-        long preGenMillis;
-        long timeDiffCreation;
-        try {
-            preGenMillis = System.currentTimeMillis();
-            templateExistsFuture = plugin.getWorldLoader().generateWorldInstance(world);
-            timeDiffCreation = System.currentTimeMillis() - preGenMillis;
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            plugin.getLogger().error(String.format("Failed to edit template %s. (%s)",
-                    template.getName(), e.getClass().getName() + ": " + e.getLocalizedMessage()));
-            e.printStackTrace();
-            msgConfig.getMessage(MessageProperties.MAPS_GENERATING_WORLD_FAIL.toString())
-                    .replace("%template%", template.getName())
-                    .send(sender);
-            return true;
-        }
+        CompletableFuture<LocalGameInstance> completableWorld = (CompletableFuture<LocalGameInstance>) plugin.getGameInstanceManager().createGameWorld(template);
+        completableWorld.thenAccept(world -> {
 
-        plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATING_WORLD_STAGE2.toString())
-                .replace("%template%", template.getName())
-                .replace("%millis%", String.valueOf(timeDiffCreation))
-                .send(sender);
+            world.setEditing(true);
 
-        templateExistsFuture.thenAccept(templateExists -> {
-            // Handle the initialization of a world if this was the creation of the template
-            if (!templateExists) {
-                plugin.getWorldLoader().createBasePlatform(world);
+            // Create instance of the world given the template data, or create a new one if it doesn't exist.
+            CompletableFuture<Boolean> templateExistsFuture;
+            long preGenMillis;
+            long timeDiffCreation;
+            try {
+                preGenMillis = System.currentTimeMillis();
+                templateExistsFuture = plugin.getWorldLoader().generateWorldInstance(world);
+                timeDiffCreation = System.currentTimeMillis() - preGenMillis;
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                plugin.getLogger().error(String.format("Failed to edit template %s. (%s)",
+                        template.getName(), e.getClass().getName() + ": " + e.getLocalizedMessage()));
+                e.printStackTrace();
+                msgConfig.getMessage(MessageProperties.MAPS_GENERATING_WORLD_FAIL.toString())
+                        .replace("%template%", template.getName())
+                        .send(sender);
+                return;
             }
 
-            world.makeReadyForEditing();
+            plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATING_WORLD_STAGE2.toString())
+                    .replace("%template%", template.getName())
+                    .replace("%millis%", String.valueOf(timeDiffCreation))
+                    .send(sender);
 
-            SWChestTier defaultChestType = plugin.getChestManager().getChestTierByName("normal");
+            templateExistsFuture.thenAccept(templateExists -> {
+                // Handle the initialization of a world if this was the creation of the template
+                if (!templateExists) {
+                    plugin.getWorldLoader().createBasePlatform(world);
+                }
+
+                world.makeReadyForEditing();
+
+                SWChestTier defaultChestType = plugin.getChestManager().getChestTierByName("normal");
             /*Collection<SWChestType> chests = template.getEnabledChestTypes();
             // todo fix this.
             chests.forEach(System.out::println);
@@ -117,33 +120,34 @@ public class EditMapCmd extends Cmd {
                 }
             }
             System.out.println("defaultChestType = " + defaultChestType);*/
-            world.setChestTypeSelected(player.getUuid(), defaultChestType);
+                world.setChestTypeSelected(player.getUuid(), defaultChestType);
 
-            // Teleport the player onto the platform that was just created
-            player.teleportAsync(world.getWorldName(),
-                            InternalProperties.MAP_CREATE_PLATFORM_X + 0.5,
-                            InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
-                            InternalProperties.MAP_CREATE_PLATFORM_Z + 0.5)
-                    .thenRun(() -> {
-                                player.setGameMode(1);
-                                // User feedback
-                                // Not going to use more than 24 days =P
-                                int timeDiffChunkLoad = (int) (System.currentTimeMillis() - preGenMillis);
-                                int timeDiffLoadSec = timeDiffChunkLoad / 1000;
-                                int timeDiffLoadDecimal = timeDiffChunkLoad / 100 - timeDiffLoadSec * 10;
+                // Teleport the player onto the platform that was just created
+                player.teleportAsync(world.getWorldName(),
+                                InternalProperties.MAP_CREATE_PLATFORM_X + 0.5,
+                                InternalProperties.MAP_CREATE_PLATFORM_Y + 1,
+                                InternalProperties.MAP_CREATE_PLATFORM_Z + 0.5)
+                        .thenRun(() -> {
+                                    player.setGameMode(1);
+                                    // User feedback
+                                    // Not going to use more than 24 days =P
+                                    int timeDiffChunkLoad = (int) (System.currentTimeMillis() - preGenMillis);
+                                    int timeDiffLoadSec = timeDiffChunkLoad / 1000;
+                                    int timeDiffLoadDecimal = timeDiffChunkLoad / 100 - timeDiffLoadSec * 10;
 
-                                plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_GENERATED_WORLD.toString())
-                                        .replace("%template%", template.getName())
-                                        .sendTitle(0, 100, 0, sender);
-                                plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATED_WORLD.toString())
-                                        .replace("%template%", template.getName())
-                                        .replace("%seconds%", timeDiffLoadSec + "." + timeDiffLoadDecimal)
-                                        .send(sender);
+                                    plugin.getMessages().getMessage(MessageProperties.TITLES_MAPS_GENERATED_WORLD.toString())
+                                            .replace("%template%", template.getName())
+                                            .sendTitle(0, 100, 0, sender);
+                                    plugin.getMessages().getMessage(MessageProperties.MAPS_GENERATED_WORLD.toString())
+                                            .replace("%template%", template.getName())
+                                            .replace("%seconds%", timeDiffLoadSec + "." + timeDiffLoadDecimal)
+                                            .send(sender);
 
-                                template.checkToDoList(sender);
-                            }
-                    );
+                                    template.checkToDoList(sender);
+                                }
+                        );
 
+            });
         });
         return true;
     }

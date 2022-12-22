@@ -36,11 +36,6 @@
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>mvdw-software</id>
-            <name>MVdW Public Repositories</name>
-            <url>https://repo.mvdw-software.be/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
