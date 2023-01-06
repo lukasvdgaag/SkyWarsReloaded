@@ -131,9 +131,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.gaagjescraft</groupId>
-            <artifactId>swr-extension</artifactId>
-            <version>1.7.1</version>
+            <groupId>net.gcnt</groupId>
+            <artifactId>SkyWarsReloaded-Extension</artifactId>
+            <version>1.7.9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
