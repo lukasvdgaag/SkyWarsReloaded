@@ -10,8 +10,11 @@ import java.util.UUID;
 
 public class PlayerCard {
 
-    private UUID uuid;
     private TeamCard tCard;
+    private UUID uuid;
+    // The index at which the player used for this PlayerCard joined the game
+    private int joinIndex;
+    private boolean dead;
 
     private CoordLoc spawn;
 
@@ -23,24 +26,37 @@ public class PlayerCard {
     private Vote health;
 
     public PlayerCard(TeamCard tCard, UUID uuid, CoordLoc spawn) {
-        this.uuid = uuid;
         this.tCard = tCard;
+        this.spawn = spawn;
+        this.uuid = uuid;
+        this.joinIndex = -1;
         this.kitVote = null;
         this.gameTime = null;
         this.weather = null;
         this.chestVote = null;
         this.modifier = null;
         this.health = null;
-        this.spawn = spawn;
+        this.dead = false;
     }
 
     public void reset() {
+        this.uuid = null;
+        this.joinIndex = -1;
         this.kitVote = null;
         this.gameTime = null;
         this.weather = null;
         this.chestVote = null;
         this.modifier = null;
-        this.uuid = null;
+        this.health = null;
+        this.dead = false;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
 
     public Player getPlayer() {
@@ -50,9 +66,15 @@ public class PlayerCard {
         return Bukkit.getPlayer(uuid);
     }
 
+    @Deprecated
     public void setPlayer(Player player) {
+        this.setPlayer(player, -1);
+    }
+
+    public void setPlayer(Player player, int joinIndexIn) {
         if (player != null) {
             this.uuid = player.getUniqueId();
+            this.joinIndex = joinIndexIn;
             return;
         }
         this.uuid = null;
@@ -115,5 +137,9 @@ public class PlayerCard {
 
     public TeamCard getTeamCard() {
         return tCard;
+    }
+
+    public int getJoinIndex() {
+        return this.joinIndex;
     }
 }

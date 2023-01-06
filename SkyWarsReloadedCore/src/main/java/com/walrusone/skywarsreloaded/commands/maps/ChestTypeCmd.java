@@ -3,6 +3,8 @@ package com.walrusone.skywarsreloaded.commands.maps;
 import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class ChestTypeCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public ChestTypeCmd(String t) {
@@ -13,7 +15,7 @@ public class ChestTypeCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd
         argLength = 2;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
         GameMap map = GameMap.getMap(worldName);
         if (map != null) {

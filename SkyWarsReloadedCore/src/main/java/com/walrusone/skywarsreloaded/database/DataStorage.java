@@ -66,7 +66,7 @@ public class DataStorage {
                 fc.save(playerFile);
 
             } catch (IOException ioException) {
-                System.out.println("Failed to load faction " + pData.getId() + ": " + ioException.getMessage());
+                SkyWarsReloaded.get().getLogger().severe("Failed to load stats " + pData.getId() + ": " + ioException.getMessage());
             }
         } else {
             Database database = SkyWarsReloaded.getDb();
@@ -222,7 +222,7 @@ public class DataStorage {
                         pData.setWinSound(fc.getString("winsound", "none"));
                         pData.setTaunt(fc.getString("taunt", "none"));
                     } catch (IOException ioException) {
-                        System.out.println("Failed to load player " + pData.getId() + ": " + ioException.getMessage());
+                        SkyWarsReloaded.get().getLogger().severe("Failed to load player " + pData.getId() + ": " + ioException.getMessage());
                     }
                 }
                 postLoadStatsTask.run();
@@ -235,7 +235,7 @@ public class DataStorage {
         Reader defConfigStream = new InputStreamReader(SkyWarsReloaded.get().getResource("playerFile.yml"));
         YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
         playerConfig.setDefaults(defConfig);
-        playerConfig.options().copyDefaults();
+        playerConfig.options().copyDefaults(true);
         try {
             playerConfig.save(playerFile);
         } catch (IOException e) {
@@ -379,13 +379,13 @@ public class DataStorage {
                         File playerDataDirectory = new File(dataDirectory, "player_data");
 
                         if (!playerDataDirectory.exists() && !playerDataDirectory.mkdirs()) {
-                            System.out.println("Failed to load player " + playerStat.getPlayerName() + ": Could not create player_data directory.");
+                            SkyWarsReloaded.get().getLogger().severe("Failed to load player " + playerStat.getPlayerName() + ": Could not create player_data directory.");
                             return;
                         }
 
                         File playerFile = new File(playerDataDirectory, playerStat.getId() + ".yml");
                         if (!playerFile.exists() && !playerFile.createNewFile()) {
-                            System.out.println("Failed to load player " + playerStat.getPlayerName() + ": Could not create player file.");
+                            SkyWarsReloaded.get().getLogger().severe("Failed to load player " + playerStat.getPlayerName() + ": Could not create player file.");
                             return;
                         }
                         copyDefaults(playerFile);
@@ -396,7 +396,7 @@ public class DataStorage {
                             playerStat.addPerm(perm, false);
                         }
                     } catch (IOException ioException) {
-                        System.out.println("Failed to load player " + playerStat.getPlayerName() + ": " + ioException.getMessage());
+                        SkyWarsReloaded.get().getLogger().severe("Failed to load player " + playerStat.getPlayerName() + ": " + ioException.getMessage());
                     }
                 } else {
                     Database database = SkyWarsReloaded.getDb();
@@ -450,13 +450,13 @@ public class DataStorage {
                         File playerDataDirectory = new File(dataDirectory, "player_data");
 
                         if (!playerDataDirectory.exists() && !playerDataDirectory.mkdirs()) {
-                            System.out.println("Failed to load player " + playerStat.getPlayerName() + ": Could not create player_data directory.");
+                            SkyWarsReloaded.get().getLogger().severe("Failed to load player " + playerStat.getPlayerName() + ": Could not create player_data directory.");
                             return;
                         }
 
                         File playerFile = new File(playerDataDirectory, playerStat.getId() + ".yml");
                         if (!playerFile.exists() && !playerFile.createNewFile()) {
-                            System.out.println("Failed to load player " + playerStat.getPlayerName() + ": Could not create player file.");
+                            SkyWarsReloaded.get().getLogger().severe("Failed to load player " + playerStat.getPlayerName() + ": Could not create player file.");
                             return;
                         }
                         copyDefaults(playerFile);
@@ -467,7 +467,7 @@ public class DataStorage {
                         fc.save(playerFile);
 
                     } catch (IOException ioException) {
-                        System.out.println("Failed to load player " + playerStat.getPlayerName() + ": " + ioException.getMessage());
+                        SkyWarsReloaded.get().getLogger().severe("Failed to load player " + playerStat.getPlayerName() + ": " + ioException.getMessage());
                     }
                 } else {
                     if (playerStat.getPerms().getPermissions().size() > 0) {

@@ -1,11 +1,18 @@
 package com.walrusone.skywarsreloaded.menus.gameoptions.objects;
 
+import org.bukkit.Location;
+
 import java.util.Objects;
 
 public class CoordLoc {
-    private int x;
-    private int z;
-    private int y;
+
+    private final int x;
+    private final int z;
+    private final int y;
+
+    public CoordLoc(Location locIn) {
+        this(locIn.getBlockX(), locIn.getBlockY(), locIn.getBlockZ());
+    }
 
     public CoordLoc(int x, int y, int z) {
         this.x = x;
@@ -25,7 +32,7 @@ public class CoordLoc {
         return y;
     }
 
-    public String getLocation() {
+    public String getLocationString() {
         return x + ":" + y + ":" + z;
     }
 

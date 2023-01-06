@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ReloadCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
@@ -20,11 +21,11 @@ public class ReloadCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         argLength = 1;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         SkyWarsReloaded.get().onDisable();
         SkyWarsReloaded.get().load();
 
-        if (SkyWarsReloaded.getCfg().bungeeMode()) {
+        if (SkyWarsReloaded.getCfg().bungeeMode() && SkyWarsReloaded.getCfg().isLobbyServer()) {
             SkyWarsReloaded.get().prepareServers();
 
             SWRServer.updateServerSigns();

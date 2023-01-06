@@ -2,6 +2,8 @@ package com.walrusone.skywarsreloaded.commands.admin;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class SetSpawnCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public SetSpawnCmd(String t) {
@@ -12,7 +14,7 @@ public class SetSpawnCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd 
         argLength = 1;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         org.bukkit.Location spawn = player.getLocation();
         SkyWarsReloaded.getCfg().setSpawn(spawn);
         SkyWarsReloaded.getCfg().save();

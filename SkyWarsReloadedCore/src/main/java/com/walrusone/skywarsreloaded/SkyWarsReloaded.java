@@ -25,7 +25,6 @@ import com.walrusone.skywarsreloaded.menus.*;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.nms.NMS;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
-import com.walrusone.skywarsreloaded.utilities.PartyAndFriendsHook;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.holograms.HoloDisUtil;
@@ -55,7 +54,7 @@ import java.util.logging.Logger;
 public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener {
 
     private static SkyWarsReloaded instance;
-    private final ArrayList<String> usable = new ArrayList<>();
+    private final ArrayList<String> leaderTypes = new ArrayList<>();
     private final Object leaderboardLock = new Object();
     private String servername;
     private Database db;
@@ -162,7 +161,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException
                 | IllegalArgumentException e) {
             this.getLogger().severe("Could not find support for this CraftBukkit version: " + version + ". Now disabling the plugin!");
-            this.getLogger().info("Check for updates at https://gaagjescraft.net/download/skywars");
+            this.getLogger().info("Check for updates at https://gcnt.net/download/skywars");
             this.setEnabled(false);
             return;
         }
@@ -209,6 +208,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         // Load config data
         config = new Config();
 
+        // State using debug mode or not
+        if (getCfg().debugEnabled()) this.getLogger().info("Debug mode enabled");
+
         // Managers
         matchManager = MatchManager.get();
         playerManager = new PlayerManager(this);
@@ -236,7 +238,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
         // PAF
         if (getCfg().bungeeMode() && getCfg().isUsePartyAndFriends()) {
-            this.getServer().getPluginManager().registerEvents(new PartyAndFriendsHook(), this);
+            // Currently disabled due to inability to access bungeecord PAF from spigot
+            // this.getServer().getPluginManager().registerEvents(new PartyAndFriendsHook(), this);
         }
         // SLIME WORLD MANAGER
         if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldManager") && getCfg().isUseSlimeWorldManager()) {
@@ -266,6 +269,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
         // LOAD BEFORE HOLO - Holo needs server to be loaded to update correctly
         load();
+
+        // Requires IM - aka load()
+        new ArenasMenu();
 
         // Holograms
         if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
@@ -354,6 +360,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                                 String hostname = swrServer.getHostname() == null ? "127.0.0.1" : swrServer.getHostname();
 
                                 MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname(hostname).setPort(swrServer.getPort()));
+                                if (data == null) return;
                                 final String[] serverInfo = data.getDescription().getText().split(":");
                                 if (serverInfo.length < 3) {
                                     SkyWarsReloaded.get().getLogger().warning("Skywars Server Ping failed! " +
@@ -399,7 +406,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     public void onDisable() {
         loaded = false;
         this.getServer().getScheduler().cancelTasks(this);
-        for (final GameMap gameMap : GameMap.getMaps()) {
+        for (final GameMap gameMap : GameMap.getMapsCopy()) {
             if (gameMap.isEditing()) {
                 gameMap.saveMap(null);
             }
@@ -408,16 +415,14 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 final Player player = getServer().getPlayer(uuid);
                 if (player != null) {
                     SkyWarsReloaded.get().getPlayerManager().removePlayer(
-                            player, PlayerRemoveReason.OTHER, null, false
-                    );
+                            player, PlayerRemoveReason.OTHER, null, false);
                 }
             }
             ImmutableList<Player> players = ImmutableList.copyOf(gameMap.getAlivePlayers());
             for (final Player player : players) {
                 if (player != null) {
                     this.getPlayerManager().removePlayer(
-                            player, PlayerRemoveReason.OTHER, null, false
-                    );
+                            player, PlayerRemoveReason.OTHER, null, false);
                 }
             }
             getWM().deleteWorld(gameMap.getName(), false);
@@ -447,21 +452,22 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         if (sqlEnabled) {
             getFWDatabase();
         }
-        usable.clear();
+        leaderTypes.clear();
 
         for (LeaderType type : LeaderType.values()) {
             if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
-                usable.add(type.toString());
+                leaderTypes.add(type.toString());
             }
         }
 
         new BukkitRunnable() {
             public void run() {
-                for (final Player v : getServer().getOnlinePlayers()) {
-                    if (PlayerStat.getPlayerStats(v.getUniqueId().toString()) == null) {
-                        PlayerStat pStats = new PlayerStat(v);
-                        pStats.loadStats(null);
+                for (final Player player : getServer().getOnlinePlayers()) {
+                    if (PlayerStat.getPlayerStats(player.getUniqueId().toString()) == null) {
+                        PlayerStat pStats = new PlayerStat(player);
                         PlayerStat.getPlayers().add(pStats);
+                        pStats.updatePlayerIfInLobby(player);
+                        pStats.loadStats(null);
                     }
                 }
                 synchronized (leaderboardLock) {
@@ -516,7 +522,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             specObserver = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    for (GameMap gMap : GameMap.getMaps()) {
+                    for (GameMap gMap : GameMap.getMapsCopy()) {
                         gMap.checkSpectators();
                     }
                 }
@@ -565,15 +571,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                                     String hostname = swrServer.getHostname() == null ? "127.0.0.1" : swrServer.getHostname();
 
                                     MinecraftPingReply data = new MinecraftPing().getPing(new MinecraftPingOptions().setHostname(hostname).setPort(swrServer.getPort()));
+                                    if (data == null) return;
                                     final String[] serverInfo = data.getDescription().getText().split(":");
                                     swrServer.setMatchState(serverInfo[0]);
-                                    /*if (Util.get().isInteger(serverInfo[1])) {
-                                        swrServer.setPlayerCount(Integer.parseInt(serverInfo[1]));
-                                    }
-                                    if (Util.get().isInteger(serverInfo[2])) {
-                                        swrServer.setMaxPlayers(Integer.parseInt(serverInfo[2]));
-                                    }
-                                    swrServer.setDisplayName(serverInfo[3]);*/
                                     swrServer.updateSigns();
 
                                 } catch (IOException e) {
@@ -620,9 +620,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     }
                     if (header.equalsIgnoreCase("RequestUpdate")) {
                         String sendToServer = msgin.readUTF();
-                        String playerCount = "" + GameMap.getMaps().get(0).getAlivePlayers().size();
-                        String maxPlayers = "" + GameMap.getMaps().get(0).getMaxPlayers();
-                        String gameStarted = "" + GameMap.getMaps().get(0).getMatchState().toString();
+                        GameMap gMap = GameMap.getMapsCopy().get(0);
+                        String playerCount = "" + gMap.getAlivePlayers().size();
+                        String maxPlayers = "" + gMap.getMaxPlayers();
+                        String gameStarted = "" + gMap.getMatchState().toString();
                         ArrayList<String> messages = new ArrayList<>();
                         messages.add("ServerUpdate");
                         messages.add(servername);
@@ -711,8 +712,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         return servername;
     }
 
-    public ArrayList<String> getUsable() {
-        return usable;
+    public ArrayList<String> getLeaderTypes() {
+        return leaderTypes;
     }
 
     public PlayerStat getPlayerStat(Player player) {
@@ -741,7 +742,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 Bukkit.getLogger().info(updater.getUpdateURL());
                 Bukkit.getLogger().info("----------------------------------");
             }
-
+        // Once every hour
         }, 0, 20 * 60 * 60);
     }
 

@@ -75,7 +75,7 @@ public class SWRSign162 implements SWRSign {
             if (sign == null) return;
 
             if (loc.getBlock().getType().name().contains("WALL")) {
-                BlockData blockdata = (BlockData) loc.getBlock();
+                BlockData blockdata = loc.getBlock().getBlockData();
                 attachedBlock = loc.getBlock().getRelative(((WallSign) blockdata).getFacing().getOppositeFace());
             } else {
                 attachedBlock = loc.add(0, -1, 0).getBlock();

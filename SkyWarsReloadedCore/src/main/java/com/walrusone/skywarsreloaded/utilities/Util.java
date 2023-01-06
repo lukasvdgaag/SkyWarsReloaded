@@ -55,7 +55,7 @@ public class Util {
         return rand.nextInt((max - min) + 1) + min;
     }
 
-    public boolean hp(String t, CommandSender sender, String s) {
+    public boolean hasPerm(String t, CommandSender sender, String s) {
         if (t.equalsIgnoreCase("sw")) {
             return sender.hasPermission("sw." + s);
         } else if (t.equalsIgnoreCase("kit")) {
@@ -84,7 +84,7 @@ public class Util {
     public void playSound(Player player, Location location, String sound, float volume, float pitch) {
         if (SkyWarsReloaded.getCfg().soundsEnabled()) {
             try {
-                if (player != null) {
+                if (player != null && !sound.equalsIgnoreCase("none")) {
                     player.playSound(location, Sound.valueOf(sound), volume, pitch);
                 }
             } catch (IllegalArgumentException e) {
@@ -160,7 +160,7 @@ public class Util {
 
     public void clear(final Player player) {
         player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
+        player.getInventory().setArmorContents(new ItemStack[] {null, null, null, null});
         for (final PotionEffect a1 : player.getActivePotionEffects()) {
             player.removePotionEffect(a1.getType());
         }
@@ -176,9 +176,14 @@ public class Util {
 
         PlayerStat ps = PlayerStat.getPlayerStats(player);
         if (ps == null) {
-            PlayerStat.getPlayers().add(new PlayerStat(player));
+            if (SkyWarsReloaded.getCfg().debugEnabled()) SkyWarsReloaded.get().getLogger().info("#isBusy pStats " + player.getName() + ": null");
+            ps = new PlayerStat(player);
+            PlayerStat.getPlayers().add(ps);
+            ps.updatePlayerIfInLobby(player);
             return true;
-        } else return !ps.isInitialized();
+        } else {
+            return !ps.isInitialized();
+        }
     }
 
     public void fireworks(final Player player, final int length, final int fireworksPer5Tick) {

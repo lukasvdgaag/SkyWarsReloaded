@@ -2,7 +2,6 @@ package com.walrusone.skywarsreloaded.managers;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.database.DataStorage;
-import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.matchevents.MatchEvent;
@@ -56,6 +55,9 @@ public class PlayerStat {
         if (SkyWarsReloaded.getCfg().economyEnabled()) {
             DataStorage.get().loadperms(this);
         }
+    }
+
+    public void updatePlayerIfInLobby(Player player) {
         if (SkyWarsReloaded.getCfg().getSpawn() != null) {
             if (player.getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
                 updatePlayer(uuid);
@@ -292,8 +294,7 @@ public class PlayerStat {
 
     public static void resetScoreboard(Player player) {
         SkywarsBoard scoreboard = scoreboards.get(player);
-        if (scoreboard != null && !SkyWarsReloaded.getNMS().removeFromScoreboardCollection(scoreboard.board)) {
-            scoreboards.remove(player);
+        if (scoreboard != null) {
             for (Objective objective : scoreboard.board.getObjectives()) {
                 if (objective != null) {
                     objective.unregister();
@@ -330,11 +331,14 @@ public class PlayerStat {
      */
     public void saveStats(Runnable postSaveStatsTask) {
         Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
-        Bukkit.getLogger().log(Level.WARNING, "Now saving stats of player " + player.getName());
+        String playerName = player != null ? player.getName() : uuid;
+        Bukkit.getLogger().log(Level.WARNING, "Now saving stats of player " + playerName);
+
+        PlayerStat self = this;
         new BukkitRunnable() {
             @Override
             public void run() {
-                saveStatsSync(PlayerStat.this);
+                saveStatsSync(self);
                 if (postSaveStatsTask != null) postSaveStatsTask.run();
             }
         }.runTask(SkyWarsReloaded.get());

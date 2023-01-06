@@ -20,7 +20,7 @@
     <repositories>
         <repository>
             <id>bukkitmc</id>
-            <url>http://nexus.gaagjescraft.net/repository/bukkit/</url>
+            <url>https://nexuslite.gcnt.net/repos/bukkit/</url>
         </repository>
     </repositories>
 
@@ -36,6 +36,11 @@
             <artifactId>SkyWarsReloadedCore</artifactId>
             <version>${project.parent.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>17.0.0</version>
         </dependency>
     </dependencies>
 

@@ -38,7 +38,7 @@ public class ArenaMenu {
                 lores.add(ChatColor.GOLD + "" + gMap.getMinTeams());
                 lores.add(ChatColor.AQUA + "Left Click to Increase.");
                 lores.add(ChatColor.AQUA + "Right Click to Decrease.");
-                ItemStack min = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.DIAMOND_HELMET, 1), lores, "Minimun Players");
+                ItemStack min = SkyWarsReloaded.getNMS().getItemStack(new ItemStack(Material.DIAMOND_HELMET, 1), lores, "Minimum Players");
 
 
                 lores.clear();
@@ -186,7 +186,7 @@ public class ArenaMenu {
                         gMap.unregister(true);
                     } else {
                         gMap.setRegistered(true);
-                        gMap.registerMap();
+                        gMap.registerMap(player);
                     }
                     gMap.update();
                 } else if (event.getClick().equals(ClickType.LEFT) && event.getSlot() == 2) {

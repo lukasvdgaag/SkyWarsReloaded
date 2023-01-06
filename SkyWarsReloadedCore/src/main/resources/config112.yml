@@ -10,6 +10,10 @@ debugMode: false
 # Enable bungee mode if you intend to use Skywars on a bungee server WITH one arena per server.
 # Do not enable this if your server is bungee, but you are hosting all arenas on one server.
 bungeeMode: false
+# If using bungee mode, should a random registered map be picked to register on start? All other
+# maps be not be registered. Any unregistered maps in the mapsData folder can also be picked.
+# Remove any maps you don't want to make available to players by deleting the file from the folder.
+bungeeRandomMapPickOnStart: false
 # The name of the bungee lobby where players should be sent to after a game.
 # Name as specified in the config.yml on the bungee host.
 bungeeLobby: lobby
@@ -248,7 +252,7 @@ parties:
 holograms:
   # Whether you want to enable holograms in your server
   # Please know that after enabling this option you will have to RESTART your server!
-  # Want to learn how to create holograms? Read this: https://gaagjescraft.net/skywars/creating-holograms
+  # Want to learn how to create holograms? Read this: https://gcnt.net/skywars/creating-holograms
   enabled: false
 
 
@@ -303,6 +307,7 @@ sounds:
   openModifierMenu: ENTITY_SPLASH_POTION_BREAK
   confirmSelectionSound: ENTITY_VILLAGER_YES
   errorSound: ENTITY_VILLAGER_NO
+  teamJoinSound: BLOCK_NOTE_PLING
 signs:
   enabled: true
   blockoffline: COAL_BLOCK
@@ -373,12 +378,12 @@ items:
   modifierstrength: BOOK
   modifiernone: BOOK
   modifierrandom: NETHER_STAR
-  joinselect: DIAMOND_HELMET
+  joinselect: DIAMOND_SWORD
   singleSlot: 11
   singlemenu: REDSTONE_TORCH_ON
   teamSlot: 15
   teammenu: REDSTONE_COMPARATOR
-  spectateselect: LEATHER_HELMET
+  spectateselect: WOOD_SWORD
   optionselect: EYE_OF_ENDER
   particleselect: BLAZE_POWDER
   particleselectslot: 11

@@ -7,6 +7,7 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -19,7 +20,7 @@ public class ClearStatsCmd extends com.walrusone.skywarsreloaded.commands.BaseCm
         argLength = 2;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         Player swPlayer = null;
         for (Player playerMatch : Bukkit.getOnlinePlayers()) {
             if (ChatColor.stripColor(playerMatch.getName()).equalsIgnoreCase(ChatColor.stripColor(args[1]))) {

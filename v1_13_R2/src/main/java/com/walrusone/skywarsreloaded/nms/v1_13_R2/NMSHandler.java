@@ -1,11 +1,12 @@
 package com.walrusone.skywarsreloaded.nms.v1_13_R2;
 
-import com.google.common.collect.Lists;
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.signs.SWRSign;
 import com.walrusone.skywarsreloaded.nms.NMS;
 import net.minecraft.server.v1_13_R2.*;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -23,6 +24,7 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.lang.reflect.Field;
@@ -33,7 +35,7 @@ import java.util.Random;
 
 public class NMSHandler implements NMS {
 
-    private Collection<CraftScoreboard> scoreboardCollection = Lists.newArrayList();
+    private Collection<CraftScoreboard> scoreboardCollection;
 
     @Override
     public SWRSign createSWRSign(String name, Location location) {
@@ -104,11 +106,13 @@ public class NMSHandler implements NMS {
         return item.getItemMeta().getDisplayName();
     }
 
-    public void playGameSound(Location loc, String sound, float volume, float pitch, boolean customSound) {
-        if (customSound) {
-            loc.getWorld().playSound(loc, sound, volume, pitch);
+    public void playGameSound(Location loc, String paramEnumName, String paramCategory, float paramVolume, float paramPitch, boolean paramIsCustom) {
+        if (loc.getWorld() == null) return;
+        SoundCategory soundCateg = paramCategory == null ? SoundCategory.MASTER : SoundCategory.valueOf(paramCategory);
+        if (paramIsCustom) {
+            loc.getWorld().playSound(loc, paramEnumName, soundCateg, paramVolume, paramPitch);
         } else {
-            loc.getWorld().playSound(loc, Sound.valueOf(sound), volume, pitch);
+            loc.getWorld().playSound(loc, Sound.valueOf(paramEnumName), soundCateg, paramVolume, paramPitch);
         }
     }
 
@@ -125,12 +129,7 @@ public class NMSHandler implements NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        addItemMeta.addItemFlags(ItemFlag.values());
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -140,12 +139,7 @@ public class NMSHandler implements NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        addItemMeta.addItemFlags(ItemFlag.values());
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -232,22 +226,35 @@ public class NMSHandler implements NMS {
         //return scoreboard.registerNewObjective(DisplayName, criteria, DisplayName);
     }
 
-    public void setGameRule(World world, String rule, String bool) {
-        if (rule.equalsIgnoreCase("doMobSpawning")) {
-            world.setGameRuleValue("doMobSpawning", bool);
-            //world.setGameRule(GameRule.DO_MOB_SPAWNING, Boolean.valueOf(bool.toUpperCase()));
-        } else if (rule.equalsIgnoreCase("mobGriefing")) {
-            world.setGameRuleValue("mobGriefing", bool);
-            //world.setGameRule(GameRule.MOB_GRIEFING, Boolean.valueOf(bool.toUpperCase()));
-        } else if (rule.equalsIgnoreCase("doFireTick")) {
-            world.setGameRuleValue("doFireTick", bool);
-            //world.setGameRule(GameRule.DO_FIRE_TICK, Boolean.valueOf(bool.toUpperCase()));
-        } else if (rule.equalsIgnoreCase("showDeathMessages")) {
-            world.setGameRuleValue("showDeathMessages", bool);
-            //world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, Boolean.valueOf(bool.toUpperCase()));
-        } else if (rule.equalsIgnoreCase("announceAdvancements")) {
-            world.setGameRuleValue("announceAdvancedments", bool);
-            //world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, Boolean.valueOf(bool.toUpperCase()));
+    public void setGameRule(World world, String ruleName, String value) {
+        // Handle bools
+        Boolean valueBool = null;
+        if (value.equalsIgnoreCase("true")) valueBool = true;
+        else if (value.equalsIgnoreCase("false")) valueBool = false;
+        // Handle ints
+        Integer valueInt = null;
+        if (valueBool == null) {
+            try {
+                valueInt = Integer.parseInt(value);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        // Apply
+        try {
+            if (valueBool == null) {
+                GameRule<Integer> gameRule = (GameRule<Integer>) GameRule.getByName(ruleName);
+                if (gameRule == null || valueInt == null)
+                    throw new Exception("Invalid GameRule or value provided: " + ruleName + " -> " + value);
+                world.setGameRule(gameRule, valueInt);
+            } else {
+                GameRule<Boolean> gameRule = (GameRule<Boolean>) GameRule.getByName(ruleName);
+                if (gameRule == null)
+                    throw new Exception("Invalid GameRule: " + ruleName);
+                world.setGameRule(gameRule, valueBool);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -360,5 +367,41 @@ public class NMSHandler implements NMS {
         final IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a(json);
         final PacketPlayOutChat chat = new PacketPlayOutChat(icbc);
         ((CraftPlayer) sender).getHandle().playerConnection.sendPacket(chat);
+    }
+
+    @Override
+    public boolean isHoldingTotem(Player player) {
+        return player.getInventory().getItemInMainHand().getType().equals(Material.TOTEM_OF_UNDYING) ||
+                player.getInventory().getItemInOffHand().getType().equals(Material.TOTEM_OF_UNDYING);
+    }
+
+    @Override
+    public void applyTotemEffect(Player player) {
+        org.bukkit.inventory.PlayerInventory pInv = player.getInventory();
+        ItemStack mainHand = pInv.getItemInMainHand();
+        ItemStack offHand = pInv.getItemInOffHand();
+        // Consume item
+        if (mainHand.getType().equals(Material.TOTEM_OF_UNDYING)) {
+            pInv.setItemInMainHand(new ItemStack(Material.AIR));
+        } else if (offHand.getType().equals(Material.TOTEM_OF_UNDYING)) {
+            pInv.setItemInOffHand(new ItemStack(Material.AIR));
+        }
+        // On screen effect
+        player.playEffect(EntityEffect.TOTEM_RESURRECT);
+        // Particles
+        new BukkitRunnable() {
+            byte count = 0;
+
+            @Override
+            public void run() {
+                if (count > 30) {
+                    this.cancel();
+                    return;
+                } else {
+                    count++;
+                }
+                player.getWorld().spawnParticle(Particle.TOTEM, player.getLocation(), 10, 0.1, 0.1, 0.1, 0.5);
+            }
+        }.runTaskTimer(SkyWarsReloaded.get(), 0, 1);
     }
 }

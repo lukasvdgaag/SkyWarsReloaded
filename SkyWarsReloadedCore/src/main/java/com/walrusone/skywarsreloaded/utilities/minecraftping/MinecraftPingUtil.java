@@ -31,6 +31,7 @@ package com.walrusone.skywarsreloaded.utilities.minecraftping;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.SocketException;
 
 public class MinecraftPingUtil {
 

@@ -4,6 +4,8 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class UpdateTopCmd extends BaseCmd {
 
@@ -16,7 +18,7 @@ public class UpdateTopCmd extends BaseCmd {
     }
 
     @Override
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         for (LeaderType type : LeaderType.values()) {
             if (SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
                 DataStorage.get().updateTop(type, SkyWarsReloaded.getCfg().getLeaderSize());

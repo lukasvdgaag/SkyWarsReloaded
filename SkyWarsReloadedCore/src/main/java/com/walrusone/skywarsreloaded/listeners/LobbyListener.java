@@ -111,7 +111,7 @@ public class LobbyListener implements org.bukkit.event.Listener {
                 Block b = w.getBlockAt(signLocation);
                 if (b.getState() instanceof Sign) {
                     event.setCancelled(true);
-                    if (SkyWarsReloaded.get().getUsable().contains(lines[1].toUpperCase())) {
+                    if (SkyWarsReloaded.get().getLeaderTypes().contains(lines[1].toUpperCase())) {
                         LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
                         if (Util.get().isInteger(lines[2])) {
                             if (Integer.parseInt(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {
@@ -147,7 +147,7 @@ public class LobbyListener implements org.bukkit.event.Listener {
                 boolean removed = false;
 
                 if (!SkyWarsReloaded.getCfg().bungeeMode()) {
-                    for (GameMap map : GameMap.getMaps()) {
+                    for (GameMap map : GameMap.getMapsCopy()) {
                         if (map.hasSign(loc)) {
                             if (event.getPlayer().isSneaking()) {
                                 if (!removed) {

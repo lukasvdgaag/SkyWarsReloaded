@@ -162,7 +162,7 @@ public class TauntOption extends PlayerOption {
      */
     public void performTaunt(Player player) {
         if (!this.getKey().equalsIgnoreCase("none")) {
-            SkyWarsReloaded.getNMS().playGameSound(player.getLocation(), sound, volume, pitch, useCustomSound);
+            SkyWarsReloaded.getNMS().playGameSound(player.getLocation(), sound, null, volume, pitch, useCustomSound);
 
             doTauntParticles(player.getUniqueId().toString());
 

@@ -1,5 +1,6 @@
 debugMode: false
 bungeeMode: false
+bungeeRandomMapPickOnStart: false
 bungeeLobby: lobby
 isLobbyServer: false
 gameServers:
@@ -121,6 +122,7 @@ sounds:
   openModifierMenu: SPLASH2
   confirmSelectionSound: VILLAGER_YES
   errorSound: VILLAGER_NO
+  teamJoinSound: NOTE_PLING
 signs:
   enabled: true
   blockoffline: COAL_BLOCK
@@ -191,12 +193,12 @@ items:
   modifierstrength: BOOK
   modifiernone: BOOK
   modifierrandom: NETHER_STAR
-  joinselect: DIAMOND_HELMET
+  joinselect: DIAMOND_SWORD
   singleSlot: 11
   singlemenu: REDSTONE_TORCH_ON
   teamSlot: 15
   teammenu: REDSTONE_COMPARATOR
-  spectateselect: LEATHER_HELMET
+  spectateselect: WOODEN_SWORD
   optionselect: EYE_OF_ENDER
   particleselect: BLAZE_POWDER
   particleselectslot: 11

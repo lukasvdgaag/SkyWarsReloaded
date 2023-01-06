@@ -24,19 +24,19 @@
     <repositories>
         <repository>
             <id>bukkitmc</id>
-            <url>http://nexus.gaagjescraft.net/repository/bukkit/</url>
+            <url>https://nexuslite.gcnt.net/repos/bukkit/</url>
         </repository>
         <repository>
             <id>gcnt</id>
-            <url>http://nexus.gaagjescraft.net/repository/gaagjescraft/</url>
+            <url>https://nexuslite.gcnt.net/repository/gaagjescraft/</url>
         </repository>
         <repository>
             <id>gcnt-others</id>
-            <url>http://nexus.gaagjescraft.net/repository/others/</url>
+            <url>https://nexuslite.gcnt.net/repository/others/</url>
         </repository>
         <repository>
             <id>paf</id>
-            <url>http://nexus.gaagjescraft.net/repository/paf/</url>
+            <url>https://nexuslite.gcnt.net/repository/paf/</url>
         </repository>
         <repository>
             <id>codemc-repo</id>
@@ -45,7 +45,7 @@
         <repository>
             <id>mvdw-software</id>
             <name>MVdW Public Repositories</name>
-            <url>http://repo.mvdw-software.be/content/groups/public/</url>
+            <url>https://repo.mvdw-software.com/service/rest/repository/browse/public/</url>
         </repository>
         <repository>
             <id>jitpack.io</id>
@@ -57,8 +57,16 @@
         </repository>
         <repository>
             <id>enginehub-maven</id>
-            <url>http://maven.enginehub.org/repo/</url>
+            <url>https://maven.enginehub.org/repo/</url>
         </repository>
+        <repository>
+            <id>onarandombox</id>
+            <url>https://repo.onarandombox.com/content/groups/public</url>
+        </repository>
+        <!--<repository>
+            <id>simonsators-repo</id>
+            <url>http://simonsator.de/repo/</url>
+        </repository>-->
     </repositories>
 
     <dependencies>
@@ -144,6 +152,27 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft</groupId>
+            <artifactId>JsonConfiguration</artifactId>
+            <version>1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
 
 </project>

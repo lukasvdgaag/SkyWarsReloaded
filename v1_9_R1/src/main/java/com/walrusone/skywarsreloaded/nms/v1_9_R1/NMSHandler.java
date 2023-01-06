@@ -92,11 +92,11 @@ public class NMSHandler implements NMS {
         return org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack.asNMSCopy(item).getName();
     }
 
-    public void playGameSound(Location loc, String sound, float volume, float pitch, boolean customSound) {
-        if (customSound) {
-            loc.getWorld().playSound(loc, sound, volume, pitch);
+    public void playGameSound(Location loc, String paramEnumName, String paramCategory, float paramVolume, float paramPitch, boolean paramIsCustom) {
+        if (paramIsCustom) {
+            loc.getWorld().playSound(loc, paramEnumName, paramVolume, paramPitch);
         } else {
-            loc.getWorld().playSound(loc, Sound.valueOf(sound), volume, pitch);
+            loc.getWorld().playSound(loc, Sound.valueOf(paramEnumName), paramVolume, paramPitch);
         }
     }
 
@@ -113,12 +113,7 @@ public class NMSHandler implements NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        addItemMeta.addItemFlags(ItemFlag.values());
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -128,12 +123,7 @@ public class NMSHandler implements NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        addItemMeta.addItemFlags(ItemFlag.values());
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -275,5 +265,15 @@ public class NMSHandler implements NMS {
         final IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a(json);
         final PacketPlayOutChat chat = new PacketPlayOutChat(icbc);
         ((CraftPlayer) sender).getHandle().playerConnection.sendPacket(chat);
+    }
+
+    @Override
+    public boolean isHoldingTotem(Player player) {
+        return false;
+    }
+
+    @Override
+    public void applyTotemEffect(Player player) {
+
     }
 }

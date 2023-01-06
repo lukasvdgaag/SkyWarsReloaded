@@ -1,11 +1,12 @@
 package com.walrusone.skywarsreloaded.nms.v1_12_R1;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.signs.SWRSign;
 import com.walrusone.skywarsreloaded.nms.NMS;
 import net.minecraft.server.v1_12_R1.*;
 import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_12_R1.PacketPlayOutTitle.EnumTitleAction;
 import org.bukkit.Material;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -20,8 +21,10 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.List;
@@ -60,9 +63,18 @@ public class NMSHandler implements NMS {
     }
 
     public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            SkyWarsReloaded.get().getLogger().info(String.format("Sending title: %s", title));
+            SkyWarsReloaded.get().getLogger().info(String.format("Sending subtitle: %s", subtitle));
+        }
+        player.sendTitle(title, subtitle, fadein, stay, fadeout);
+        /*
+        No longer needed?
+
         PlayerConnection pConn = ((CraftPlayer) player).getHandle().playerConnection;
         PacketPlayOutTitle pTitleInfo = new PacketPlayOutTitle(EnumTitleAction.TIMES, null, fadein, stay, fadeout);
         pConn.sendPacket(pTitleInfo);
+
         if (subtitle != null) {
             subtitle = subtitle.replaceAll("%player%", player.getDisplayName());
             subtitle = ChatColor.translateAlternateColorCodes('&', subtitle);
@@ -76,7 +88,7 @@ public class NMSHandler implements NMS {
             IChatBaseComponent iComp = ChatSerializer.a("{\"text\": \"" + title + "\"}");
             PacketPlayOutTitle pTitle = new PacketPlayOutTitle(EnumTitleAction.TITLE, iComp);
             pConn.sendPacket(pTitle);
-        }
+        }*/
     }
 
     public void sendActionBar(Player p, String msg) {
@@ -90,11 +102,13 @@ public class NMSHandler implements NMS {
         return org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(item).getName();
     }
 
-    public void playGameSound(Location loc, String sound, float volume, float pitch, boolean customSound) {
-        if (customSound) {
-            loc.getWorld().playSound(loc, sound, volume, pitch);
+    public void playGameSound(Location loc, String paramEnumName, String paramCategory, float paramVolume, float paramPitch, boolean paramIsCustom) {
+        if (loc.getWorld() == null) return;
+        SoundCategory soundCateg = paramCategory == null ? SoundCategory.MASTER : SoundCategory.valueOf(paramCategory);
+        if (paramIsCustom) {
+            loc.getWorld().playSound(loc, paramEnumName, soundCateg, paramVolume, paramPitch);
         } else {
-            loc.getWorld().playSound(loc, Sound.valueOf(sound), volume, pitch);
+            loc.getWorld().playSound(loc, Sound.valueOf(paramEnumName), soundCateg, paramVolume, paramPitch);
         }
     }
 
@@ -111,12 +125,7 @@ public class NMSHandler implements NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        addItemMeta.addItemFlags(ItemFlag.values());
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -126,12 +135,7 @@ public class NMSHandler implements NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        addItemMeta.addItemFlags(ItemFlag.values());
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -265,5 +269,41 @@ public class NMSHandler implements NMS {
         final IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a(json);
         final PacketPlayOutChat chat = new PacketPlayOutChat(icbc);
         ((CraftPlayer) sender).getHandle().playerConnection.sendPacket(chat);
+    }
+
+    @Override
+    public boolean isHoldingTotem(Player player) {
+        return player.getInventory().getItemInMainHand().getType().equals(Material.TOTEM) ||
+                player.getInventory().getItemInOffHand().getType().equals(Material.TOTEM);
+    }
+
+    @Override
+    public void applyTotemEffect(Player player) {
+        org.bukkit.inventory.PlayerInventory pInv = player.getInventory();
+        org.bukkit.inventory.ItemStack mainHand = pInv.getItemInMainHand();
+        org.bukkit.inventory.ItemStack offHand = pInv.getItemInOffHand();
+        // Consume item
+        if (mainHand.getType().equals(Material.TOTEM)) {
+            pInv.setItemInMainHand(new org.bukkit.inventory.ItemStack(Material.AIR));
+        } else if (offHand.getType().equals(Material.TOTEM)) {
+            pInv.setItemInOffHand(new ItemStack(Material.AIR));
+        }
+        // On screen effect
+        player.playEffect(EntityEffect.TOTEM_RESURRECT);
+        // Particles
+        new BukkitRunnable() {
+            byte count = 0;
+
+            @Override
+            public void run() {
+                if (count > 30) {
+                    this.cancel();
+                    return;
+                } else {
+                    count++;
+                }
+                player.getWorld().spawnParticle(Particle.TOTEM, player.getLocation(), 10, 0.1, 0.1, 0.1, 0.5);
+            }
+        }.runTaskTimer(SkyWarsReloaded.get(), 0, 1);
     }
 }

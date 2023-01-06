@@ -2,6 +2,8 @@ package com.walrusone.skywarsreloaded.commands.maps;
 
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class MinimumCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public MinimumCmd(String t) {
@@ -12,7 +14,7 @@ public class MinimumCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         argLength = 3;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
         if (!com.walrusone.skywarsreloaded.utilities.Util.get().isInteger(args[2])) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.map-min-be-int"));

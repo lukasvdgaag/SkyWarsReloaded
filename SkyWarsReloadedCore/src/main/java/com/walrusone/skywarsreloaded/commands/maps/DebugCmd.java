@@ -8,6 +8,7 @@ import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class DebugCmd extends BaseCmd {
@@ -20,7 +21,7 @@ public class DebugCmd extends BaseCmd {
     }
 
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
         GameMap gMap = GameMap.getMap(worldName);
         if (worldName.equalsIgnoreCase("null")) {
@@ -48,10 +49,10 @@ public class DebugCmd extends BaseCmd {
         }
         sender.sendMessage(" ");
 
-        sender.sendMessage("Spawn teams: " + gMap.spawnLocations.size());
-        for (int key : gMap.spawnLocations.keySet()) {
-            for (CoordLoc loc : gMap.spawnLocations.get(key)) {
-                sender.sendMessage("T" + key + ": " + loc.getLocation());
+        sender.sendMessage("Spawn teams: " + gMap.getSpawnLocations().size());
+        for (TeamCard key : gMap.getSpawnLocations().keySet()) {
+            for (CoordLoc loc : gMap.getSpawnLocations().get(key)) {
+                sender.sendMessage("T-" + key.getTeamName() + ": " + loc.getLocationString());
             }
         }
 

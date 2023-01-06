@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public abstract class Cage {
@@ -28,8 +29,8 @@ public abstract class Cage {
 
     public void createSpawnPlatforms(GameMap gMap) {
         World world = gMap.getCurrentWorld();
-        for (int teamNumber : gMap.spawnLocations.keySet()) {
-            for (CoordLoc loc1 : gMap.spawnLocations.get(teamNumber)) {
+        for (List<CoordLoc> coords : gMap.getSpawnLocations().values()) {
+            for (CoordLoc loc1 : coords) {
                 int x = loc1.getX();
                 int y = loc1.getY();
                 int z = loc1.getZ();
@@ -136,6 +137,7 @@ public abstract class Cage {
         }
         for (TeamCard tCard : gMap.getTeamCards()) {
             Bukkit.getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {
+                if (!SkyWarsReloaded.get().isEnabled()) return;
                 removeSpawnHousing(gMap, tCard, true);
             }, 10L);
 
@@ -144,7 +146,13 @@ public abstract class Cage {
 
 
     public void removeSpawnHousing(GameMap gMap, CoordLoc loc1) {
+        if (loc1 == null) return;
         World world = gMap.getCurrentWorld();
+        if (world == null) {
+            SkyWarsReloaded.get().getLogger().severe("The world " + gMap.getName() + " is not loaded! Failed to remove spawn housing.");
+            return;
+        }
+
         int x = loc1.getX();
         int y = loc1.getY();
         int z = loc1.getZ();

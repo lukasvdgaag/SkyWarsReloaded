@@ -3,6 +3,8 @@ package com.walrusone.skywarsreloaded.commands.maps;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class RegisterCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public RegisterCmd(String t) {
@@ -13,12 +15,12 @@ public class RegisterCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd 
         argLength = 2;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
         GameMap gMap = GameMap.getMap(worldName);
         if (gMap != null) {
             gMap.setRegistered(true);
-            int registeredStatus = gMap.registerMap();
+            int registeredStatus = gMap.registerMap(sender);
             if (registeredStatus == 0) {
                 sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", gMap.getDisplayName()).format("maps.registered"));
             } else {

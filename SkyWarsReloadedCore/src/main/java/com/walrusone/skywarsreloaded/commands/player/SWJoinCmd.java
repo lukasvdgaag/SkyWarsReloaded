@@ -5,6 +5,8 @@ import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class SWJoinCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public SWJoinCmd(String t) {
@@ -15,7 +17,7 @@ public class SWJoinCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         argLength = 1;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         if (SkyWarsReloaded.getCfg().bungeeMode()) {
             SWRServer server = SWRServer.getAvailableServer();
             if (server != null) {

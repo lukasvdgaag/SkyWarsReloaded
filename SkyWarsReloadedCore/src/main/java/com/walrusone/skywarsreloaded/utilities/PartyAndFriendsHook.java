@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.utilities;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.events.SkyWarsJoinEvent;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.TeamCard;
@@ -11,19 +12,35 @@ import de.simonsator.partyandfriends.spigot.api.party.PartyManager;
 import de.simonsator.partyandfriends.spigot.api.party.PlayerParty;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class PartyAndFriendsHook implements Listener {
 
-    public void SkyWarsJoinEvent(SkyWarsJoinEvent e) {
+    public PartyAndFriendsHook() {
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            SkyWarsReloaded.get().getLogger().info("PartyAndFriends Hook is enabled");
+        }
+    }
+
+    @EventHandler
+    public void onSkyWarsJoin(SkyWarsJoinEvent e) {
+        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            SkyWarsReloaded.get().getLogger().info("PartyAndFriendsHook::onSkyWarsJoin");
+        }
         if (e.getGame().getTeamSize() == 1) return;
         Player target = e.getPlayer();
 
-        PAFPlayer pl = PAFPlayerManager.getInstance().getPlayer(target.getUniqueId());
-        PlayerParty party = PartyManager.getInstance().getParty(pl);
+        PAFPlayer pafPlayer = PAFPlayerManager.getInstance().getPlayer(target.getUniqueId());
+        PlayerParty party = PartyManager.getInstance().getParty(pafPlayer);
         if (party != null) {
-
+            if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                SkyWarsReloaded.get().getLogger().info("PartyAndFriendsHook::onSkyWarsJoin party is not null");
+            }
             if (!party.getLeader().getUniqueId().equals(target.getUniqueId())) {
+                if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                    SkyWarsReloaded.get().getLogger().info("PartyAndFriendsHook::onSkyWarsJoin " + target.getName() + " is not party owner");
+                }
                 // player is not the owner
                 Player owner = Bukkit.getPlayer(party.getLeader().getUniqueId());
                 GameMap map = MatchManager.get().getPlayerMap(owner);
@@ -55,6 +72,10 @@ public class PartyAndFriendsHook implements Listener {
                 }
             }
 
+        } else {
+            if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                SkyWarsReloaded.get().getLogger().info("PartyAndFriendsHook::onSkyWarsJoin party is null!");
+            }
         }
 
     }

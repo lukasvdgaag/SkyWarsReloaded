@@ -154,7 +154,7 @@ public class WinSoundOption extends PlayerOption {
 
     public void playSound(Location loc) {
         if (SkyWarsReloaded.get().getConfig().getBoolean("soundsEnabled", true)) {
-            SkyWarsReloaded.getNMS().playGameSound(loc, sound, volume, pitch, customSound);
+            SkyWarsReloaded.getNMS().playGameSound(loc, sound, null, volume, pitch, customSound);
         }
     }
 

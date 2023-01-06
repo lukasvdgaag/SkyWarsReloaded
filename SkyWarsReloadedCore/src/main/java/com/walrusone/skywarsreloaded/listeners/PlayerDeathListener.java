@@ -8,9 +8,7 @@ import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Util;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,22 +16,102 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerDeathListener implements org.bukkit.event.Listener {
     public PlayerDeathListener() {
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onDeath3(EntityDamageEvent e) {
+        // Sanity checks
+        if (e.isCancelled()) return;
         if (!(e.getEntity() instanceof Player)) return;
-        Player player = (Player) e.getEntity();
 
+        // Make sure the player is in a game
+        Player player = (Player) e.getEntity();
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
         if (gameMap == null) return;
+
+        // Handle fall damage
+        if (!gameMap.getAllowFallDamage() && e.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            e.setCancelled(true);
+            return;
+        }
+        // If the player doesn't die from damage, ignore
         if (player.getHealth() - e.getFinalDamage() > 0) return;
 
+        // Player fake damage sound if dying
+        SkyWarsReloaded.getNMS().playGameSound(
+                player.getLocation(),
+                "ENTITY_PLAYER_DEATH",
+                "PLAYERS",
+                1,
+                1,
+                false);
+
+        // Take into account if the player is holding a totem of undying (1.9+)
+        if (e.getCause() != EntityDamageEvent.DamageCause.VOID &&
+                e.getCause() != EntityDamageEvent.DamageCause.CUSTOM &&
+                SkyWarsReloaded.getNMS().isHoldingTotem(player))
+        {
+            e.setDamage(player.getHealth() - 1);
+            // Apply potion effects (global)
+            player.addPotionEffect(
+                    new PotionEffect(
+                            PotionEffectType.REGENERATION, 20 * 45, 1, false, true));
+            player.addPotionEffect(
+                    new PotionEffect(
+                            PotionEffectType.ABSORPTION, 20 * 5, 1, false, true));
+            // Show effect on screen, show particles and apply fire resistance in 1.16.2+
+            SkyWarsReloaded.getNMS().applyTotemEffect(player);
+            return;
+        }
+
+        // Drop player items
+        boolean canPickup = player.getCanPickupItems();
+        player.setCanPickupItems(false);
+        Location playerDeathLoc = player.getLocation().clone();
+        World deathWorld = playerDeathLoc.getWorld();
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null) continue;
+            deathWorld.dropItemNaturally(playerDeathLoc, item);
+        }
+
+        // Reset health & clear inv
         e.setCancelled(true);
+        player.setHealthScale(20);
+        player.setMaxHealth(20);
+        player.setHealth(20);
+        player.getInventory().clear();
+        player.getInventory().setArmorContents(new ItemStack[] {null, null, null, null});
+
+        // Handle cause of death & player removal
+        EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.CUSTOM;
+        if (player.getLastDamageCause() != null) {
+            damageCause = e.getCause();
+        }
+
+        SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                player, PlayerRemoveReason.DEATH, damageCause, true);
+
+        // Reset pickup state as it was before now the the player is either in spectator mode or removed
+        player.setCanPickupItems(canPickup);
+
+        // Update the scoreboard for all current player
+        gameMap.getGameBoard().updateScoreboard();
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onDeath2(PlayerDeathEvent event) {
+        GameMap gameMap = MatchManager.get().getPlayerMap(event.getEntity());
+        if (gameMap == null) return;
+        /*event.setDeathMessage("");
+
+        Player player = event.getEntity();
         player.setHealthScale(20);
         player.setMaxHealth(20);
         player.setHealth(20);
@@ -42,19 +120,11 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
 
         EntityDamageEvent.DamageCause damageCause = EntityDamageEvent.DamageCause.CUSTOM;
         if (player.getLastDamageCause() != null) {
-            damageCause = e.getCause();
+            damageCause = player.getLastDamageCause().getCause();
         }
 
-        SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.DEATH, damageCause, true);
-        // MatchManager.get().removeAlivePlayer(player, dCause, false, true);
+        SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.DEATH, damageCause, true);*/
         gameMap.getGameBoard().updateScoreboard();
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onDeath2(PlayerDeathEvent event) {
-        GameMap gameMap = MatchManager.get().getPlayerMap(event.getEntity());
-        if (gameMap == null) return;
-        event.setDeathMessage("");
     }
 
     @EventHandler
@@ -82,7 +152,8 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
                         if (player.getLastDamageCause() != null) {
                             damageCause = player.getLastDamageCause().getCause();
                         }
-                        SkyWarsReloaded.get().getPlayerManager().removePlayer(player, PlayerRemoveReason.DEATH, damageCause, true);
+                        SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                                player, PlayerRemoveReason.DEATH, damageCause, true);
                         // MatchManager.get().removeAlivePlayer(e.getPlayer(), damageCause, false, true);
                     }
                 }

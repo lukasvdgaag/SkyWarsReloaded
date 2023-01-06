@@ -57,7 +57,7 @@ public class NMSHandler implements NMS {
     }
 
     public FireworkEffect getFireworkEffect(Color one, Color two, Color three, Color four, Color five, FireworkEffect.Type type) {
-        return FireworkEffect.builder().flicker(false).withColor(new Color[]{one, two, three, four}).withFade(five).with(type).trail(true).build();
+        return FireworkEffect.builder().flicker(false).withColor(one, two, three, four).withFade(five).with(type).trail(true).build();
     }
 
     public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
@@ -80,9 +80,19 @@ public class NMSHandler implements NMS {
         }
     }
 
-    public void playGameSound(Location loc, String sound, float volume, float pitch, boolean customSound) {
-        if (!customSound) {
-            loc.getWorld().playSound(loc, Sound.valueOf(sound), volume, pitch);
+    public void playGameSound(Location loc, String paramEnumName, String paramCategory, float paramVolume, float paramPitch, boolean paramIsCustom) {
+        paramEnumName = this.getSoundTranslation(paramEnumName);
+        if (!paramIsCustom) {
+            loc.getWorld().playSound(loc, Sound.valueOf(paramEnumName), paramVolume, paramPitch);
+        }
+    }
+
+    private String getSoundTranslation(String paramEnumName) {
+        switch (paramEnumName) {
+            case "ENTITY_PLAYER_DEATH":
+                return "HURT_FLESH";
+            default:
+                return paramEnumName;
         }
     }
 
@@ -110,12 +120,7 @@ public class NMSHandler implements NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        addItemMeta.addItemFlags(ItemFlag.values());
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -125,12 +130,7 @@ public class NMSHandler implements NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_DESTROYS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-        addItemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        addItemMeta.addItemFlags(ItemFlag.values());
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -276,5 +276,15 @@ public class NMSHandler implements NMS {
         final IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a(json);
         final PacketPlayOutChat chat = new PacketPlayOutChat(icbc);
         ((CraftPlayer) sender).getHandle().playerConnection.sendPacket(chat);
+    }
+
+    @Override
+    public boolean isHoldingTotem(Player player) {
+        return false;
+    }
+
+    @Override
+    public void applyTotemEffect(Player player) {
+
     }
 }

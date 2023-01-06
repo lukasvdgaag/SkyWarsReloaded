@@ -8,6 +8,7 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SWRGameImpl implements SWRGameAPI {
 
@@ -31,15 +32,17 @@ public class SWRGameImpl implements SWRGameAPI {
 
     @Override
     public List<GameMap> getGames() {
-        return GameMap.getMaps();
+        return GameMap.getMapsCopy();
     }
 
     @Override
     public List<GameMap> getGames(GameType type) {
-        List<GameMap> maps = GameMap.getMaps();
+        List<GameMap> maps = GameMap.getMapsCopy();
         if (type == GameType.ALL) return maps;
-        maps.removeIf(gameMap -> type==GameType.SINGLE ? gameMap.getTeamSize()>1 : gameMap.getTeamSize()==1);
-        return maps;
+        return maps.stream()
+                .filter(gameMap ->
+                        type == GameType.SINGLE ? gameMap.getTeamSize() == 1 : gameMap.getTeamSize() > 1)
+                .collect(Collectors.toList());
     }
 
     @Override

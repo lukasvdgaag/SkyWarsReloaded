@@ -16,26 +16,28 @@ import java.util.StringJoiner;
 import java.util.UUID;
 
 public class TeamCard {
-    private ArrayList<PlayerCard> playerCards = new ArrayList();
-    private ArrayList<UUID> dead = new ArrayList();
-    private List<CoordLoc> spawns;
-    private GameMap gMap;
+    // Static
+    private final GameMap gMap;
+    private final String prefix;
+    private final String name;
+    private final int teamSize;
+    private final byte bColor;
+    // Data
+    private final ArrayList<PlayerCard> playerCards = new ArrayList<>();
+    private final ArrayList<CoordLoc> spawns;
     private int place;
-    private String prefix;
-    //private Team team;
-    private byte bColor;
-    private String name;
-    private int position;
+    private final int positionAdded;
 
-    TeamCard(int size, GameMap gameMap, String prefix, String color, int pos, List<CoordLoc> teamSpawns) {
-        this.spawns = teamSpawns;
-        gMap = gameMap;
-        place = 1;
+    TeamCard(int size, GameMap gameMap, String prefix, String color, int pos, ArrayList<CoordLoc> teamSpawns) {
+        this.gMap = gameMap;
         this.prefix = prefix;
-        name = (prefix + color);
+        this.name = (prefix + color);
+        this.teamSize = size;
         String col = color.replaceAll("\\s", "").toLowerCase();
-        bColor = Util.get().getByteFromColor(col);
-        position = pos;
+        this.bColor = Util.get().getByteFromColor(col);
+        this.spawns = teamSpawns;
+        this.place = 1;
+        this.positionAdded = pos;
         for (int i = 0; i < size; i++) {
             CoordLoc loc;
             if (teamSpawns == null) loc = null;
@@ -51,9 +53,16 @@ public class TeamCard {
     }
 
     void updateCard(int size) {
+        boolean useSeparateCages = SkyWarsReloaded.getCfg().isUseSeparateCages();
         if (size > playerCards.size()) {
             for (int i = playerCards.size(); i < size; i++) {
-                playerCards.add(new PlayerCard(this, null, spawns.get(i)));
+                CoordLoc playerSpawn = spawns.get(0);
+                if (useSeparateCages) {
+                    playerSpawn = new CoordLoc(playerSpawn.getX() + i, playerSpawn.getY(), playerSpawn.getZ() + i);
+                } else {
+                    playerSpawn = spawns.get(i);
+                }
+                playerCards.add(new PlayerCard(this, null, playerSpawn));
             }
         } else {
             while (size < playerCards.size()) {
@@ -97,10 +106,11 @@ public class TeamCard {
     }
 
     public TeamCard sendReservation(Player player, PlayerStat ps) {
-        if (player != null && ps != null && ps.isInitialized()) { // player is valid & player's meta info is available
+        // Check player is valid & player's meta info is available
+        if (player != null && ps != null && ps.isInitialized()) {
             for (PlayerCard pCard : playerCards) {
                 if ((pCard.getUUID() == null) && (pCard.getSpawn() != null)) {
-                    pCard.setPlayer(player);
+                    pCard.setPlayer(player, gMap.getPlayerCount());
 
                     if (SkyWarsReloaded.getCfg().debugEnabled()) SkyWarsReloaded.get().getLogger().info("#teamCard: pCard in reservation " + pCard.getUUID());
                     if (pCard.getTeamCard().getGameMap().getMatchState() == MatchState.WAITINGSTART) {
@@ -127,7 +137,7 @@ public class TeamCard {
                 }, 10L);
             }
         } else {
-            boolean glassReader = gMap.getCage().setGlassColor(gMap, this);
+            gMap.getCage().setGlassColor(gMap, this);
         }
     }
 
@@ -163,11 +173,6 @@ public class TeamCard {
         for (PlayerCard pCard : playerCards) {
             pCard.reset();
         }
-        dead.clear();
-    }
-
-    public ArrayList<UUID> getDead() {
-        return dead;
     }
 
     PlayerCard containsPlayer(UUID uuid) {
@@ -181,7 +186,7 @@ public class TeamCard {
     }
 
     boolean isFull() {
-        return getFullCount() == 0;
+        return getFullCount() == getGameMap().getTeamSize();
     }
 
     public int getPlayersSize() {
@@ -194,9 +199,19 @@ public class TeamCard {
         return count;
     }
 
-    public boolean isElmininated() {
-        int num = getPlayersSize();
-        return (num == 0) || (num == dead.size());
+    public int getDeadPlayerSize() {
+        int count = 0;
+        for (PlayerCard pCard : this.playerCards) {
+            if (pCard.getUUID() != null && pCard.isDead())
+               count++;
+        }
+        return count;
+    }
+
+
+    public boolean isEliminated() {
+        int playersLeft = this.getPlayersSize();
+        return (playersLeft == 0) || (this.teamSize == getDeadPlayerSize());
     }
 
     public String getPlayerNames() {
@@ -217,19 +232,11 @@ public class TeamCard {
         return prefix;
     }
 
-    /*public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
-    }*/
-
     public byte getByte() {
         return bColor;
     }
 
     public int getPosition() {
-        return position;
+        return this.gMap.getTeamCardPosition(this);
     }
 }

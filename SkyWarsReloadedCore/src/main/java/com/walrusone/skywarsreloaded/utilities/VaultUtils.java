@@ -34,13 +34,13 @@ public class VaultUtils {
         if (rsp == null) {
             return false;
         }
-        econ = ((Economy) rsp.getProvider());
+        econ = rsp.getProvider();
         return econ != null;
     }
 
     private boolean setupChat() {
         RegisteredServiceProvider<Chat> rsp = Bukkit.getServer().getServicesManager().getRegistration(Chat.class);
-        chat = ((Chat) rsp.getProvider());
+        chat = rsp.getProvider();
         return chat != null;
     }
 
@@ -50,27 +50,46 @@ public class VaultUtils {
     }
 
     public boolean payCost(Player player, double cost) {
-        if (econ != null) {
+        if (econ == null) return false;
+        try {
             EconomyResponse rp = econ.withdrawPlayer(player, cost);
             return rp.transactionSuccess();
+        } catch (Exception e) {
+            this.handleException(e);
         }
         return false;
     }
 
     public double getBalance(Player player) {
-        if (econ != null) {
+        if (econ == null) return 0.0D;
+        try {
             return econ.getBalance(player);
+        } catch (Exception e) {
+            this.handleException(e);
         }
         return 0.0D;
     }
 
     public void give(Player win, int i) {
-        if (econ != null) {
+        if (econ == null) return;
+        try {
             econ.depositPlayer(win, i);
+        } catch (Exception e) {
+            this.handleException(e);
         }
     }
 
     public Chat getChat() {
         return chat;
     }
+
+    // PRIVATE UTILS
+
+    private void handleException(Exception e) {
+        if (SkyWarsReloaded.getCfg().debugEnabled()) e.printStackTrace();
+        else SkyWarsReloaded.get().getLogger().severe(
+                "An exception was thrown while attempting to deposit eco: " + e.getMessage() +
+                        ". Please enable debugMode in the config file before reporting this issue!");
+    }
+
 }

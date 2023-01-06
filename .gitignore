@@ -6,3 +6,4 @@ SWR.iml
 /**/target/
 .flattened-pom.xml
 dependency-reduced-pom.xml
+settings.xml

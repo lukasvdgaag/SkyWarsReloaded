@@ -3,6 +3,8 @@ package com.walrusone.skywarsreloaded.commands.kits;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class ListCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
     public ListCmd(String t) {
@@ -13,7 +15,7 @@ public class ListCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         argLength = 1;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         if (GameKit.getKits().size() < 1) {
             player.sendMessage(new Messaging.MessageFormatter().format("command.kit-listno"));
             return true;

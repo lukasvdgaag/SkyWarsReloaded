@@ -18,8 +18,7 @@ public class PlayerCommandPrepocessListener implements org.bukkit.event.Listener
             if (splited[0].equalsIgnoreCase("/spawn")) {
                 e.setCancelled(true);
                 SkyWarsReloaded.get().getPlayerManager().removePlayer(
-                        e.getPlayer(), PlayerRemoveReason.PLAYER_QUIT_GAME, null, false
-                );
+                        e.getPlayer(), PlayerRemoveReason.PLAYER_QUIT_GAME, null, false);
                 return;
             }
             if (SkyWarsReloaded.getCfg().disableCommandsSpectate()) {

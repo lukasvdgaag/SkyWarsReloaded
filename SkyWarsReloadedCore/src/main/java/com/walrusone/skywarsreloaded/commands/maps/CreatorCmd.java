@@ -2,6 +2,8 @@ package com.walrusone.skywarsreloaded.commands.maps;
 
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.StringJoiner;
 
@@ -14,7 +16,7 @@ public class CreatorCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         argLength = 3;
     }
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
         StringJoiner creator = new StringJoiner(" ");
         for (int i = 2; i < args.length; i++) {

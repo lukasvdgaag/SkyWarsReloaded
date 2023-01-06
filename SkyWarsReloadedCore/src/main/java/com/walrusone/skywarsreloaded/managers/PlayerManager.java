@@ -6,7 +6,10 @@ import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
 import com.walrusone.skywarsreloaded.events.SkyWarsDeathEvent;
 import com.walrusone.skywarsreloaded.events.SkyWarsKillEvent;
 import com.walrusone.skywarsreloaded.events.SkyWarsLeaveEvent;
-import com.walrusone.skywarsreloaded.game.*;
+import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.game.PlayerCard;
+import com.walrusone.skywarsreloaded.game.PlayerData;
+import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.game.cages.schematics.SchematicCage;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.menus.playeroptions.KillSoundOption;
@@ -43,6 +46,10 @@ public class PlayerManager {
     }
 
     public void removePlayer(final Player playerRemoved, PlayerRemoveReason removeReason, @Nullable EntityDamageEvent.DamageCause deathCause, boolean announceToOthers) {
+        this.removePlayer(playerRemoved, removeReason, deathCause, true, announceToOthers);
+    }
+
+    public void removePlayer(final Player playerRemoved, PlayerRemoveReason removeReason, @Nullable EntityDamageEvent.DamageCause deathCause, boolean shouldSendToLobbyIn, boolean announceToOthers) {
         // General constants
         final UUID pUuid = playerRemoved.getUniqueId();
         final GameMap gameMap = matchManager.getPlayerMap(playerRemoved);
@@ -52,19 +59,17 @@ public class PlayerManager {
         SkyWarsReloaded.getOM().removePlayer(pUuid);
 
         // Process extra constants
-        PlayerData tmpPData = PlayerData.getPlayerData(pUuid);
-        if (tmpPData == null) {
+        playerData = PlayerData.getPlayerData(pUuid);
+        if (playerData == null) {
             this.swr.getLogger().warning("Player data was null when leaving game!");
-            playerData = new PlayerData(playerRemoved);
-        } else {
-            playerData = tmpPData;
         }
 
         // Filter which type of remove we should perform
         // Player is in an arena - else we don't handle removes
         if (gameMap != null) {
             MatchState mState = gameMap.getMatchState();
-            boolean shouldRestorePlayerToLobby = true;
+            boolean shouldRestorePlayer = true;
+            boolean shouldSendToLobby = shouldSendToLobbyIn;
             // Player is waiting before game start
             if (mState.equals(MatchState.WAITINGSTART) ||
                     mState.equals(MatchState.WAITINGLOBBY) ||
@@ -91,7 +96,8 @@ public class PlayerManager {
                             announceToOthers
                     );
                 } else if (gameMap.getAlivePlayers().contains(playerRemoved)) {
-                    shouldRestorePlayerToLobby =
+                    // Will return false if spectator mode is enabled
+                    shouldRestorePlayer =
                             this.removePlayerInGame(
                                     playerRemoved,
                                     pUuid,
@@ -107,11 +113,12 @@ public class PlayerManager {
                 }
             }
             // Should player be restored back to how they were before entering the game
-            if (shouldRestorePlayerToLobby) {
-                // Restore and delete data
-                playerData.restoreToBeforeGameState(removeReason != PlayerRemoveReason.DEATH);
-                // Remove scoreboard from saved data
-                PlayerStat.resetScoreboard(playerRemoved);
+            if (shouldRestorePlayer) {
+                // Restore and delete data (handles scoreboard and pData deletion)
+                if (playerData != null) {
+                    // Should player be teleported to lobby or only restored?
+                    playerData.restoreToBeforeGameState(removeReason != PlayerRemoveReason.DEATH, shouldSendToLobby);
+                }
             }
         } else {
             SkyWarsReloaded.get().getLogger().warning("PlayerManager::removePlayer Attempted to remove player but player is not in a game map!");
@@ -120,12 +127,13 @@ public class PlayerManager {
 
     /**
      * Remove player waiting or player waiting for game end.
-     * @param playerRemoved The player to be removed
-     * @param pUuid The UUID of the player to remvoe
-     * @param gameMap The game map object from which this was fired
-     * @param playerData The player data of the leaving player
-     * @param removeReason The reason the player was removed
-     * @param announceToOthers Whther this leave should be announced to others
+     *
+     * @param playerRemoved    The player to be removed
+     * @param pUuid            The UUID of the player to remvoe
+     * @param gameMap          The game map object from which this was fired
+     * @param playerData       The player data of the leaving player
+     * @param removeReason     The reason the player was removed
+     * @param announceToOthers Whether this leave should be announced to others
      */
     private void removeWaitingPlayer(
             final Player playerRemoved,
@@ -194,23 +202,25 @@ public class PlayerManager {
                                         .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.left-the-game"));
                     }
                 }
+
+                // Send leave message to all players (waiting before start or during ending state)
+                matchManager.message(gameMap, new Messaging.MessageFormatter().setVariable("player", playerRemoved.getDisplayName())
+                        .setVariable("players", "" + gameMap.getPlayerCount())
+                        .setVariable("playercount", "" + gameMap.getPlayerCount())
+                        .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-left-the-game"), playerRemoved);
             }
-            // Send leave message to all players (waiting before start or during ending state)
-            matchManager.message(gameMap, new Messaging.MessageFormatter().setVariable("player", playerRemoved.getDisplayName())
-                    .setVariable("players", "" + gameMap.getPlayerCount())
-                    .setVariable("playercount", "" + gameMap.getPlayerCount())
-                    .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-left-the-game"), playerRemoved);
         }
     }
 
     /**
      * Remove player spectating the game
-     * @param playerRemoved
-     * @param pUuid
-     * @param gameMap
-     * @param playerData
-     * @param removeReason
-     * @param announceToOthers
+     *
+     * @param playerRemoved    The player to be removed
+     * @param pUuid            The UUID of the player
+     * @param gameMap          The game map to remove from
+     * @param playerData       The PlayerData obj of the player
+     * @param removeReason     The reason the player was removed
+     * @param announceToOthers Should this removal be announced to others in the same map?
      */
     public void removeSpectatorPlayer(
             final Player playerRemoved,
@@ -233,6 +243,7 @@ public class PlayerManager {
         gameMap.removePlayer(pUuid);
 
         // ------------------- MESSAGES --------------------
+        // TODO: Tell other spectators that a spectator has left?
         if (debug) {
             Util.get().logToFile(this.matchManager.getDebugName(gameMap) + ChatColor.YELLOW +
                     playerRemoved.getName() + " has been removed from spectators");
@@ -241,12 +252,13 @@ public class PlayerManager {
 
     /**
      * Remove a player which is currently in a game map and alive
-     * @param playerRemoved Player that died or was removed
-     * @param pUuid UUID of player
-     * @param gameMap GameMap from which this was triggered
-     * @param playerData PlayerData of the removed player
-     * @param removeReason PlayerRemoveReason - why the player was removed
-     * @param deathCause If the player died, the cause of death. Else, null.
+     *
+     * @param playerRemoved    Player that died or was removed
+     * @param pUuid            UUID of player
+     * @param gameMap          GameMap from which this was triggered
+     * @param playerData       PlayerData of the removed player
+     * @param removeReason     PlayerRemoveReason - why the player was removed
+     * @param deathCause       If the player died, the cause of death. Else, null.
      * @param announceToOthers If the messages should be sent to other players from the map
      * @return If the player should be instantly/completely removed from the map (false: spectator mode is enabled)
      */
@@ -271,15 +283,15 @@ public class PlayerManager {
 
         // ---------------- TEAM & PLAYER DATA ------------------
         // Process Team data
-        teamCard.getDead().add(pUuid);
+        playerCard.setDead(true);
         teamCard.removePlayer(pUuid);
         // Place the first team to die, last. So we use players left (missing the current one, so +1)
         // + 1 because we are counting from 1
-        if (teamCard.isElmininated())
+        if (teamCard.isEliminated())
             teamCard.setPlace(gameMap.getTeamsLeft() + 1);
 
         // Process Player tagging
-        Tagged tagger = playerData.getTaggedBy();
+        Tagged tagger = playerData == null ? null : playerData.getTaggedBy();
         Player taggerPlayer;
         boolean isRecentTag;
         if (tagger != null) {
@@ -330,6 +342,16 @@ public class PlayerManager {
                     message = Util.get().getDeathMessage(deathCause, true, playerRemoved, taggerPlayer);
                 }
                 this.matchManager.message(gameMap, message, null);
+                // Tell the player they lost the game
+                new BukkitRunnable() {
+                    public void run() {
+                        if (playerRemoved.isOnline()) {
+                            playerRemoved.sendMessage(new Messaging.MessageFormatter()
+                                    .setVariable("arena", gameMap.getDisplayName())
+                                    .setVariable("map", gameMap.getName()).format("game.lost"));
+                        }
+                    }
+                }.runTaskLater(SkyWarsReloaded.get(), 10L);
                 // Leaving game or server
             } else if (removeReason.equals(PlayerRemoveReason.PLAYER_QUIT_GAME) ||
                     removeReason.equals(PlayerRemoveReason.PLAYER_QUIT_SERVER)
@@ -348,16 +370,6 @@ public class PlayerManager {
                 }
             }
         }
-        // Tell the player they lost the game
-        new BukkitRunnable() {
-            public void run() {
-                if (playerRemoved.isOnline()) {
-                    playerRemoved.sendMessage(new Messaging.MessageFormatter()
-                            .setVariable("arena", gameMap.getDisplayName())
-                            .setVariable("map", gameMap.getName()).format("game.lost"));
-                }
-            }
-        }.runTaskLater(SkyWarsReloaded.get(), 10L);
 
         // ----------------- POST PROCESSING ------------------
         // Check map win
@@ -379,9 +391,20 @@ public class PlayerManager {
     public void addSpectator(final GameMap gameMap, final Player player) {
         if (player != null) {
             World world = gameMap.getCurrentWorld();
-            CoordLoc ss = gameMap.getSpectateSpawn();
-            Location spectateSpawn = new Location(world, ss.getX(), ss.getY(), ss.getZ());
-            player.teleport(spectateSpawn, PlayerTeleportEvent.TeleportCause.END_PORTAL);
+            if (world != null) {
+                CoordLoc ss = gameMap.getSpectateSpawn();
+                Location spectateSpawn = new Location(world, ss.getX(), ss.getY(), ss.getZ());
+                // Sanity check for spec spawn
+                if (spectateSpawn == null) {
+                    SkyWarsReloaded.get().getLogger().severe(
+                            "The spectator spawn was not set in the map " + gameMap.getName() +
+                                    "! Players will not be teleported correctly.");
+                } else {
+                    player.teleport(spectateSpawn, PlayerTeleportEvent.TeleportCause.END_PORTAL);
+                }
+            } else {
+                this.swr.getLogger().severe("Attempted to add spectator to a game with an un-loaded world! (PlayerManager::addSpectator)");
+            }
 
             gameMap.getSpectators().add(player.getUniqueId());
 
@@ -391,7 +414,7 @@ public class PlayerManager {
             }
             Util.get().clear(player);
             // Armor was individually set, moved to null array because it's more concise
-            player.getInventory().setArmorContents(new ItemStack[] {null, null, null, null});
+            player.getInventory().setArmorContents(new ItemStack[]{null, null, null, null});
             player.setGameMode(GameMode.SPECTATOR);
             gameMap.getGameBoard().updateScoreboard(player);
 

@@ -8,27 +8,28 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SWSpectateCmd extends BaseCmd {
     public SWSpectateCmd(String t) {
-        type = t;
-        forcePlayer = true;
-        cmdName = "spectate";
-        alias = new String[]{"spec"};
-        argLength = 2;
+        this.type = t;
+        this.forcePlayer = true;
+        this.cmdName = "spectate";
+        this.alias = new String[] {"spec"};
+        this.argLength = 2;
     }
 
 
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         GameMap gMap = GameMap.getMap(ChatColor.stripColor(args[1]));
         if (gMap != null) {
-            sendSpectator(gMap);
+            sendSpectator(gMap, player);
             return true;
         }
         gMap = GameMap.getMapByDisplayName(ChatColor.stripColor(args[1]));
         if (gMap != null) {
-            sendSpectator(gMap);
+            sendSpectator(gMap, player);
             return true;
         }
         Player swPlayer = null;
@@ -39,7 +40,7 @@ public class SWSpectateCmd extends BaseCmd {
         }
         if (swPlayer != null) {
             gMap = MatchManager.get().getPlayerMap(swPlayer);
-            sendSpectator(gMap);
+            sendSpectator(gMap, player);
             return true;
         }
 
@@ -47,7 +48,7 @@ public class SWSpectateCmd extends BaseCmd {
         return true;
     }
 
-    private void sendSpectator(GameMap gMap) {
+    private void sendSpectator(GameMap gMap, Player player) {
         if (gMap != null) {
             if ((gMap.getMatchState() == MatchState.WAITINGSTART) || (gMap.getMatchState() == MatchState.WAITINGLOBBY) ||(gMap.getMatchState() == MatchState.PLAYING)) {
                 SkyWarsReloaded.get().getPlayerManager().addSpectator(gMap, player);

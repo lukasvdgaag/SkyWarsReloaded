@@ -63,14 +63,25 @@ public class Leaderboard {
         topLeaders.remove(type);
         topLeaders.put(type, getTop(SkyWarsReloaded.getCfg().getLeaderSize(), type));
         loaded.put(type, true);
+
+        // Update signs if enabled
         if (SkyWarsReloaded.getCfg().leaderSignsEnabled() && SkyWarsReloaded.get().isEnabled()) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     updateSigns(type);
-                    if (SkyWarsReloaded.get().serverLoaded() && SkyWarsReloaded.getCfg().hologramsEnabled()) {
-                        SkyWarsReloaded.getHoloManager().updateLeaderHolograms(type);
-                    }
+                }
+            }.runTaskLater(SkyWarsReloaded.get(), 1);
+        }
+
+        // Update holograms if enabled
+        if (SkyWarsReloaded.get().serverLoaded() &&
+                SkyWarsReloaded.getCfg().hologramsEnabled() &&
+                SkyWarsReloaded.get().isEnabled()) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    SkyWarsReloaded.getHoloManager().updateLeaderHolograms(type);
                 }
             }.runTaskLater(SkyWarsReloaded.get(), 1);
         }

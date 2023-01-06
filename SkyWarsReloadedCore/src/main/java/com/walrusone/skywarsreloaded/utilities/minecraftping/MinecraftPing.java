@@ -72,85 +72,88 @@ public class MinecraftPing {
                 "Ping setup socket " + options.getHostname() + " " + options.getPort() + " " + options.getTimeout()); }
 
         final Socket socket = new Socket();
+        final String json;
         try {
             socket.connect(new InetSocketAddress(options.getHostname(), options.getPort()), options.getTimeout());
+
+            final DataInputStream in = new DataInputStream(socket.getInputStream());
+            final DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
+            //> Handshake
+
+            ByteArrayOutputStream handshake_bytes = new ByteArrayOutputStream();
+            DataOutputStream handshake = new DataOutputStream(handshake_bytes);
+
+            handshake.writeByte(MinecraftPingUtil.PACKET_HANDSHAKE);
+            MinecraftPingUtil.writeVarInt(handshake, MinecraftPingUtil.PROTOCOL_VERSION);
+            MinecraftPingUtil.writeVarInt(handshake, options.getHostname().length());
+            handshake.writeBytes(options.getHostname());
+            handshake.writeShort(options.getPort());
+            MinecraftPingUtil.writeVarInt(handshake, MinecraftPingUtil.STATUS_HANDSHAKE);
+
+            MinecraftPingUtil.writeVarInt(out, handshake_bytes.size());
+            out.write(handshake_bytes.toByteArray());
+
+            if (SkyWarsReloaded.getCfg().debugEnabled()) { SkyWarsReloaded.get().getLogger().warning(
+                    "Ping send " + options.getHostname() + " " + options.getPort() + " " + options.getTimeout()); }
+
+            //> Status request
+
+            out.writeByte(0x01); // Size of packet
+            out.writeByte(MinecraftPingUtil.PACKET_STATUSREQUEST);
+
+            //< Status response
+
+            if (SkyWarsReloaded.getCfg().debugEnabled()) { SkyWarsReloaded.get().getLogger().warning(
+                    "Ping start receive " + options.getHostname() + " " + options.getPort() + " " + options.getTimeout()); }
+
+            MinecraftPingUtil.readVarInt(in); // Size
+            int id = MinecraftPingUtil.readVarInt(in);
+
+            MinecraftPingUtil.io(id == -1, "Server prematurely ended stream.");
+            MinecraftPingUtil.io(id != MinecraftPingUtil.PACKET_STATUSREQUEST, "Server returned invalid packet.");
+
+            int length = MinecraftPingUtil.readVarInt(in);
+            MinecraftPingUtil.io(length == -1, "Server prematurely ended stream.");
+            MinecraftPingUtil.io(length == 0, "Server returned unexpected value.");
+
+            byte[] data = new byte[length];
+            in.readFully(data);
+
+            if (SkyWarsReloaded.getCfg().debugEnabled()) { SkyWarsReloaded.get().getLogger().warning(
+                    "Ping done " + options.getHostname() + " " + options.getPort() + " " + options.getTimeout()); }
+
+            json = new String(data, options.getCharset());
+
+            //> Ping
+
+            out.writeByte(0x09); // Size of packet
+            out.writeByte(MinecraftPingUtil.PACKET_PING);
+            out.writeLong(System.currentTimeMillis());
+
+            //< Ping
+
+            MinecraftPingUtil.readVarInt(in); // Size
+            id = MinecraftPingUtil.readVarInt(in);
+            MinecraftPingUtil.io(id == -1, "Server prematurely ended stream.");
+            MinecraftPingUtil.io(id != MinecraftPingUtil.PACKET_PING, "Server returned invalid packet.");
+
+            // Close
+
+            handshake.close();
+            handshake_bytes.close();
+            out.close();
+            in.close();
+            socket.close();
+
         } catch (ConnectException e) {
             SkyWarsReloaded.get().getLogger().warning(
                     "Failed to ping server " +
                             options.getHostname() + ":" + options.getPort() +
                             " (" + e.getMessage() + ")"
             );
+            return null;
         }
-
-        final DataInputStream in = new DataInputStream(socket.getInputStream());
-        final DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-
-        //> Handshake
-
-        ByteArrayOutputStream handshake_bytes = new ByteArrayOutputStream();
-        DataOutputStream handshake = new DataOutputStream(handshake_bytes);
-
-        handshake.writeByte(MinecraftPingUtil.PACKET_HANDSHAKE);
-        MinecraftPingUtil.writeVarInt(handshake, MinecraftPingUtil.PROTOCOL_VERSION);
-        MinecraftPingUtil.writeVarInt(handshake, options.getHostname().length());
-        handshake.writeBytes(options.getHostname());
-        handshake.writeShort(options.getPort());
-        MinecraftPingUtil.writeVarInt(handshake, MinecraftPingUtil.STATUS_HANDSHAKE);
-
-        MinecraftPingUtil.writeVarInt(out, handshake_bytes.size());
-        out.write(handshake_bytes.toByteArray());
-
-        if (SkyWarsReloaded.getCfg().debugEnabled()) { SkyWarsReloaded.get().getLogger().warning(
-                "Ping send " + options.getHostname() + " " + options.getPort() + " " + options.getTimeout()); }
-
-        //> Status request
-
-        out.writeByte(0x01); // Size of packet
-        out.writeByte(MinecraftPingUtil.PACKET_STATUSREQUEST);
-
-        //< Status response
-
-        if (SkyWarsReloaded.getCfg().debugEnabled()) { SkyWarsReloaded.get().getLogger().warning(
-                "Ping start receive " + options.getHostname() + " " + options.getPort() + " " + options.getTimeout()); }
-
-        MinecraftPingUtil.readVarInt(in); // Size
-        int id = MinecraftPingUtil.readVarInt(in);
-
-        MinecraftPingUtil.io(id == -1, "Server prematurely ended stream.");
-        MinecraftPingUtil.io(id != MinecraftPingUtil.PACKET_STATUSREQUEST, "Server returned invalid packet.");
-
-        int length = MinecraftPingUtil.readVarInt(in);
-        MinecraftPingUtil.io(length == -1, "Server prematurely ended stream.");
-        MinecraftPingUtil.io(length == 0, "Server returned unexpected value.");
-
-        byte[] data = new byte[length];
-        in.readFully(data);
-
-        if (SkyWarsReloaded.getCfg().debugEnabled()) { SkyWarsReloaded.get().getLogger().warning(
-                "Ping done " + options.getHostname() + " " + options.getPort() + " " + options.getTimeout()); }
-
-        String json = new String(data, options.getCharset());
-
-        //> Ping
-
-        out.writeByte(0x09); // Size of packet
-        out.writeByte(MinecraftPingUtil.PACKET_PING);
-        out.writeLong(System.currentTimeMillis());
-
-        //< Ping
-
-        MinecraftPingUtil.readVarInt(in); // Size
-        id = MinecraftPingUtil.readVarInt(in);
-        MinecraftPingUtil.io(id == -1, "Server prematurely ended stream.");
-        MinecraftPingUtil.io(id != MinecraftPingUtil.PACKET_PING, "Server returned invalid packet.");
-
-        // Close
-
-        handshake.close();
-        handshake_bytes.close();
-        out.close();
-        in.close();
-        socket.close();
 
         // DEBUG: Example json response -
         // 1.8 description is the motd

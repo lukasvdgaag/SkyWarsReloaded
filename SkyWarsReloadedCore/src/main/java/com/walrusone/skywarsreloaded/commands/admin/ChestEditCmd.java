@@ -5,6 +5,8 @@ import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.ChestType;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class ChestEditCmd extends BaseCmd {
 
@@ -17,7 +19,7 @@ public class ChestEditCmd extends BaseCmd {
     }
 
     @Override
-    public boolean run() {
+    public boolean run(CommandSender sender, Player player, String[] args) {
         String type = args[1];
         ChestType ct;
         if (type.equalsIgnoreCase("basic")) {
