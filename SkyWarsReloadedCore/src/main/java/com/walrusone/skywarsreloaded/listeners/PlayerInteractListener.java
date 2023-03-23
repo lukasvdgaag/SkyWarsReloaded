@@ -64,7 +64,7 @@ public class PlayerInteractListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
         if (MatchManager.get().getPlayerMap(player) != null) {
@@ -349,7 +349,9 @@ public class PlayerInteractListener implements Listener {
                                         player.getWorld().playSound(player.getLocation(), Sound.valueOf("BLOCK_CHEST_OPEN"), 1, 1);
                                     }
                                     player.openInventory(crate.getInventory());
-                                    SkyWarsReloaded.getNMS().playEnderChestAction(block, true);
+                                    SkyWarsReloaded.get().getServer().getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {
+                                            SkyWarsReloaded.getNMS().playEnderChestAction(block, true);
+                                    }, 1);
                                     return;
                                 }
                             }
@@ -376,7 +378,7 @@ public class PlayerInteractListener implements Listener {
                         } else {
                             e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.BLOCK_CHEST_CLOSE, 1, 1);
                         }
-                        SkyWarsReloaded.getNMS().playEnderChestAction(e.getPlayer().getWorld().getBlockAt(crate.getLocation()), false);
+                        SkyWarsReloaded.getNMS().playEnderChestAction(crate.getLocation().getBlock(), false);
                         return;
                     }
                 }
