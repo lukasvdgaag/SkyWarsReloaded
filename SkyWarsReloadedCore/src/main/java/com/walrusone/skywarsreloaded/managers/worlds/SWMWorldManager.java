@@ -6,8 +6,9 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
-import com.grinderwolf.swm.nms.CraftSlimeWorld;
 import com.grinderwolf.swm.nms.SlimeNMS;
+import com.grinderwolf.swm.nms.v1182.CustomWorldServer;
+import com.grinderwolf.swm.nms.world.SlimeLoadedWorld;
 import com.grinderwolf.swm.plugin.config.ConfigManager;
 import com.grinderwolf.swm.plugin.config.WorldData;
 import com.grinderwolf.swm.plugin.config.WorldsConfig;
@@ -20,6 +21,7 @@ import org.bukkit.World;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 public class SWMWorldManager implements WorldManager {
@@ -187,7 +189,7 @@ public class SWMWorldManager implements WorldManager {
                     // Save current world data
                     byte[] serializedWorld;
                     try {
-                        serializedWorld = ((CraftSlimeWorld) slimeWorld).serialize();
+                        serializedWorld = ((SlimeLoadedWorld) slimeWorld).serialize().get();
                     } catch (IndexOutOfBoundsException e) {
                         throw new WorldTooBigException(worldName);
                     }
@@ -206,7 +208,8 @@ public class SWMWorldManager implements WorldManager {
                     plugin.importWorld(world.getWorldFolder(), worldName, loader);
                 }
             }
-        } catch (WorldAlreadyExistsException | InvalidWorldException | WorldLoadedException | WorldTooBigException | IOException e) {
+        } catch (WorldAlreadyExistsException | InvalidWorldException | WorldLoadedException | WorldTooBigException |
+                 IOException | ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
     }

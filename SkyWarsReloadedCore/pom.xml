@@ -23,16 +23,16 @@
 
     <repositories>
         <repository>
-            <id>bukkitmc</id>
+            <id>gcnt-bukkit</id>
             <url>https://nexuslite.gcnt.net/repos/bukkit/</url>
         </repository>
         <repository>
-            <id>gcnt</id>
-            <url>https://nexuslite.gcnt.net/repository/gaagjescraft/</url>
+            <id>gcnt-other</id>
+            <url>https://nexuslite.gcnt.net/repos/other/</url>
         </repository>
         <repository>
-            <id>gcnt-others</id>
-            <url>https://nexuslite.gcnt.net/repository/others/</url>
+            <id>gcnt-gcnt</id>
+            <url>https://nexuslite.gcnt.net/repos/gcnt/</url>
         </repository>
         <repository>
             <id>paf</id>
@@ -41,10 +41,6 @@
         <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.io/repository/maven-public/</url>
-        </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
         </repository>
         <repository>
             <id>placeholderapi</id>
@@ -70,6 +66,10 @@
             <id>simonsators-repo</id>
             <url>http://simonsator.de/repo/</url>
         </repository>-->
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -98,7 +98,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.ebonjaeger</groupId>
+            <groupId>me.ebonjaeger.perworldinventory</groupId>
             <artifactId>perworldinventory-kt</artifactId>
             <version>2.3.2</version>
             <scope>provided</scope>
@@ -111,8 +111,8 @@
         </dependency>
         <dependency>
             <groupId>com.grinderwolf</groupId>
-            <artifactId>slimeworldmanager-api</artifactId>
-            <version>2.8.0-SNAPSHOT</version>
+            <artifactId>AdvancedSlimeWorldManager</artifactId>
+            <version>2.8.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -144,12 +144,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
-            <artifactId>JsonConfiguration</artifactId>
-            <version>1.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
             <version>1.1.1</version>
@@ -159,7 +153,7 @@
             <groupId>com.github.dumptruckman</groupId>
             <artifactId>JsonConfiguration</artifactId>
             <version>b02c3bedf0</version>
-        <scope>provided</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.minidev</groupId>

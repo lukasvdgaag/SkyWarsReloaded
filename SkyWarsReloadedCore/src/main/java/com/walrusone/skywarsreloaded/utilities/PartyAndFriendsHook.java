@@ -6,10 +6,9 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.TeamCard;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
-import de.simonsator.partyandfriends.spigot.api.pafplayers.PAFPlayer;
-import de.simonsator.partyandfriends.spigot.api.pafplayers.PAFPlayerManager;
-import de.simonsator.partyandfriends.spigot.api.party.PartyManager;
-import de.simonsator.partyandfriends.spigot.api.party.PlayerParty;
+import de.simonsator.partyandfriends.api.pafplayers.PAFPlayer;
+import de.simonsator.partyandfriends.api.party.PlayerParty;
+import de.simonsator.partyandfriends.api.party.PartyManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,8 +30,8 @@ public class PartyAndFriendsHook implements Listener {
         if (e.getGame().getTeamSize() == 1) return;
         Player target = e.getPlayer();
 
-        PAFPlayer pafPlayer = PAFPlayerManager.getInstance().getPlayer(target.getUniqueId());
-        PlayerParty party = PartyManager.getInstance().getParty(pafPlayer);
+//        PAFPlayer pafPlayer = PAFPlayerManager.getInstance().getPlayer(target.getUniqueId());
+        PlayerParty party = PartyManager.getInstance().getParty(target.getUniqueId());
         if (party != null) {
             if (SkyWarsReloaded.getCfg().debugEnabled()) {
                 SkyWarsReloaded.get().getLogger().info("PartyAndFriendsHook::onSkyWarsJoin party is not null");
