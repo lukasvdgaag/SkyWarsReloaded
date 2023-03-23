@@ -54,14 +54,10 @@
             <id>enginehub-maven</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
-        <!--<repository>
-            <id>onarandombox</id>
-            <url>https://repo.onarandombox.com/content/groups/public</url>
-        </repository>-->
-        <!--<repository>
+        <repository>
             <id>simonsators-repo</id>
-            <url>http://simonsator.de/repo/</url>
-        </repository>-->
+            <url>https://simonsator.de/repo/</url>
+        </repository>
         <repository>
             <id>rapture-releases</id>
             <url>https://repo.rapture.pw/repository/maven-releases/</url>
@@ -87,14 +83,14 @@
         </dependency>
         <dependency>
             <groupId>de.simonsator</groupId>
-            <artifactId>paf-spigot</artifactId>
-            <version>1.5.1</version>
+            <artifactId>spigot-party-api-for-party-and-friends</artifactId>
+            <version>1.0.4-RELEASE</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.simonsator</groupId>
-            <artifactId>paf-bungee</artifactId>
-            <version>1.0.1</version>
+            <artifactId>BungeecordPartyAndFriends</artifactId>
+            <version>1.0.90</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -130,7 +126,7 @@
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.2.0-SNAPSHOT</version>
+            <version>7.2.14-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -144,10 +140,10 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
+            <groupId>com.github.dumptruckman</groupId>
             <artifactId>JsonConfiguration</artifactId>
-            <version>1.1</version>
-            <scope>provided</scope>
+            <version>b02c3bedf0</version>
+        <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.minidev</groupId>
