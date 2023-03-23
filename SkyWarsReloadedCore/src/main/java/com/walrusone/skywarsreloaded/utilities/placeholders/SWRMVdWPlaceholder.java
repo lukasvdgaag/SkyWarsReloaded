@@ -1,14 +1,9 @@
 package com.walrusone.skywarsreloaded.utilities.placeholders;
 
-import be.maximvdw.placeholderapi.PlaceholderAPI;
-import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.utilities.Util;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 public class SWRMVdWPlaceholder {
 
-    public SWRMVdWPlaceholder(Plugin p) {
+    // REMOVED DUE TO PLUGIN GOING INACTIVE
+    /*public SWRMVdWPlaceholder(Plugin p) {
 
         PlaceholderAPI.registerPlaceholder(p, "swr_wins", e -> {
             Player player = e.getPlayer();
@@ -56,5 +51,5 @@ public class SWRMVdWPlaceholder {
             Player player = e.getPlayer();
             return "" + Util.get().getPlayerLevel(player, false);
         });
-    }
+    }*/
 }

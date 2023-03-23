@@ -33,7 +33,6 @@ import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPing;
 import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPingOptions;
 import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPingReply;
 import com.walrusone.skywarsreloaded.utilities.mygcnt.GCNTUpdater;
-import com.walrusone.skywarsreloaded.utilities.placeholders.SWRMVdWPlaceholder;
 import com.walrusone.skywarsreloaded.utilities.placeholders.SWRPlaceholderAPI;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -227,10 +226,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         // PAPI
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new SWRPlaceholderAPI().register();
-        }
-        // MVdWPAPI
-        if (Bukkit.getPluginManager().isPluginEnabled("MVdWPlaceholderAPI")) {
-            new SWRMVdWPlaceholder(this);
         }
         // PER WORLD INV
         if (Bukkit.getPluginManager().isPluginEnabled("PerWorldInventory")) {
