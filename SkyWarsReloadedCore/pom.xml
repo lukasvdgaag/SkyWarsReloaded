@@ -66,6 +66,10 @@
             <id>rapture-snapshots</id>
             <url>https://repo.rapture.pw/repository/maven-snapshots/</url>
         </repository>
+        <!--<repository>
+            <id>simonsators-repo</id>
+            <url>http://simonsator.de/repo/</url>
+        </repository>-->
     </repositories>
 
     <dependencies>
@@ -138,6 +142,18 @@
                     <artifactId>spigot-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft</groupId>
+            <artifactId>JsonConfiguration</artifactId>
+            <version>1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.dumptruckman</groupId>
