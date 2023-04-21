@@ -12,11 +12,13 @@ public class SkyWarsDeathEvent extends Event {
     private Player player;
     private GameMap map;
     private EntityDamageEvent.DamageCause cause;
+    private Player taggerPlayer;
 
-    public SkyWarsDeathEvent(Player p, EntityDamageEvent.DamageCause cause, GameMap game) {
+    public SkyWarsDeathEvent(Player p, EntityDamageEvent.DamageCause cause, GameMap game, Player taggerPlayer) {
         this.player = p;
         this.map = game;
         this.cause = cause;
+        this.taggerPlayer = taggerPlayer;
     }
 
     public static HandlerList getHandlerList() {
@@ -38,5 +40,9 @@ public class SkyWarsDeathEvent extends Event {
 
     public EntityDamageEvent.DamageCause getCause() {
         return cause;
+    }
+
+    public Player getTaggerPlayer() {
+        return taggerPlayer;
     }
 }
