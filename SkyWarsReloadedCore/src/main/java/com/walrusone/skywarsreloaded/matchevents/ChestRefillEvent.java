@@ -41,7 +41,7 @@ public class ChestRefillEvent extends MatchEvent {
         }
     }
 
-    public void doEvent() {
+    public void onDoEvent() {
         if (gMap.getMatchState() == MatchState.PLAYING) {
             fired = true;
             sendTitle();
@@ -53,7 +53,7 @@ public class ChestRefillEvent extends MatchEvent {
     public void endEvent(boolean force) {
         if ((fired) && (
                 (repeatable) || (force))) {
-            setStartTime();
+            resetStartTime();
             startTime += gMap.getTimer();
             fired = false;
         }

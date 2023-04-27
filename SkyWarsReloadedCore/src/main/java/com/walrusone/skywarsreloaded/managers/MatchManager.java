@@ -564,7 +564,7 @@ public class MatchManager {
                     this.cancel();
                 } else {
                     for (MatchEvent event : gameMap.getEvents()) {
-                        if (event.willFire() && !event.fired()) {
+                        if (event.isEnabled() && event.willFire() && !event.fired()) {
                             if (event.getStartTime() <= gameMap.getTimer()) {
                                 event.doEvent();
                             } else {
@@ -712,7 +712,7 @@ public class MatchManager {
             gameMap.setMatchState(MatchState.ENDING);
             gameMap.getGameBoard().updateScoreboard();
             for (MatchEvent mEvent : gameMap.getEvents()) {
-                if (mEvent.hasFired()) {
+                if (mEvent.isEnabled() && mEvent.hasFired()) {
                     mEvent.endEvent(true);
                 }
             }

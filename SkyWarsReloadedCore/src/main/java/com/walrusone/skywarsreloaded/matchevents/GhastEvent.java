@@ -55,7 +55,7 @@ public class GhastEvent extends MatchEvent {
         }
     }
 
-    public void doEvent() {
+    public void onDoEvent() {
         if (gMap.getMatchState() == MatchState.PLAYING) {
             fired = true;
             sendTitle();
@@ -109,7 +109,7 @@ public class GhastEvent extends MatchEvent {
                 MatchManager.get().message(gMap, ChatColor.translateAlternateColorCodes('&', endMessage));
             }
             if ((repeatable) || (force)) {
-                setStartTime();
+                resetStartTime();
                 startTime += gMap.getTimer();
                 fired = false;
             }

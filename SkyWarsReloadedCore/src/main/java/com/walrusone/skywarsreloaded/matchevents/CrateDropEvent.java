@@ -54,7 +54,7 @@ public class CrateDropEvent extends MatchEvent {
         }
     }
 
-    public void doEvent() {
+    public void onDoEvent() {
         if (gMap.getMatchState() == MatchState.PLAYING) {
             fired = true;
             sendTitle();
@@ -91,7 +91,7 @@ public class CrateDropEvent extends MatchEvent {
             }
             gMap.removeCrates();
             if ((repeatable) || (force)) {
-                setStartTime();
+                resetStartTime();
                 startTime += gMap.getTimer();
                 fired = false;
             }

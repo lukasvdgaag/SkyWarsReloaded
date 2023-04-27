@@ -22,7 +22,7 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
             if (map == null) return;
 
             for (MatchEvent event : map.getEvents()) {
-                if (event instanceof EnderDragonEvent) {
+                if (event instanceof EnderDragonEvent && event.isEnabled()) {
                     if (((EnderDragonEvent)event).makeDragonInvulnerable) {
                         e.setDamage(0);
                     }

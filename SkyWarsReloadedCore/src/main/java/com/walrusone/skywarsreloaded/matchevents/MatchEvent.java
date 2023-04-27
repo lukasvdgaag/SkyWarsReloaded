@@ -1,5 +1,8 @@
 package com.walrusone.skywarsreloaded.matchevents;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.events.SkywarsGameEventAnnounceEvent;
+import com.walrusone.skywarsreloaded.events.SkywarsGameEventTriggerEvent;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -29,7 +32,20 @@ public abstract class MatchEvent {
     public MatchEvent() {
     }
 
-    public abstract void doEvent();
+    public void doEvent() {
+        SkyWarsReloaded swr = SkyWarsReloaded.get();
+
+        SkywarsGameEventTriggerEvent bukkitEvent = new SkywarsGameEventTriggerEvent(this);
+        swr.getServer().getPluginManager().callEvent(bukkitEvent);
+
+        if (bukkitEvent.isCancelled()) {
+            return;
+        }
+
+        onDoEvent();
+    }
+    
+    public abstract void onDoEvent();
 
     public abstract void endEvent(boolean paramBoolean);
 
@@ -38,10 +54,12 @@ public abstract class MatchEvent {
     public void reset() {
         fired = false;
         fireThisMatch();
-        setStartTime();
+        resetStartTime();
     }
 
     private void fireThisMatch() {
+        if (!enabled) return;
+
         useThisMatch = false;
         if (enabled) {
             int rand = Util.get().getRandomNum(0, 100);
@@ -52,18 +70,34 @@ public abstract class MatchEvent {
     }
 
     public boolean willFire() {
+        if (!enabled) return false;
+
         return useThisMatch;
     }
 
-    public void setStartTime() {
+    public void resetStartTime() {
+        if (!enabled) return;
+
         startTime = java.util.concurrent.ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
+    /**
+     * Change start time of event
+     * @param updatedStartTime In seconds
+     */
+    public void setStartTime(int updatedStartTime) {
+        startTime = updatedStartTime;
+    }
+
     public int getStartTime() {
+        if (!enabled) return -1;
+
         return startTime;
     }
 
     protected void sendTitle() {
+        if (!enabled) return;
+
         for (org.bukkit.entity.Player player : gMap.getAlivePlayers()) {
             if (com.walrusone.skywarsreloaded.SkyWarsReloaded.getCfg().titlesEnabled()) {
                 Util.get().sendTitle(player, 2, 20, 2, ChatColor.translateAlternateColorCodes('&', title),
@@ -74,15 +108,25 @@ public abstract class MatchEvent {
     }
 
     public void announceTimer() {
-        int v1 = startTime - gMap.getTimer();
+        if (!enabled) return;
+
+        // Bukkit event
+        SkyWarsReloaded swr = SkyWarsReloaded.get();
+        SkywarsGameEventAnnounceEvent bukkitEvent = new SkywarsGameEventAnnounceEvent(this);
+        swr.getServer().getPluginManager().callEvent(bukkitEvent);
+        if (bukkitEvent.isCancelled()) {
+            return;
+        }
+
+        int remainingTime = startTime - gMap.getTimer();
         String time;
-        if (v1 % 60 == 0) {
-            time = v1 / 60 + " " + (v1 > 60 ? new Messaging.MessageFormatter().format("timer.minutes") : new Messaging.MessageFormatter().format("timer.minute"));
+        if (remainingTime % 60 == 0) {
+            time = remainingTime / 60 + " " + (remainingTime > 60 ? new Messaging.MessageFormatter().format("timer.minutes") : new Messaging.MessageFormatter().format("timer.minute"));
         } else {
-            if ((v1 >= 60) || ((v1 % 10 != 0) && (v1 >= 10)) || (v1 <= 0)) {
+            if ((remainingTime >= 60) || ((remainingTime % 10 != 0) && (remainingTime >= 10)) || (remainingTime <= 0)) {
                 return;
             }
-            time = v1 + " " + (v1 > 1 ? new Messaging.MessageFormatter().format("timer.seconds") : new Messaging.MessageFormatter().format("timer.second"));
+            time = remainingTime + " " + (remainingTime > 1 ? new Messaging.MessageFormatter().format("timer.seconds") : new Messaging.MessageFormatter().format("timer.second"));
         }
         MatchManager.get().message(gMap, new Messaging.MessageFormatter().setVariable("event", title).setVariable("time", time).format("event.announce"));
     }

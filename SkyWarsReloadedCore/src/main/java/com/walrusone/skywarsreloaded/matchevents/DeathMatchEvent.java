@@ -51,7 +51,7 @@ public class DeathMatchEvent extends MatchEvent {
     }
 
     @Override
-    public void doEvent() {
+    public void onDoEvent() {
         if (gMap.getMatchState() == MatchState.PLAYING) {
             this.fired = true;
             Collections.shuffle(gMap.getDeathMatchSpawns());
@@ -106,7 +106,7 @@ public class DeathMatchEvent extends MatchEvent {
     public void endEvent(boolean force) {
         if (fired) {
             if (repeatable || force) {
-                setStartTime();
+                resetStartTime();
                 this.startTime = this.startTime + gMap.getTimer();
                 this.fired = false;
             }
