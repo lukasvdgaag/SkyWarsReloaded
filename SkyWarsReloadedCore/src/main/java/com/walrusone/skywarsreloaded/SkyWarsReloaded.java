@@ -730,6 +730,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         return PlayerStat.getPlayerStats(player);
     }
 
+    public void setChestManager(ChestManager chestManager) {
+        this.cm = chestManager;
+    }
+
     public boolean serverLoaded() {
         return loaded;
     }
