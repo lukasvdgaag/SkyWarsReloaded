@@ -8,12 +8,16 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class MatchEvent {
     protected GameMap gMap;
     protected boolean enabled;
     protected int min;
     protected int max;
+    // Temporarily store min and max values for the event. Should not save to config.
+    protected Integer minOverride;
+    protected Integer maxOverride;
     protected int length;
     protected int startTime;
     protected int chance;
@@ -78,7 +82,7 @@ public abstract class MatchEvent {
     public void resetStartTime() {
         if (!enabled) return;
 
-        startTime = java.util.concurrent.ThreadLocalRandom.current().nextInt(min, max + 1);
+        startTime = java.util.concurrent.ThreadLocalRandom.current().nextInt(getMin(), getMax() + 1);
     }
 
     /**
@@ -165,5 +169,25 @@ public abstract class MatchEvent {
 
     public boolean hasFired() {
         return fired;
+    }
+
+    public boolean isRepeatable() {
+        return repeatable;
+    }
+
+    public int getMin() {
+        return minOverride != null ? minOverride : min;
+    }
+
+    public int getMax() {
+        return maxOverride != null ? maxOverride : max;
+    }
+
+    public void setTempMin(@Nullable Integer min) {
+        minOverride = min;
+    }
+
+    public void setTempMax(@Nullable Integer max) {
+        maxOverride = max;
     }
 }

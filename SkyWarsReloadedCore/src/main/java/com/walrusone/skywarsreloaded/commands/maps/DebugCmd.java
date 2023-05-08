@@ -57,6 +57,23 @@ public class DebugCmd extends BaseCmd {
         }
 
         sender.sendMessage(" ");
+
+        // List all chests
+        sender.sendMessage("Island chests: " + gMap.getChests().size());
+        for (CoordLoc loc : gMap.getChests()) {
+            sender.sendMessage(loc.getLocationString());
+        }
+
+        sender.sendMessage(" ");
+
+        // List all center chests
+        sender.sendMessage("Center chests: " + gMap.getCenterChests().size());
+        for (CoordLoc loc : gMap.getCenterChests()) {
+            sender.sendMessage(loc.getLocationString());
+        }
+
+        sender.sendMessage(" ");
+
         if (sender instanceof Player) {
             sender.sendMessage("-- Debug of player: " + sender.getName());
             GameMap map = MatchManager.get().getPlayerMap(player);

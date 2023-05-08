@@ -96,22 +96,29 @@ public class HealthOption extends GameOption {
     }
 
     public void completeOption() {
-        Vote time = gameMap.getHealthOption().getVoted();
-        int t = 10;
-        if (time == Vote.HEALTHFIVE) {
-            t = 5;
-        } else if (time == Vote.HEALTHFIFTEEN) {
-            t = 15;
-        } else if (time == Vote.HEALTHTWENTY) {
-            t = 20;
+        Vote health = gameMap.getHealthOption().getVoted();
+        int h = 10;
+        if (health == Vote.HEALTHFIVE) {
+            h = 5;
+        } else if (health == Vote.HEALTHFIFTEEN) {
+            h = 15;
+        } else if (health == Vote.HEALTHTWENTY) {
+            h = 20;
         }
         for (Player player : gameMap.getAlivePlayers()) {
-            SkyWarsReloaded.getNMS().setMaxHealth(player, t * 2);
-            player.setHealth(t * 2);
+            SkyWarsReloaded.getNMS().setMaxHealth(player, h * 2);
+            player.setHealth(h * 2);
         }
 
         if (SkyWarsReloaded.getCfg().isHealthVoteEnabled()  && gameMap.getTimer() < 5) {
-            MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", time.name().toLowerCase().replace("health", "")).format("game.vote-announcements.health"));
+
+            String subOptionName = health.name().toLowerCase().replace("health", "health-");
+            String optionValue = SkyWarsReloaded.getMessaging().getMessage("items." + subOptionName);
+
+            MatchManager.get().message(gameMap,
+                    new Messaging.MessageFormatter().setVariable(
+                            "type", optionValue
+                    ).format("game.vote-announcements.health"));
         }
     }
 }

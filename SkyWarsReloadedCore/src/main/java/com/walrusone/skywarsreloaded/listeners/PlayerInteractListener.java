@@ -435,16 +435,49 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
-        GameMap playerPlayingMap = MatchManager.get().getPlayerMap(e.getPlayer());
+        Player player = e.getPlayer();
+        Location blockLoc = e.getBlock().getLocation();
+
+        GameMap playerPlayingMap = MatchManager.get().getPlayerMap(player);
         if (playerPlayingMap == null) {
             if (e.getBlock().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST) || e.getBlock().getType().equals(Material.DIAMOND_BLOCK) || e.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
-                GameMap map = GameMap.getMap(e.getPlayer().getWorld().getName());
+                GameMap map = GameMap.getMap(player.getWorld().getName());
                 if (map == null) {
                     return;
                 }
                 if (map.isEditing()) {
                     if (e.getBlock().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST)) {
                         Chest chest = (Chest) e.getBlock().getState();
+
+                        // Debug
+                        CoordLoc coordBlockLoc = new CoordLoc(blockLoc);
+                        System.out.println("broke the loc: " + coordBlockLoc);
+                        if (SkyWarsReloaded.getCfg().debugEnabled()) {
+                            boolean isCenter = map.getCenterChests().stream().anyMatch(coord -> {
+                                System.out.println("debug chest test:");
+                                System.out.println(coord);
+                                boolean found = coord.equals(coordBlockLoc);
+                                System.out.println("found: " + found);
+                                return found;
+                            });
+                            System.out.println("isCenter: " + isCenter);
+                            System.out.println("\n\n\n\n");
+                            boolean isIsland = map.getChests().stream().anyMatch(coord -> {
+                                System.out.println("debug chest test:");
+                                System.out.println(coord);
+                                boolean found = coord.equals(coordBlockLoc);
+                                System.out.println("found: " + found);
+                                return found;
+                            });
+                            System.out.println("isIsland: " + isIsland);
+                            player.sendMessage(
+                                    ChatColor.RED + "DEBUG: " +
+                                            ChatColor.YELLOW + "Chest removed at " + blockLoc.toString() +
+                                            ChatColor.GOLD + " Type Center: " + isCenter
+                            );
+                        }
+
+                        // Remove from map
                         map.removeChest(chest);
                         InventoryHolder ih = chest.getInventory().getHolder();
                         if (ih instanceof DoubleChest) {
@@ -462,10 +495,11 @@ public class PlayerInteractListener implements Listener {
                                 }
                             }.runTaskLater(SkyWarsReloaded.get(), 2L);
                         }
-                        e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.removeChest"));
-                    } else if (e.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
+                        player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.removeChest"));
+                    }
+                    else if (e.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
                         // Remove all spawns matching location and collect which ones were removed
-                        Map<TeamCard, List<Integer>> result = map.removeSpawnsAtLocation(e.getBlock().getLocation());
+                        Map<TeamCard, List<Integer>> result = map.removeSpawnsAtLocation(blockLoc);
 
                         // Send a message to the player for every spawn removed - this could be one or multiple
                         for (Map.Entry<TeamCard, List<Integer>> removedTeamLocs : result.entrySet()) {
@@ -474,7 +508,7 @@ public class PlayerInteractListener implements Listener {
                                 teamCardPos = map.getTeamCards().size();
                             }
                             for (Integer spawnIndex : removedTeamLocs.getValue()) {
-                                e.getPlayer().sendMessage(new Messaging.MessageFormatter()
+                                player.sendMessage(new Messaging.MessageFormatter()
                                         // Convert spawn index to human number
                                         .setVariable("num", "" + (spawnIndex + 1))
                                         // Convert team index to human number
@@ -503,9 +537,9 @@ public class PlayerInteractListener implements Listener {
                         }*/
 
                     } else if (e.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
-                        boolean result = map.removeDeathMatchSpawn(e.getBlock().getLocation());
+                        boolean result = map.removeDeathMatchSpawn(blockLoc);
                         if (result) {
-                            e.getPlayer().sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + (map.getDeathMatchSpawns().size() + 1)).setVariable("mapname", map.getDisplayName()).format("maps.deathSpawnRemoved"));
+                            player.sendMessage(new Messaging.MessageFormatter().setVariable("num", "" + (map.getDeathMatchSpawns().size() + 1)).setVariable("mapname", map.getDisplayName()).format("maps.deathSpawnRemoved"));
                         }
                     }
                 }
@@ -517,8 +551,8 @@ public class PlayerInteractListener implements Listener {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    CoordLoc spawn = playerPlayingMap.getPlayerCard(e.getPlayer()).getSpawn();
-                    e.getPlayer().teleport(new Location(playerPlayingMap.getCurrentWorld(), spawn.getX() + 0.5, spawn.getY() + 1, spawn.getZ() + 0.5));
+                    CoordLoc spawn = playerPlayingMap.getPlayerCard(player).getSpawn();
+                    player.teleport(new Location(playerPlayingMap.getCurrentWorld(), spawn.getX() + 0.5, spawn.getY() + 1, spawn.getZ() + 0.5));
                 }
             }.runTaskLater(SkyWarsReloaded.get(), 2);
         }

@@ -134,7 +134,16 @@ public class WeatherOption extends GameOption {
         }
 
         if (SkyWarsReloaded.getCfg().isWeatherVoteEnabled()  && gameMap.getTimer() < 5) {
-            MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", weather.name().toLowerCase().replace("weather", "")).format("game.vote-announcements.weather"));
+
+            String subOptionName = weather.name().toLowerCase().replace("weather", "weather-");
+            String optionValue = SkyWarsReloaded.getMessaging().getMessage("items." + subOptionName);
+
+            MatchManager.get().message(
+                    gameMap,
+                    new Messaging.MessageFormatter().setVariable(
+                            "type",
+                            optionValue
+                    ).format("game.vote-announcements.weather"));
         }
     }
 }
