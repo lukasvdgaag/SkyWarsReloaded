@@ -8,6 +8,7 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.ChatColor;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class MatchEvent {
@@ -135,12 +136,12 @@ public abstract class MatchEvent {
         MatchManager.get().message(gMap, new Messaging.MessageFormatter().setVariable("event", title).setVariable("time", time).format("event.announce"));
     }
 
-    public boolean fired() {
-        return fired;
-    }
-
     public boolean announceEnabled() {
         return announceEvent;
+    }
+
+    public void setAnnounceEvent(boolean announceEvent) {
+        this.announceEvent = announceEvent;
     }
 
     public boolean isEnabled() {
@@ -151,16 +152,88 @@ public abstract class MatchEvent {
         enabled = b;
     }
 
+    public String getStartMessage() {
+        return startMessage;
+    }
+
+    public void setStartMessage(String startMessage) {
+        this.startMessage = startMessage;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public String getEndMessage() {
+        return endMessage;
+    }
+
+    public void setEndMessage(String endMessage) {
+        this.endMessage = endMessage;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+
+    public int getChance() {
+        return chance;
+    }
+
+    public void setChance(int chance) {
+        this.chance = chance;
+    }
+
+    public String getSubtitle() {
+        return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    public boolean isAnnounceEvent() {
+        return announceEvent;
+    }
+
+    public boolean isUseThisMatch() {
+        return useThisMatch;
+    }
+
+    public void setUseThisMatch(boolean useThisMatch) {
+        this.useThisMatch = useThisMatch;
+    }
+
     public String getTitle() {
         return ChatColor.translateAlternateColorCodes('&', title);
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public org.bukkit.inventory.ItemStack getMaterial() {
         return material;
     }
 
+    public void setMaterial(ItemStack material) {
+        this.material = material;
+    }
+
     public int getSlot() {
         return slot;
+    }
+
+    public void setSlot(int slot) {
+        this.slot = slot;
     }
 
     public GameMap getGameMap() {
@@ -171,23 +244,47 @@ public abstract class MatchEvent {
         return fired;
     }
 
+    public void setFired(boolean fired) {
+        this.fired = fired;
+    }
+
     public boolean isRepeatable() {
         return repeatable;
+    }
+
+    public void setRepeatable(boolean repeatable) {
+        this.repeatable = repeatable;
     }
 
     public int getMin() {
         return minOverride != null ? minOverride : min;
     }
 
+    public void setMin(int min) {
+        this.min = min;
+    }
+
     public int getMax() {
         return maxOverride != null ? maxOverride : max;
     }
 
-    public void setTempMin(@Nullable Integer min) {
+    public void setMax(int max) {
+        this.max = max;
+    }
+
+    public Integer getMinOverride() {
+        return minOverride;
+    }
+
+    public void setMinOverride(@Nullable Integer min) {
         minOverride = min;
     }
 
-    public void setTempMax(@Nullable Integer max) {
+    public Integer getMaxOverride() {
+        return maxOverride;
+    }
+
+    public void setMaxOverride(@Nullable Integer max) {
         maxOverride = max;
     }
 }

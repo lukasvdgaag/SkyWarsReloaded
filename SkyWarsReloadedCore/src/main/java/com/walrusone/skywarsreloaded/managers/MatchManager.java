@@ -564,7 +564,7 @@ public class MatchManager {
                     this.cancel();
                 } else {
                     for (MatchEvent event : gameMap.getEvents()) {
-                        if (event.isEnabled() && event.willFire() && !event.fired()) {
+                        if (event.isEnabled() && event.willFire() && !event.hasFired()) {
                             if (event.getStartTime() <= gameMap.getTimer()) {
                                 event.doEvent();
                             } else {
