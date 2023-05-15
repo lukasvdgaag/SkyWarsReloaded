@@ -10,7 +10,7 @@
     <version>${revision}</version>
 
     <properties>
-        <revision>5.6.15</revision>
+        <revision>5.6.16</revision>
         <bukkit.version>1.12.2</bukkit.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
