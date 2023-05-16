@@ -451,30 +451,15 @@ public class PlayerInteractListener implements Listener {
 
                         // Debug
                         CoordLoc coordBlockLoc = new CoordLoc(blockLoc);
-                        System.out.println("broke the loc: " + coordBlockLoc);
                         if (SkyWarsReloaded.getCfg().debugEnabled()) {
                             boolean isCenter = map.getCenterChests().stream().anyMatch(coord -> {
-                                System.out.println("debug chest test:");
-                                System.out.println(coord);
                                 boolean found = coord.equals(coordBlockLoc);
-                                System.out.println("found: " + found);
                                 return found;
                             });
-                            System.out.println("isCenter: " + isCenter);
-                            System.out.println("\n\n\n\n");
                             boolean isIsland = map.getChests().stream().anyMatch(coord -> {
-                                System.out.println("debug chest test:");
-                                System.out.println(coord);
                                 boolean found = coord.equals(coordBlockLoc);
-                                System.out.println("found: " + found);
                                 return found;
                             });
-                            System.out.println("isIsland: " + isIsland);
-                            player.sendMessage(
-                                    ChatColor.RED + "DEBUG: " +
-                                            ChatColor.YELLOW + "Chest removed at " + blockLoc.toString() +
-                                            ChatColor.GOLD + " Type Center: " + isCenter
-                            );
                         }
 
                         // Remove from map

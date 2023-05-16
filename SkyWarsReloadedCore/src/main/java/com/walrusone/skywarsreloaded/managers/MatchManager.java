@@ -558,6 +558,7 @@ public class MatchManager {
         gameMap.getGameBoard().updateScoreboard();
         gameMap.update();
         gameMap.setTimer(this.getGameTime());
+
         new BukkitRunnable() {
             public void run() {
                 if (gameMap.getMatchState() == MatchState.ENDING) {
