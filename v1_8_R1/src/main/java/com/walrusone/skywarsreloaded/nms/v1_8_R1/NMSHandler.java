@@ -169,12 +169,12 @@ public class NMSHandler implements NMS {
         return block;
     }
 
-    public void playEnderChestAction(Block block, boolean open) {
+    public void playChestAction(Block block, boolean open) {
         Location location = block.getLocation();
         WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
-        net.minecraft.server.v1_8_R1.BlockPosition position = new net.minecraft.server.v1_8_R1.BlockPosition(location.getX(), location.getY(), location.getZ());
-        TileEntityEnderChest ec = (TileEntityEnderChest) world.getTileEntity(position);
-        world.playBlockAction(position, ec.w(), 1, open ? 1 : 0);
+        BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
+        TileEntity tileEntity = world.getTileEntity(position);
+        world.playBlockAction(position, tileEntity.w(), 1, open ? 1 : 0);
     }
 
     public void setEntityTarget(Entity ent, Player player) {

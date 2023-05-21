@@ -17,10 +17,12 @@ public interface WorldManager {
     /**
      *
      * @param name Name of the world to remove
-     * @param removeFile Only applies to {@link SWMWorldManager#deleteWorld(String, boolean)}, whether to delete the world folder.
+     * @param removeFile Only applies to {@link ASWMWorldManager#deleteWorld(String, boolean)}, whether to delete the world folder.
      */
     void deleteWorld(String name, boolean removeFile);
 
     void deleteWorld(File file);
+
+    WorldManagerType getType();
 
 }

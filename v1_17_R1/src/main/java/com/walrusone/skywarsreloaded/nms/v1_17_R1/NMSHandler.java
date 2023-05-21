@@ -24,6 +24,7 @@ import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftFallingBlock;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
@@ -157,11 +158,7 @@ public class NMSHandler implements NMS {
     }
 
     public void spawnDragon(World world, Location loc) {
-        WorldServer w = ((CraftWorld) world).getHandle();
-        EntityEnderDragon dragon = new EntityEnderDragon(EntityTypes.v, w.getMinecraftWorld());
-        dragon.getDragonControllerManager().setControllerPhase(DragonControllerPhase.i);
-        dragon.setLocation(loc.getX(), loc.getY(), loc.getZ(), w.getRandom().nextFloat() * 360.0F, 0.0F);
-        w.addEntity(dragon);
+        world.spawnEntity(loc, EntityType.ENDER_DRAGON);
     }
 
     public org.bukkit.entity.Entity spawnFallingBlock(Location loc, Material mat, boolean damage) {
@@ -173,7 +170,7 @@ public class NMSHandler implements NMS {
         return block;
     }
 
-    public void playEnderChestAction(Block block, boolean open) {
+    public void playChestAction(Block block, boolean open) {
         Location location = block.getLocation();
         if (location.getWorld() == null) return;
         WorldServer world = ((CraftWorld) location.getWorld()).getHandle();

@@ -70,6 +70,10 @@
             <id>jitpack</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>glaremasters-for-swm-legacy</id>
+            <url>https://repo.glaremasters.me/repository/concuncan/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -115,6 +119,26 @@
             <version>2.8.0</version>
             <scope>provided</scope>
         </dependency>
+        <!-- USE THESE DEPENDENCIES TO GET LEGACY SWM SUPPORT IN THE IDEA DURING DEVELOPMENT-->
+        <!--<dependency>
+            <groupId>com.grinderwolf</groupId>
+            <artifactId>slimeworldmanager-api</artifactId>
+            <version>2.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.grinderwolf</groupId>
+            <artifactId>slimeworldmanager-plugin</artifactId>
+            <version>2.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.grinderwolf</groupId>
+            <artifactId>slimeworldmanager-nms-common</artifactId>
+            <version>2.2.1</version>
+            <scope>provided</scope>
+        </dependency>-->
+        <!-- END OF LEGACY SWM DEPENDENCIES -->
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>

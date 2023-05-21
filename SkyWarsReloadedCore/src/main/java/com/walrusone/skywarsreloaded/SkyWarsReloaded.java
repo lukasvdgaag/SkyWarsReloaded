@@ -19,7 +19,8 @@ import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.listeners.*;
 import com.walrusone.skywarsreloaded.managers.*;
 import com.walrusone.skywarsreloaded.managers.worlds.FileWorldManager;
-import com.walrusone.skywarsreloaded.managers.worlds.SWMWorldManager;
+import com.walrusone.skywarsreloaded.managers.worlds.ASWMWorldManager;
+import com.walrusone.skywarsreloaded.managers.worlds.LegacySWMWorldManager;
 import com.walrusone.skywarsreloaded.managers.worlds.WorldManager;
 import com.walrusone.skywarsreloaded.menus.*;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
@@ -253,7 +254,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
         // SLIME WORLD MANAGER
         if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldManager") && getCfg().isUseSlimeWorldManager()) {
-            wm = new SWMWorldManager();
+            int serverFeatureVersion = Integer.parseInt(getServer().getVersion().split("\\.")[1]);
+            if (serverFeatureVersion > 14) wm = new ASWMWorldManager();
+            else wm = new LegacySWMWorldManager();
         } else {
             wm = new FileWorldManager();
         }

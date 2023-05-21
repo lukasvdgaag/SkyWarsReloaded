@@ -11,6 +11,7 @@ import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -109,7 +110,6 @@ public class ChatListener implements Listener {
                         }
                     }
                     if (recievers != null) {
-                        //
                         event.getRecipients().clear();
                         event.getRecipients().addAll(recievers);
                     }
@@ -137,7 +137,7 @@ public class ChatListener implements Listener {
                         }
                     }
                     PlayerStat ps = PlayerStat.getPlayerStats(event.getPlayer());
-                    String messageToSend;
+                    String formatToSend;
                     if (ps != null) {
                         ArrayList<Player> recievers = null;
                         boolean sendTeamChat = false;
@@ -173,7 +173,7 @@ public class ChatListener implements Listener {
                         }
 
                         if (sMap != null) {
-                            messageToSend = new Messaging.MessageFormatter()
+                            formatToSend = new Messaging.MessageFormatter()
                                     .setVariable("name", event.getPlayer().getName())
                                     .setVariable("displayname", event.getPlayer().getDisplayName())
                                     .setVariable("wins", Integer.toString(ps.getWins()))
@@ -189,7 +189,7 @@ public class ChatListener implements Listener {
                         } else {
                             String format = sendTeamChat ? "chat.teamchat" : "chat.ingamechat";
 
-                            messageToSend = new Messaging.MessageFormatter()
+                            formatToSend = new Messaging.MessageFormatter()
                                     .setVariable("player", event.getPlayer().getName())
                                     .setVariable("displayname", event.getPlayer().getDisplayName())
                                     .setVariable("wins", Integer.toString(ps.getWins()))
@@ -205,10 +205,11 @@ public class ChatListener implements Listener {
                         }
 
                         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                            messageToSend = (me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(event.getPlayer().getUniqueId()), messageToSend));
+                            formatToSend = PlaceholderAPI.setPlaceholders(event.getPlayer(), formatToSend);
+                            formatToSend = ChatColor.translateAlternateColorCodes('&', formatToSend);
                         }
-                        messageToSend = messageToSend.replace("%", "%%");
-                        event.setFormat(messageToSend);
+                        formatToSend = formatToSend.replace("%", "%%");
+                        event.setFormat(formatToSend);
                     }
                 }
             } else {

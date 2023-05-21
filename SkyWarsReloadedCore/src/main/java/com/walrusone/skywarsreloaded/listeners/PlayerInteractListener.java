@@ -350,7 +350,7 @@ public class PlayerInteractListener implements Listener {
                                     }
                                     player.openInventory(crate.getInventory());
                                     SkyWarsReloaded.get().getServer().getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {
-                                            SkyWarsReloaded.getNMS().playEnderChestAction(block, true);
+                                            SkyWarsReloaded.getNMS().playChestAction(block, true);
                                     }, 1);
                                     return;
                                 }
@@ -378,7 +378,7 @@ public class PlayerInteractListener implements Listener {
                         } else {
                             e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.BLOCK_CHEST_CLOSE, 1, 1);
                         }
-                        SkyWarsReloaded.getNMS().playEnderChestAction(crate.getLocation().getBlock(), false);
+                        SkyWarsReloaded.getNMS().playChestAction(crate.getLocation().getBlock(), false);
                         return;
                     }
                 }
