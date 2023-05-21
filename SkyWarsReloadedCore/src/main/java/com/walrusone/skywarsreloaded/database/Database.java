@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.database;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,13 +17,19 @@ public class Database {
     private Connection connection;
 
     public Database() throws ClassNotFoundException, SQLException {
-        final String hostname = SkyWarsReloaded.get().getConfig().getString("sqldatabase.hostname");
-        final int port = SkyWarsReloaded.get().getConfig().getInt("sqldatabase.port");
-        final String database = SkyWarsReloaded.get().getConfig().getString("sqldatabase.database");
+        FileConfiguration config = SkyWarsReloaded.get().getConfig();
+        final String hostname = config.getString("sqldatabase.hostname");
+        final int port = config.getInt("sqldatabase.port");
+        final String database = config.getString("sqldatabase.database");
+        final boolean ssl = config.getBoolean("sqldatabase.ssl", true);
+        final boolean verifyCert = ssl && config.getBoolean("sqldatabase.verifyCertificate", true);
+        final boolean pubKeyRetrieval = config.getBoolean("sqldatabase.publicKeyRetrieval", false);
 
-        connectionUri = String.format("jdbc:mysql://%s:%d/%s", hostname, port, database);
-        username = SkyWarsReloaded.get().getConfig().getString("sqldatabase.username");
-        password = SkyWarsReloaded.get().getConfig().getString("sqldatabase.password");
+        connectionUri = String.format(
+                "jdbc:mysql://%s:%d/%s?useSSL=%s&verifyServerCertificate=%s&allowPublicKeyRetrieval=%s",
+                hostname, port, database, ssl, verifyCert, pubKeyRetrieval);
+        username = config.getString("sqldatabase.username");
+        password = config.getString("sqldatabase.password");
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
