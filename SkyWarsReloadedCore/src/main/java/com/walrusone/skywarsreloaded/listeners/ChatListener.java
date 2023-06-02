@@ -100,10 +100,6 @@ public class ChatListener implements Listener {
         // Calc intents that will affect formatting and scope
         calcPreIntents(event, player, playerMap, specMap, cfg, chatIntent);
 
-        System.out.println("chatIntent forceGameChat = " + chatIntent.forceGameChat);
-        System.out.println("chatIntent wantsGameChat = " + chatIntent.wantsGameChat);
-        System.out.println("chatIntent isLobbyChat = " + chatIntent.isLobbyChat);
-
         // Format the chat
         formatChat(event, cfg, player, playerMap, specMap, chatIntent);
         // Control who sees the message
@@ -198,27 +194,21 @@ public class ChatListener implements Listener {
         if (cfg.useExternalChat()) {
             formatChatExternal(event, cfg, currentMap, chatIntent);
         } else {
-            System.out.println("selecting type...");
             String chatType = "";
 
             // Lobby Chat
             if (chatIntent.isLobbyChat) {
-                System.out.println("lobby chat");
                 chatType = "lobbychat";
             }
             // Spec chat
             else if (specMap != null) {
-                System.out.println("spec chat");
                 chatType = "specchat";
             }
             // In-game chat
             else if (playingMap != null) {
-                System.out.println("game chat");
                 if (chatIntent.forceGameChat || chatIntent.wantsGameChat) chatType = "ingamechat";
                 else chatType = "teamchat";
             }
-
-            System.out.println("chatType = " + chatType);
 
             formatChatCustom(event, player, cfg, currentMap, chatType, chatIntent);
         }
