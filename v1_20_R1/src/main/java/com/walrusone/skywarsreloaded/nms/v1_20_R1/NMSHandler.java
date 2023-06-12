@@ -1,4 +1,4 @@
-package com.walrusone.skywarsreloaded.nms.v1_19_R3;
+package com.walrusone.skywarsreloaded.nms.v1_20_R1;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.signs.SWRSign;
@@ -37,7 +37,7 @@ public class NMSHandler implements NMS {
 
     @Override
     public SWRSign createSWRSign(String name, org.bukkit.Location location) {
-        return new SWRSign19(name, location);
+        return new SWRSign20(name, location);
     }
 
     public void respawnPlayer(Player player) {
