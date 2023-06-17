@@ -7,6 +7,7 @@ import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerCard;
 import com.walrusone.skywarsreloaded.game.TeamCard;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -43,6 +44,9 @@ public class ChatListener implements Listener {
         toChange.put(uuid, setting);
     }
 
+    public ChatListener() {
+    }
+
     @EventHandler
     public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
@@ -52,7 +56,7 @@ public class ChatListener implements Listener {
                 ChatListener.chatList.remove(uuid);
                 event.setCancelled(true);
                 String[] settings = toChange.get(uuid).split(":");
-                GameMap gMap = GameMap.getMap(settings[0]);
+                GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(settings[0]);
                 String setting = settings[1];
                 String variable = event.getMessage();
                 if (gMap != null && setting.equals("display")) {
@@ -100,6 +104,9 @@ public class ChatListener implements Listener {
         // Calc intents that will affect formatting and scope
         calcPreIntents(event, player, playerMap, specMap, cfg, chatIntent);
 
+        // Ignore chats that aren't in the skywars lobby or a skywars game
+        if (chatIntent.isNonSkywarsChat) return;
+
         // Format the chat
         formatChat(event, cfg, player, playerMap, specMap, chatIntent);
         // Control who sees the message
@@ -123,6 +130,9 @@ public class ChatListener implements Listener {
 
         // Check if player is in the lobby
         chatIntent.isLobbyChat = cfg.getSpawn() != null && player.getWorld() != null && player.getWorld().equals(cfg.getSpawn().getWorld());
+
+        // Check if player chat should be affected at all
+        if (currentMap == null && !chatIntent.isLobbyChat) chatIntent.isNonSkywarsChat = true;
     }
 
     private void applyRecipients(AsyncPlayerChatEvent event, Player player, GameMap playingMap, GameMap specMap, Config cfg, ChatIntent chatIntent) {
@@ -306,5 +316,6 @@ public class ChatListener implements Listener {
         public boolean wantsGameChat = false;
         public boolean forceGameChat = false;
         public boolean isLobbyChat = false;
+        public boolean isNonSkywarsChat = false;
     }
 }

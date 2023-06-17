@@ -64,7 +64,7 @@ public class SWRSign19 implements SWRSign {
 
     @Override
     public void update() {
-        GameMap gMap = GameMap.getMap(gameName);
+        GameMap gMap = SkyWarsReloaded.get().getGameMapManager().getMap(gameName);
         Location loc = location;
 
         if (loc.getBlock() == null) return;

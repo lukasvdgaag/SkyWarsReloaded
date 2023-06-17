@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands.maps;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.command.CommandSender;
@@ -16,7 +17,7 @@ public class LegacyLoadCmd extends com.walrusone.skywarsreloaded.commands.BaseCm
 
     public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
-        GameMap gMap = GameMap.getMap(worldName);
+        GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(worldName);
         if (gMap != null) {
             gMap.scanWorld(true, player);
         } else {

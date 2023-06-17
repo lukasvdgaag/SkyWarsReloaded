@@ -30,13 +30,14 @@ public class JoinSingleMenu {
 
 
     public JoinSingleMenu() {
+
         Inventory menu = Bukkit.createInventory(null, menuSize + 9, menuName);
         ArrayList<Inventory> invs = new ArrayList<>();
         invs.add(menu);
 
         Runnable update = () -> {
             if ((SkyWarsReloaded.getIC().hasViewers("joinsinglemenu") || SkyWarsReloaded.getIC().hasViewers("spectatesinglemenu"))) {
-                ArrayList<GameMap> normalGames = GameMap.getPlayableArenas(GameType.SINGLE);
+                ArrayList<GameMap> normalGames = SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.SINGLE);
                 ArrayList<SWRServer> bungeeGames = Lists.newArrayList();
                 
                 for (SWRServer s : SWRServer.getServersCopy()) {
@@ -274,7 +275,7 @@ public class JoinSingleMenu {
                 state = server.getMatchState();
             }
             else {
-                gMap= GameMap.getMap(arenaSlots.get(event.getSlot()));
+                gMap= SkyWarsReloaded.getGameMapMgr().getMap(arenaSlots.get(event.getSlot()));
                 if (gMap == null) {
                     return;
                 }
@@ -313,7 +314,7 @@ public class JoinSingleMenu {
                         player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
                     }
                 } else {
-                    if (gMap != null && gMap.canAddPlayer()) {
+                    if (gMap != null && gMap.canAddPlayer(player)) {
                         player.closeInventory();
                         joined = gMap.addPlayers(null, player);
                         if (!joined) {

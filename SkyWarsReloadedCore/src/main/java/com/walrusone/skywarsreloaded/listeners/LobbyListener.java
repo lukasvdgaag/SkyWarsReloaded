@@ -4,6 +4,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
@@ -28,6 +29,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.UUID;
 
 public class LobbyListener implements org.bukkit.event.Listener {
+
+
     public LobbyListener() {
     }
 
@@ -92,7 +95,7 @@ public class LobbyListener implements org.bukkit.event.Listener {
                         event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
                     }
                 } else {
-                    GameMap gMap = GameMap.getMap(arenaName);
+                    GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(arenaName);
                     if (gMap != null) {
                         gMap.addSign(signLocation);
                         event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
@@ -147,7 +150,7 @@ public class LobbyListener implements org.bukkit.event.Listener {
                 boolean removed = false;
 
                 if (!SkyWarsReloaded.getCfg().bungeeMode()) {
-                    for (GameMap map : GameMap.getMapsCopy()) {
+                    for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
                         if (map.hasSign(loc)) {
                             if (event.getPlayer().isSneaking()) {
                                 if (!removed) {

@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.listeners;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -18,6 +19,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.logging.Level;
 
 public class PlayerJoinListener implements Listener {
+
+
+    public PlayerJoinListener() {
+    }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(final PlayerJoinEvent event) {
@@ -47,7 +52,7 @@ public class PlayerJoinListener implements Listener {
         }
 
         if (!SkyWarsReloaded.getCfg().bungeeMode()) {
-            for (GameMap gMap : GameMap.getMapsCopy()) {
+            for (GameMap gMap : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
                 if (gMap.getCurrentWorld() != null && gMap.getCurrentWorld().equals(player.getWorld())) {
                     if (SkyWarsReloaded.getCfg().getSpawn() != null) {
                         player.teleport(SkyWarsReloaded.getCfg().getSpawn());

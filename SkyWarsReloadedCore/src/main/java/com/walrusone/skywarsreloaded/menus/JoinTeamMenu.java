@@ -30,13 +30,14 @@ public class JoinTeamMenu {
 
 
     public JoinTeamMenu() {
+
         Inventory menu = Bukkit.createInventory(null, menuSize + 9, menuName);
         ArrayList<Inventory> invs = new ArrayList<>();
         invs.add(menu);
 
         Runnable update = () -> {
             if ((SkyWarsReloaded.getIC().hasViewers("jointeammenu") || SkyWarsReloaded.getIC().hasViewers("spectateteam"))) {
-                ArrayList<GameMap> normalGames = GameMap.getPlayableArenas(GameType.TEAM);
+                ArrayList<GameMap> normalGames = SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.TEAM);
                 ArrayList<SWRServer> bungeeGames = Lists.newArrayList();
                 
                 for (SWRServer s : SWRServer.getServersCopy()) {
@@ -281,7 +282,7 @@ public class JoinTeamMenu {
                 state = server.getMatchState();
             }
             else {
-                gMap= GameMap.getMap(arenaSlots.get(event.getSlot()));
+                gMap= SkyWarsReloaded.getGameMapMgr().getMap(arenaSlots.get(event.getSlot()));
                 if (gMap == null) {
                     return;
                 }
@@ -320,7 +321,7 @@ public class JoinTeamMenu {
                         player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
                     }
                 } else {
-                    if (gMap != null && gMap.canAddPlayer()) {
+                    if (gMap != null && gMap.canAddPlayer(player)) {
                         player.closeInventory();
                         joined = gMap.addPlayers(null, player);
                         if (!joined) {

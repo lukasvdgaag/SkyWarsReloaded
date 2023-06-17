@@ -61,7 +61,7 @@ public class SWRSign81 implements com.walrusone.skywarsreloaded.game.signs.SWRSi
 
     @Override
     public void update() {
-        GameMap gMap = GameMap.getMap(gameName);
+        GameMap gMap = SkyWarsReloaded.get().getGameMapManager().getMap(gameName);
         org.bukkit.Location loc = location;
 
         if (loc.getBlock() == null) return;

@@ -5,6 +5,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.ChestType;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Bukkit;
@@ -16,6 +17,10 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class SWTabCompleter implements TabCompleter {
+
+
+    public SWTabCompleter() {
+    }
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
@@ -36,7 +41,7 @@ public class SWTabCompleter implements TabCompleter {
                         args[0].equalsIgnoreCase("min") || args[0].equalsIgnoreCase("creator") ||
                         args[0].equalsIgnoreCase("debug") || args[0].equalsIgnoreCase("legacyload")) {
                     if (Util.get().hasPerm("map", commandSender, args[0].toLowerCase())) {
-                        for (GameMap map : GameMap.getMapsCopy()) possibilities.add(map.getName());
+                        for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) possibilities.add(map.getName());
                     }
                 } else if (args[0].equalsIgnoreCase("spawn") && Util.get().hasPerm("map", commandSender, "spawn")) {
                     possibilities = Lists.newArrayList("player", "spec", "look", "lobby", "deathmatch");
