@@ -36,6 +36,10 @@ public class GameMapManager {
         return gMap;
     }
 
+    public void addMap(GameMap gMap) {
+        arenas.add(gMap);
+    }
+
     public void loadMaps() {
         File mapFile = new File(SkyWarsReloaded.get().getDataFolder(), "maps.yml");
         if (mapFile.exists()) {
