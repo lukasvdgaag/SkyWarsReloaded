@@ -32,7 +32,7 @@ public class GameMapManager {
 
     public GameMap addMap(String name) {
         GameMap gMap = new GameMap(name);
-        arenas.add(gMap);
+        this.addMap(gMap);
         return gMap;
     }
 

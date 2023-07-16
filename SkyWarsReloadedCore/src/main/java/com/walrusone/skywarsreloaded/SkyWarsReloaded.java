@@ -155,14 +155,19 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         if (callingClassName.equals("me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension")) {
             if (extensionCompatible) return true; // everything checks out
             else if (extensionHasCompatCheck) return false; // non-legacy extension version, we can return false
-            else throw new Exception("Incompatible extension version!"); // legacy extension
+            else throw new Exception("Incompatible extension version!"); // legacy extension, requires exception to prevent enable
         }
         return true;
     }
 
+    @Override
+    public void onLoad() {
+        instance = this;
+    }
+
+    @Override
     public void onEnable() {
         loaded = false;
-        instance = this;
 
         // NMS Init
         String packageName = this.getServer().getClass().getPackage().getName();
@@ -779,7 +784,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         extensionHasCompatCheck = true;
 
         PluginDescriptionFile desc = ext.getDescription();
-        String compatibleExtensionVersion = "1.7.11";
+        String compatibleExtensionVersion = "1.7.12";
         String foundVersion = desc.getVersion();
 
         String[] compatVersionParts = compatibleExtensionVersion.split("\\.");
@@ -795,7 +800,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 int foundPatchVer = Integer.parseInt(foundVersionParts[2]);
                 if (foundPatchVer > compatPatchVer) {
                     this.getLogger().warning(String.format(
-                            "You are using a newer Skywars-Extension version than expected but should still work (%s). " +
+                            "You are using a newer Skywars-Extension version than expected but this should still work (%s). " +
                             "This message is for debugging purposes. Skywars will attempt to start as normal.",
                                 foundVersion
                     ));
