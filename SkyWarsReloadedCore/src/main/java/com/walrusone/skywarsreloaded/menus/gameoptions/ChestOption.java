@@ -105,7 +105,16 @@ public class ChestOption extends GameOption {
         populateChests(gameMap.getChests(), cVote, false);
         populateChests(gameMap.getCenterChests(), cVote, true);
         if (SkyWarsReloaded.getCfg().isChestVoteEnabled() && gameMap.getTimer() < 5) {
-            MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", cVote.name().toLowerCase().replace("chest", "")).format("game.vote-announcements.chests"));
+
+            String subOptionName = cVote.name().toLowerCase().replace("chest", "chest-");
+            String optionValue = SkyWarsReloaded.getMessaging().getMessage("items." + subOptionName);
+
+            MatchManager.get().message(
+                    gameMap,
+                    new Messaging.MessageFormatter().setVariable(
+                            "type",
+                            optionValue
+                    ).format("game.vote-announcements.chests"));
         }
     }
 

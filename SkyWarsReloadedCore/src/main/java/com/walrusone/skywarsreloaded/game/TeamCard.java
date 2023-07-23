@@ -137,7 +137,11 @@ public class TeamCard {
                 }, 10L);
             }
         } else {
-            gMap.getCage().setGlassColor(gMap, this);
+            Runnable setCageTask = () -> {
+                gMap.getCage().setGlassColor(gMap, this);
+            };
+            if (Bukkit.isPrimaryThread()) setCageTask.run();
+            else Bukkit.getScheduler().runTask(SkyWarsReloaded.get(), setCageTask); // if somehow the an event is async, ensure that it doesn't break
         }
     }
 

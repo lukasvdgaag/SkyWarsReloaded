@@ -572,13 +572,14 @@ public class MatchManager {
         gameMap.getGameBoard().updateScoreboard();
         gameMap.update();
         gameMap.setTimer(this.getGameTime());
+
         new BukkitRunnable() {
             public void run() {
                 if (gameMap.getMatchState() == MatchState.ENDING) {
                     this.cancel();
                 } else {
                     for (MatchEvent event : gameMap.getEvents()) {
-                        if (event.willFire() && !event.fired()) {
+                        if (event.isEnabled() && event.willFire() && !event.hasFired()) {
                             if (event.getStartTime() <= gameMap.getTimer()) {
                                 event.doEvent();
                             } else {
@@ -616,9 +617,13 @@ public class MatchManager {
     }
 
     private void won(final GameMap gameMap, final TeamCard winners) {
+        SkyWarsReloaded plugin = SkyWarsReloaded.get();
+        Server server = plugin.getServer();
+
         if (debug) {
             Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "SkyWars Match has been won");
         }
+
         if (winners != null) {
             if (debug) {
                 Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + winners.getTeamName() + "Won the Match");
@@ -643,10 +648,23 @@ public class MatchManager {
 
                         if (pLoserUuid != null) {
                             final PlayerStat loserData = PlayerStat.getPlayerStats(pLoserUuid.toString());
-                            if (loserData != null) {
+
+                            // This is ugly and far (furthest) from perfect but better than no attempt at all...
+                            if (loserData == null) {
+                                server.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                    // Load player data
+                                    PlayerStat pStats = new PlayerStat(pLoserUuid, server.getOfflinePlayer(pLoserUuid).getName());
+                                    // Load player data
+                                    pStats.loadStats(() -> {
+                                        pStats.setLosts(pStats.getLosses() + 1);
+                                        pStats.saveStats();
+                                    });
+                                });
+                            } else {
                                 if (debug) {
                                     Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Adding loss to " + pLoserUuid);
                                 }
+
                                 loserData.setLosts(loserData.getLosses() + 1);
                             }
                         }
@@ -685,7 +703,7 @@ public class MatchManager {
                     }
 
                     if (SkyWarsReloaded.getCfg().enableWinMessage()) {
-                        SkyWarsReloaded.get().getServer().broadcastMessage(new Messaging.MessageFormatter()
+                        server.broadcastMessage(new Messaging.MessageFormatter()
                                 .setVariable("player1", winner).setVariable("map", map).format("game.broadcast-win"));
                     }
                     if (SkyWarsReloaded.getCfg().titlesEnabled()) {
@@ -713,7 +731,7 @@ public class MatchManager {
             gameMap.setMatchState(MatchState.ENDING);
             gameMap.getGameBoard().updateScoreboard();
             for (MatchEvent mEvent : gameMap.getEvents()) {
-                if (mEvent.hasFired()) {
+                if (mEvent.isEnabled() && mEvent.hasFired()) {
                     mEvent.endEvent(true);
                 }
             }

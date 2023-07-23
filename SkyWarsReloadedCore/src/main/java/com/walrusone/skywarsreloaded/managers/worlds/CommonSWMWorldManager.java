@@ -6,7 +6,6 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
-//import com.grinderwolf.swm.nms.CraftSlimeWorld;
 import com.grinderwolf.swm.nms.SlimeNMS;
 import com.grinderwolf.swm.plugin.config.ConfigManager;
 import com.grinderwolf.swm.plugin.config.WorldData;
@@ -20,15 +19,16 @@ import org.bukkit.World;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
-public class SWMWorldManager implements WorldManager {
+public abstract class CommonSWMWorldManager implements WorldManager {
 
     SlimePlugin plugin;
     SlimeLoader loader;
     SlimeNMS slimeNMS;
 
-    public SWMWorldManager() {
+    public CommonSWMWorldManager() {
         this.plugin = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
         this.loader = plugin.getLoader(SkyWarsReloaded.getCfg().getSlimeWorldManagerSource());
         // Attempt to get slime nms
@@ -152,7 +152,7 @@ public class SWMWorldManager implements WorldManager {
     }
 
     @Override
-    public void unloadWorld(String worldName, boolean shouldSaveIn) {
+    public void unloadWorld(String worldName, boolean shouldSave) {
         // Pre vars
         WorldsConfig config = ConfigManager.getWorldConfig();
         WorldData worldData = config.getWorlds().get(worldName);
@@ -177,41 +177,43 @@ public class SWMWorldManager implements WorldManager {
                 }
                 // If we should save but it's not in write mode already
                 // (UNSAFE OPERATION! IGNORES LOCKS, DOES NOT RETRY IF IT FAILS)
-                if (shouldSaveIn && slimeWorld.isReadOnly()) {
+                if (shouldSave && slimeWorld.isReadOnly()) {
+                    // Info
                     SkyWarsReloaded.get().getLogger().warning(
                             "SWM has this world in read-only mode and skywars was instructed to save " +
                                     "this world anyway. Changes should not be lost since skywars will save the " +
                                     "world manually, however please disable read-only mode before making edits." +
                                     "Force saving worlds is not safe! (Issues caused by not removing read-only " +
                                     "mode are under your responsibility)");
-                    /*
+
                     // Save current world data
-                    byte[] serializedWorld;
-                    try {
-                        serializedWorld = ((CraftSlimeWorld) slimeWorld).serialize();
-                    } catch (IndexOutOfBoundsException e) {
-                        throw new WorldTooBigException(worldName);
-                    }
+                    byte[] serializedWorld = this.serializeSlimeWorld(slimeWorld);
+
                     // Manually write to loader
                     loader.saveWorld(worldName, serializedWorld, false);
-                    // Unload without saving, since we already forced that.
-                    Bukkit.unloadWorld(world, false);*/
-                } else {
-                    // Save if requested, otherwise just unload
-                    Bukkit.unloadWorld(world, shouldSaveIn);
-                }
 
-            } else {
+                    // Unload without saving, since we already forced that.
+                    Bukkit.unloadWorld(world, false);
+                }
+                else {
+                    // Save if requested, otherwise just unload
+                    Bukkit.unloadWorld(world, shouldSave);
+                }
+            }
+            else {
                 // In the case the world doesn't already exist in the loader specified in SWM, import it.
-                Bukkit.unloadWorld(world, shouldSaveIn);
-                if (shouldSaveIn) {
+                Bukkit.unloadWorld(world, shouldSave);
+                if (shouldSave) {
                     plugin.importWorld(world.getWorldFolder(), worldName, loader);
                 }
             }
-        } catch (WorldAlreadyExistsException | InvalidWorldException | WorldLoadedException | WorldTooBigException | IOException e) {
+        } catch (WorldAlreadyExistsException | InvalidWorldException | WorldLoadedException | WorldTooBigException |
+                 IOException | IllegalStateException e) {
             e.printStackTrace();
         }
     }
+
+    protected abstract byte[] serializeSlimeWorld(SlimeWorld slimeWorld) throws WorldTooBigException, IllegalStateException;
 
     @Override
     public void copyWorld(File source, File target) {

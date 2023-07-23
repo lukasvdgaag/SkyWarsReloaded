@@ -50,7 +50,7 @@ public class HealthDecayEvent extends MatchEvent {
     }
 
     @Override
-    public void doEvent() {
+    public void onDoEvent() {
         if (gMap.getMatchState() == MatchState.PLAYING) {
             this.fired = true;
             sendTitle();
@@ -91,7 +91,7 @@ public class HealthDecayEvent extends MatchEvent {
                 MatchManager.get().message(gMap, ChatColor.translateAlternateColorCodes('&', endMessage));
             }
             if (repeatable || force) {
-                setStartTime();
+                resetStartTime();
                 this.startTime = this.startTime + gMap.getTimer();
                 this.fired = false;
             }

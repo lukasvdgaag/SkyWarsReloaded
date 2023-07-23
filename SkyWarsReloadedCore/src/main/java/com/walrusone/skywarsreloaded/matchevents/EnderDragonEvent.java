@@ -25,6 +25,7 @@ public class EnderDragonEvent extends MatchEvent {
     private BukkitTask br;
 
     public boolean makeDragonInvulnerable = true;
+    private boolean removeDragonOnEnd;
 
     public EnderDragonEvent(GameMap map, boolean b) {
         gMap = map;
@@ -56,7 +57,7 @@ public class EnderDragonEvent extends MatchEvent {
         }
     }
 
-    public void doEvent() {
+    public void onDoEvent() {
         if (gMap.getMatchState() == MatchState.PLAYING) {
             fired = true;
             sendTitle();
@@ -70,8 +71,6 @@ public class EnderDragonEvent extends MatchEvent {
             }
 
             if (length != -1) {
-
-
                 br = new BukkitRunnable() {
                     public void run() {
                         endEvent(false);
@@ -86,18 +85,20 @@ public class EnderDragonEvent extends MatchEvent {
             if ((force) && (length != -1)) {
                 br.cancel();
             }
-            World world = gMap.getCurrentWorld();
-            for (Entity ent : world.getEntities()) {
-                if ((ent instanceof EnderDragon)) {
-                    ent.remove();
-                    break;
+            if (this.removeDragonOnEnd) {
+                World world = gMap.getCurrentWorld();
+                for (Entity ent : world.getEntities()) {
+                    if ((ent instanceof EnderDragon)) {
+                        ent.remove();
+                        break;
+                    }
                 }
             }
             if (gMap.getMatchState() == MatchState.PLAYING) {
                 MatchManager.get().message(gMap, ChatColor.translateAlternateColorCodes('&', endMessage));
             }
             if ((repeatable) || (force)) {
-                setStartTime();
+                resetStartTime();
                 startTime += gMap.getTimer();
                 fired = false;
             }
@@ -133,5 +134,13 @@ public class EnderDragonEvent extends MatchEvent {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean isRemoveDragonOnEnd() {
+        return removeDragonOnEnd;
+    }
+
+    public void setRemoveDragonOnEnd(boolean removeDragonOnEnd) {
+        this.removeDragonOnEnd = removeDragonOnEnd;
     }
 }

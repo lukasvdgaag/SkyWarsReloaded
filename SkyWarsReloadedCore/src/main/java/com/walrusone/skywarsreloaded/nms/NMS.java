@@ -54,7 +54,12 @@ public interface NMS {
 
     Entity spawnFallingBlock(Location paramLocation, Material paramMaterial, boolean paramBoolean);
 
-    void playEnderChestAction(Block paramBlock, boolean paramBoolean);
+    /**
+     * Send a chest action to players
+     * @param paramBlock the chest block
+     * @param open true to open, false to close
+     */
+    void playChestAction(Block paramBlock, boolean open);
 
     void setEntityTarget(Entity paramEntity, Player paramPlayer);
 

@@ -312,7 +312,7 @@ public class PlayerManager {
         } else {
             // Process loser
             this.updateStatsForLoser(playerRemoved);
-            Bukkit.getPluginManager().callEvent(new SkyWarsDeathEvent(playerRemoved, deathCause, gameMap));
+            Bukkit.getPluginManager().callEvent(new SkyWarsDeathEvent(playerRemoved, deathCause, gameMap, taggerPlayer));
             // Process killer (if exists)
             if (wasKilledByTagger) {
                 this.updateStatsForKiller(taggerPlayer);

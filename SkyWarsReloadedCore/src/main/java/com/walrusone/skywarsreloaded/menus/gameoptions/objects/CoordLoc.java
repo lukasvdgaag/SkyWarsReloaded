@@ -45,6 +45,11 @@ public class CoordLoc {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "CoordLoc[" + getLocationString() + "]";
+    }
+
     public int hashCode() {
         return Objects.hash(x, y, z);
     }

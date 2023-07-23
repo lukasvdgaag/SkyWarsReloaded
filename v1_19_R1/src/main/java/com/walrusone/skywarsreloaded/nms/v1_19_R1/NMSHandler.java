@@ -165,7 +165,7 @@ public class NMSHandler implements NMS {
         return block;
     }
 
-    public void playEnderChestAction(Block block, boolean open) {
+    public void playChestAction(Block block, boolean open) {
         Location location = block.getLocation();
         if (location.getWorld() == null) return;
         WorldServer world = ((CraftWorld) location.getWorld()).getHandle();

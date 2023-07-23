@@ -13,6 +13,7 @@ import org.bukkit.block.Skull;
 import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -149,10 +150,7 @@ public class NMSHandler implements NMS {
     }
 
     public void spawnDragon(World world, Location loc) {
-        WorldServer w = ((CraftWorld) world).getHandle();
-        EntityEnderDragon dragon = new EntityEnderDragon(w);
-        dragon.setLocation(loc.getX(), loc.getY(), loc.getZ(), w.random.nextFloat() * 360.0F, 0.0F);
-        w.addEntity(dragon);
+        world.spawnEntity(loc, EntityType.ENDER_DRAGON);
     }
 
 
@@ -164,12 +162,12 @@ public class NMSHandler implements NMS {
         return block;
     }
 
-    public void playEnderChestAction(Block block, boolean open) {
+    public void playChestAction(Block block, boolean open) {
         Location location = block.getLocation();
         WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
         BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
-        TileEntityEnderChest ec = (TileEntityEnderChest) world.getTileEntity(position);
-        world.playBlockAction(position, ec.w(), 1, open ? 1 : 0);
+        TileEntity tileEntity = world.getTileEntity(position);
+        world.playBlockAction(position, tileEntity.w(), 1, open ? 1 : 0);
     }
 
     public void setEntityTarget(Entity ent, Player player) {

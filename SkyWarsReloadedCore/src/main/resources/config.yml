@@ -236,6 +236,7 @@ sqldatabase:
   database: database
   username: username
   password: password
+  ssl: true
 leaderboards:
   length: 10
   leaderboardUpdateInterval: 300

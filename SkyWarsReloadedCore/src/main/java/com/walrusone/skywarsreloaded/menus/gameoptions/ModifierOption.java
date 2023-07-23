@@ -114,7 +114,16 @@ public class ModifierOption extends GameOption {
         }
 
         if (SkyWarsReloaded.getCfg().isModifierVoteEnabled()) {
-            MatchManager.get().message(gameMap, new Messaging.MessageFormatter().setVariable("type", modifier.name().toLowerCase().replace("modifier", "")).format("game.vote-announcements.modifier"));
+
+            String subOptionName = modifier.name().toLowerCase().replace("modifier", "modifier-");
+            String optionValue = SkyWarsReloaded.getMessaging().getMessage("items." + subOptionName);
+
+            MatchManager.get().message(
+                    gameMap,
+                    new Messaging.MessageFormatter().setVariable(
+                            "type",
+                            optionValue
+                    ).format("game.vote-announcements.modifier"));
         }
     }
 }

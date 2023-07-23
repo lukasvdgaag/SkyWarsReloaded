@@ -53,7 +53,7 @@ public final class Messaging {
         return storage.getString("prefix", "");
     }
 
-    private String getMessage(String format) {
+    public String getMessage(String format) {
         if (storage.contains(format)) {
             return storage.getString(format);
         }

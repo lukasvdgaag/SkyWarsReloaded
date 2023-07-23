@@ -47,6 +47,13 @@ public class PlayerStat {
     private boolean initialized;
     private PermissionAttachment perms;
 
+    public PlayerStat(UUID uuid, String name) {
+        this.initialized = false;
+        this.uuid = uuid.toString();
+        this.playername = name;
+        this.perms = null;
+    }
+
     public PlayerStat(final Player player) {
         this.initialized = false;
         this.uuid = player.getUniqueId().toString();

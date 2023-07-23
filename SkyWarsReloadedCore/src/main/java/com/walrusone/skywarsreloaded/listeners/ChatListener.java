@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.listeners;
 
 import com.google.common.collect.Maps;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.config.Config;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerCard;
@@ -11,6 +12,8 @@ import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.VaultUtils;
+import me.clip.placeholderapi.PlaceholderAPI;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -20,6 +23,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -81,211 +86,225 @@ public class ChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
-        if (SkyWarsReloaded.getCfg().formatChat()) {
-            GameMap gMap = MatchManager.get().getPlayerMap(event.getPlayer());
-            GameMap sMap = MatchManager.get().getSpectatorMap(event.getPlayer());
-            if (gMap != null || sMap != null) {
-                if (SkyWarsReloaded.getCfg().useExternalChat()) {
-                    PlayerStat ps = PlayerStat.getPlayerStats(event.getPlayer());
-                    String prefix = "";
-                    if (SkyWarsReloaded.getCfg().addPrefix() && ps != null) {
-                        prefix = new Messaging.MessageFormatter()
-                                .setVariable("wins", Integer.toString(ps.getWins()))
-                                .setVariable("losses", Integer.toString(ps.getLosses()))
-                                .setVariable("kills", Integer.toString(ps.getKills()))
-                                .setVariable("deaths", Integer.toString(ps.getDeaths()))
-                                .setVariable("xp", Integer.toString(ps.getXp()))
-                                .format("chat.externalPrefix");
-                    }
-                    String format = event.getFormat();
-                    ArrayList<Player> recievers = null;
-                    if (sMap != null && SkyWarsReloaded.getCfg().limitSpecChat()) {
-                        recievers = sMap.getMessageAblePlayers(true);
-                    } else if (sMap != null && SkyWarsReloaded.getCfg().limitGameChat() || gMap != null && SkyWarsReloaded.getCfg().limitGameChat()) {
-                        if (sMap != null) {
-                            recievers = sMap.getMessageAblePlayers(false);
-                        } else {
-                            recievers = gMap.getMessageAblePlayers(false);
-                        }
-                    }
-                    if (recievers != null) {
-                        //
-                        event.getRecipients().clear();
-                        event.getRecipients().addAll(recievers);
-                    }
+        Config cfg = SkyWarsReloaded.getCfg();
+        Player player = event.getPlayer();
 
-                    event.setFormat(prefix + format);
-                } else {
-                    String prefix = "";
-                    if (SkyWarsReloaded.getCfg().economyEnabled()) {
-                        if (VaultUtils.get().getChat() != null) {
-                            if (VaultUtils.get().getChat().getPlayerPrefix(event.getPlayer()) != null) {
-                                prefix = VaultUtils.get().getChat().getPlayerPrefix(event.getPlayer());
-                            }
-                        }
-                    }
+        // Check chat formatting enabled
+        if (!cfg.formatChat()) return;
 
-                    String colorMessage = ChatColor.translateAlternateColorCodes('&', event.getMessage());
-                    String message;
-                    if (event.getPlayer().hasPermission("sw.colorchat")) {
-                        message = colorMessage;
-                    } else {
-                        message = ChatColor.stripColor(colorMessage);
-                        while (message.contains("&")) {
-                            message = ChatColor.translateAlternateColorCodes('&', message);
-                            message = ChatColor.stripColor(message);
-                        }
-                    }
-                    PlayerStat ps = PlayerStat.getPlayerStats(event.getPlayer());
-                    String messageToSend;
-                    if (ps != null) {
-                        ArrayList<Player> recievers = null;
-                        boolean sendTeamChat = false;
-                        if (sMap != null && SkyWarsReloaded.getCfg().limitSpecChat()) {
-                            recievers = sMap.getMessageAblePlayers(true);
-                        } else if (gMap != null && SkyWarsReloaded.getCfg().isUseTeamChat() && gMap.getTeamSize() > 1 && gMap.getMatchState() != MatchState.WAITINGLOBBY) {
-                            TeamCard tcard = gMap.getTeamCard(event.getPlayer());
-                            if (message.startsWith("!") || tcard == null) {
-                                // send message to global chat
-                                recievers = gMap.getMessageAblePlayers(false);
-                                message = message.replaceFirst("!", "");
-                            } else {
-                                sendTeamChat = true;
-                                recievers = new ArrayList<>();
-                                for (PlayerCard pc : tcard.getPlayerCards()) {
-                                    if (pc != null && pc.getPlayer() != null) {
-                                        recievers.add(pc.getPlayer());
-                                    }
-                                }
-                            }
-                        } else if (sMap != null && SkyWarsReloaded.getCfg().limitGameChat() || gMap != null && SkyWarsReloaded.getCfg().limitGameChat()) {
-                            if (sMap != null) {
-                                recievers = sMap.getMessageAblePlayers(false);
-                            } else {
-                                recievers = gMap.getMessageAblePlayers(false);
-                            }
-                        }
-                        if (recievers != null) {
-                            event.getRecipients().clear();
-                            event.getRecipients().addAll(recievers);
+        ChatIntent chatIntent = new ChatIntent();
 
-                            //event.getRecipients().removeIf((Player player) -> !recipents.contains(player));
-                        }
+        GameMap playerMap = MatchManager.get().getPlayerMap(player);
+        GameMap specMap = MatchManager.get().getSpectatorMap(player);
 
-                        if (sMap != null) {
-                            messageToSend = new Messaging.MessageFormatter()
-                                    .setVariable("name", event.getPlayer().getName())
-                                    .setVariable("displayname", event.getPlayer().getDisplayName())
-                                    .setVariable("wins", Integer.toString(ps.getWins()))
-                                    .setVariable("losses", Integer.toString(ps.getLosses()))
-                                    .setVariable("kills", Integer.toString(ps.getKills()))
-                                    .setVariable("deaths", Integer.toString(ps.getDeaths()))
-                                    .setVariable("xp", Integer.toString(ps.getXp()))
-                                    .setVariable("level", Util.get().getPlayerLevel(event.getPlayer(), false) + "")
-                                    .setVariable("prefix", prefix)
-                                    .setVariable("message", message)
-                                    .setVariable("mapname", sMap.getDisplayName())
-                                    .format("chat.specchat");
-                        } else {
-                            String format = sendTeamChat ? "chat.teamchat" : "chat.ingamechat";
+        // Calc intents that will affect formatting and scope
+        calcPreIntents(event, player, playerMap, specMap, cfg, chatIntent);
 
-                            messageToSend = new Messaging.MessageFormatter()
-                                    .setVariable("player", event.getPlayer().getName())
-                                    .setVariable("displayname", event.getPlayer().getDisplayName())
-                                    .setVariable("wins", Integer.toString(ps.getWins()))
-                                    .setVariable("losses", Integer.toString(ps.getLosses()))
-                                    .setVariable("kills", Integer.toString(ps.getKills()))
-                                    .setVariable("deaths", Integer.toString(ps.getDeaths()))
-                                    .setVariable("xp", Integer.toString(ps.getXp()))
-                                    .setVariable("level", Util.get().getPlayerLevel(event.getPlayer(), false) + "")
-                                    .setVariable("prefix", prefix)
-                                    .setVariable("message", message)
-                                    .setVariable("mapname", gMap.getDisplayName())
-                                    .format(format);
-                        }
+        // Format the chat
+        formatChat(event, cfg, player, playerMap, specMap, chatIntent);
+        // Control who sees the message
+        applyRecipients(event, player, playerMap, specMap, cfg, chatIntent);
+    }
 
-                        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                            messageToSend = (me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(event.getPlayer().getUniqueId()), messageToSend));
-                        }
-                        messageToSend = messageToSend.replace("%", "%%");
-                        event.setFormat(messageToSend);
-                    }
-                }
-            } else {
-                if (SkyWarsReloaded.getCfg().getSpawn() != null && event.getPlayer().getWorld() != null && event.getPlayer().getWorld().equals(SkyWarsReloaded.getCfg().getSpawn().getWorld())) {
-                    if (SkyWarsReloaded.getCfg().useExternalChat()) {
-                        PlayerStat ps = PlayerStat.getPlayerStats(event.getPlayer());
-                        String prefix = "";
-                        if (SkyWarsReloaded.getCfg().addPrefix() && ps != null) {
-                            prefix = new Messaging.MessageFormatter()
-                                    .setVariable("wins", Integer.toString(ps.getWins()))
-                                    .setVariable("losses", Integer.toString(ps.getLosses()))
-                                    .setVariable("kills", Integer.toString(ps.getKills()))
-                                    .setVariable("deaths", Integer.toString(ps.getDeaths()))
-                                    .setVariable("xp", Integer.toString(ps.getXp()))
-                                    .setVariable("level", Util.get().getPlayerLevel(event.getPlayer(), false) + "")
-                                    .format("chat.externalPrefix");
-                        }
-                        String format = event.getFormat();
-                        if (SkyWarsReloaded.getCfg().limitLobbyChat()) {
-                            World world = event.getPlayer().getWorld();
-                            //event.getRecipients().removeIf((Player player) -> !player.getWorld().equals(world));
-                            event.getRecipients().clear();
-                            event.getRecipients().addAll(world.getPlayers());
-                        }
+    private void calcPreIntents(AsyncPlayerChatEvent event, Player player, GameMap playingMap, GameMap specMap, Config cfg, ChatIntent chatIntent) {
+        GameMap currentMap = playingMap;
+        if (currentMap == null) currentMap = specMap;
 
-                        event.setFormat(prefix + format.replace("%", "%%"));
-                    } else {
-                        String prefix = "";
-                        if (SkyWarsReloaded.getCfg().economyEnabled()) {
-                            if (VaultUtils.get().getChat() != null) {
-                                if (VaultUtils.get().getChat().getPlayerPrefix(event.getPlayer()) != null) {
-                                    prefix = VaultUtils.get().getChat().getPlayerPrefix(event.getPlayer());
-                                }
-                            }
-                        }
+        // Strip global prefix
+        String message = event.getMessage();
+        if (message.charAt(0) == '!') {
+            chatIntent.wantsGameChat = true;
+            message = message.substring(1);
+            event.setMessage(message);
+        }
+        if (currentMap == null || currentMap.getTeamSize() < 2) {
+            chatIntent.forceGameChat = true;
+        }
 
-                        String colorMessage = ChatColor.translateAlternateColorCodes('&', event.getMessage());
-                        String message;
-                        if (event.getPlayer().hasPermission("sw.colorchat")) {
-                            message = colorMessage;
-                        } else {
-                            message = ChatColor.stripColor(colorMessage);
-                            if (message.contains("&")) {
-                                message = ChatColor.translateAlternateColorCodes('&', message);
-                                message = ChatColor.stripColor(message);
-                            }
-                        }
-                        PlayerStat ps = PlayerStat.getPlayerStats(event.getPlayer());
-                        if (ps != null) {
-                            if (SkyWarsReloaded.getCfg().limitLobbyChat()) {
-                                World world = event.getPlayer().getWorld();
-                                event.getRecipients().clear();
-                                event.getRecipients().addAll(world.getPlayers());
-                            }
-                            String format = (new Messaging.MessageFormatter()
-                                    .setVariable("player", event.getPlayer().getName())
-                                    .setVariable("displayname", event.getPlayer().getDisplayName())
-                                    .setVariable("wins", Integer.toString(ps.getWins()))
-                                    .setVariable("losses", Integer.toString(ps.getLosses()))
-                                    .setVariable("kills", Integer.toString(ps.getKills()))
-                                    .setVariable("deaths", Integer.toString(ps.getDeaths()))
-                                    .setVariable("xp", Integer.toString(ps.getXp()))
-                                    .setVariable("level", Util.get().getPlayerLevel(event.getPlayer(), false) + "")
-                                    .setVariable("prefix", prefix)
-                                    .setVariable("message", message)
-                                    .format("chat.lobbychat"));
+        // Check if player is in the lobby
+        chatIntent.isLobbyChat = cfg.getSpawn() != null && player.getWorld() != null && player.getWorld().equals(cfg.getSpawn().getWorld());
+    }
 
-                            if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-                                format = (me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(event.getPlayer().getUniqueId()), format));
-                            }
-                            format = format.replace("%", "%%");
-                            event.setFormat(format);
-                        }
-                    }
-                }
+    private void applyRecipients(AsyncPlayerChatEvent event, Player player, GameMap playingMap, GameMap specMap, Config cfg, ChatIntent chatIntent) {
+        // Force chat to only send to lobby players
+        if (chatIntent.isLobbyChat && cfg.limitLobbyChat()) {
+            World world = player.getWorld();
+            event.getRecipients().clear();
+            event.getRecipients().addAll(world.getPlayers());
+            return;
+        }
+
+        // Handle scope of chat for alive players
+        if (playingMap != null)
+            applyRecipientsPlaying(event, playingMap, cfg, chatIntent);
+        // Handle scope of chat for spectators
+        else if (specMap != null)
+            applyRecipientsSpec(event, player, specMap, cfg);
+    }
+
+    private void applyRecipientsPlaying(AsyncPlayerChatEvent event, @NotNull GameMap playerMap, Config cfg, ChatIntent chatIntent) {
+        ArrayList<Player> receivers = null;
+
+        // Handle team chat system
+        if (cfg.isUseTeamChat() && playerMap.getTeamSize() > 1 && playerMap.getMatchState() != MatchState.WAITINGLOBBY && !chatIntent.wantsGameChat) {
+            TeamCard tCard = playerMap.getTeamCard(event.getPlayer());
+
+            receivers = new ArrayList<>();
+            for (PlayerCard card : tCard.getPlayerCards()) {
+                if (card == null) continue;
+
+                Player cardPlayer = card.getPlayer();
+                if (cardPlayer == null) continue;
+
+                receivers.add(cardPlayer);
             }
+        }
+
+        // Handle all other situations
+        else if (cfg.limitGameChat()) {
+            receivers = playerMap.getMessageAblePlayers(false);
+        }
+
+        // Apply to event
+        if (receivers != null) {
+            event.getRecipients().clear();
+            event.getRecipients().addAll(receivers);
         }
     }
 
+    private void applyRecipientsSpec(AsyncPlayerChatEvent event, Player player, GameMap specMap, Config cfg) {
+        ArrayList<Player> receivers = null;
+
+        if (cfg.limitSpecChat()) {
+            receivers = specMap.getMessageAblePlayers(true);
+        } else if (cfg.limitGameChat()) {
+            receivers = specMap.getMessageAblePlayers(false);
+        }
+
+        if (receivers != null) {
+            event.getRecipients().clear();
+            event.getRecipients().addAll(receivers);
+        }
+    }
+
+    private ChatIntent formatChat(AsyncPlayerChatEvent event, Config cfg, Player player, GameMap playingMap, GameMap specMap, ChatIntent chatIntent) {
+        GameMap currentMap = playingMap;
+        if (currentMap == null) currentMap = specMap;
+
+        if (cfg.useExternalChat()) {
+            formatChatExternal(event, cfg, currentMap, chatIntent);
+        } else {
+            String chatType = "";
+
+            // Lobby Chat
+            if (chatIntent.isLobbyChat) {
+                chatType = "lobbychat";
+            }
+            // Spec chat
+            else if (specMap != null) {
+                chatType = "specchat";
+            }
+            // In-game chat
+            else if (playingMap != null) {
+                if (chatIntent.forceGameChat || chatIntent.wantsGameChat) chatType = "ingamechat";
+                else chatType = "teamchat";
+            }
+
+            formatChatCustom(event, player, cfg, currentMap, chatType, chatIntent);
+        }
+
+        return chatIntent;
+    }
+
+    private void formatChatCustom(AsyncPlayerChatEvent event, Player player, Config cfg, @Nullable GameMap currentMap, String chatType, ChatIntent chatIntent) {
+        String vaultPrefix = null;
+        if (cfg.economyEnabled()) vaultPrefix = this.getVaultChatPrefix(player);
+
+        // Apply color formatting
+        String message = event.getMessage();
+
+        // Strip if no permission
+        if (!player.hasPermission("sw.colorchat") && message.contains("&")) {
+            message = message.replaceAll("&[0-9a-fA-F]", "");
+        }
+
+        // Apply custom formatting
+        String customFormat = formatConfigString(player, currentMap, chatType, vaultPrefix, message);
+        if (customFormat == null) customFormat = "";
+
+        // Apply placeholders
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            customFormat = PlaceholderAPI.setPlaceholders(player, customFormat);
+        }
+
+        // Apply color
+        customFormat = ChatColor.translateAlternateColorCodes('&', customFormat);
+
+        // Escape chars
+        customFormat = customFormat.replace("%", "%%");
+
+        // Apply format to event
+        event.setFormat(customFormat);
+    }
+
+    private String formatConfigString(Player player, @Nullable GameMap currentMap, String chatType, String vaultPrefix, String message) {
+        PlayerStat ps = PlayerStat.getPlayerStats(player);
+        if (ps != null) {
+            return new Messaging.MessageFormatter()
+                    .setVariable("player", player.getName())
+                    .setVariable("displayname", player.getDisplayName())
+                    .setVariable("wins", Integer.toString(ps.getWins()))
+                    .setVariable("losses", Integer.toString(ps.getLosses()))
+                    .setVariable("kills", Integer.toString(ps.getKills()))
+                    .setVariable("deaths", Integer.toString(ps.getDeaths()))
+                    .setVariable("xp", Integer.toString(ps.getXp()))
+                    .setVariable("level", String.valueOf(Util.get().getPlayerLevel(player, false)))
+                    .setVariable("prefix", vaultPrefix == null ? "" : vaultPrefix)
+                    .setVariable("mapname", currentMap == null ? "" : currentMap.getDisplayName())
+                    .setVariable("message", message)
+                    .format("chat." + chatType);
+        }
+
+        return null;
+    }
+
+    private void formatChatExternal(AsyncPlayerChatEvent event, Config cfg, GameMap currentMap, ChatIntent chatIntent) {
+        String prefix = "";
+
+        Player player = event.getPlayer();
+        if (cfg.addPrefix()) {
+            String vaultChatPrefix = this.getVaultChatPrefix(player);
+            prefix = this.formatConfigString(player, currentMap, "externalPrefix", vaultChatPrefix, "");
+        }
+
+        // Apply placeholders
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            prefix = PlaceholderAPI.setPlaceholders(player, prefix);
+        }
+
+        // Apply color
+        prefix = ChatColor.translateAlternateColorCodes('&', prefix);
+
+        // Escape chars
+        prefix = prefix.replace("%", "%%");
+
+        event.setFormat(prefix + event.getFormat());
+    }
+
+    private String getVaultChatPrefix(Player player) {
+        Chat vaultChat = VaultUtils.get().getChat();
+        if (vaultChat != null) {
+            String vaultChatPrefix = vaultChat.getPlayerPrefix(player);
+            if (vaultChatPrefix != null) {
+                return vaultChatPrefix;
+            }
+        }
+        return null;
+    }
+
+    private class ChatIntent {
+        public boolean wantsGameChat = false;
+        public boolean forceGameChat = false;
+        public boolean isLobbyChat = false;
+    }
 }

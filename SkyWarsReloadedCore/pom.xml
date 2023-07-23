@@ -23,21 +23,16 @@
 
     <repositories>
         <repository>
-            <id>mvdw-software</id>
-            <name>MVdW Public Repositories</name>
-            <url>http://repo.mvdw-software.com/service/rest/repository/browse/public/</url>
-        </repository>
-        <repository>
-            <id>bukkitmc</id>
+            <id>gcnt-bukkit</id>
             <url>https://nexuslite.gcnt.net/repos/bukkit/</url>
         </repository>
         <repository>
-            <id>gcnt</id>
-            <url>https://nexuslite.gcnt.net/repository/gaagjescraft/</url>
+            <id>gcnt-other</id>
+            <url>https://nexuslite.gcnt.net/repos/other/</url>
         </repository>
         <repository>
-            <id>gcnt-others</id>
-            <url>https://nexuslite.gcnt.net/repository/others/</url>
+            <id>gcnt-gcnt</id>
+            <url>https://nexuslite.gcnt.net/repos/gcnt/</url>
         </repository>
         <repository>
             <id>paf</id>
@@ -48,18 +43,6 @@
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>rapture-releases</id>
-            <url>https://repo.rapture.pw/repository/maven-releases/</url>
-        </repository>
-        <repository>
-            <id>rapture-snapshots</id>
-            <url>https://repo.rapture.pw/repository/maven-snapshots/</url>
-        </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
@@ -68,12 +51,28 @@
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
         <repository>
-            <id>onarandombox</id>
-            <url>https://repo.onarandombox.com/content/groups/public</url>
-        </repository>
-        <repository>
             <id>simonsators-repo</id>
             <url>https://simonsator.de/repo/</url>
+        </repository>
+        <repository>
+            <id>rapture-releases</id>
+            <url>https://repo.rapture.pw/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>rapture-snapshots</id>
+            <url>https://repo.rapture.pw/repository/maven-snapshots/</url>
+        </repository>
+        <!--<repository>
+            <id>simonsators-repo</id>
+            <url>http://simonsator.de/repo/</url>
+        </repository>-->
+        <repository>
+            <id>jitpack</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>glaremasters-for-swm-legacy</id>
+            <url>https://repo.glaremasters.me/repository/concuncan/</url>
         </repository>
     </repositories>
 
@@ -91,16 +90,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>be.maximvdw</groupId>
-            <artifactId>MVdWPlaceholderAPI</artifactId>
-            <version>2.1.1-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/jars/MVdWPlaceholderAPI-2.1.1-20171120.102857-2.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>de.simonsator</groupId>
-            <artifactId>DevelopmentPAFSpigot</artifactId>
-            <version>1.0.65</version>
+            <artifactId>spigot-party-api-for-party-and-friends</artifactId>
+            <version>1.0.4-RELEASE</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -110,7 +102,7 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.ebonjaeger</groupId>
+            <groupId>me.ebonjaeger.perworldinventory</groupId>
             <artifactId>perworldinventory-kt</artifactId>
             <version>2.3.2</version>
             <scope>provided</scope>
@@ -123,11 +115,30 @@
         </dependency>
         <dependency>
             <groupId>com.grinderwolf</groupId>
-            <artifactId>slimeworldmanager</artifactId>
-            <version>2.8.0-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/jars/slimeworldmanager-plugin-2.8.0-SNAPSHOT.jar</systemPath>
+            <artifactId>AdvancedSlimeWorldManager</artifactId>
+            <version>2.8.0</version>
+            <scope>provided</scope>
         </dependency>
+        <!-- USE THESE DEPENDENCIES TO GET LEGACY SWM SUPPORT IN THE IDEA DURING DEVELOPMENT-->
+        <!--<dependency>
+            <groupId>com.grinderwolf</groupId>
+            <artifactId>slimeworldmanager-api</artifactId>
+            <version>2.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.grinderwolf</groupId>
+            <artifactId>slimeworldmanager-plugin</artifactId>
+            <version>2.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.grinderwolf</groupId>
+            <artifactId>slimeworldmanager-nms-common</artifactId>
+            <version>2.2.1</version>
+            <scope>provided</scope>
+        </dependency>-->
+        <!-- END OF LEGACY SWM DEPENDENCIES -->
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
@@ -138,13 +149,12 @@
             <groupId>net.gcnt</groupId>
             <artifactId>SkyWarsReloaded-Extension</artifactId>
             <version>1.7.10</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/jars/SkyWarsReloaded-Extension-1.7.10.jar</systemPath>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.2.0-SNAPSHOT</version>
+            <version>7.2.14-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -158,9 +168,15 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>1.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.dumptruckman</groupId>
             <artifactId>JsonConfiguration</artifactId>
-            <version>1.1</version>
+            <version>b02c3bedf0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

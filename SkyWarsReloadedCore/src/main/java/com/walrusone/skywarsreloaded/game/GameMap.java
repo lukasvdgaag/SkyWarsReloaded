@@ -13,8 +13,9 @@ import com.walrusone.skywarsreloaded.game.signs.SWRSign;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.managers.worlds.FileWorldManager;
-import com.walrusone.skywarsreloaded.managers.worlds.SWMWorldManager;
+import com.walrusone.skywarsreloaded.managers.worlds.ASWMWorldManager;
 import com.walrusone.skywarsreloaded.managers.worlds.WorldManager;
+import com.walrusone.skywarsreloaded.managers.worlds.WorldManagerType;
 import com.walrusone.skywarsreloaded.matchevents.*;
 import com.walrusone.skywarsreloaded.menus.ArenaMenu;
 import com.walrusone.skywarsreloaded.menus.TeamSelectionMenu;
@@ -873,7 +874,7 @@ public class GameMap {
         File dataDirectory = new File(SkyWarsReloaded.get().getDataFolder(), "maps");
         File target = new File(dataDirectory, name);
         SkyWarsReloaded.getWM().deleteWorld(target);
-        if (SkyWarsReloaded.getWM() instanceof SWMWorldManager) SkyWarsReloaded.getWM().deleteWorld(name, true);
+        if (SkyWarsReloaded.getWM() instanceof ASWMWorldManager) SkyWarsReloaded.getWM().deleteWorld(name, true);
 
         File mapDataDirectory = new File(SkyWarsReloaded.get().getDataFolder(), "mapsData");
         if (!mapDataDirectory.exists() && !mapDataDirectory.mkdirs()) {
@@ -1202,34 +1203,45 @@ public class GameMap {
     }
 
     private void loadMap() {
-        WorldManager wm = SkyWarsReloaded.getWM();
+        WorldManager worldManager = SkyWarsReloaded.getWM();
         String mapName = name;
-        if (wm instanceof FileWorldManager) {
-            boolean mapExists = false;
-            File dataDirectory = SkyWarsReloaded.get().getDataFolder();
-            File maps = new File(dataDirectory, "maps");
-            File source = new File(maps, name);
-            String root = SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath();
+        Server server = SkyWarsReloaded.get().getServer();
+
+        // ONLY in file mode
+        if (worldManager.getType() == WorldManagerType.FILE) {
+            boolean mapFolderExists = false;
+
+            // Find map folder
+            String root = server.getWorldContainer().getAbsolutePath();
             File rootDirectory = new File(root);
             File target = new File(rootDirectory, mapName);
             if (target.isDirectory()) {
                 String[] list = target.list();
                 if (list != null && list.length > 0) {
-                    mapExists = true;
+                    mapFolderExists = true;
                 }
             }
-            if (mapExists) {
-                SkyWarsReloaded.getWM().deleteWorld(mapName, true);
+
+            // Delete the folder if it exists and we're not using SWM
+            if (mapFolderExists) {
+                worldManager.deleteWorld(mapName, true);
             }
-            wm.copyWorld(source, target);
+
+            // Copy the map folder back over
+            File dataDirectory = SkyWarsReloaded.get().getDataFolder();
+            File maps = new File(dataDirectory, "maps");
+            File source = new File(maps, name);
+
+            worldManager.copyWorld(source, target);
+        }
+        else {
+            worldManager.unloadWorld(mapName, false);
         }
 
         // Make sure no players are in this world before loading it
-        // Vars
         SkyWarsReloaded swr = SkyWarsReloaded.get();
-        Config config = SkyWarsReloaded.getCfg();
-        Location spawnLoc = config.getSpawn();
-        Server server = swr.getServer();
+        Config swrConfig = SkyWarsReloaded.getCfg();
+        Location spawnLoc = swrConfig.getSpawn();
         World world = server.getWorld(mapName);
         // Remove all
         if (world != null) {
@@ -1240,7 +1252,7 @@ public class GameMap {
                     pData.restoreToBeforeGameState(true);
                     // BungeeCord does not move players instantly, so we force them out
                     // of the world or kick them if spawn location isn't set
-                    if (config.bungeeMode()) {
+                    if (swrConfig.bungeeMode()) {
                         if (spawnLoc != null) player.teleport(spawnLoc);
                         else player.kickPlayer("");
                     }
@@ -1248,22 +1260,22 @@ public class GameMap {
             }
         }
 
-        boolean loaded = SkyWarsReloaded.getWM().loadWorld(mapName, World.Environment.valueOf(environment));
+        boolean loaded = worldManager.loadWorld(mapName, World.Environment.valueOf(environment));
 
         if (loaded) {
-            World worldLoaded = SkyWarsReloaded.get().getServer().getWorld(mapName);
+            World worldLoaded = server.getWorld(mapName);
             // Debug
-            if (SkyWarsReloaded.getCfg().debugEnabled()) {
+            if (swrConfig.debugEnabled()) {
                 SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#loadMap: world null ? " + (worldLoaded == null));
             }
             // Avoid vanilla spawn protection
             worldLoaded.setSpawnLocation(5000, 0, 5000);
             // Setup border if enabled
-            if (SkyWarsReloaded.getCfg().borderEnabled()) {
-                WorldBorder wb = worldLoaded.getWorldBorder();
+            if (swrConfig.borderEnabled()) {
+                WorldBorder worldBorder = worldLoaded.getWorldBorder();
                 CoordLoc firstSpawnLoc = teamCards.get(0).getSpawns().get(0);
-                wb.setCenter(firstSpawnLoc.getX(), firstSpawnLoc.getZ());
-                wb.setSize(SkyWarsReloaded.getCfg().getBorderSize());
+                worldBorder.setCenter(firstSpawnLoc.getX(), firstSpawnLoc.getZ());
+                worldBorder.setSize(swrConfig.getBorderSize());
             }
 
             // Remove diamond blocks (representing spawn locations) from the map
@@ -2410,9 +2422,10 @@ public class GameMap {
         MatchEvent latest = null;
         int earliestStartTime = Integer.MAX_VALUE;
         for (MatchEvent event : getEvents()) {
-            if (event.isEnabled() && event.getStartTime() > getTimer()) {
-                if (event.getStartTime() < earliestStartTime) {
-                    earliestStartTime = event.getStartTime();
+            int startTime = event.getStartTime();
+            if (event.isEnabled() && startTime > getTimer()) {
+                if (startTime < earliestStartTime) {
+                    earliestStartTime = startTime;
                     latest = event;
                 }
             }

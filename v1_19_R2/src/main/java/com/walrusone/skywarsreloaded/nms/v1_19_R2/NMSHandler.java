@@ -163,14 +163,15 @@ public class NMSHandler implements NMS {
         return block;
     }
 
-    public void playEnderChestAction(Block block, boolean open) {
+    public void playChestAction(Block block, boolean open) {
         Location location = block.getLocation();
         if (location.getWorld() == null) return;
-        WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
-        BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
+
         if (!(block.getState() instanceof EnderChest)) return;
+
         EnderChest enderChest = (EnderChest) block.getState();
-        world.a(position, ((CraftEnderChest) enderChest).getHandle(), 1, open ? 1 : 0);
+        if (open) enderChest.open();
+        else enderChest.close();
     }
 
     public void setEntityTarget(org.bukkit.entity.Entity bukkitEntity, Player player) {

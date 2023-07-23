@@ -129,4 +129,9 @@ public class FileWorldManager implements WorldManager {
         }
         path.delete();
     }
+
+    @Override
+    public WorldManagerType getType() {
+        return WorldManagerType.FILE;
+    }
 }
