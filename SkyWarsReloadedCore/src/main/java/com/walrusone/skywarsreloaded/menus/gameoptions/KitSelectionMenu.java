@@ -52,6 +52,7 @@ public class KitSelectionMenu {
                     item = kit.getIcon();
                     if (item == null) item = new ItemStack(Material.DIRT, 1);
                     loreList.addAll(kit.getColorLores());
+                    loreList.add("§7"+kit.getWinCount()+"/"+kit.getUseCount()+" "+((kit.getUseCount()==0)?0:String.format( "%.2f" , kit.getWinCount()/(float)kit.getUseCount()*100)+"%"));
                 } else {
                     item = kit.getLIcon();
                     if (item == null) item = new ItemStack(Material.BARRIER, 1);

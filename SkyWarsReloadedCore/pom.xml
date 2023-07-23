@@ -23,6 +23,11 @@
 
     <repositories>
         <repository>
+            <id>mvdw-software</id>
+            <name>MVdW Public Repositories</name>
+            <url>http://repo.mvdw-software.com/service/rest/repository/browse/public/</url>
+        </repository>
+        <repository>
             <id>bukkitmc</id>
             <url>https://nexuslite.gcnt.net/repos/bukkit/</url>
         </repository>
@@ -43,9 +48,12 @@
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>mvdw-software</id>
-            <name>MVdW Public Repositories</name>
-            <url>https://repo.mvdw-software.com/service/rest/repository/browse/public/</url>
+            <id>rapture-releases</id>
+            <url>https://repo.rapture.pw/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>rapture-snapshots</id>
+            <url>https://repo.rapture.pw/repository/maven-snapshots/</url>
         </repository>
         <repository>
             <id>jitpack.io</id>
@@ -63,10 +71,10 @@
             <id>onarandombox</id>
             <url>https://repo.onarandombox.com/content/groups/public</url>
         </repository>
-        <!--<repository>
+        <repository>
             <id>simonsators-repo</id>
-            <url>http://simonsator.de/repo/</url>
-        </repository>-->
+            <url>https://simonsator.de/repo/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -86,24 +94,19 @@
             <groupId>be.maximvdw</groupId>
             <artifactId>MVdWPlaceholderAPI</artifactId>
             <version>2.1.1-SNAPSHOT</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.spigotmc</groupId>
-                    <artifactId>spigot</artifactId>
-                </exclusion>
-            </exclusions>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/jars/MVdWPlaceholderAPI-2.1.1-20171120.102857-2.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>de.simonsator</groupId>
-            <artifactId>paf-spigot</artifactId>
-            <version>1.5.1</version>
+            <artifactId>DevelopmentPAFSpigot</artifactId>
+            <version>1.0.65</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.simonsator</groupId>
-            <artifactId>paf-bungee</artifactId>
-            <version>1.0.1</version>
+            <artifactId>BungeecordPartyAndFriends</artifactId>
+            <version>1.0.90</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -121,8 +124,9 @@
         <dependency>
             <groupId>com.grinderwolf</groupId>
             <artifactId>slimeworldmanager</artifactId>
-            <version>2.2.1</version>
-            <scope>provided</scope>
+            <version>2.8.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/jars/slimeworldmanager-plugin-2.8.0-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
@@ -133,8 +137,9 @@
         <dependency>
             <groupId>net.gcnt</groupId>
             <artifactId>SkyWarsReloaded-Extension</artifactId>
-            <version>1.7.9</version>
-            <scope>provided</scope>
+            <version>1.7.10</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/jars/SkyWarsReloaded-Extension-1.7.10.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>

@@ -6,7 +6,7 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
-import com.grinderwolf.swm.nms.CraftSlimeWorld;
+//import com.grinderwolf.swm.nms.CraftSlimeWorld;
 import com.grinderwolf.swm.nms.SlimeNMS;
 import com.grinderwolf.swm.plugin.config.ConfigManager;
 import com.grinderwolf.swm.plugin.config.WorldData;
@@ -79,7 +79,7 @@ public class SWMWorldManager implements WorldManager {
             bukkitWorld.setAutoSave(false);
 
             SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "doMobSpawning", "false");
-            SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "mobGriefing", "false");
+            //SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "mobGriefing", "false");
             SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "doFireTick", "false");
             SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "showDeathMessages", "false");
             SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "announceAdvancements", "false");
@@ -184,6 +184,7 @@ public class SWMWorldManager implements WorldManager {
                                     "world manually, however please disable read-only mode before making edits." +
                                     "Force saving worlds is not safe! (Issues caused by not removing read-only " +
                                     "mode are under your responsibility)");
+                    /*
                     // Save current world data
                     byte[] serializedWorld;
                     try {
@@ -194,11 +195,12 @@ public class SWMWorldManager implements WorldManager {
                     // Manually write to loader
                     loader.saveWorld(worldName, serializedWorld, false);
                     // Unload without saving, since we already forced that.
-                    Bukkit.unloadWorld(world, false);
+                    Bukkit.unloadWorld(world, false);*/
                 } else {
                     // Save if requested, otherwise just unload
                     Bukkit.unloadWorld(world, shouldSaveIn);
                 }
+
             } else {
                 // In the case the world doesn't already exist in the loader specified in SWM, import it.
                 Bukkit.unloadWorld(world, shouldSaveIn);
@@ -248,7 +250,7 @@ public class SWMWorldManager implements WorldManager {
         world.setAutoSave(false);
 
         SkyWarsReloaded.getNMS().setGameRule(world, "doMobSpawning", "false");
-        SkyWarsReloaded.getNMS().setGameRule(world, "mobGriefing", "false");
+        //SkyWarsReloaded.getNMS().setGameRule(world, "mobGriefing", "false");
         SkyWarsReloaded.getNMS().setGameRule(world, "doFireTick", "false");
         SkyWarsReloaded.getNMS().setGameRule(world, "showDeathMessages", "false");
         SkyWarsReloaded.getNMS().setGameRule(world, "announceAdvancements", "false");

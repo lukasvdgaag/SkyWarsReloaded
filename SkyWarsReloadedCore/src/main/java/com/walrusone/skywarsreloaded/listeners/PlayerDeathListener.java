@@ -9,6 +9,7 @@ import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.*;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -78,6 +79,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         World deathWorld = playerDeathLoc.getWorld();
         for (ItemStack item : player.getInventory().getContents()) {
             if (item == null) continue;
+            if(item.getEnchantmentLevel(Enchantment.VANISHING_CURSE)>0) continue;
             deathWorld.dropItemNaturally(playerDeathLoc, item);
         }
 
@@ -85,7 +87,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
         e.setCancelled(true);
         player.setHealthScale(20);
         player.setMaxHealth(20);
-        player.setHealth(20);
+        player.setHealth(player.getMaxHealth());
         player.getInventory().clear();
         player.getInventory().setArmorContents(new ItemStack[] {null, null, null, null});
 

@@ -45,6 +45,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
 
 public class PlayerInteractListener implements Listener {
 
@@ -96,6 +97,8 @@ public class PlayerInteractListener implements Listener {
         Player player = event.getPlayer();
         InventoryView v = player.getOpenInventory();
         if (v != null && v.getTopInventory() != null && v.getTopInventory().getType() != InventoryType.CRAFTING) return;
+        //过滤掉左手
+        if(event.getHand()==null || event.getHand().equals(EquipmentSlot.OFF_HAND)) return;
 
         final GameMap gameMap = MatchManager.get().getPlayerMap(player);
         if (gameMap == null) {
@@ -331,6 +334,35 @@ public class PlayerInteractListener implements Listener {
                                 // MatchManager.get().removeAlivePlayer(player, DamageCause.CUSTOM, true, true);
                             }
                         }.runTaskLater(SkyWarsReloaded.get(), 1);
+                    } else if (event.getItem().isSimilar(SkyWarsReloaded.getIM().getItem("readyItem"))) {
+                        if(event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_AIR){
+                            sendReadyStatus(player);
+                            return;
+                        }
+                        // 改完手中物品bukkit会发癫再fire一次事件，所以延迟1gt执行
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                ItemStack cancelReadyItem = SkyWarsReloaded.getIM().getItem("cancelReadyItem");
+                                player.getInventory().setItem(SkyWarsReloaded.getCfg().getReadyPos(), cancelReadyItem);
+                            }
+                        }.runTaskLater(SkyWarsReloaded.get(), 1);
+                        MatchManager.get().getPlayerMap(player).setReadyState(player, true);
+                        return;
+                    } else if (event.getItem().isSimilar(SkyWarsReloaded.getIM().getItem("cancelReadyItem"))) {
+                        if(event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_AIR){
+                            sendReadyStatus(player);
+                            return;
+                        }
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                ItemStack readyItem = SkyWarsReloaded.getIM().getItem("readyItem");
+                                player.getInventory().setItem(SkyWarsReloaded.getCfg().getReadyPos(), readyItem);
+                            }
+                        }.runTaskLater(SkyWarsReloaded.get(), 1);
+                        MatchManager.get().getPlayerMap(player).setReadyState(player, false);
+                        return;
                     }
                 }
                 return;
@@ -361,6 +393,10 @@ public class PlayerInteractListener implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+    private void sendReadyStatus(Player player){
+        GameMap m = MatchManager.get().getPlayerMap(player);
+        player.sendMessage(m.getReadyStr());
     }
 
     @EventHandler

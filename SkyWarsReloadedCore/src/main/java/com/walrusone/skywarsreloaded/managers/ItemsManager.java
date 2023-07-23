@@ -119,6 +119,17 @@ public class ItemsManager {
         lore.clear();
         lore.add(new Messaging.MessageFormatter().format("items.click-to-exit"));
         addItem("exitGameItem", lore, "items.exit-door-item");
+
+        lore.clear();
+        lore.add(new Messaging.MessageFormatter().format("items.click-to-ready"));
+        lore.add(new Messaging.MessageFormatter().format("items.click-to-ready-l2"));
+        addItem("readyItem",lore,"items.ready-item");
+
+        lore.clear();
+        lore.add(new Messaging.MessageFormatter().format("items.click-to-cancel-ready"));
+        lore.add(new Messaging.MessageFormatter().format("items.click-to-ready-l2"));
+        addItem("cancelReadyItem",lore,"items.cancel-ready-item");
+
     }
 
     private void getChestVoteItems() {

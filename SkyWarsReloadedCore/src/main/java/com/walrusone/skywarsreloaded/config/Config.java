@@ -18,6 +18,7 @@ public class Config {
     private final List<String> itemNames = Arrays.asList("kitvote", "votingItem", "teamSelectItem",
             "exitMenuItem", "nextPageItem", "prevPageItem",
             "exitGameItem",
+            "readyItem", "cancelReadyItem",
             "chestvote", "chestrandom", "chestbasic", "chestnormal", "chestop", "chestscavenger",
             "healthvote", "healthrandom", "healthfive", "healthten", "healthfifteen", "healthtwenty",
             "nopermission",
@@ -37,6 +38,7 @@ public class Config {
     private final List<String> defItems13 = Arrays.asList("ENDER_EYE", "COMPASS", "END_CRYSTAL",
             "BARRIER", "FEATHER", "FEATHER",
             "IRON_DOOR",
+            "RED_WOOL","GREEN_WOOL",
             "SHIELD", "NETHER_STAR", "STONE_SWORD", "IRON_SWORD", "DIAMOND_SWORD", "WOODEN_HOE",
             "EXPERIENCE_BOTTLE", "NETHER_STAR", "REDSTONE", "REDSTONE", "REDSTONE", "REDSTONE",
             "BARRIER",
@@ -108,6 +110,7 @@ public class Config {
     private int votepos;
     private boolean voteEnabled;
     private int exitpos;
+    private int readypos;
     private int teamSelectPos;
 
     private boolean clearInventoryOnLobbyJoin;
@@ -411,6 +414,7 @@ public class Config {
             votepos =               SkyWarsReloaded.get().getConfig().getInt("items.votingPosition");
             voteEnabled =           SkyWarsReloaded.get().getConfig().getBoolean("items.voteEnabled");
             exitpos =               SkyWarsReloaded.get().getConfig().getInt("items.exitPosition");
+            readypos =               SkyWarsReloaded.get().getConfig().getInt("items.readyPosition");
             chestvotepos =          SkyWarsReloaded.get().getConfig().getInt("items.chestVotePosition");
             chestVoteEnabled =      SkyWarsReloaded.get().getConfig().getBoolean("items.chestVoteEnabled");
             healthvotepos =         SkyWarsReloaded.get().getConfig().getInt("items.healthVotePosition");
@@ -672,6 +676,7 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("items.votingPosition", votepos);
         SkyWarsReloaded.get().getConfig().set("items.voteEnabled", voteEnabled);
         SkyWarsReloaded.get().getConfig().set("items.exitPosition", exitpos);
+        SkyWarsReloaded.get().getConfig().set("items.readyPosition", readypos);
         SkyWarsReloaded.get().getConfig().set("items.chestVotePosition", chestvotepos);
         SkyWarsReloaded.get().getConfig().set("items.chestVoteEnabled", chestVoteEnabled);
         SkyWarsReloaded.get().getConfig().set("items.healthVotePosition", healthvotepos);
@@ -1157,6 +1162,10 @@ public class Config {
 
     public int getExitPos() {
         return exitpos;
+    }
+
+    public int getReadyPos(){
+        return readypos;
     }
 
     public int getWinnerEco() {

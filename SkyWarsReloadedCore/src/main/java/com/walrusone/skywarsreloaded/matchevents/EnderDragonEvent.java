@@ -19,6 +19,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class EnderDragonEvent extends MatchEvent {
     private BukkitTask br;
@@ -62,7 +63,12 @@ public class EnderDragonEvent extends MatchEvent {
             CoordLoc loc = gMap.getSpectateSpawn();
             World world = gMap.getCurrentWorld();
             Location location = new Location(world, loc.getX(), loc.getY(), loc.getZ());
-            SkyWarsReloaded.getNMS().spawnDragon(world, location);
+            // 有几个玩家出几条龙
+            int alivePlayerCount = gMap.getAlivePlayers().size();
+            for(int i=0;i<alivePlayerCount;i++){
+                SkyWarsReloaded.getNMS().spawnDragon(world, location);
+            }
+
             if (length != -1) {
 
 

@@ -10,13 +10,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameKit {
+public class GameKit implements Comparable<GameKit> {
 
     private static ArrayList<GameKit> kits = new ArrayList<>();
     private ItemStack[] inventory;
@@ -31,6 +32,8 @@ public class GameKit {
     private String lockedLore;
     private boolean enabled;
     private boolean requirePermission;
+    private int useCount;
+    private int winCount;
 
     @SuppressWarnings("unchecked")
     public GameKit(File kitFile) {
@@ -62,7 +65,8 @@ public class GameKit {
         enabled = storage.getBoolean("enabled");
         requirePermission = storage.getBoolean("requirePermission");
         filename = storage.getString("filename");
-
+        winCount = storage.getInt("statistics.win");
+        useCount = storage.getInt("statistics.use");
         try {
             storage.save(kitFile);
         } catch (IOException e) {
@@ -153,6 +157,9 @@ public class GameKit {
         storage.set("gameSettings.soupPvp", false);
         storage.set("gameSettings.noFallDamage", false);
 
+        storage.set("statistics.use", 0);
+        storage.set("statistics.win", 0);
+
         storage.set("filename", kitFile.getName().substring(0, kitFile.getName().lastIndexOf('.')));
 
         try {
@@ -189,6 +196,10 @@ public class GameKit {
         storage.set("lores.unlocked", kit.getLores());
         storage.set("lores.locked", kit.getLockedLore());
         storage.set("filename", kit.getFilename());
+
+        storage.set("statistics.use", kit.getUseCount());
+        storage.set("statistics.win", kit.getWinCount());
+
 
         try {
             storage.save(kitFile);
@@ -352,4 +363,20 @@ public class GameKit {
         this.lockedLore = lore;
     }
 
+    public int getWinCount(){return this.winCount;}
+
+    public int getUseCount(){return this.useCount;}
+
+    public void setWinCount(int winCount){this.winCount = winCount;}
+
+    public void setUseCount(int useCount){this.useCount = useCount;}
+    //实现kd的比较
+    @Override
+    public int compareTo(@NotNull GameKit k2) {
+        float winRate1 = this.getWinCount()/ (float) this.getUseCount();
+        float winRate2 = k2.getWinCount()/ (float) k2.getUseCount();
+        if(winRate1 < winRate2) return -1;
+        else if (winRate1 == winRate2) return 0;
+        return 1;
+    }
 }

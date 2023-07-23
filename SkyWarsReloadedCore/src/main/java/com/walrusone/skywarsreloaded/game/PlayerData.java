@@ -116,7 +116,7 @@ public class PlayerData {
             if (healthBeforeGame <= 0 || healthBeforeGame > 20) {
                 player.setHealth(20);
             } else {
-                player.setHealth(healthBeforeGame);
+                //player.setHealth(player.getMaxHealth());
             }
             // Other data to reset
             player.setFoodLevel(foodBeforeGame);

@@ -343,6 +343,9 @@ public class MatchManager {
         ItemStack exitItem = SkyWarsReloaded.getIM().getItem("exitGameItem");
         player.getInventory().setItem(SkyWarsReloaded.getCfg().getExitPos(), exitItem);
 
+        ItemStack readyItem = SkyWarsReloaded.getIM().getItem("readyItem");
+        player.getInventory().setItem(SkyWarsReloaded.getCfg().getReadyPos(), readyItem);
+
         if (debug) {
             Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Finished Preparing " + player.getName() + " for SkyWars on map " + gameMap.getName());
         }
@@ -364,7 +367,8 @@ public class MatchManager {
 
                 if (gameMap.getMatchState().equals(MatchState.WAITINGSTART)) {
                     // if there is at least one player per team OR forcestart is triggered while at least one player is present
-                    if (gameMap.getAllPlayers().size() >= gameMap.getMinTeams() || (gameMap.getForceStart() && gameMap.getAllPlayers().size() > 0)) {
+                    // 原来是检测玩家数量gameMap.getAllPlayers().size() >= gameMap.getMinTeams()，现在改成检测
+                    if (gameMap.checkAllReady() || (gameMap.getForceStart() && gameMap.getAllPlayers().size() > 0)) {
                         if (gameMap.getTimer() <= 0) {
                             this.cancel();
                             gameMap.setTimer(0);
@@ -535,6 +539,7 @@ public class MatchManager {
     }
 
     private void selectKit(GameMap gameMap) {
+        HashMap<GameKit,Integer> kitUsageMap = gameMap.getKitUsageMap();
         if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
             gameMap.getKitVoteOption().getVotedKit();
             for (final Player player : gameMap.getAlivePlayers()) {
@@ -542,7 +547,16 @@ public class MatchManager {
             }
         } else {
             for (final Player player : gameMap.getAlivePlayers()) {
-                GameKit.giveKit(player, gameMap.getSelectedKit(player));
+                GameKit k = gameMap.getSelectedKit(player);
+                GameKit.giveKit(player, k);
+                //记录职业的使用
+                if (k != null) {
+                    if (kitUsageMap.containsKey(k)) {
+                        kitUsageMap.put(k, kitUsageMap.get(k) + 1);
+                    } else {
+                        kitUsageMap.put(k, 1);
+                    }
+                }
             }
         }
     }
@@ -687,6 +701,10 @@ public class MatchManager {
                     }
                     pWinner.sendMessage(new Messaging.MessageFormatter()
                             .setVariable("map", gameMap.getName()).format("game.won"));
+
+                    // 记录职业胜场
+                    GameKit playerKit = gameMap.getSelectedKit(pWinner);
+                    if(playerKit != null) playerKit.setWinCount(playerKit.getWinCount()+1);
                 }
             }
 
@@ -722,6 +740,16 @@ public class MatchManager {
                             // If player is no longer online, delete cache
                             if (!player.isOnline()) PlayerStat.removePlayer(uuidStr);
                         }
+                    }
+                }.runTaskAsynchronously(SkyWarsReloaded.get());
+            }
+            HashMap<GameKit,Integer> kitUsageMap = gameMap.getKitUsageMap();
+            //保存职业
+            for (final GameKit kit : kitUsageMap.keySet()) {
+                new BukkitRunnable() {
+                    public void run() {
+                        kit.setUseCount(kit.getUseCount()+kitUsageMap.get(kit));
+                        GameKit.saveKit(kit);
                     }
                 }.runTaskAsynchronously(SkyWarsReloaded.get());
             }

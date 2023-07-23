@@ -45,11 +45,17 @@ public class ArenaDamageListener implements org.bukkit.event.Listener {
                 // Friendly fire attack
                 } else if (!gameMap.allowFriendlyFire() && damager instanceof Player && gameMap.getMatchState() == MatchState.PLAYING && gameMap.getTeamCard(target).equals(gameMap.getTeamCard((Player)damager))) {
                     event.setCancelled(true);
-                // Friendly fire shoot
-                } else if (!gameMap.allowFriendlyFire() && event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE && gameMap.getMatchState() == MatchState.PLAYING && ((Projectile)damager).getShooter() != null
-                        && ((Projectile)damager).getShooter() instanceof Player
-                        && gameMap.getTeamCard(target).equals(gameMap.getTeamCard((Player) ((Projectile)damager).getShooter()))) {
-                    event.setCancelled(true);
+                // Friendly fire shoot 抛鱼竿的时候damager会莫名其妙变成玩家导致CCE，先对damager进行下类型检查
+                } else if (!gameMap.allowFriendlyFire() && event.getCause() == EntityDamageEvent.DamageCause.PROJECTILE && gameMap.getMatchState() == MatchState.PLAYING){
+                    if(damager instanceof Player){
+                        if(gameMap.getTeamCard(target).equals(gameMap.getTeamCard((Player) damager))) event.setCancelled(true);
+                    }else{
+                        if(((Projectile)damager).getShooter() != null
+                                && ((Projectile)damager).getShooter() instanceof Player
+                                && gameMap.getTeamCard(target).equals(gameMap.getTeamCard((Player) ((Projectile)damager).getShooter())))
+                            event.setCancelled(true);
+                    }
+
                 // Process pvp events
                 } else {
                     event.setCancelled(false);

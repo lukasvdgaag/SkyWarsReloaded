@@ -129,6 +129,8 @@ public class GameMap {
     private ItemStack customJoinMenuItem = null;
     private CoordLoc waitingLobbySpawn;
 
+    private HashMap<GameKit,Integer> selectedKitsUsage = new HashMap<>();
+
     public GameMap(final String name) {
         this.name = name;
         this.matchState = MatchState.OFFLINE;
@@ -638,7 +640,7 @@ public class GameMap {
             } else { // Warn console that setup failed
                 SkyWarsReloaded.get().getLogger().warning("Failed to send reservation for " + player.getName());
             }
-        // else if in lobby waiting mode
+            // else if in lobby waiting mode
         } else if (getMatchState() == MatchState.WAITINGLOBBY) {
             PlayerStat.resetScoreboard(player);
             addWaitingPlayer(player);
@@ -1326,7 +1328,7 @@ public class GameMap {
                                 org.bukkit.material.Chest chestData = (org.bukkit.material.Chest) chest.getData();
                                 BlockFace facing = chestData.getFacing();
                                 trappedChestBlock.setType(Material.CHEST);
-                                ((org.bukkit.material.Chest)trappedChestBlock.getState().getData()).setFacingDirection(facing);
+                                ((org.bukkit.material.Chest) trappedChestBlock.getState().getData()).setFacingDirection(facing);
                                 // Add the chest as center
                                 addChest(chest, ChestPlacementType.CENTER);
                             }
@@ -1355,6 +1357,7 @@ public class GameMap {
         projectileSpleefEnabled = false;
         doubleDamageEnabled = false;
         kit = null;
+        selectedKitsUsage.clear();
         winners.clear();
         deathMatchWaiters.clear();
         waitingPlayers.clear();
@@ -1414,6 +1417,17 @@ public class GameMap {
             for (PlayerCard pCard : tCard.getPlayerCards()) {
                 if (pCard.getPlayer() != null && pCard.getPlayer().equals(player)) {
                     pCard.setKitVote(kit2);
+                    return;
+                }
+            }
+        }
+    }
+
+    public void setReadyState(Player player, boolean ready) {
+        for (TeamCard tCard : teamCards) {
+            for (PlayerCard pCard : tCard.getPlayerCards()) {
+                if (pCard.getPlayer() != null && pCard.getPlayer().equals(player)) {
+                    pCard.setReady(ready);
                     return;
                 }
             }
@@ -1554,6 +1568,37 @@ public class GameMap {
             }
         }
         return count;
+    }
+
+    // 返回所有玩家是否都准备好，要求地图里得有人
+    public boolean checkAllReady() {
+        int count = 0;
+        for (TeamCard tCard : teamCards) {
+            for (PlayerCard pCard : tCard.getPlayerCards()) {
+                if (pCard.getPlayer() != null) {
+                    count++;
+                    if (!pCard.getReady()) return false;
+                }
+            }
+        }
+        return count >= this.getMinTeams();
+    }
+
+    public String getReadyStr() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Ready status: ");
+        for (TeamCard tCard : teamCards) {
+            for (PlayerCard pCard : tCard.getPlayerCards()) {
+                if (pCard.getPlayer() != null) {
+                    if (pCard.getReady()){
+                        sb.append("§a").append(pCard.getPlayer().getName()).append("§r ");
+                    }else{
+                        sb.append("§c").append(pCard.getPlayer().getName()).append("§r ");
+                    }
+                }
+            }
+        }
+        return sb.toString();
     }
 
     public int getMinTeams() {
@@ -2374,6 +2419,10 @@ public class GameMap {
         }
 
         return latest;
+    }
+
+    public HashMap<GameKit,Integer> getKitUsageMap(){
+        return this.selectedKitsUsage;
     }
 
     public static class TeamCardComparator implements Comparator<TeamCard> {
