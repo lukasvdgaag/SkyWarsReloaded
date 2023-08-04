@@ -20,6 +20,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -186,13 +187,13 @@ public class Util {
         }
     }
 
-    public void fireworks(final Player player, final int length, final int fireworksPer5Tick) {
+    public BukkitTask fireworks(final Player player, final int length, final int fireworksPer5Tick) {
         final List<FireworkEffect.Type> type = new ArrayList<>(Arrays.asList(FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR, FireworkEffect.Type.CREEPER));
         final List<Color> colors = new ArrayList<>(Arrays.asList(Color.AQUA, Color.BLACK, Color.BLUE, Color.FUCHSIA, Color.GRAY, Color.GREEN, Color.LIME, Color.MAROON, Color.NAVY, Color.OLIVE, Color.ORANGE, Color.PURPLE, Color.RED, Color.SILVER, Color.TEAL, Color.WHITE, Color.YELLOW));
         final long startTime = System.currentTimeMillis();
         Random rand = new Random();
         if (SkyWarsReloaded.get().isEnabled()) {
-            new BukkitRunnable() {
+            return new BukkitRunnable() {
                 public void run() {
                     if (System.currentTimeMillis() >= startTime + length * 1000 || SkyWarsReloaded.get().getServer().getPlayer(player.getUniqueId()) == null) {
                         this.cancel();
@@ -212,6 +213,7 @@ public class Util {
                 }
             }.runTaskTimer(SkyWarsReloaded.get(), 0L, 5L);
         }
+        return null;
     }
 
     public void sendParticles(final World world, final String type, final float x, final float y, final float z, final float offsetX, final float offsetY, final float offsetZ, final float data, final int amount) {
