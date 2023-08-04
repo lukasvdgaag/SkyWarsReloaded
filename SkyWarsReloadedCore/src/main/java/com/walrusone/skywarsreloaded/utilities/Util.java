@@ -205,7 +205,7 @@ public class Util {
                                     .withColor(colors.get(rand.nextInt(17))).with(type.get(rand.nextInt(5))).trail(rand.nextBoolean())
                                     .flicker(rand.nextBoolean()).build();
                             fMeta.addEffects(fe);
-                            fMeta.setPower(new Random().nextInt(2) + 2);
+                            fMeta.setPower(rand.nextInt(2) + 2);
                             firework.setFireworkMeta(fMeta);
                         }
                     }
