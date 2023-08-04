@@ -189,12 +189,12 @@ public class Util {
     public void fireworks(final Player player, final int length, final int fireworksPer5Tick) {
         final List<FireworkEffect.Type> type = new ArrayList<>(Arrays.asList(FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR, FireworkEffect.Type.CREEPER));
         final List<Color> colors = new ArrayList<>(Arrays.asList(Color.AQUA, Color.BLACK, Color.BLUE, Color.FUCHSIA, Color.GRAY, Color.GREEN, Color.LIME, Color.MAROON, Color.NAVY, Color.OLIVE, Color.ORANGE, Color.PURPLE, Color.RED, Color.SILVER, Color.TEAL, Color.WHITE, Color.YELLOW));
-        final long currentTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
         Random rand = new Random();
         if (SkyWarsReloaded.get().isEnabled()) {
             new BukkitRunnable() {
                 public void run() {
-                    if (System.currentTimeMillis() >= currentTime + length * 1000 || SkyWarsReloaded.get().getServer().getPlayer(player.getUniqueId()) == null) {
+                    if (System.currentTimeMillis() >= startTime + length * 1000 || SkyWarsReloaded.get().getServer().getPlayer(player.getUniqueId()) == null) {
                         this.cancel();
                     } else {
                         for (int i = 0; i < fireworksPer5Tick; ++i) {
