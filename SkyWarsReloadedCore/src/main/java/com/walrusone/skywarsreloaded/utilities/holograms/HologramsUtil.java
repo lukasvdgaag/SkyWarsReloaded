@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.utilities.holograms;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.utilities.Util;
+import com.walrusone.skywarsreloaded.utilities.placeholders.SWRPlaceholderAPI;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -83,41 +84,13 @@ public abstract class HologramsUtil {
             return string;
         }
         for (String var : variables) {
-            String value = getVariable(var, type);
+            String value = SWRPlaceholderAPI.getLeaderBoardVariable(var, type);
             toReturn = toReturn.replaceAll("\\{" + var + "}", value);
         }
         return toReturn;
     }
 
-    private String getVariable(String var, @Nullable LeaderType type) {
-        String[] parts = var.split("_");
-        if (SkyWarsReloaded.getLB() != null && SkyWarsReloaded.getLB().getTopList(type) != null && Util.get().isInteger(parts[1])) {
-            if (SkyWarsReloaded.getLB().getTopList(type).size() > Integer.parseInt(parts[1]) - 1) {
-                if (parts[0].equalsIgnoreCase("wins")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getWins();
-                } else if (parts[0].equalsIgnoreCase("losses")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getLoses();
-                } else if (parts[0].equalsIgnoreCase("kills")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getKills();
-                } else if (parts[0].equalsIgnoreCase("deaths")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getDeaths();
-                } else if (parts[0].equalsIgnoreCase("xp")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getXp();
-                } else if (parts[0].equalsIgnoreCase("player")) {
-                    return "" + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getName();
-                } else if (parts[0].equalsIgnoreCase("games_played")) {
-                    return "" + (SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getLoses() + SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getWins());
-                } else if (parts[0].equalsIgnoreCase("kill_death")) {
-                    double stat = (double) SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getKills() / (double) SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getDeaths();
-                    return String.format("%1$,.2f", stat);
-                } else if (parts[0].equalsIgnoreCase("win_loss")) {
-                    double stat = (double) SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getWins() / (double) SkyWarsReloaded.getLB().getTopList(type).get(Integer.parseInt(parts[1]) - 1).getLoses();
-                    return String.format("%1$,.2f", stat);
-                }
-            }
-        }
-        return "NO DATA";
-    }
+
 
     public List<String> getFormats(LeaderType type) {
         return formats.get(type);
