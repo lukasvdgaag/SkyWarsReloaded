@@ -219,11 +219,11 @@ public class LobbyListener implements org.bukkit.event.Listener {
                                 }
                                 if (!tryJoin) break;
                                 if (e.getClickedBlock().getType() == SkyWarsReloaded.getNMS().getMaterial("STONE_PLATE").getType()) {
-                                    joined = MatchManager.get().joinGame(party, GameType.ALL);
+                                    joined = MatchManager.get().joinGame(party, GameType.ALL) != null;
                                 } else if (e.getClickedBlock().getType() == SkyWarsReloaded.getNMS().getMaterial("IRON_PLATE").getType()) {
-                                    joined = MatchManager.get().joinGame(party, GameType.SINGLE);
+                                    joined = MatchManager.get().joinGame(party, GameType.SINGLE) != null;
                                 } else {
-                                    joined = MatchManager.get().joinGame(party, GameType.TEAM);
+                                    joined = MatchManager.get().joinGame(party, GameType.TEAM) != null;
                                 }
 
                             } else {
@@ -232,11 +232,11 @@ public class LobbyListener implements org.bukkit.event.Listener {
                                 break;
                             }
                         } else if (e.getClickedBlock().getType() == SkyWarsReloaded.getNMS().getMaterial("STONE_PLATE").getType()) {
-                            joined = MatchManager.get().joinGame(player, GameType.ALL);
+                            joined = MatchManager.get().joinGame(player, GameType.ALL) != null;
                         } else if (e.getClickedBlock().getType() == SkyWarsReloaded.getNMS().getMaterial("IRON_PLATE").getType()) {
-                            joined = MatchManager.get().joinGame(player, GameType.SINGLE);
+                            joined = MatchManager.get().joinGame(player, GameType.SINGLE) != null;
                         } else {
-                            joined = MatchManager.get().joinGame(player, GameType.TEAM);
+                            joined = MatchManager.get().joinGame(player, GameType.TEAM) != null;
                         }
 
                         count++;

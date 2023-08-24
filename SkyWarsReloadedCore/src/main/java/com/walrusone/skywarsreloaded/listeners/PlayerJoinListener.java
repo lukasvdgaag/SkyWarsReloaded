@@ -84,7 +84,7 @@ public class PlayerJoinListener implements Listener {
                 if (!SkyWarsReloaded.getCfg().isLobbyServer()) {
                     Bukkit.getLogger().log(Level.WARNING, "Trying to let " + player.getName() + " join a game");
 
-                    boolean joined = MatchManager.get().joinGame(player, GameType.ALL);
+                    boolean joined = MatchManager.get().joinGame(player, GameType.ALL) != null;
                     if (!joined) {
                         Bukkit.getLogger().log(Level.WARNING, "Failed to put " + player.getName() + " in a game");
                         if (SkyWarsReloaded.getCfg().debugEnabled()) {
