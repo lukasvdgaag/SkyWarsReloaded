@@ -420,14 +420,21 @@ public class PlayerManager {
 
             PlayerManager.this.prepareSpectateInv(player, gameMap);
 
-            ItemStack exitItem = new ItemStack(Material.IRON_DOOR, 1);
+            // Make exit item
+            ItemStack exitItem = SkyWarsReloaded.getIM().getItem("exitGameItem");
+            // Fallback
+            if (exitItem == null) exitItem = new ItemStack(Material.IRON_DOOR, 1);
             ItemMeta exit = exitItem.getItemMeta();
             exit.setDisplayName(new Messaging.MessageFormatter().format("spectate.exititemname"));
             List<String> lore = new ArrayList<>();
             lore.add(new Messaging.MessageFormatter().format("spectate.exititemlore"));
             exit.setLore(lore);
             exitItem.setItemMeta(exit);
+
+            // GIve to player
             player.getInventory().setItem(8, exitItem);
+
+            // Feedback
             player.sendMessage(new Messaging.MessageFormatter().format("spectate.startmessage"));
             player.sendMessage(new Messaging.MessageFormatter().format("spectate.startmessage2"));
             if (debug) {

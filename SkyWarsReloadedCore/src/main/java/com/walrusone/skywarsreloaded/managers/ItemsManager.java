@@ -189,6 +189,6 @@ public class ItemsManager {
     }
 
     public ItemStack getItem(String item) {
-        return ((ItemStack) gameItems.get(item)).clone();
+        return gameItems.get(item).clone();
     }
 }
