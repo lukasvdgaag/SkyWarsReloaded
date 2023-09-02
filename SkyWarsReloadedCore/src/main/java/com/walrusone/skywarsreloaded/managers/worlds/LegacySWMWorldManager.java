@@ -31,7 +31,7 @@ public class LegacySWMWorldManager extends CommonSWMWorldManager {
     }
 
     @Override
-    protected byte[] serializeSlimeWorld(SlimeWorld slimeWorld) throws WorldTooBigException, IllegalStateException {
+    protected byte[] serializeSlimeWorld(SlimeWorld slimeWorld) throws IllegalStateException {
         try {
             if (serializeMethod == null) {
                 throw new IllegalStateException("Couldn't find serialize method in CraftSlimeWorld class at startup! World won't save!");
@@ -39,7 +39,7 @@ public class LegacySWMWorldManager extends CommonSWMWorldManager {
             return (byte[]) serializeMethod.invoke(slimeWorld);
         }
         catch (IndexOutOfBoundsException e) {
-            throw new WorldTooBigException(slimeWorld.getName());
+            throw new IllegalStateException(slimeWorld.getName() + " is too big!", e);
         }
         catch (InvocationTargetException | IllegalAccessException e) {
             throw new IllegalStateException(e);

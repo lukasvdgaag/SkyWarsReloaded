@@ -18,10 +18,7 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.listeners.*;
 import com.walrusone.skywarsreloaded.managers.*;
-import com.walrusone.skywarsreloaded.managers.worlds.FileWorldManager;
-import com.walrusone.skywarsreloaded.managers.worlds.ASWMWorldManager;
-import com.walrusone.skywarsreloaded.managers.worlds.LegacySWMWorldManager;
-import com.walrusone.skywarsreloaded.managers.worlds.WorldManager;
+import com.walrusone.skywarsreloaded.managers.worlds.*;
 import com.walrusone.skywarsreloaded.menus.*;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.nms.NMS;
@@ -261,10 +258,34 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
         // SLIME WORLD MANAGER
         if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldManager") && getCfg().isUseSlimeWorldManager()) {
-            int serverFeatureVersion = Integer.parseInt(getServer().getVersion().split("\\.")[1]);
-            if (serverFeatureVersion > 14) wm = new ASWMWorldManager();
-            else wm = new LegacySWMWorldManager();
-        } else {
+            getLogger().info("SlimeWorldManager option enabled. Checking for AdvancedSlimePaper...");
+            try {
+                Class.forName("com.infernalsuite.aswm.SlimeNMSBridgeImpl");
+                getLogger().info("Found AdvancedSlimePaper!");
+                wm = (ASPWorldManager) Class.forName("com.walrusone.skywarsreloaded.managers.worlds.ASPWorldManagerImpl")
+                        .getConstructor()
+                        .newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+                getLogger().info("AdvancedSlimePaper not found");
+                int serverFeatureVersion = Integer.parseInt(getServer().getVersion().split("\\.")[1]);
+                if (serverFeatureVersion > 19) {
+                    getLogger().info("SlimeWorldManager cannot be used on 1.20 or higher. We expected the server to be running AdvancedSlimePaper.");
+                    wm = null;
+                }
+                else if (serverFeatureVersion > 14) {
+                    getLogger().info("Using ASWM World Manager");
+                    wm = new ASWMWorldManager();
+                }
+                else {
+                    getLogger().info("Using Legacy SWM World Manager");
+                    wm = new LegacySWMWorldManager();
+                }
+            }
+        }
+
+        if (wm == null) {
+            getLogger().info("Using Bukkit World Manager");
             wm = new FileWorldManager();
         }
 

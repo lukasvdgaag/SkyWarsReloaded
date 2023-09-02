@@ -1,38 +1,48 @@
 package com.walrusone.skywarsreloaded.managers.worlds;
 
-import com.grinderwolf.swm.api.SlimePlugin;
-import com.grinderwolf.swm.api.loaders.SlimeLoader;
-import com.grinderwolf.swm.api.world.SlimeWorld;
-import com.grinderwolf.swm.api.world.properties.SlimeProperties;
-import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
-import com.grinderwolf.swm.nms.SlimeNMS;
+import com.grinderwolf.swm.plugin.SWMPlugin;
 import com.grinderwolf.swm.plugin.config.ConfigManager;
 import com.grinderwolf.swm.plugin.config.WorldData;
 import com.grinderwolf.swm.plugin.config.WorldsConfig;
+import com.infernalsuite.aswm.api.SlimeNMSBridge;
+import com.infernalsuite.aswm.api.SlimePlugin;
+import com.infernalsuite.aswm.api.loaders.SlimeLoader;
+import com.infernalsuite.aswm.api.world.SlimeWorld;
+import com.infernalsuite.aswm.api.world.SlimeWorldInstance;
+import com.infernalsuite.aswm.api.world.properties.SlimeProperties;
+import com.infernalsuite.aswm.api.world.properties.SlimePropertyMap;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.SpawnCategory;
+import org.bukkit.event.world.WorldLoadEvent;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
-public abstract class CommonSWMWorldManager implements WorldManager {
+@SuppressWarnings({"CallToPrintStackTrace", "unused"})
+public class ASPWorldManagerImpl implements ASPWorldManager {
 
     SlimePlugin plugin;
     SlimeLoader loader;
-    SlimeNMS slimeNMS;
+    @SuppressWarnings("UnstableApiUsage")
+    SlimeNMSBridge slimeNMS;
 
-    public CommonSWMWorldManager() {
+    public ASPWorldManagerImpl() {
         this.plugin = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
         this.loader = plugin.getLoader(SkyWarsReloaded.getCfg().getSlimeWorldManagerSource());
         // Attempt to get slime nms
         try {
-            Field field = this.plugin.getClass().getDeclaredField("nms");
+            Class<SWMPlugin> swmPluginClass = SWMPlugin.class;
+            Field field = swmPluginClass.getDeclaredField("BRIDGE_INSTANCE");
             field.setAccessible(true);
-            this.slimeNMS = (SlimeNMS) field.get(this.plugin);
+            // noinspection UnstableApiUsage
+            this.slimeNMS = (SlimeNMSBridge) field.get(null);
             field.setAccessible(false);
         } catch (NoSuchFieldException | IllegalAccessException | ClassCastException e) {
             slimeNMS = null;
@@ -43,17 +53,22 @@ public abstract class CommonSWMWorldManager implements WorldManager {
     @Override
     public World createEmptyWorld(String name, World.Environment environment) {
         WorldData worldData = new WorldData();
-        worldData.setSpawn("0, 64, 0");
         SlimePropertyMap propertyMap = worldData.toPropertyMap();
-        propertyMap.setString(SlimeProperties.ENVIRONMENT, environment.name());
-        propertyMap.setString(SlimeProperties.DIFFICULTY, "normal");
+        propertyMap.setValue(SlimeProperties.SPAWN_X, 0);
+        propertyMap.setValue(SlimeProperties.SPAWN_Y, 64);
+        propertyMap.setValue(SlimeProperties.SPAWN_Z, 0);
+        propertyMap.setValue(SlimeProperties.ENVIRONMENT, environment.name());
+        propertyMap.setValue(SlimeProperties.DIFFICULTY, "normal");
 
         try {
             SlimeWorld slimeWorld = plugin.createEmptyWorld(loader, name, false, propertyMap);
 
-            plugin.generateWorld(slimeWorld);
+            plugin.loadWorld(slimeWorld);
 
             World bukkitWorld = Bukkit.getWorld(name);
+            if (bukkitWorld == null) return null;
+
+            Bukkit.getPluginManager().callEvent(new WorldLoadEvent(bukkitWorld));
 
             Location location = new Location(bukkitWorld, 0, 61, 0);
             location.getBlock().setType(Material.BEDROCK);
@@ -71,8 +86,8 @@ public abstract class CommonSWMWorldManager implements WorldManager {
             bukkitWorld.setThundering(false);
             bukkitWorld.setWeatherDuration(Integer.MAX_VALUE);
             bukkitWorld.setKeepSpawnInMemory(false);
-            bukkitWorld.setTicksPerAnimalSpawns(1);
-            bukkitWorld.setTicksPerMonsterSpawns(1);
+            bukkitWorld.setTicksPerSpawns(SpawnCategory.ANIMAL, 1);
+            bukkitWorld.setTicksPerSpawns(SpawnCategory.MONSTER, 1);
             bukkitWorld.setAutoSave(false);
 
             SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "doMobSpawning", "false");
@@ -87,11 +102,6 @@ public abstract class CommonSWMWorldManager implements WorldManager {
             e.printStackTrace();
         }
 
-
-        /*WorldCreator worldCreator = new WorldCreator(name);
-        worldCreator.environment(environment);
-        worldCreator.generateStructures(false);
-        worldCreator.generator(SkyWarsReloaded.getNMS().getChunkGenerator());*/
         return null;
     }
 
@@ -130,7 +140,7 @@ public abstract class CommonSWMWorldManager implements WorldManager {
         // If world not already loaded, we fetch & load world from SWM
         try {
             SlimeWorld slimeWorld = plugin.loadWorld(loader, worldName, readOnly || worldData.isReadOnly(), worldData.toPropertyMap());
-            plugin.generateWorld(slimeWorld);
+            plugin.loadWorld(slimeWorld);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -165,37 +175,38 @@ public abstract class CommonSWMWorldManager implements WorldManager {
         try {
             // In the case the world already exits in SWM
             if (loader.worldExists(worldName)) {
-                SlimeWorld slimeWorld = slimeNMS.getSlimeWorld(world);
+                // noinspection UnstableApiUsage
+                SlimeWorldInstance slimeWorld = slimeNMS.getInstance(world);
                 if (slimeWorld == null) {
                     SkyWarsReloaded.get().getLogger().severe(
                             "Cannot save a world to SWM's storage if that world already exists in SWM's storage " +
                                     "but wasn't loaded from SWM originally!");
                     return;
                 }
-                // If we should save but it's not in write mode already
-                // (UNSAFE OPERATION! IGNORES LOCKS, DOES NOT RETRY IF IT FAILS)
-                if (shouldSave && slimeWorld.isReadOnly()) {
-                    // Info
-                    SkyWarsReloaded.get().getLogger().warning(
-                            "SWM has this world in read-only mode and skywars was instructed to save " +
-                                    "this world anyway. Changes should not be lost since skywars will save the " +
-                                    "world manually, however please disable read-only mode before making edits." +
-                                    "Force saving worlds is not safe! (Issues caused by not removing read-only " +
-                                    "mode are under your responsibility)");
-
-                    // Save current world data
-                    byte[] serializedWorld = this.serializeSlimeWorld(slimeWorld);
-
-                    // Manually write to loader
-                    loader.saveWorld(worldName, serializedWorld, false);
-
-                    // Unload without saving, since we already forced that.
-                    Bukkit.unloadWorld(world, false);
-                }
-                else {
+//                // If we should save but it's not in write mode already
+//                // (UNSAFE OPERATION! IGNORES LOCKS, DOES NOT RETRY IF IT FAILS)
+//                if (shouldSave && slimeWorld.isReadOnly()) {
+//                    // Info
+//                    SkyWarsReloaded.get().getLogger().warning(
+//                            "SWM has this world in read-only mode and skywars was instructed to save " +
+//                                    "this world anyway. Changes should not be lost since skywars will save the " +
+//                                    "world manually, however please disable read-only mode before making edits." +
+//                                    "Force saving worlds is not safe! (Issues caused by not removing read-only " +
+//                                    "mode are under your responsibility)");
+//
+//                    // Save current world data
+//                    byte[] serializedWorld = this.serializeSlimeWorld(slimeWorld);
+//
+//                    // Manually write to loader
+//                    loader.saveWorld(worldName, serializedWorld);
+//
+//                    // Unload without saving, since we already forced that.
+//                    Bukkit.unloadWorld(world, false);
+//                }
+//                else {
                     // Save if requested, otherwise just unload
                     Bukkit.unloadWorld(world, shouldSave);
-                }
+//                }
             }
             else {
                 // In the case the world doesn't already exist in the loader specified in SWM, import it.
@@ -209,7 +220,22 @@ public abstract class CommonSWMWorldManager implements WorldManager {
         }
     }
 
-    protected abstract byte[] serializeSlimeWorld(SlimeWorld slimeWorld) throws IllegalStateException;
+
+//    protected byte[] serializeSlimeWorld(SlimeWorldInstance slimeWorldInstance) throws IllegalStateException {
+//        try {
+//            return SlimeSerializer
+//            return ((SlimeLoadedWorld) slimeWorld).serialize().get();
+//        } catch (IndexOutOfBoundsException e) {
+//            throw new IllegalStateException(slimeWorld.getName() + " is too big!", e);
+//        } catch (IOException | InterruptedException | ExecutionException e) {
+//            throw new IllegalStateException("Couldn't serialize world " + slimeWorld.getName(), e);
+//        }
+//    }
+
+    @Override
+    public WorldManagerType getType() {
+        return WorldManagerType.ASWM;
+    }
 
     @Override
     public void copyWorld(File source, File target) {

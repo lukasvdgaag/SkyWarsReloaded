@@ -206,7 +206,7 @@ public class GameMap {
 
         final boolean[] loaded = {false};
         Bukkit.getScheduler().runTaskAsynchronously(SkyWarsReloaded.get(), () -> {
-            loaded[0] = SkyWarsReloaded.getWM().loadWorld(name, World.Environment.NORMAL);
+            loaded[0] = SkyWarsReloaded.getWM().loadWorld(name, World.Environment.NORMAL, true);
             if (!loaded[0]) {
                 SkyWarsReloaded.get().getLogger().info("Could Not Load Map: " + name);
             }
@@ -239,14 +239,14 @@ public class GameMap {
                 }
             }
             if (!loaded) {
-                loaded = loadWorld(worldName, gMap);
+                loaded = loadWorld(worldName, gMap, false);
             }
             if (loaded) {
                 prepareForEditor(player, gMap, worldName);
             }
         } else {
             gMap.setEditing(true);
-            boolean loaded = loadWorld(worldName, gMap);
+            boolean loaded = loadWorld(worldName, gMap, false);
             if (loaded) {
                 prepareForEditor(player, gMap, worldName);
             } else {
@@ -255,7 +255,7 @@ public class GameMap {
         }
     }
 
-    private static boolean loadWorld(String worldName, GameMap gMap) {
+    private static boolean loadWorld(String worldName, GameMap gMap, boolean readOnly) {
         File dataDirectory = new File(SkyWarsReloaded.get().getDataFolder(), "maps");
         File source = new File(dataDirectory, worldName);
         File target = new File(SkyWarsReloaded.get().getServer().getWorldContainer().getAbsolutePath(), worldName);
@@ -270,7 +270,7 @@ public class GameMap {
             SkyWarsReloaded.getWM().deleteWorld(worldName, false);
         }
         SkyWarsReloaded.getWM().copyWorld(source, target);
-        return SkyWarsReloaded.getWM().loadWorld(worldName, World.Environment.valueOf(gMap.environment));
+        return SkyWarsReloaded.getWM().loadWorld(worldName, World.Environment.valueOf(gMap.environment), readOnly);
     }
 
     private static void prepareForEditor(Player player, GameMap gMap, String worldName) {
@@ -1066,7 +1066,7 @@ public class GameMap {
             }
         }
 
-        boolean loaded = worldManager.loadWorld(mapName, World.Environment.valueOf(environment));
+        boolean loaded = worldManager.loadWorld(mapName, World.Environment.valueOf(environment), true);
 
         if (loaded) {
             World worldLoaded = server.getWorld(mapName);
