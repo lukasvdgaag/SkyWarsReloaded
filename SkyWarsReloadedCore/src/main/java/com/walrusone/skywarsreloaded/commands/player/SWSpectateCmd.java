@@ -4,6 +4,7 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.Bukkit;
@@ -12,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SWSpectateCmd extends BaseCmd {
+
     public SWSpectateCmd(String t) {
         this.type = t;
         this.forcePlayer = true;
@@ -22,12 +24,12 @@ public class SWSpectateCmd extends BaseCmd {
 
 
     public boolean run(CommandSender sender, Player player, String[] args) {
-        GameMap gMap = GameMap.getMap(ChatColor.stripColor(args[1]));
+        GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(ChatColor.stripColor(args[1]));
         if (gMap != null) {
             sendSpectator(gMap, player);
             return true;
         }
-        gMap = GameMap.getMapByDisplayName(ChatColor.stripColor(args[1]));
+        gMap = SkyWarsReloaded.getGameMapMgr().getMapByDisplayName(ChatColor.stripColor(args[1]));
         if (gMap != null) {
             sendSpectator(gMap, player);
             return true;

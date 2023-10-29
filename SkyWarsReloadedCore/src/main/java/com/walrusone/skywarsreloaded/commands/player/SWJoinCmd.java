@@ -35,10 +35,10 @@ public class SWJoinCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
                     type = GameType.TEAM;
                 }
             }
-            boolean joined = MatchManager.get().joinGame(player, type);
+            boolean joined = MatchManager.get().joinGame(player, type) != null;
             int count = 0;
             while ((count < 4) && (!joined)) {
-                joined = MatchManager.get().joinGame(player, type);
+                joined = MatchManager.get().joinGame(player, type) != null;
                 count++;
             }
             if (!joined) {

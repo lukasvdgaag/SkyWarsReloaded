@@ -48,6 +48,7 @@ import java.util.Random;
 
 public class PlayerInteractListener implements Listener {
 
+
     Object navigationWand = "";
     Object wandItem = "";
 
@@ -56,6 +57,7 @@ public class PlayerInteractListener implements Listener {
             "Multiple functions of this plugin will fail to work properly until the WorldEdit configuration is re-created or the errors are corrected.";
 
     public PlayerInteractListener() {
+
         File f = new File(SkyWarsReloaded.get().getDataFolder().getAbsolutePath().replace("Skywars", "WorldEdit"), "config.yml");
         if (f.exists()) {
             FileConfiguration fc = YamlConfiguration.loadConfiguration(f);
@@ -127,8 +129,8 @@ public class PlayerInteractListener implements Listener {
                                         new SingleJoinMenu().openMenu(player, 1);
                                     } else if (action == NoArenaAction.JOIN_RANDOM) {
                                         List<GameMap> maps = Lists.newArrayList();
-                                        for (GameMap map : GameMap.getMapsCopy()) {
-                                            if ((map.getMatchState() == MatchState.WAITINGSTART || map.getMatchState() == MatchState.WAITINGLOBBY) && map.canAddPlayer()) {
+                                        for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                                            if ((map.getMatchState() == MatchState.WAITINGSTART || map.getMatchState() == MatchState.WAITINGLOBBY) && map.canAddPlayer(player)) {
                                                 maps.add(map);
                                             }
                                         }
@@ -152,7 +154,7 @@ public class PlayerInteractListener implements Listener {
                                     }
                                 }
                             }
-                            if (GameMap.getPlayableArenas(GameType.TEAM).size() == 0) {
+                            if (SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.TEAM).size() == 0) {
                                 if (!SkyWarsReloaded.getIC().hasViewers("joinsinglemenu")) {
                                     new BukkitRunnable() {
                                         @Override
@@ -162,7 +164,7 @@ public class PlayerInteractListener implements Listener {
                                     }.runTaskLater(SkyWarsReloaded.get(), 5);
                                 }
                                 SkyWarsReloaded.getIC().show(player, "joinsinglemenu");
-                            } else if (GameMap.getPlayableArenas(GameType.SINGLE).size() == 0) {
+                            } else if (SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.SINGLE).size() == 0) {
                                 if (!SkyWarsReloaded.getIC().hasViewers("jointeammenu")) {
                                     new BukkitRunnable() {
                                         @Override
@@ -179,7 +181,7 @@ public class PlayerInteractListener implements Listener {
                     } else if (event.getItem().equals(SkyWarsReloaded.getIM().getItem("spectateselect"))) {
                         event.setCancelled(true);
                         Util.get().playSound(player, event.getPlayer().getLocation(), SkyWarsReloaded.getCfg().getOpenSpectateMenuSound(), 1, 1);
-                        if (GameMap.getPlayableArenas(GameType.TEAM).size() == 0) {
+                        if (SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.TEAM).size() == 0) {
                             if (!SkyWarsReloaded.getIC().hasViewers("spectatesinglemenu")) {
                                 new BukkitRunnable() {
                                     @Override
@@ -189,7 +191,7 @@ public class PlayerInteractListener implements Listener {
                                 }.runTaskLater(SkyWarsReloaded.get(), 5);
                             }
                             SkyWarsReloaded.getIC().show(player, "spectatesinglemenu");
-                        } else if (GameMap.getPlayableArenas(GameType.SINGLE).size() == 0) {
+                        } else if (SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.SINGLE).size() == 0) {
                             if (!SkyWarsReloaded.getIC().hasViewers("spectateteammenu")) {
                                 new BukkitRunnable() {
                                     @Override
@@ -235,7 +237,7 @@ public class PlayerInteractListener implements Listener {
                 Location loc = event.getClickedBlock().getLocation();
                 boolean joined;
                 if (!SkyWarsReloaded.getCfg().bungeeMode()) {
-                    for (GameMap gMap : GameMap.getMapsCopy()) {
+                    for (GameMap gMap : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
                         if ((gMap.hasSign(loc) || (!event.getClickedBlock().getType().name().contains("WALL") && gMap.hasSign(loc.add(0, -1, 0)))) && (gMap.getMatchState().equals(MatchState.WAITINGSTART) || gMap.getMatchState().equals(MatchState.WAITINGLOBBY))) {
                             if (player.hasPermission("sw.signs") && player.isSneaking()) {
                                 return;
@@ -339,7 +341,7 @@ public class PlayerInteractListener implements Listener {
                 if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                     Block block = event.getClickedBlock();
                     if (block.getType().equals(Material.ENDER_CHEST)) {
-                        for (GameMap gMap : GameMap.getPlayableArenas(GameType.ALL)) {
+                        for (GameMap gMap : SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.ALL)) {
                             for (Crate crate : gMap.getCrates()) {
                                 if (crate.getLocation().equals(block.getLocation())) {
                                     event.setCancelled(true);
@@ -370,7 +372,7 @@ public class PlayerInteractListener implements Listener {
         Inventory inv = e.getInventory();
         InventoryView inView = e.getPlayer().getOpenInventory();
         if (inView.getTitle().equals(new Messaging.MessageFormatter().format("event.crateInv"))) {
-            for (GameMap gMap : GameMap.getPlayableArenas(GameType.ALL)) {
+            for (GameMap gMap : SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.ALL)) {
                 for (Crate crate : gMap.getCrates()) {
                     if (crate.getInventory().equals(inv) && inv.getViewers().size() <= 1) {
                         if (SkyWarsReloaded.getNMS().getVersion() < 9) {
@@ -441,7 +443,7 @@ public class PlayerInteractListener implements Listener {
         GameMap playerPlayingMap = MatchManager.get().getPlayerMap(player);
         if (playerPlayingMap == null) {
             if (e.getBlock().getType().equals(Material.CHEST) || e.getBlock().getType().equals(Material.TRAPPED_CHEST) || e.getBlock().getType().equals(Material.DIAMOND_BLOCK) || e.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
-                GameMap map = GameMap.getMap(player.getWorld().getName());
+                GameMap map = SkyWarsReloaded.getGameMapMgr().getMap(player.getWorld().getName());
                 if (map == null) {
                     return;
                 }
@@ -559,7 +561,7 @@ public class PlayerInteractListener implements Listener {
         GameMap gMap = MatchManager.get().getPlayerMap(e.getPlayer());
         if (gMap == null) {
             if (e.getBlockPlaced().getState() instanceof Chest) {
-                GameMap map = GameMap.getMap(e.getPlayer().getWorld().getName());
+                GameMap map = SkyWarsReloaded.getGameMapMgr().getMap(e.getPlayer().getWorld().getName());
                 if (map == null) {
                     return;
                 }
@@ -585,7 +587,7 @@ public class PlayerInteractListener implements Listener {
     @EventHandler
     public void onPlayerWalk(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        for (GameMap gMap : GameMap.getPlayableArenas(GameType.ALL)) {
+        for (GameMap gMap : SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.ALL)) {
             if (gMap.getDeathMatchWaiters().contains(player.getUniqueId().toString())) {
                 if (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
                     event.setCancelled(true);

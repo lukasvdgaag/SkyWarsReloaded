@@ -23,7 +23,7 @@ public class DebugCmd extends BaseCmd {
 
     public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
-        GameMap gMap = GameMap.getMap(worldName);
+        GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(worldName);
         if (worldName.equalsIgnoreCase("null")) {
             sender.sendMessage("Is random vote enabled? " + SkyWarsReloaded.getCfg().isRandomVoteEnabled());
             return true;
@@ -38,7 +38,7 @@ public class DebugCmd extends BaseCmd {
         sender.sendMessage("Registered: " + gMap.isRegistered());
         sender.sendMessage("Status: " + gMap.getMatchState().name());
         sender.sendMessage("Players: " + gMap.getPlayerCount() + "/" + gMap.getMaxPlayers());
-        sender.sendMessage("Playable arenas amount: " + GameMap.getPlayableArenas(GameType.ALL).size());
+        sender.sendMessage("Playable arenas amount: " + SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.ALL).size());
         sender.sendMessage(" ");
         sender.sendMessage(" ");
 

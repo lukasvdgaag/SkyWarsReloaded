@@ -18,10 +18,7 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.listeners.*;
 import com.walrusone.skywarsreloaded.managers.*;
-import com.walrusone.skywarsreloaded.managers.worlds.FileWorldManager;
-import com.walrusone.skywarsreloaded.managers.worlds.ASWMWorldManager;
-import com.walrusone.skywarsreloaded.managers.worlds.LegacySWMWorldManager;
-import com.walrusone.skywarsreloaded.managers.worlds.WorldManager;
+import com.walrusone.skywarsreloaded.managers.worlds.*;
 import com.walrusone.skywarsreloaded.menus.*;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.nms.NMS;
@@ -75,6 +72,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private Leaderboard leaderboard = null;
     private IconMenuController ic;
     private ItemsManager im;
+    private GameMapManager gameMapManager;
 
     private PlayerOptionsManager pom;
 
@@ -154,14 +152,19 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         if (callingClassName.equals("me.gaagjescraft.network.team.skywarsreloaded.extension.SWExtension")) {
             if (extensionCompatible) return true; // everything checks out
             else if (extensionHasCompatCheck) return false; // non-legacy extension version, we can return false
-            else throw new Exception("Incompatible extension version!"); // legacy extension
+            else throw new Exception("Incompatible extension version!"); // legacy extension, requires exception to prevent enable
         }
         return true;
     }
 
+    @Override
+    public void onLoad() {
+        instance = this;
+    }
+
+    @Override
     public void onEnable() {
         loaded = false;
-        instance = this;
 
         // NMS Init
         String packageName = this.getServer().getClass().getPackage().getName();
@@ -227,6 +230,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         if (getCfg().debugEnabled()) this.getLogger().info("Debug mode enabled");
 
         // Managers
+        if (this.gameMapManager == null) this.gameMapManager = new GameMapManager(this);
         matchManager = MatchManager.get();
         playerManager = new PlayerManager(this);
 
@@ -254,10 +258,34 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
         // SLIME WORLD MANAGER
         if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldManager") && getCfg().isUseSlimeWorldManager()) {
-            int serverFeatureVersion = Integer.parseInt(getServer().getVersion().split("\\.")[1]);
-            if (serverFeatureVersion > 14) wm = new ASWMWorldManager();
-            else wm = new LegacySWMWorldManager();
-        } else {
+            getLogger().info("SlimeWorldManager option enabled. Checking for AdvancedSlimePaper...");
+            try {
+                Class.forName("com.infernalsuite.aswm.SlimeNMSBridgeImpl");
+                getLogger().info("Found AdvancedSlimePaper!");
+                wm = (ASPWorldManager) Class.forName("com.walrusone.skywarsreloaded.managers.worlds.ASPWorldManagerImpl")
+                        .getConstructor()
+                        .newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+                getLogger().info("AdvancedSlimePaper not found");
+                int serverFeatureVersion = Integer.parseInt(getServer().getVersion().split("\\.")[1]);
+                if (serverFeatureVersion > 19) {
+                    getLogger().info("SlimeWorldManager cannot be used on 1.20 or higher. We expected the server to be running AdvancedSlimePaper.");
+                    wm = null;
+                }
+                else if (serverFeatureVersion > 14) {
+                    getLogger().info("Using ASWM World Manager");
+                    wm = new ASWMWorldManager();
+                }
+                else {
+                    getLogger().info("Using Legacy SWM World Manager");
+                    wm = new LegacySWMWorldManager();
+                }
+            }
+        }
+
+        if (wm == null) {
+            getLogger().info("Using Bukkit World Manager");
             wm = new FileWorldManager();
         }
 
@@ -419,26 +447,28 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     public void onDisable() {
         loaded = false;
         this.getServer().getScheduler().cancelTasks(this);
-        for (final GameMap gameMap : GameMap.getMapsCopy()) {
-            if (gameMap.isEditing()) {
-                gameMap.saveMap(null);
-            }
-            ImmutableList<UUID> specUUIDs = ImmutableList.copyOf(gameMap.getSpectators());
-            for (final UUID uuid : specUUIDs) {
-                final Player player = getServer().getPlayer(uuid);
-                if (player != null) {
-                    SkyWarsReloaded.get().getPlayerManager().removePlayer(
-                            player, PlayerRemoveReason.OTHER, null, false);
+        if (gameMapManager != null) {
+            for (final GameMap gameMap : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                if (gameMap.isEditing()) {
+                    gameMap.saveMap(null);
                 }
-            }
-            ImmutableList<Player> players = ImmutableList.copyOf(gameMap.getAlivePlayers());
-            for (final Player player : players) {
-                if (player != null) {
-                    this.getPlayerManager().removePlayer(
-                            player, PlayerRemoveReason.OTHER, null, false);
+                ImmutableList<UUID> specUUIDs = ImmutableList.copyOf(gameMap.getSpectators());
+                for (final UUID uuid : specUUIDs) {
+                    final Player player = getServer().getPlayer(uuid);
+                    if (player != null) {
+                        SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                                player, PlayerRemoveReason.OTHER, null, false);
+                    }
                 }
+                ImmutableList<Player> players = ImmutableList.copyOf(gameMap.getAlivePlayers());
+                for (final Player player : players) {
+                    if (player != null) {
+                        this.getPlayerManager().removePlayer(
+                                player, PlayerRemoveReason.OTHER, null, false);
+                    }
+                }
+                getWM().deleteWorld(gameMap.getName(), false);
             }
-            getWM().deleteWorld(gameMap.getName(), false);
         }
         ImmutableList<PlayerData> pDataSnapshot = ImmutableList.copyOf(PlayerData.getAllPlayerData());
         for (final PlayerData playerData : pDataSnapshot) {
@@ -448,6 +478,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         for (final PlayerStat fData : PlayerStat.getPlayers()) {
             DataStorage.get().saveStats(fData);
         }
+        this.gameMapManager = null;
     }
 
     public void load() {
@@ -458,8 +489,11 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         cm = new ChestManager();
         im = new ItemsManager();
         pom = new PlayerOptionsManager();
+
+        if (gameMapManager == null) gameMapManager = new GameMapManager(this);
+
         GameKit.loadkits();
-        GameMap.loadMaps();
+        SkyWarsReloaded.getGameMapMgr().loadMaps();
 
         boolean sqlEnabled = getConfig().getBoolean("sqldatabase.enabled");
         if (sqlEnabled) {
@@ -535,7 +569,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             specObserver = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    for (GameMap gMap : GameMap.getMapsCopy()) {
+                    for (GameMap gMap : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
                         gMap.checkSpectators();
                     }
                 }
@@ -633,7 +667,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     }
                     if (header.equalsIgnoreCase("RequestUpdate")) {
                         String sendToServer = msgin.readUTF();
-                        GameMap gMap = GameMap.getMapsCopy().get(0);
+                        GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMapsCopy().get(0);
                         String playerCount = "" + gMap.getAlivePlayers().size();
                         String maxPlayers = "" + gMap.getMaxPlayers();
                         String gameStarted = "" + gMap.getMatchState().toString();
@@ -767,11 +801,12 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         return updater;
     }
 
+    @SuppressWarnings("unused")
     public boolean extensionCompatCheck(JavaPlugin ext) {
         extensionHasCompatCheck = true;
 
         PluginDescriptionFile desc = ext.getDescription();
-        String compatibleExtensionVersion = "1.7.11";
+        String compatibleExtensionVersion = "1.7.13";
         String foundVersion = desc.getVersion();
 
         String[] compatVersionParts = compatibleExtensionVersion.split("\\.");
@@ -787,7 +822,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 int foundPatchVer = Integer.parseInt(foundVersionParts[2]);
                 if (foundPatchVer > compatPatchVer) {
                     this.getLogger().warning(String.format(
-                            "You are using a newer Skywars-Extension version than expected but should still work (%s). " +
+                            "You are using a newer Skywars-Extension version than expected but this should still work (%s). " +
                             "This message is for debugging purposes. Skywars will attempt to start as normal.",
                                 foundVersion
                     ));
@@ -811,5 +846,17 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             this.getLogger().severe(String.format(msg, compatibleExtensionVersion, foundVersion));
             return false;
         }
+    }
+
+    public GameMapManager getGameMapManager() {
+        return this.gameMapManager;
+    }
+
+    public void setGameMapManager(GameMapManager gameMapManager) {
+        this.gameMapManager = gameMapManager;
+    }
+    
+    public static GameMapManager getGameMapMgr() {
+        return instance.gameMapManager;
     }
 }

@@ -129,6 +129,8 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void onQuickDeath(PlayerMoveEvent e) {
+        if (e.isCancelled()) return;
+
         Player player = e.getPlayer();
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
 

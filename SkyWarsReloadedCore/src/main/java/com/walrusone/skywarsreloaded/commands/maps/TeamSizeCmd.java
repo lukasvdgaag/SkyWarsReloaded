@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands.maps;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging.MessageFormatter;
 import org.bukkit.command.CommandSender;
@@ -22,7 +23,7 @@ public class TeamSizeCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd 
         }
 
         int min = Integer.parseInt(args[2]);
-        GameMap map = GameMap.getMap(worldName);
+        GameMap map = SkyWarsReloaded.getGameMapMgr().getMap(worldName);
         if (map != null) {
             map.setTeamSize(min);
             sender.sendMessage(new MessageFormatter().setVariable("mapname", worldName).setVariable("size", args[2]).format("maps.teamsize"));

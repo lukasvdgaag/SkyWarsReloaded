@@ -32,12 +32,12 @@ public class CreateCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
                 }
             }
 
-            GameMap gMap = GameMap.getMap(worldName);
+            GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(worldName);
             if (gMap != null) {
                 player.sendMessage(new Messaging.MessageFormatter().format("error.map-exists"));
                 return true;
             }
-            GameMap.GameMapCreationResult result = GameMap.createNewMap(worldName, environment);
+            GameMap.GameMapCreationResult result = SkyWarsReloaded.getGameMapMgr().createNewMap(worldName, environment);
             // Sanity check for the map name
             if (!result.isValidName()) {
                 player.sendMessage(new Messaging.MessageFormatter().format("error.map-id-invalid"));
@@ -50,7 +50,7 @@ public class CreateCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
                 return true;
             }
             player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).format("maps.created"));
-            gMap = GameMap.getMap(worldName);
+            gMap = SkyWarsReloaded.getGameMapMgr().getMap(worldName);
             if (gMap != null) {
                 gMap.setEditing(true);
                 resultWorld.setAutoSave(true);

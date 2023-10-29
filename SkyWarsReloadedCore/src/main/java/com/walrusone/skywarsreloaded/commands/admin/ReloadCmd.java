@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.commands.admin;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.events.SkyWarsReloadEvent;
+import com.walrusone.skywarsreloaded.events.SkyWarsReloadPreLoadEvent;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -23,6 +24,7 @@ public class ReloadCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
 
     public boolean run(CommandSender sender, Player player, String[] args) {
         SkyWarsReloaded.get().onDisable();
+        Bukkit.getPluginManager().callEvent(new SkyWarsReloadPreLoadEvent());
         SkyWarsReloaded.get().load();
 
         if (SkyWarsReloaded.getCfg().bungeeMode() && SkyWarsReloaded.getCfg().isLobbyServer()) {

@@ -1,9 +1,11 @@
 package com.walrusone.skywarsreloaded.api.impl;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.api.SWRGameAPI;
 import com.walrusone.skywarsreloaded.api.SkywarsReloadedAPI;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.entity.Player;
 
@@ -22,22 +24,22 @@ public class SWRGameImpl implements SWRGameAPI {
 
     @Override
     public List<GameMap> getPlayableGames() {
-        return GameMap.getPlayableArenas(GameType.ALL);
+        return SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.ALL);
     }
 
     @Override
     public List<GameMap> getPlayableGames(GameType type) {
-        return GameMap.getPlayableArenas(type);
+        return SkyWarsReloaded.getGameMapMgr().getPlayableArenas(type);
     }
 
     @Override
     public List<GameMap> getGames() {
-        return GameMap.getMapsCopy();
+        return SkyWarsReloaded.getGameMapMgr().getMapsCopy();
     }
 
     @Override
     public List<GameMap> getGames(GameType type) {
-        List<GameMap> maps = GameMap.getMapsCopy();
+        List<GameMap> maps = SkyWarsReloaded.getGameMapMgr().getMapsCopy();
         if (type == GameType.ALL) return maps;
         return maps.stream()
                 .filter(gameMap ->
@@ -47,12 +49,12 @@ public class SWRGameImpl implements SWRGameAPI {
 
     @Override
     public GameMap getGame(String name) {
-        return GameMap.getMap(name);
+        return SkyWarsReloaded.getGameMapMgr().getMap(name);
     }
 
     @Override
     public List<GameMap> getSortedGames() {
-        return GameMap.getSortedArenas();
+        return SkyWarsReloaded.getGameMapMgr().getSortedArenas();
     }
 
     @Override

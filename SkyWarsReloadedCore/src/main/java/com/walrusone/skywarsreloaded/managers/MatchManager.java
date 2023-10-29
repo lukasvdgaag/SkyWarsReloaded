@@ -53,27 +53,30 @@ public class MatchManager {
         return MatchManager.instance;
     }
 
+    @SuppressWarnings("unused") // API
+    public static void setMatchManager(MatchManager manager) {
+        MatchManager.instance = manager;
+    }
+
     /**
      * Include online player into game
      * @param player The player to add
      * @param type Type of game (teams, single, etc..)
-     * @return Was successfully joined
+     * @return GameMap The map that was successfully joined or null
      */
-    public boolean joinGame(Player player, GameType type) {
-        GameMap.shuffle();
+    public GameMap joinGame(Player player, GameType type) {
         GameMap map = null;
         int highest = -1;
-        ArrayList<GameMap> games = GameMap.getPlayableArenas(type);
-        boolean wasJoined = false;
+        ArrayList<GameMap> games = SkyWarsReloaded.getGameMapMgr().getPlayableArenas(type);
 
         Collections.shuffle((games));
 
         for (final GameMap gameMap : games) {
             if (SkyWarsReloaded.getCfg().debugEnabled())
                 Bukkit.getLogger().log(Level.WARNING, "#joinGame: --game: " + gameMap.getName());
-            if (gameMap.canAddPlayer() && gameMap.getPlayerCount() > highest ) {
+            if (gameMap.canAddPlayer(player) && gameMap.getPlayerCount() > highest ) {
                 if (SkyWarsReloaded.getCfg().debugEnabled()) {
-                    Bukkit.getLogger().log(Level.WARNING, "#joinGame: canAddPlayer: " + gameMap.canAddPlayer());
+                    Bukkit.getLogger().log(Level.WARNING, "#joinGame: canAddPlayer: " + true);
                     Bukkit.getLogger().log(Level.WARNING, "#joinGame: playerCount: " + gameMap.getPlayerCount());
                     Bukkit.getLogger().log(Level.WARNING, "#joinGame: highest: " + highest);
                 }
@@ -88,50 +91,56 @@ public class MatchManager {
             }
             // Allow joining as spec if you have permission
             if (player.hasPermission("sw.admin.joinBypass")) { // TODO: Not fully tested, issues may arise
-                if (games.size() > 0) {
-                    SkyWarsReloaded.get().getPlayerManager().addSpectator(games.get(0), player);
-                    wasJoined = true;
+                if (!games.isEmpty()) {
+                    GameMap gameMap = games.get(0);
+                    SkyWarsReloaded.get().getPlayerManager().addSpectator(gameMap, player);
+                    map = gameMap;
                 }
             }
-            // else wasJoined is still false
-        } else {
-            wasJoined = map.addPlayers(null, player);
+
         }
-        return wasJoined;
+        // check if map joining failed even if we found a map
+        else {
+            if (!map.addPlayers(null, player)) map = null;
+        }
+        return map;
     }
 
     /**
      * Add all players from party into game
      * @param party The party
      * @param type The game type
-     * @return Was successfully joined
+     * @return GameMap The map that was successfully joined or null
      */
-    public boolean joinGame(Party party, GameType type) {
-        GameMap.shuffle();
+    public GameMap joinGame(Party party, GameType type) {
         GameMap map = null;
         int highest = 0;
         ArrayList<GameMap> games;
         if (type == GameType.ALL) {
-            games = GameMap.getPlayableArenas(GameType.ALL);
+            games = SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.ALL);
         } else if (type == GameType.SINGLE) {
-            games = GameMap.getPlayableArenas(GameType.SINGLE);
+            games = SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.SINGLE);
         } else {
-            games = GameMap.getPlayableArenas(GameType.TEAM);
+            games = SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.TEAM);
         }
 
         Collections.shuffle((games));
 
         for (final GameMap gameMap : games) {
-            if (gameMap.canAddParty(party) && highest <= gameMap.getPlayerCount()) {
+            int currPlayerCount = gameMap.getPlayerCount();
+            if (gameMap.canAddParty(party) && highest <= currPlayerCount) {
                 map = gameMap;
-                highest = gameMap.getPlayerCount();
+                highest = currPlayerCount;
             }
         }
-        boolean joined = false;
-        if (map != null) {
-            joined = map.addPlayers(null, party);
+
+        // Attempted map is not null & adding the party failed -> set the joined map to null
+        if (map != null && !map.addPlayers(null, party)) {
+            map = null;
         }
-        return joined;
+
+        // Return which map we joined
+        return map;
     }
 
     public void start(final GameMap gameMap) {
@@ -812,7 +821,7 @@ public class MatchManager {
 
     public GameMap getPlayerMap(final Player player) {
         if (player != null) {
-            for (final GameMap gameMap : GameMap.getMapsCopy()) {
+            for (final GameMap gameMap : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
                 if (gameMap.getAllPlayers().contains(player)) return gameMap;
             }
         }
@@ -821,7 +830,7 @@ public class MatchManager {
 
     public GameMap getDeadPlayerMap(final Player v0) {
         if (v0 != null) {
-            for (final GameMap gameMap : GameMap.getMapsCopy()) {
+            for (final GameMap gameMap : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
                 if (gameMap.mapContainsDead(v0.getUniqueId())) {
                     return gameMap;
                 }
@@ -837,7 +846,7 @@ public class MatchManager {
         }
 
         if (uuid != null) {
-            for (final GameMap gameMap : GameMap.getMapsCopy()) {
+            for (final GameMap gameMap : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
                 for (final UUID id : gameMap.getSpectators()) {
                     if (uuid.equals(id)) {
                         return gameMap;

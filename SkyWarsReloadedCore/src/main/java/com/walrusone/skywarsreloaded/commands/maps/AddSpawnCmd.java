@@ -27,7 +27,7 @@ public class AddSpawnCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd 
             if (args.length < 2) { return false; }
 
             String type = args[1];
-            GameMap gMap = GameMap.getMap(player.getLocation().getWorld().getName());
+            GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(player.getLocation().getWorld().getName());
             if ((gMap == null) || (!gMap.isEditing())) {
                 player.sendMessage(new Messaging.MessageFormatter().format("error.map-not-editing"));
                 return true;

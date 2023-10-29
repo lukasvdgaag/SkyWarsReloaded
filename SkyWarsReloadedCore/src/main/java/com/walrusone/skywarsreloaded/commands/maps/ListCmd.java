@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands.maps;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.ChatColor;
@@ -19,7 +20,7 @@ public class ListCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
 
     public boolean run(CommandSender sender, Player player, String[] args) {
         sender.sendMessage(new Messaging.MessageFormatter().format("maps.listHeader"));
-        List<GameMap> maps = GameMap.getMapsCopy();
+        List<GameMap> maps = SkyWarsReloaded.getGameMapMgr().getMapsCopy();
         if (maps.isEmpty()) {
             sender.sendMessage(new Messaging.MessageFormatter().format("maps.noArenas"));
             return true;
