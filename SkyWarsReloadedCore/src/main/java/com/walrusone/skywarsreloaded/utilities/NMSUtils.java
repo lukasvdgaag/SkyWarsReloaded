@@ -26,7 +26,7 @@ public class NMSUtils {
         compatibleNMSVersions.put("1_16_R2", Lists.newArrayList("1_16_R2"));
         compatibleNMSVersions.put("1_16_R3", Lists.newArrayList("1_16_R3"));
         compatibleNMSVersions.put("1_17_R1", Lists.newArrayList("1_17_R1"));
-        compatibleNMSVersions.put("1_18_R2", Lists.newArrayList("1_18_R2", "1_18_R3"));
+        compatibleNMSVersions.put("1_18_R2", Lists.newArrayList("1_18_R2", "1_18_R3")); // no 1.18.1 supported.
         compatibleNMSVersions.put("1_19_R1", Lists.newArrayList("1_19_R1", "1_19_R2", "1_19_R3", "1_20_R1", "1_20_R2"));
     }
 
@@ -67,7 +67,7 @@ public class NMSUtils {
         }
 
         try {
-            final Class<?> clazz = Class.forName("net.gcnt.additionsplus.NMS.NMS_" + selected);
+            final Class<?> clazz = Class.forName("com.walrusone.skywarsreloaded.nms.v" + selected + ".NMSHandler");
             if (NMS.class.isAssignableFrom(clazz)) {
                 plugin.getLogger().info("Loaded support for NMS server version " + version + " using the v" + selected + " loader.");
                 return (NMS) clazz.getConstructor().newInstance();
