@@ -2,17 +2,9 @@ package com.walrusone.skywarsreloaded.nms.v1_8_R3;
 
 import com.walrusone.skywarsreloaded.game.signs.SWRSign;
 import com.walrusone.skywarsreloaded.nms.NMS;
-import net.minecraft.server.v1_8_R3.*;
-import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_8_R3.PacketPlayOutTitle.EnumTitleAction;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
-import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftFallingSand;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
@@ -21,14 +13,17 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockIterator;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 public class NMSHandler implements NMS {
     public NMSHandler() {
@@ -44,40 +39,40 @@ public class NMSHandler implements NMS {
     }
 
     public void respawnPlayer(Player player) {
-        ((org.bukkit.craftbukkit.v1_8_R3.CraftServer) Bukkit.getServer()).getHandle().moveToWorld(((CraftPlayer) player).getHandle(), 0, false);
+        player.spigot().respawn();
     }
 
     public void sendParticles(World world, String type, float x, float y, float z, float offsetX, float offsetY, float offsetZ, float data, int amount) {
         net.minecraft.server.v1_8_R3.EnumParticle particle = net.minecraft.server.v1_8_R3.EnumParticle.valueOf(type);
-        net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles particles = new net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles(particle, true, x, y, z, offsetX, offsetY, offsetZ, data, amount, new int[]{1});
+        net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles particles = new net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles(particle, true, x, y, z, offsetX, offsetY, offsetZ, data, amount, 1);
         for (Player player : world.getPlayers()) {
-            CraftPlayer start = (CraftPlayer) player;
-            EntityPlayer target = start.getHandle();
-            PlayerConnection connect = target.playerConnection;
+            org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer start = (org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer) player;
+            net.minecraft.server.v1_8_R3.EntityPlayer target = start.getHandle();
+            net.minecraft.server.v1_8_R3.PlayerConnection connect = target.playerConnection;
             connect.sendPacket(particles);
         }
     }
 
     public FireworkEffect getFireworkEffect(Color one, Color two, Color three, Color four, Color five, FireworkEffect.Type type) {
-        return FireworkEffect.builder().flicker(false).withColor(new Color[]{one, two, three, four}).withFade(five).with(type).trail(true).build();
+        return FireworkEffect.builder().flicker(false).withColor(one, two, three, four).withFade(five).with(type).trail(true).build();
     }
 
     public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
-        PlayerConnection pConn = ((CraftPlayer) player).getHandle().playerConnection;
-        PacketPlayOutTitle pTitleInfo = new PacketPlayOutTitle(EnumTitleAction.TIMES, (IChatBaseComponent) null, fadein, stay, fadeout);
+        net.minecraft.server.v1_8_R3.PlayerConnection pConn = ((org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer) player).getHandle().playerConnection;
+        net.minecraft.server.v1_8_R3.PacketPlayOutTitle pTitleInfo = new net.minecraft.server.v1_8_R3.PacketPlayOutTitle(net.minecraft.server.v1_8_R3.PacketPlayOutTitle.EnumTitleAction.TIMES, null, fadein, stay, fadeout);
         pConn.sendPacket(pTitleInfo);
         if (subtitle != null) {
             subtitle = subtitle.replaceAll("%player%", player.getDisplayName());
             subtitle = ChatColor.translateAlternateColorCodes('&', subtitle);
-            IChatBaseComponent iComp = ChatSerializer.a("{\"text\": \"" + subtitle + "\"}");
-            PacketPlayOutTitle pSubtitle = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, iComp);
+            net.minecraft.server.v1_8_R3.IChatBaseComponent iComp = net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + subtitle + "\"}");
+            net.minecraft.server.v1_8_R3.PacketPlayOutTitle pSubtitle = new net.minecraft.server.v1_8_R3.PacketPlayOutTitle(net.minecraft.server.v1_8_R3.PacketPlayOutTitle.EnumTitleAction.SUBTITLE, iComp);
             pConn.sendPacket(pSubtitle);
         }
         if (title != null) {
             title = title.replaceAll("%player%", player.getDisplayName());
             title = ChatColor.translateAlternateColorCodes('&', title);
-            IChatBaseComponent iComp = ChatSerializer.a("{\"text\": \"" + title + "\"}");
-            PacketPlayOutTitle pTitle = new PacketPlayOutTitle(EnumTitleAction.TITLE, iComp);
+            net.minecraft.server.v1_8_R3.IChatBaseComponent iComp = net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + title + "\"}");
+            net.minecraft.server.v1_8_R3.PacketPlayOutTitle pTitle = new net.minecraft.server.v1_8_R3.PacketPlayOutTitle(net.minecraft.server.v1_8_R3.PacketPlayOutTitle.EnumTitleAction.TITLE, iComp);
             pConn.sendPacket(pTitle);
         }
     }
@@ -100,23 +95,23 @@ public class NMSHandler implements NMS {
 
     public void sendActionBar(Player p, String msg) {
         String s = ChatColor.translateAlternateColorCodes('&', msg);
-        IChatBaseComponent icbc = ChatSerializer.a("{\"text\": \"" + s + "\"}");
+        net.minecraft.server.v1_8_R3.IChatBaseComponent icbc = net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + s + "\"}");
         net.minecraft.server.v1_8_R3.PacketPlayOutChat bar = new net.minecraft.server.v1_8_R3.PacketPlayOutChat(icbc, (byte) 2);
-        ((CraftPlayer) p).getHandle().playerConnection.sendPacket(bar);
+        ((org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer) p).getHandle().playerConnection.sendPacket(bar);
     }
 
     public String getItemName(org.bukkit.inventory.ItemStack item) {
         if (item != null) {
-            return org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack.asNMSCopy(item).getName();
+            return item.getType().name();
         }
         return "";
     }
 
-    public org.bukkit.inventory.ItemStack getMainHandItem(Player player) {
+    public ItemStack getMainHandItem(Player player) {
         return player.getInventory().getItemInHand();
     }
 
-    public org.bukkit.inventory.ItemStack getOffHandItem(Player player) {
+    public ItemStack getOffHandItem(Player player) {
         return null;
     }
 
@@ -144,7 +139,7 @@ public class NMSHandler implements NMS {
         return true;
     }
 
-    public void updateSkull(Skull skull, java.util.UUID uuid) {
+    public void updateSkull(Skull skull, UUID uuid) {
         skull.setSkullType(SkullType.PLAYER);
         skull.setOwner(Bukkit.getOfflinePlayer(uuid).getName());
     }
@@ -159,24 +154,24 @@ public class NMSHandler implements NMS {
 
 
     public Entity spawnFallingBlock(Location loc, Material mat, boolean damage) {
+        if (loc.getWorld() == null) return null;
         FallingBlock block = loc.getWorld().spawnFallingBlock(loc, mat, (byte) 0);
         block.setDropItem(false);
-        net.minecraft.server.v1_8_R3.EntityFallingBlock fb = ((CraftFallingSand) block).getHandle();
-        fb.a(damage);
+        block.setHurtEntities(damage);
         return block;
     }
 
     public void playChestAction(Block block, boolean open) {
         Location location = block.getLocation();
-        WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
-        BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
-        TileEntity tileEntity = world.getTileEntity(position);
+        net.minecraft.server.v1_8_R3.WorldServer world = ((org.bukkit.craftbukkit.v1_8_R3.CraftWorld) location.getWorld()).getHandle();
+        net.minecraft.server.v1_8_R3.BlockPosition position = new net.minecraft.server.v1_8_R3.BlockPosition(location.getX(), location.getY(), location.getZ());
+        net.minecraft.server.v1_8_R3.TileEntity tileEntity = world.getTileEntity(position);
         world.playBlockAction(position, tileEntity.w(), 1, open ? 1 : 0);
     }
 
     public void setEntityTarget(Entity ent, Player player) {
-        EntityCreature entity = (EntityCreature) ((org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity) ent).getHandle();
-        entity.setGoalTarget(((CraftPlayer) player).getHandle(), null, false);
+        net.minecraft.server.v1_8_R3.EntityCreature entity = (net.minecraft.server.v1_8_R3.EntityCreature) ((org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity) ent).getHandle();
+        entity.setGoalTarget(((org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer) player).getHandle(), null, false);
     }
 
     public void updateSkull(SkullMeta meta1, Player player) {
@@ -187,7 +182,7 @@ public class NMSHandler implements NMS {
         return new ChunkGenerator() {
             @Override
             public List<BlockPopulator> getDefaultPopulators(World world) {
-                return Arrays.asList(new BlockPopulator[0]);
+                return Collections.emptyList();
             }
 
             @Override
@@ -211,7 +206,7 @@ public class NMSHandler implements NMS {
         return fb.getMaterial().equals(mat);
     }
 
-    public org.bukkit.scoreboard.Objective getNewObjective(Scoreboard scoreboard, String criteria, String DisplayName) {
+    public Objective getNewObjective(Scoreboard scoreboard, String criteria, String DisplayName) {
         return scoreboard.registerNewObjective(DisplayName, criteria);
     }
 
@@ -241,13 +236,13 @@ public class NMSHandler implements NMS {
 
     public org.bukkit.inventory.ItemStack getColorItem(String mat, byte color) {
         if (mat.equalsIgnoreCase("wool"))
-            return new org.bukkit.inventory.ItemStack(Material.WOOL, 1,  color);
+            return new org.bukkit.inventory.ItemStack(Material.WOOL, 1, color);
         if (mat.equalsIgnoreCase("glass"))
-            return new org.bukkit.inventory.ItemStack(Material.STAINED_GLASS, 1,  color);
+            return new org.bukkit.inventory.ItemStack(Material.STAINED_GLASS, 1, color);
         if (mat.equalsIgnoreCase("banner")) {
-            return new org.bukkit.inventory.ItemStack(Material.BANNER, 1,  color);
+            return new org.bukkit.inventory.ItemStack(Material.BANNER, 1, color);
         }
-        return new org.bukkit.inventory.ItemStack(Material.STAINED_GLASS, 1,  color);
+        return new org.bukkit.inventory.ItemStack(Material.STAINED_GLASS, 1, color);
     }
 
 
@@ -275,9 +270,9 @@ public class NMSHandler implements NMS {
 
     @Override
     public void sendJSON(Player sender, String json) {
-        final IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a(json);
-        final PacketPlayOutChat chat = new PacketPlayOutChat(icbc);
-        ((CraftPlayer) sender).getHandle().playerConnection.sendPacket(chat);
+        final net.minecraft.server.v1_8_R3.IChatBaseComponent icbc = net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer.a(json);
+        final net.minecraft.server.v1_8_R3.PacketPlayOutChat chat = new net.minecraft.server.v1_8_R3.PacketPlayOutChat(icbc);
+        ((org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer) sender).getHandle().playerConnection.sendPacket(chat);
     }
 
     @Override

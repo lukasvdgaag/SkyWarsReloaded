@@ -22,8 +22,6 @@
     <modules>
         <module>SkyWarsReloadedCore</module>
         <module>slime-asp</module>
-        <module>v1_8_R1</module>
-        <module>v1_8_R2</module>
         <module>v1_8_R3</module>
         <module>v1_9_R1</module>
         <module>v1_9_R2</module>
@@ -39,9 +37,6 @@
         <module>v1_17_R1</module>
         <module>v1_18_R2</module>
         <module>v1_19_R1</module>
-        <module>v1_19_R2</module>
-        <module>v1_19_R3</module>
-        <module>v1_20_R1</module>
         <module>SW-Packager</module>
     </modules>
 
