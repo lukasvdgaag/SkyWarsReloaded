@@ -12,39 +12,17 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 
 public class NMSHandler extends com.walrusone.skywarsreloaded.nms.v1_14_R1.NMSHandler {
-    private final Collection<org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboard> scoreboardCollection = Lists.newArrayList();
 
-    public NMSHandler() {
-        org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboardManager manager = (org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboardManager) Bukkit.getScoreboardManager();
-        try {
-            Field field = manager.getClass().getDeclaredField("scoreboards");
-        } catch (NoSuchFieldException | SecurityException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean removeFromScoreboardCollection(Scoreboard scoreboard) {
-        if (scoreboardCollection.contains((org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboard) scoreboard)) {
-            scoreboardCollection.remove((org.bukkit.craftbukkit.v1_15_R1.scoreboard.CraftScoreboard) scoreboard);
-            return true;
-        }
-
-        return false;
-
-    }
+    private NMSImpl_15_1 nmsImpl;
 
     public void playChestAction(Block block, boolean open) {
-        Location location = block.getLocation();
-        net.minecraft.server.v1_15_R1.WorldServer world = ((org.bukkit.craftbukkit.v1_15_R1.CraftWorld) location.getWorld()).getHandle();
-        net.minecraft.server.v1_15_R1.BlockPosition position = new net.minecraft.server.v1_15_R1.BlockPosition(location.getX(), location.getY(), location.getZ());
-        net.minecraft.server.v1_15_R1.TileEntityEnderChest ec = (net.minecraft.server.v1_15_R1.TileEntityEnderChest) world.getTileEntity(position);
-        assert (ec != null);
-        world.playBlockAction(position, ec.getBlock().getBlock(), 1, open ? 1 : 0);
+        if (nmsImpl == null) nmsImpl = new NMSImpl_15_1();
+        nmsImpl.playChestAction(block, open);
     }
 
     public void setEntityTarget(org.bukkit.entity.Entity ent, Player player) {
-        net.minecraft.server.v1_15_R1.EntityCreature entity = (net.minecraft.server.v1_15_R1.EntityCreature) ((org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity) ent).getHandle();
-        entity.setGoalTarget(((org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer) player).getHandle(), EntityTargetEvent.TargetReason.CLOSEST_PLAYER, true);
+        if (nmsImpl == null) nmsImpl = new NMSImpl_15_1();
+        nmsImpl.setEntityTarget(ent, player);
     }
 
 

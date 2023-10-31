@@ -16,6 +16,8 @@ import java.util.Random;
 
 public class NMSHandler extends com.walrusone.skywarsreloaded.nms.v1_10_R1.NMSHandler {
 
+    private NMSImpl_11_1 nmsImpl;
+
     public void sendTitle(Player player, int fadein, int stay, int fadeout, String title, String subtitle) {
         if (subtitle != null) {
             subtitle = subtitle.replaceAll("%player%", player.getDisplayName());
@@ -39,17 +41,13 @@ public class NMSHandler extends com.walrusone.skywarsreloaded.nms.v1_10_R1.NMSHa
     }
 
     public void playChestAction(Block block, boolean open) {
-        Location location = block.getLocation();
-        net.minecraft.server.v1_11_R1.WorldServer world = ((org.bukkit.craftbukkit.v1_11_R1.CraftWorld) location.getWorld()).getHandle();
-        net.minecraft.server.v1_11_R1.BlockPosition position = new net.minecraft.server.v1_11_R1.BlockPosition(location.getX(), location.getY(), location.getZ());
-        net.minecraft.server.v1_11_R1.TileEntityEnderChest ec = (net.minecraft.server.v1_11_R1.TileEntityEnderChest) world.getTileEntity(position);
-        assert ec != null;
-        world.playBlockAction(position, ec.getBlock(), 1, open ? 1 : 0);
+        if (nmsImpl == null) nmsImpl = new NMSImpl_11_1();
+        nmsImpl.playChestAction(block, open);
     }
 
     public void setEntityTarget(Entity ent, Player player) {
-        net.minecraft.server.v1_11_R1.EntityCreature entity = (net.minecraft.server.v1_11_R1.EntityCreature) ((org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity) ent).getHandle();
-        entity.setGoalTarget(((org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer) player).getHandle(), null, false);
+        if (nmsImpl == null) nmsImpl = new NMSImpl_11_1();
+        nmsImpl.setEntityTarget(ent, player);
     }
 
     public ChunkGenerator getChunkGenerator() {
@@ -88,33 +86,7 @@ public class NMSHandler extends com.walrusone.skywarsreloaded.nms.v1_10_R1.NMSHa
 
     @Override
     public void applyTotemEffect(Player player) {
-        org.bukkit.inventory.PlayerInventory pInv = player.getInventory();
-        org.bukkit.inventory.ItemStack mainHand = pInv.getItemInMainHand();
-        org.bukkit.inventory.ItemStack offHand = pInv.getItemInOffHand();
-        // Consume item
-        if (mainHand.getType().equals(Material.TOTEM)) {
-            pInv.setItemInMainHand(new org.bukkit.inventory.ItemStack(Material.AIR));
-        } else if (offHand.getType().equals(Material.TOTEM)) {
-            pInv.setItemInOffHand(new ItemStack(Material.AIR));
-        }
-        // On screen effect - doesn't exist without packets in this version
-        net.minecraft.server.v1_11_R1.EntityPlayer ep = ((org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer) player).getHandle();
-        net.minecraft.server.v1_11_R1.PacketPlayOutEntityStatus status = new net.minecraft.server.v1_11_R1.PacketPlayOutEntityStatus(ep, (byte) 35);
-        ep.playerConnection.sendPacket(status);
-        // Particles
-        new BukkitRunnable() {
-            byte count = 0;
-
-            @Override
-            public void run() {
-                if (count > 30) {
-                    this.cancel();
-                    return;
-                } else {
-                    count++;
-                }
-                player.getWorld().spawnParticle(Particle.TOTEM, player.getLocation(), 10, 0.1, 0.1, 0.1, 0.5);
-            }
-        }.runTaskTimer(SkyWarsReloaded.get(), 0, 1);
+        if (nmsImpl == null) nmsImpl = new NMSImpl_11_1();
+        nmsImpl.applyTotemEffect(player);
     }
 }

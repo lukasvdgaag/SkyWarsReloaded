@@ -1,6 +1,5 @@
 package com.walrusone.skywarsreloaded.nms.v1_13_R2;
 
-import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -8,7 +7,6 @@ import org.bukkit.block.Skull;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -16,36 +14,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.util.Collection;
 import java.util.Random;
 import java.util.UUID;
 
 
 public class NMSHandler extends com.walrusone.skywarsreloaded.nms.v1_12_R1.NMSHandler {
 
-    private final Collection<org.bukkit.craftbukkit.v1_13_R2.scoreboard.CraftScoreboard> scoreboardCollection = Lists.newArrayList();
-
-    public NMSHandler() {
-        org.bukkit.craftbukkit.v1_13_R2.scoreboard.CraftScoreboardManager manager = (org.bukkit.craftbukkit.v1_13_R2.scoreboard.CraftScoreboardManager) Bukkit.getScoreboardManager();
-        try {
-            manager.getClass().getDeclaredField("scoreboards");
-        } catch (NoSuchFieldException | SecurityException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean removeFromScoreboardCollection(Scoreboard scoreboard) {
-        if (scoreboardCollection.contains((org.bukkit.craftbukkit.v1_13_R2.scoreboard.CraftScoreboard) scoreboard)) {
-            scoreboardCollection.remove((org.bukkit.craftbukkit.v1_13_R2.scoreboard.CraftScoreboard) scoreboard);
-            return true;
-        }
-
-        return false;
-    }
-
-    public String getItemName(ItemStack item) {
-        return item.getItemMeta().getDisplayName();
-    }
+    private NMSImpl_13_2 nmsImpl;
 
     public void updateSkull(Skull skull, UUID uuid) {
         if (skull.getType().equals(Material.SKELETON_SKULL)) {
@@ -67,17 +42,13 @@ public class NMSHandler extends com.walrusone.skywarsreloaded.nms.v1_12_R1.NMSHa
     }
 
     public void playChestAction(Block block, boolean open) {
-        Location location = block.getLocation();
-        net.minecraft.server.v1_13_R2.WorldServer world = ((org.bukkit.craftbukkit.v1_13_R2.CraftWorld) location.getWorld()).getHandle();
-        net.minecraft.server.v1_13_R2.BlockPosition position = new net.minecraft.server.v1_13_R2.BlockPosition(location.getX(), location.getY(), location.getZ());
-        net.minecraft.server.v1_13_R2.TileEntityEnderChest ec = (net.minecraft.server.v1_13_R2.TileEntityEnderChest) world.getTileEntity(position);
-        assert (ec != null);
-        world.playBlockAction(position, ec.getBlock().getBlock(), 1, open ? 1 : 0);
+        if (nmsImpl == null) nmsImpl = new NMSImpl_13_2();
+        nmsImpl.playChestAction(block, open);
     }
 
     public void setEntityTarget(org.bukkit.entity.Entity ent, Player player) {
-        net.minecraft.server.v1_13_R2.EntityCreature entity = (net.minecraft.server.v1_13_R2.EntityCreature) ((org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity) ent).getHandle();
-        entity.setGoalTarget(((org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer) player).getHandle(), EntityTargetEvent.TargetReason.CLOSEST_PLAYER, true);
+        if (nmsImpl == null) nmsImpl = new NMSImpl_13_2();
+        nmsImpl.setEntityTarget(ent, player);
     }
 
     public void updateSkull(org.bukkit.inventory.meta.SkullMeta meta1, Player player) {

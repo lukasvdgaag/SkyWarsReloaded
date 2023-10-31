@@ -6,7 +6,6 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
@@ -17,23 +16,16 @@ import java.util.Random;
 
 public class NMSHandler extends com.walrusone.skywarsreloaded.nms.v1_11_R1.NMSHandler {
 
-    public String getItemName(ItemStack item) {
-        return org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(item).getName();
-    }
+    private NMSImpl_12_1 nmsImpl;
 
     public void playChestAction(Block block, boolean open) {
-        Location location = block.getLocation();
-        net.minecraft.server.v1_12_R1.WorldServer world = ((org.bukkit.craftbukkit.v1_12_R1.CraftWorld) location.getWorld()).getHandle();
-        net.minecraft.server.v1_12_R1.BlockPosition position = new net.minecraft.server.v1_12_R1.BlockPosition(location.getX(), location.getY(), location.getZ());
-        net.minecraft.server.v1_12_R1.TileEntityEnderChest ec = (net.minecraft.server.v1_12_R1.TileEntityEnderChest) world.getTileEntity(position);
-        if (ec != null) {
-            world.playBlockAction(position, ec.getBlock(), 1, open ? 1 : 0);
-        }
+        if (nmsImpl == null) nmsImpl = new NMSImpl_12_1();
+        nmsImpl.playChestAction(block, open);
     }
 
     public void setEntityTarget(Entity ent, Player player) {
-        net.minecraft.server.v1_12_R1.EntityCreature entity = (net.minecraft.server.v1_12_R1.EntityCreature) ((org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity) ent).getHandle();
-        entity.setGoalTarget(((org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer) player).getHandle(), EntityTargetEvent.TargetReason.CLOSEST_PLAYER, true);
+        if (nmsImpl == null) nmsImpl = new NMSImpl_12_1();
+        nmsImpl.setEntityTarget(ent, player);
     }
 
     public ChunkGenerator getChunkGenerator() {

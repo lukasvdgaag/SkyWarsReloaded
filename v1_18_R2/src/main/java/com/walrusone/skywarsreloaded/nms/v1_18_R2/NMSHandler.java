@@ -11,12 +11,20 @@ import org.bukkit.block.Block;
 import org.bukkit.block.EnderChest;
 import org.bukkit.entity.*;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class NMSHandler extends com.walrusone.skywarsreloaded.nms.v1_17_R1.NMSHandler {
+
+    private NMSImpl_18_2 nmsImpl;
+
+    public void playChestAction(Block block, boolean open) {
+        if (nmsImpl == null) nmsImpl = new NMSImpl_18_2();
+        nmsImpl.playChestAction(block, open);
+    }
 
     public void spawnDragon(World world, Location loc) {
         EnderDragon dragon = (EnderDragon) world.spawnEntity(loc, EntityType.ENDER_DRAGON);
@@ -25,18 +33,6 @@ public class NMSHandler extends com.walrusone.skywarsreloaded.nms.v1_17_R1.NMSHa
         locClone.setYaw(ThreadLocalRandom.current().nextFloat() * 360.0F);
         locClone.setPitch(0.0F);
         dragon.teleport(locClone);
-    }
-
-    public void playChestAction(Block block, boolean open) {
-        Location location = block.getLocation();
-        if (location.getWorld() == null) return;
-
-        WorldServer world = ((org.bukkit.craftbukkit.v1_18_R2.CraftWorld) location.getWorld()).getHandle();
-        BlockPosition position = new BlockPosition(location.getX(), location.getY(), location.getZ());
-
-        if (!(block.getState() instanceof EnderChest enderChest)) return;
-
-        world.a(position, ((org.bukkit.craftbukkit.v1_18_R2.block.CraftEnderChest) enderChest).getHandle(), 1, open ? 1 : 0);
     }
 
     public void setEntityTarget(org.bukkit.entity.Entity bukkitEntity, Player player) {
