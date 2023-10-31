@@ -9,6 +9,7 @@ import java.util.List;
 
 public class NMSUtils {
 
+    // Map of implemented NMS handlers -> and their compatible NMS versions.
     private final static LinkedHashMap<String, List<String>> compatibleNMSVersions;
 
     static {
@@ -41,6 +42,8 @@ public class NMSUtils {
                 break;
             }
         }
+
+        System.out.println("selected = " + selected);
 
         int currentNumeric = Integer.parseInt(version.split("_")[1]);
         final String[] versionArray = compatibleNMSVersions.keySet().toArray(new String[]{});
