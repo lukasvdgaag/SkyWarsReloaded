@@ -23,6 +23,7 @@ import com.walrusone.skywarsreloaded.menus.*;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.nms.NMS;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
+import com.walrusone.skywarsreloaded.nms.NMSUtils;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import com.walrusone.skywarsreloaded.utilities.holograms.HoloDisUtil;
@@ -43,7 +44,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -167,23 +167,11 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         loaded = false;
 
         // NMS Init
-        String packageName = this.getServer().getClass().getPackage().getName();
-        String version = packageName.substring(packageName.lastIndexOf('.') + 1);
-
-        try {
-            final Class<?> clazz = Class.forName("com.walrusone.skywarsreloaded.nms." + version + ".NMSHandler");
-            // Check if we have a NMSHandler class at that location.
-            if (NMS.class.isAssignableFrom(clazz)) { // Make sure it actually implements NMS
-                this.nmsHandler = (NMS) clazz.getConstructor().newInstance(); // Set our handler
-            }
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException
-                | IllegalArgumentException e) {
-            this.getLogger().severe("Could not find support for this CraftBukkit version: " + version + ". Now disabling the plugin!");
-            this.getLogger().info("Check for updates at https://gcnt.net/download/skywars");
+        this.nmsHandler = NMSUtils.loadNMS(this);
+        if (this.nmsHandler == null) {
             this.setEnabled(false);
             return;
         }
-        this.getLogger().info("Loading support for " + version);
 
         // Updater init
         this.updater = new GCNTUpdater();
@@ -272,12 +260,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 if (serverFeatureVersion > 19) {
                     getLogger().info("SlimeWorldManager cannot be used on 1.20 or higher. We expected the server to be running AdvancedSlimePaper.");
                     wm = null;
-                }
-                else if (serverFeatureVersion > 14) {
+                } else if (serverFeatureVersion > 14) {
                     getLogger().info("Using ASWM World Manager");
                     wm = new ASWMWorldManager();
-                }
-                else {
+                } else {
                     getLogger().info("Using Legacy SWM World Manager");
                     wm = new LegacySWMWorldManager();
                 }
@@ -793,7 +779,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 Bukkit.getLogger().info(updater.getUpdateURL());
                 Bukkit.getLogger().info("----------------------------------");
             }
-        // Once every hour
+            // Once every hour
         }, 0, 20 * 60 * 60);
     }
 
@@ -823,14 +809,15 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                 if (foundPatchVer > compatPatchVer) {
                     this.getLogger().warning(String.format(
                             "You are using a newer Skywars-Extension version than expected but this should still work (%s). " +
-                            "This message is for debugging purposes. Skywars will attempt to start as normal.",
-                                foundVersion
+                                    "This message is for debugging purposes. Skywars will attempt to start as normal.",
+                            foundVersion
                     ));
 
                     // Allow newer patch versions
                     patchMatch = true;
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         if (desc.getName().equals("Skywars-Extension") && majorMatch && featureMatch && patchMatch) {
@@ -855,7 +842,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     public void setGameMapManager(GameMapManager gameMapManager) {
         this.gameMapManager = gameMapManager;
     }
-    
+
     public static GameMapManager getGameMapMgr() {
         return instance.gameMapManager;
     }
