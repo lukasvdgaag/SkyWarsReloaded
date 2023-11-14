@@ -641,27 +641,28 @@ public class MatchManager {
                     for (PlayerCard pCard : teamCard.getPlayerCards()) {
                         UUID pLoserUuid = pCard.getUUID();
 
-                        if (pLoserUuid != null) {
-                            final PlayerStat loserData = PlayerStat.getPlayerStats(pLoserUuid.toString());
+                        // Skip invalid player cards
+                        if (pLoserUuid == null) continue;
 
-                            // This is ugly and far (furthest) from perfect but better than no attempt at all...
-                            if (loserData == null) {
-                                server.getScheduler().runTaskAsynchronously(plugin, () -> {
-                                    // Load player data
-                                    PlayerStat pStats = new PlayerStat(pLoserUuid, server.getOfflinePlayer(pLoserUuid).getName());
-                                    // Load player data
-                                    pStats.loadStats(() -> {
-                                        pStats.setLosts(pStats.getLosses() + 1);
-                                        pStats.saveStats();
-                                    });
+                        final PlayerStat loserData = PlayerStat.getPlayerStats(pLoserUuid.toString());
+
+                        // This is ugly and far (furthest) from perfect but better than no attempt at all...
+                        if (loserData == null) {
+                            server.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                // Load player data
+                                PlayerStat pStats = new PlayerStat(pLoserUuid, server.getOfflinePlayer(pLoserUuid).getName());
+                                // Load player data
+                                pStats.loadStats(() -> {
+                                    pStats.setLosts(pStats.getLosses() + 1);
+                                    pStats.saveStats(() -> PlayerStat.removePlayer(pStats.getId()));
                                 });
-                            } else {
-                                if (debug) {
-                                    Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Adding loss to " + pLoserUuid);
-                                }
-
-                                loserData.setLosts(loserData.getLosses() + 1);
+                            });
+                        } else {
+                            if (debug) {
+                                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Adding loss to " + pLoserUuid);
                             }
+
+                            loserData.setLosts(loserData.getLosses() + 1);
                         }
                     }
                 }
@@ -745,7 +746,6 @@ public class MatchManager {
                         PlayerStat toSave = PlayerStat.getPlayerStats(uuidStr);
                         if (toSave != null) {
                             toSave.saveStats();
-                            DataStorage.get().saveStats(toSave);
                             // If player is no longer online, delete cache
                             if (!player.isOnline()) PlayerStat.removePlayer(uuidStr);
                         }

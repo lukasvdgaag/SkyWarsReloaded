@@ -284,8 +284,7 @@ public class PlayerManager {
         // ---------------- TEAM & PLAYER DATA ------------------
         // Process Team data
         playerCard.setDead(true);
-        teamCard.removePlayer(pUuid);
-        // Place the first team to die, last. So we use players left (missing the current one, so +1)
+        // Place the first team to die, last. So we use teams left (missing the current one, so +1)
         // + 1 because we are counting from 1
         if (teamCard.isEliminated())
             teamCard.setPlace(gameMap.getTeamsLeft() + 1);

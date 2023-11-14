@@ -33,9 +33,7 @@ public class PlayerQuitListener implements org.bukkit.event.Listener {
         PlayerStat pStats = PlayerStat.getPlayerStats(uuid);
         // Don't remove the player stats if the game they were in isn't done yet.
         if (pStats != null && playerMap == null) {
-            pStats.saveStats(() -> {
-                PlayerStat.removePlayer(uuid.toString());
-            });
+            pStats.saveStats(() -> PlayerStat.removePlayer(uuid.toString()));
         }
         PlayerStat.resetScoreboard(player);
     }

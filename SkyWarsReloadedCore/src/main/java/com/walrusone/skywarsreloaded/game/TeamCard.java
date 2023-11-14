@@ -215,7 +215,7 @@ public class TeamCard {
 
     public boolean isEliminated() {
         int playersLeft = this.getPlayersSize();
-        return (playersLeft == 0) || (this.teamSize == getDeadPlayerSize());
+        return (playersLeft == 0) || (this.teamSize <= getDeadPlayerSize());
     }
 
     public String getPlayerNames() {
