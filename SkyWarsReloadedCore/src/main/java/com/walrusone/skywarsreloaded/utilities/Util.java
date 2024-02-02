@@ -20,6 +20,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -186,15 +187,15 @@ public class Util {
         }
     }
 
-    public void fireworks(final Player player, final int length, final int fireworksPer5Tick) {
+    public BukkitTask fireworks(final Player player, final int length, final int fireworksPer5Tick) {
         final List<FireworkEffect.Type> type = new ArrayList<>(Arrays.asList(FireworkEffect.Type.BALL, FireworkEffect.Type.BALL_LARGE, FireworkEffect.Type.BURST, FireworkEffect.Type.STAR, FireworkEffect.Type.CREEPER));
         final List<Color> colors = new ArrayList<>(Arrays.asList(Color.AQUA, Color.BLACK, Color.BLUE, Color.FUCHSIA, Color.GRAY, Color.GREEN, Color.LIME, Color.MAROON, Color.NAVY, Color.OLIVE, Color.ORANGE, Color.PURPLE, Color.RED, Color.SILVER, Color.TEAL, Color.WHITE, Color.YELLOW));
-        final long currentTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
         Random rand = new Random();
         if (SkyWarsReloaded.get().isEnabled()) {
-            new BukkitRunnable() {
+            return new BukkitRunnable() {
                 public void run() {
-                    if (System.currentTimeMillis() >= currentTime + length * 1000 || SkyWarsReloaded.get().getServer().getPlayer(player.getUniqueId()) == null) {
+                    if (System.currentTimeMillis() >= startTime + length * 1000 || SkyWarsReloaded.get().getServer().getPlayer(player.getUniqueId()) == null) {
                         this.cancel();
                     } else {
                         for (int i = 0; i < fireworksPer5Tick; ++i) {
@@ -205,13 +206,14 @@ public class Util {
                                     .withColor(colors.get(rand.nextInt(17))).with(type.get(rand.nextInt(5))).trail(rand.nextBoolean())
                                     .flicker(rand.nextBoolean()).build();
                             fMeta.addEffects(fe);
-                            fMeta.setPower(new Random().nextInt(2) + 2);
+                            fMeta.setPower(rand.nextInt(2) + 2);
                             firework.setFireworkMeta(fMeta);
                         }
                     }
                 }
             }.runTaskTimer(SkyWarsReloaded.get(), 0L, 5L);
         }
+        return null;
     }
 
     public void sendParticles(final World world, final String type, final float x, final float y, final float z, final float offsetX, final float offsetY, final float offsetZ, final float data, final int amount) {
@@ -500,7 +502,7 @@ public class Util {
     public static HashMap<GameMap, Integer> getSortedGames(List<GameMap> hm) {
         HashMap<GameMap, Integer> games = new HashMap<>();
         for (GameMap g : hm) {
-            if (g.canAddPlayer()) games.put(g, g.getAllPlayers().size());
+            if (g.canAddPlayer(null)) games.put(g, g.getAllPlayers().size());
         }
 
         // Create a list from elements of HashMap

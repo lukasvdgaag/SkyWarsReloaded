@@ -14,8 +14,8 @@ import org.bukkit.material.MaterialData;
 
 public class SWRSign83 implements com.walrusone.skywarsreloaded.game.signs.SWRSign {
 
-    private String gameName;
-    private org.bukkit.Location location;
+    private final String gameName;
+    private final org.bukkit.Location location;
 
     public SWRSign83(String name, Location location) {
         this.gameName = name;
@@ -61,8 +61,8 @@ public class SWRSign83 implements com.walrusone.skywarsreloaded.game.signs.SWRSi
 
     @Override
     public void update() {
-        GameMap gMap = GameMap.getMap(gameName);
-        org.bukkit.Location loc = location;
+        GameMap gMap = SkyWarsReloaded.get().getGameMapManager().getMap(gameName);
+        Location loc = location;
 
         if (loc.getBlock() == null) return;
 

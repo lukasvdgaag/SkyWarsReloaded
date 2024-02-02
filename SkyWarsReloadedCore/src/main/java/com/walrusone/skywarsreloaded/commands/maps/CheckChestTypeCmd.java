@@ -1,5 +1,5 @@
 package com.walrusone.skywarsreloaded.commands.maps;
-
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.CoordLoc;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -19,7 +19,7 @@ public class CheckChestTypeCmd extends com.walrusone.skywarsreloaded.commands.Ba
 
     public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
-        GameMap map = GameMap.getMap(worldName);
+        GameMap map = SkyWarsReloaded.getGameMapMgr().getMap(worldName);
 
         if (map == null) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.map-does-not-exist"));

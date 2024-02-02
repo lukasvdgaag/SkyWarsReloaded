@@ -10,7 +10,9 @@
     <version>${revision}</version>
 
     <properties>
-        <revision>5.6.21</revision>
+
+        <revision>5.6.30</revision>
+
         <bukkit.version>1.12.2</bukkit.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -19,8 +21,7 @@
 
     <modules>
         <module>SkyWarsReloadedCore</module>
-        <module>v1_8_R1</module>
-        <module>v1_8_R2</module>
+        <module>slime-asp</module>
         <module>v1_8_R3</module>
         <module>v1_9_R1</module>
         <module>v1_9_R2</module>
@@ -36,9 +37,6 @@
         <module>v1_17_R1</module>
         <module>v1_18_R2</module>
         <module>v1_19_R1</module>
-        <module>v1_19_R2</module>
-        <module>v1_19_R3</module>
-        <module>v1_20_R1</module>
         <module>SW-Packager</module>
     </modules>
 

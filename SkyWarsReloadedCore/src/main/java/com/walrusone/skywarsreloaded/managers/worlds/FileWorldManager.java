@@ -18,13 +18,13 @@ public class FileWorldManager implements WorldManager {
 
     public World createEmptyWorld(String name, Environment environment) {
         if (org.bukkit.Bukkit.getWorld(name) == null) {
-            loadWorld(name, environment);
+            loadWorld(name, environment, false);
             return org.bukkit.Bukkit.getWorld(name);
         }
         return null;
     }
 
-    public boolean loadWorld(String worldName, Environment environment) {
+    public boolean loadWorld(String worldName, Environment environment, boolean readOnly) {
 
         WorldCreator worldCreator = new WorldCreator(worldName);
         worldCreator.environment(environment);
@@ -42,7 +42,7 @@ public class FileWorldManager implements WorldManager {
         world.setKeepSpawnInMemory(false);
         world.setTicksPerAnimalSpawns(1);
         world.setTicksPerMonsterSpawns(1);
-        world.setAutoSave(false);
+        world.setAutoSave(!readOnly);
 
         SkyWarsReloaded.getNMS().setGameRule(world, "doMobSpawning", "false");
         SkyWarsReloaded.getNMS().setGameRule(world, "mobGriefing", "true");

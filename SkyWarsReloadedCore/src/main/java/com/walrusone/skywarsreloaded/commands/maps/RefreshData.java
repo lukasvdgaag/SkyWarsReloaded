@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands.maps;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.command.CommandSender;
@@ -17,11 +18,11 @@ public class RefreshData extends com.walrusone.skywarsreloaded.commands.BaseCmd 
     public boolean run(CommandSender sender, Player player, String[] args) {
         String name = args[1];
         if (args[1].equalsIgnoreCase("all")) {
-            for (GameMap gMap : GameMap.getMapsCopy()) {
+            for (GameMap gMap : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
                 refreshMap(gMap, sender);
             }
         } else {
-            GameMap gMap = GameMap.getMap(name);
+            GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(name);
             refreshMap(gMap, sender);
         }
         return true;

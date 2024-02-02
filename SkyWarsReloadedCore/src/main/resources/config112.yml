@@ -24,7 +24,7 @@ isLobbyServer: false
 # The format is as following: "server-name:port:display-name:max-players:team-size"
 # An example server would be: "bones:127.0. 0.1:Bones:16:1"
 gameServers:
-  - server-name:port:display name:max players:team size
+  - server-name:port:display_name:max_players:team_size:127.0.0.1
 
 
 ####################

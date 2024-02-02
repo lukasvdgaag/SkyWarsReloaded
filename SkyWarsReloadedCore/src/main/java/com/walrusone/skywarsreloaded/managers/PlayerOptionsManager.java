@@ -23,6 +23,7 @@ public class PlayerOptionsManager {
     private final List<ParticleEffect> crateEffects = new ArrayList<>();
 
     public PlayerOptionsManager() {
+
         if (SkyWarsReloaded.getCfg().particlesEnabled()) {
             crateEffects.add(new ParticleEffect("CRIT", 0, 2, 0, 8, 4));
             crateEffects.add(new ParticleEffect("CRIT_MAGIC", 0, 2, 0, 8, 4));
@@ -45,7 +46,7 @@ public class PlayerOptionsManager {
                     }
                 }
 
-                for (GameMap gMap : GameMap.getPlayableArenas(GameType.ALL)) {
+                for (GameMap gMap : SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.ALL)) {
                     for (Crate crate : gMap.getCrates()) {
                         doEffects(crate.getEntity().getLocation(), crateEffects, false);
                     }

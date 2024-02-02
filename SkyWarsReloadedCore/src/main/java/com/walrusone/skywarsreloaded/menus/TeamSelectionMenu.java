@@ -20,7 +20,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.nio.channels.SelectionKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -166,7 +165,7 @@ public class TeamSelectionMenu {
                     player.sendMessage(new Messaging.MessageFormatter().format("party.onlyleader"));
                 }
             } else {
-                if ((gMap.getMatchState() == MatchState.WAITINGSTART || gMap.getMatchState() == MatchState.WAITINGLOBBY) && gMap.canAddPlayer()) {
+                if ((gMap.getMatchState() == MatchState.WAITINGSTART || gMap.getMatchState() == MatchState.WAITINGLOBBY) && gMap.canAddPlayer(player)) {
                     // joined = gMap.addPlayers(tCard, player);
                     TeamCard tc = gMap.getTeamCard(player);
                     Vote timeVote = null;

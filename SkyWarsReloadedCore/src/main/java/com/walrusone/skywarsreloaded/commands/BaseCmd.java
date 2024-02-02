@@ -1,5 +1,7 @@
 package com.walrusone.skywarsreloaded.commands;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.ChatColor;
@@ -14,6 +16,7 @@ public abstract class BaseCmd {
     public boolean forcePlayer = true;
     public String type;
     public int maxArgs = -1;
+    protected GameMapManager gameMapManager;
 
     public BaseCmd() {
     }

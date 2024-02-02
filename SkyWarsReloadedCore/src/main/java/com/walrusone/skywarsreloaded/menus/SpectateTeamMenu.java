@@ -3,6 +3,7 @@ package com.walrusone.skywarsreloaded.menus;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.Bukkit;
@@ -19,6 +20,7 @@ public class SpectateTeamMenu {
     private static final String menuName = new Messaging.MessageFormatter().format("menu.spectateteamgame-menu-title");
 
     public SpectateTeamMenu() {
+
         int menuSize = 45;
         Inventory menu = Bukkit.createInventory(null, menuSize + 9, menuName);
         ArrayList<Inventory> invs = new ArrayList<>();
@@ -41,7 +43,7 @@ public class SpectateTeamMenu {
                 return;
             }
 
-            gMap = GameMap.getMap(JoinTeamMenu.arenaSlots.get(event.getSlot()));
+            gMap = SkyWarsReloaded.getGameMapMgr().getMap(JoinTeamMenu.arenaSlots.get(event.getSlot()));
             if (gMap == null) {
                 return;
             }

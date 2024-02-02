@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.menus;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -19,13 +20,14 @@ public class ArenasMenu {
     private static int menuSize = 27;
 
     public ArenasMenu() {
+
         Inventory menu = Bukkit.createInventory(null, menuSize + 9, menuName);
         ArrayList<Inventory> invs = new ArrayList<>();
         invs.add(menu);
 
         Runnable update = () -> {
             if ((SkyWarsReloaded.getIC().hasViewers("arenasmenu"))) {
-                ArrayList<GameMap> maps = GameMap.getSortedArenas();
+                ArrayList<GameMap> maps = SkyWarsReloaded.getGameMapMgr().getSortedArenas();
                 ArrayList<Inventory> invs1 = SkyWarsReloaded.getIC().getMenu("arenasmenu").getInventories();
 
                 for (Inventory inv : invs1) {
@@ -94,7 +96,7 @@ public class ArenasMenu {
     }
 
     private void attemptUpdate(String name, Player player) {
-        GameMap gMap = GameMap.getMap(name);
+        GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(name);
         if (gMap != null) {
             SkyWarsReloaded.getIC().show(player, gMap.getArenaKey());
             gMap.updateArenaManager();

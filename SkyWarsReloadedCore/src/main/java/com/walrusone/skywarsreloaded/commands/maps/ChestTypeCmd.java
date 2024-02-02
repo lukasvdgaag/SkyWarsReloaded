@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands.maps;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -17,7 +18,7 @@ public class ChestTypeCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd
 
     public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
-        GameMap map = GameMap.getMap(worldName);
+        GameMap map = SkyWarsReloaded.getGameMapMgr().getMap(worldName);
         if (map != null) {
             if (map.getChestPlacementType() == ChestPlacementType.NORMAL) {
                 map.setChestPlacementType(ChestPlacementType.CENTER);

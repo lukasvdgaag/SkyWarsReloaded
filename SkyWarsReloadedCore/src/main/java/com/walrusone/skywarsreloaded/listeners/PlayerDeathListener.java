@@ -27,7 +27,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void onDeath3(EntityDamageEvent e) {
+    public void onDeathByDamageEvent(EntityDamageEvent e) {
         // Sanity checks
         if (e.isCancelled()) return;
         if (!(e.getEntity() instanceof Player)) return;
@@ -108,7 +108,7 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onDeath2(PlayerDeathEvent event) {
+    public void onDeathByDeathEvent(PlayerDeathEvent event) {
         GameMap gameMap = MatchManager.get().getPlayerMap(event.getEntity());
         if (gameMap == null) return;
         /*event.setDeathMessage("");
@@ -131,6 +131,8 @@ public class PlayerDeathListener implements org.bukkit.event.Listener {
 
     @EventHandler
     public void onQuickDeath(PlayerMoveEvent e) {
+        if (e.isCancelled()) return;
+
         Player player = e.getPlayer();
         GameMap gameMap = MatchManager.get().getPlayerMap(player);
 

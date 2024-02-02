@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands.maps;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.command.CommandSender;
@@ -22,7 +23,7 @@ public class MinimumCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         }
 
         int min = Integer.parseInt(args[2]);
-        GameMap map = GameMap.getMap(worldName);
+        GameMap map = SkyWarsReloaded.getGameMapMgr().getMap(worldName);
         if (map != null) {
             map.setMinTeams(min);
             sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).setVariable("min", args[2]).format("maps.minplayer"));

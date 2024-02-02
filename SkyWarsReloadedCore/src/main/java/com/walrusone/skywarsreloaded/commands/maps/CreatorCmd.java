@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands.maps;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,7 @@ public class CreatorCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.map-creator"));
             return true;
         }
-        GameMap map = GameMap.getMap(worldName);
+        GameMap map = SkyWarsReloaded.getGameMapMgr().getMap(worldName);
         if (map != null) {
             map.setCreator(creator.toString().trim());
             sender.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", worldName).setVariable("creator", creator.toString().trim()).format("maps.creator"));

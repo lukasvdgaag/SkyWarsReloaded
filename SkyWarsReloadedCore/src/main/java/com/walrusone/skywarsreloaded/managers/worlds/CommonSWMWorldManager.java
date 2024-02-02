@@ -1,7 +1,6 @@
 package com.walrusone.skywarsreloaded.managers.worlds;
 
 import com.grinderwolf.swm.api.SlimePlugin;
-import com.grinderwolf.swm.api.exceptions.*;
 import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
@@ -17,9 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 
 public abstract class CommonSWMWorldManager implements WorldManager {
@@ -86,7 +83,7 @@ public abstract class CommonSWMWorldManager implements WorldManager {
             SkyWarsReloaded.getNMS().setGameRule(bukkitWorld, "doDaylightCycle", "false");
 
             return bukkitWorld;
-        } catch (WorldAlreadyExistsException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -99,7 +96,7 @@ public abstract class CommonSWMWorldManager implements WorldManager {
     }
 
     @Override
-    public boolean loadWorld(String worldName, World.Environment environment) {
+    public boolean loadWorld(String worldName, World.Environment environment, boolean readOnly) {
 
         if (SkyWarsReloaded.getCfg().debugEnabled()) {
             SkyWarsReloaded.get().getLogger().info(this.getClass().getName() + "#loadWorld plugin: " + plugin);
@@ -132,9 +129,9 @@ public abstract class CommonSWMWorldManager implements WorldManager {
 
         // If world not already loaded, we fetch & load world from SWM
         try {
-            SlimeWorld slimeWorld = plugin.loadWorld(loader, worldName, worldData.isReadOnly(), worldData.toPropertyMap());
+            SlimeWorld slimeWorld = plugin.loadWorld(loader, worldName, readOnly || worldData.isReadOnly(), worldData.toPropertyMap());
             plugin.generateWorld(slimeWorld);
-        } catch (IOException | CorruptedWorldException | WorldInUseException | NewerFormatException | UnknownWorldException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -207,13 +204,12 @@ public abstract class CommonSWMWorldManager implements WorldManager {
                     plugin.importWorld(world.getWorldFolder(), worldName, loader);
                 }
             }
-        } catch (WorldAlreadyExistsException | InvalidWorldException | WorldLoadedException | WorldTooBigException |
-                 IOException | IllegalStateException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    protected abstract byte[] serializeSlimeWorld(SlimeWorld slimeWorld) throws WorldTooBigException, IllegalStateException;
+    protected abstract byte[] serializeSlimeWorld(SlimeWorld slimeWorld) throws IllegalStateException;
 
     @Override
     public void copyWorld(File source, File target) {
@@ -226,7 +222,7 @@ public abstract class CommonSWMWorldManager implements WorldManager {
         if (removeFile) {
             try {
                 loader.deleteWorld(name);
-            } catch (UnknownWorldException | IOException e) {
+            } catch (Exception e) {
                 Bukkit.getLogger().log(Level.SEVERE, "Something went wrong whilst deleting a world for the arena " + name);
                 e.printStackTrace();
             }

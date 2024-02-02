@@ -8,7 +8,7 @@ public interface WorldManager {
 
     World createEmptyWorld(String name, World.Environment environment);
 
-    boolean loadWorld(String worldName, World.Environment environment);
+    boolean loadWorld(String worldName, World.Environment environment, boolean readOnly);
 
     void unloadWorld(String world, boolean save);
 

@@ -1,12 +1,15 @@
 package com.walrusone.skywarsreloaded.commands.maps;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class RegisterCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
+
     public RegisterCmd(String t) {
         type = t;
         forcePlayer = false;
@@ -17,7 +20,7 @@ public class RegisterCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd 
 
     public boolean run(CommandSender sender, Player player, String[] args) {
         String worldName = args[1];
-        GameMap gMap = GameMap.getMap(worldName);
+        GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(worldName);
         if (gMap != null) {
             gMap.setRegistered(true);
             int registeredStatus = gMap.registerMap(sender);

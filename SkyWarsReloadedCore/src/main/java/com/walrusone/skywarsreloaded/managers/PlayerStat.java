@@ -75,7 +75,7 @@ public class PlayerStat {
     public void loadStats(Runnable postLoadStatsTask) {
         DataStorage.get().loadStats(this, () -> {
             this.setInitialized(true);
-            this.saveStats(postLoadStatsTask);
+            if (postLoadStatsTask != null) postLoadStatsTask.run();
         });
     }
 
@@ -339,20 +339,20 @@ public class PlayerStat {
     public void saveStats(Runnable postSaveStatsTask) {
         Player player = SkyWarsReloaded.get().getServer().getPlayer(UUID.fromString(uuid));
         String playerName = player != null ? player.getName() : uuid;
-        Bukkit.getLogger().log(Level.WARNING, "Now saving stats of player " + playerName);
+        Bukkit.getLogger().log(Level.INFO, "Now saving stats of player " + playerName);
 
-        PlayerStat self = this;
+        saveStatsNow();
+
         new BukkitRunnable() {
             @Override
             public void run() {
-                saveStatsSync(self);
                 if (postSaveStatsTask != null) postSaveStatsTask.run();
             }
         }.runTask(SkyWarsReloaded.get());
     }
 
-    private void saveStatsSync(PlayerStat ps) {
-        DataStorage.get().saveStats(ps);
+    private void saveStatsNow() {
+        DataStorage.get().saveStats(this);
     }
 
     public String getId() {
