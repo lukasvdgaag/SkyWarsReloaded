@@ -5,15 +5,18 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.config.Config;
-import com.walrusone.skywarsreloaded.enums.*;
+import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
+import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
+import com.walrusone.skywarsreloaded.enums.Vote;
 import com.walrusone.skywarsreloaded.events.SkyWarsJoinEvent;
 import com.walrusone.skywarsreloaded.events.SkyWarsMatchStateChangeEvent;
 import com.walrusone.skywarsreloaded.game.cages.*;
 import com.walrusone.skywarsreloaded.game.signs.SWRSign;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
-import com.walrusone.skywarsreloaded.managers.worlds.FileWorldManager;
 import com.walrusone.skywarsreloaded.managers.worlds.ASWMWorldManager;
+import com.walrusone.skywarsreloaded.managers.worlds.FileWorldManager;
 import com.walrusone.skywarsreloaded.managers.worlds.WorldManager;
 import com.walrusone.skywarsreloaded.managers.worlds.WorldManagerType;
 import com.walrusone.skywarsreloaded.matchevents.*;
@@ -442,7 +445,7 @@ public class GameMap {
             } else { // Warn console that setup failed
                 SkyWarsReloaded.get().getLogger().warning("Failed to send reservation for " + player.getName());
             }
-        // else if in lobby waiting mode
+            // else if in lobby waiting mode
         } else if (getMatchState() == MatchState.WAITINGLOBBY) {
             PlayerStat.resetScoreboard(player);
             addWaitingPlayer(player);
@@ -552,8 +555,14 @@ public class GameMap {
     }
 
     public void removePlayer(final UUID uuid) {
-        for (TeamCard tCard : teamCards) {
-            if (tCard.removePlayer(uuid)) break;
+        this.removePlayer(uuid, true);
+    }
+
+    public void removePlayer(final UUID uuid, boolean removePlayerCard) {
+        if (removePlayerCard) {
+            for (TeamCard tCard : teamCards) {
+                if (tCard.removePlayer(uuid)) break;
+            }
         }
         spectators.remove(uuid);
         this.removeWaitingPlayer(uuid);
@@ -642,7 +651,6 @@ public class GameMap {
     }
 
     /**
-     *
      * @param player Player context for the request. Can be null. Not used in SWR by default. API only.
      * @return true if the player can be added to the match
      */
@@ -1039,8 +1047,7 @@ public class GameMap {
             File source = new File(maps, name);
 
             worldManager.copyWorld(source, target);
-        }
-        else {
+        } else {
             worldManager.unloadWorld(mapName, false);
         }
 
@@ -1146,7 +1153,7 @@ public class GameMap {
                                 org.bukkit.material.Chest chestData = (org.bukkit.material.Chest) chest.getData();
                                 BlockFace facing = chestData.getFacing();
                                 trappedChestBlock.setType(Material.CHEST);
-                                ((org.bukkit.material.Chest)trappedChestBlock.getState().getData()).setFacingDirection(facing);
+                                ((org.bukkit.material.Chest) trappedChestBlock.getState().getData()).setFacingDirection(facing);
                                 // Add the chest as center
                                 addChest(chest, ChestPlacementType.CENTER);
                             }
@@ -1575,6 +1582,7 @@ public class GameMap {
 
     /**
      * Add a team slot to the current GameMap
+     *
      * @param defaultSpawns List of initial CoordLocs to assign to the team card being created
      */
     public TeamCard addTeamCard(ArrayList<CoordLoc> defaultSpawns) {
@@ -1704,11 +1712,11 @@ public class GameMap {
 
     /**
      * Remove team slot by spawn location
+     *
      * @param loc Bukkit location of the spawn
-     * @return
-     *      Map of which, Keys are the teams removed and
-     *      Values are the indexes of the spawn location removed from within that team
-     *          (if no more spawns are left, team is completely removed from the map.)
+     * @return Map of which, Keys are the teams removed and
+     * Values are the indexes of the spawn location removed from within that team
+     * (if no more spawns are left, team is completely removed from the map.)
      */
     public Map<TeamCard, List<Integer>> removeSpawnsAtLocation(Location loc) {
         CoordLoc locToRemove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
@@ -2221,6 +2229,7 @@ public class GameMap {
         public boolean isValidName() {
             return this.validName;
         }
+
         @Nullable
         public World getWorld() {
             return this.world;

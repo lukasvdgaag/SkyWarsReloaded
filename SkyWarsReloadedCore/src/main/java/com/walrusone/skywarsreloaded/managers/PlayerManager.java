@@ -322,7 +322,7 @@ public class PlayerManager {
         Bukkit.getPluginManager().callEvent(new SkyWarsLeaveEvent(playerRemoved, gameMap));
 
         // ---------------- GAME MAP UPDATES -----------------
-        gameMap.removePlayer(pUuid);
+        gameMap.removePlayer(pUuid, false);
         if (SkyWarsReloaded.getCfg().spectateEnable() && removeReason.equals(PlayerRemoveReason.DEATH)) {
             this.addSpectator(gameMap, playerRemoved);
             shouldSendToLobby = false;

@@ -641,36 +641,64 @@ public class MatchManager {
             // Make sure winners are placed #1
             winners.setPlace(1);
 
+            gameMap.getTeamCards().forEach(teamCard -> {
+                // log all uuids of players in the team
+                if (debug) {
+                    Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Team " + teamCard.getTeamName() + " has the following players:");
+                    teamCard.getPlayerCards().forEach(playerCard -> {
+                        if (playerCard != null) {
+                            Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + " - " + playerCard.getUUID());
+                        }
+                    });
+                }
+            });
+
             // Losers
             for (TeamCard teamCard : gameMap.getTeamCards()) {
-                if (teamCard != winners) {
-                    for (PlayerCard pCard : teamCard.getPlayerCards()) {
-                        UUID pLoserUuid = pCard.getUUID();
+                if (teamCard == winners) {
+                    Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Skipping winner data update of " + teamCard.getTeamName());
+                    continue;
+                }
 
-                        // Skip invalid player cards
-                        if (pLoserUuid == null) continue;
+                for (PlayerCard pCard : teamCard.getPlayerCards()) {
+                    UUID pLoserUuid = pCard.getUUID();
+                    if (debug) {
+                        Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Attempting to update loser data of " + pLoserUuid);
+                    }
 
-                        final PlayerStat loserData = PlayerStat.getPlayerStats(pLoserUuid.toString());
+                    // Skip invalid player cards
+                    if (pLoserUuid == null) continue;
 
-                        // This is ugly and far (furthest) from perfect but better than no attempt at all...
-                        if (loserData == null) {
-                            server.getScheduler().runTaskAsynchronously(plugin, () -> {
-                                // Load player data
-                                PlayerStat pStats = new PlayerStat(pLoserUuid, server.getOfflinePlayer(pLoserUuid).getName());
-                                // Load player data
-                                pStats.loadStats(() -> {
-                                    pStats.setLosts(pStats.getLosses() + 1);
-                                    pStats.saveStats(() -> PlayerStat.removePlayer(pStats.getId()));
-                                });
-                            });
-                        } else {
-                            if (debug) {
-                                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Adding loss to " + pLoserUuid);
-                            }
+                    final PlayerStat loserData = PlayerStat.getPlayerStats(pLoserUuid);
 
-                            loserData.setLosts(loserData.getLosses() + 1);
-                            loserData.saveStats();
+                    // This is ugly and far (furthest) from perfect but better than no attempt at all...
+                    if (loserData == null) {
+                        if (debug) {
+                            Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Adding loss to player data that was initially not found of " + pLoserUuid);
                         }
+
+                        server.getScheduler().runTaskAsynchronously(plugin, () -> {
+                            if (debug) {
+                                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Initializing player data of " + pLoserUuid);
+                            }
+                            // Load player data
+                            PlayerStat pStats = new PlayerStat(pLoserUuid, server.getOfflinePlayer(pLoserUuid).getName());
+                            // Load player data
+                            pStats.loadStats(() -> {
+                                if (debug) {
+                                    Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Updating and saving the losses of the user " + pLoserUuid);
+                                }
+                                pStats.setLosts(pStats.getLosses() + 1);
+                                pStats.saveStats(() -> PlayerStat.removePlayer(pStats.getId()));
+                            });
+                        });
+                    } else {
+                        if (debug) {
+                            Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Adding loss to " + pLoserUuid);
+                        }
+
+                        loserData.setLosts(loserData.getLosses() + 1);
+                        loserData.saveStats();
                     }
                 }
             }
@@ -753,20 +781,6 @@ public class MatchManager {
         gameMap.update();
         gameMap.setTimer(0);
         if (SkyWarsReloaded.get().isEnabled() && !gameMap.getMatchState().equals(MatchState.OFFLINE)) {
-            // Save all player stats
-            for (final Player player : gameMap.getAllPlayers()) {
-                new BukkitRunnable() {
-                    public void run() {
-                        String uuidStr = player.getUniqueId().toString();
-                        PlayerStat toSave = PlayerStat.getPlayerStats(uuidStr);
-                        if (toSave != null) {
-                            toSave.saveStats();
-                            // If player is no longer online, delete cache
-                            if (!player.isOnline()) PlayerStat.removePlayer(uuidStr);
-                        }
-                    }
-                }.runTaskAsynchronously(SkyWarsReloaded.get());
-            }
             // Clear all players
             new BukkitRunnable() {
                 private int i = 0;
