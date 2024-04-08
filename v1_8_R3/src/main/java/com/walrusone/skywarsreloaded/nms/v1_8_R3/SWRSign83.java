@@ -51,11 +51,19 @@ public class SWRSign83 implements com.walrusone.skywarsreloaded.game.signs.SWRSi
 
     @Override
     public Block getAttachedBlock(Block b) {
-        final MaterialData m = b.getState().getData();
-        BlockFace face = BlockFace.DOWN;
-        if (m instanceof Directional) {
-            face = ((Directional) m).getFacing().getOppositeFace();
+        final MaterialData mData = b.getState().getData();
+
+        BlockFace face = null;
+        if (mData instanceof org.bukkit.material.Sign) {
+            face = ((org.bukkit.material.Sign) mData).getAttachedFace();
+            if (face == null) face = BlockFace.DOWN;
+            else face = face.getOppositeFace();
         }
+        else if (mData instanceof Directional) {
+            face = ((Directional) mData).getFacing().getOppositeFace();
+        }
+
+        if (face == null) return null;
         return b.getRelative(face);
     }
 
