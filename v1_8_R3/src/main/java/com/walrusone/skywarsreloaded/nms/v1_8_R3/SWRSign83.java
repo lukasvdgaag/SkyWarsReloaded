@@ -57,7 +57,6 @@ public class SWRSign83 implements com.walrusone.skywarsreloaded.game.signs.SWRSi
         if (mData instanceof org.bukkit.material.Sign) {
             face = ((org.bukkit.material.Sign) mData).getAttachedFace();
             if (face == null) face = BlockFace.DOWN;
-            else face = face.getOppositeFace();
         }
         else if (mData instanceof Directional) {
             face = ((Directional) mData).getFacing().getOppositeFace();
