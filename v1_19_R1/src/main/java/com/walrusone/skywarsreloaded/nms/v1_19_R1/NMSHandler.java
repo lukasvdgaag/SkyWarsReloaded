@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.nms.v1_19_R1;
 
+import com.walrusone.skywarsreloaded.game.signs.SWRSign;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.EnderChest;
@@ -20,4 +21,8 @@ public class NMSHandler extends com.walrusone.skywarsreloaded.nms.v1_18_R2.NMSHa
         return 19;
     }
 
+    @Override
+    public SWRSign createSWRSign(String name, Location location) {
+        return new SWRSign_19_0(name, location);
+    }
 }
