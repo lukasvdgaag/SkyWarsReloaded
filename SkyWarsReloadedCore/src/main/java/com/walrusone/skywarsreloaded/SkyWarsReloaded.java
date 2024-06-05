@@ -792,7 +792,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         extensionHasCompatCheck = true;
 
         PluginDescriptionFile desc = ext.getDescription();
-        String compatibleExtensionVersion = "1.7.13";
+        String compatibleExtensionVersion = "1.7.15";
         String foundVersion = desc.getVersion();
 
         String[] compatVersionParts = compatibleExtensionVersion.split("\\.");

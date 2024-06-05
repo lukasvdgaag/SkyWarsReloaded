@@ -149,7 +149,7 @@
         <dependency>
             <groupId>net.gcnt</groupId>
             <artifactId>SkyWarsReloaded-Extension</artifactId>
-            <version>1.7.13</version>
+            <version>1.7.15</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
