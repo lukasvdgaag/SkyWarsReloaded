@@ -12,7 +12,7 @@
 
     <artifactId>skywarsreloaded-assembly</artifactId>
     <packaging>jar</packaging>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.walrusone</groupId>
@@ -123,7 +123,7 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -132,6 +132,7 @@
                 <version>3.2.1</version>
                 <executions>
                     <execution>
+                        <id>version-jar</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
@@ -143,6 +144,21 @@
                                 </includes>
                             </artifactSet>
                             <finalName>SWR-${revision}</finalName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>latest-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.walrusone</include>
+                                </includes>
+                            </artifactSet>
+                            <finalName>SWR-latest</finalName>
                         </configuration>
                     </execution>
                 </executions>
