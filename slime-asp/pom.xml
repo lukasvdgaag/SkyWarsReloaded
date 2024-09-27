@@ -65,7 +65,7 @@
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>SkyWarsReloadedCore</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${revision}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -105,6 +105,10 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <jdkToolchain>
+                        <type>jdk</type>
+                        <version>${maven.compiler.target}</version>
+                    </jdkToolchain>
                 </configuration>
             </plugin>
         </plugins>

@@ -2,136 +2,137 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>SkyWarsReloaded</artifactId>
-        <groupId>com.walrusone</groupId>
-        <version>${revision}</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>sw-packager</artifactId>
-    <version>${revision}</version>
+    <parent>
+        <groupId>com.walrusone</groupId>
+        <artifactId>SkyWarsReloaded</artifactId>
+        <version>${revision}</version>
+    </parent>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
+    <artifactId>skywarsreloaded-assembly</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>SkyWarsReloadedCore</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>slime-asp</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.walrusone</groupId>
+            <artifactId>slime-legacy</artifactId>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_8_R3</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_9_R1</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_9_R2</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_10_R1</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_11_R1</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_12_R1</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_13_R2</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_14_R1</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_15_R1</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_16_R1</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_16_R2</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_16_R3</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_17_R1</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_18_R2</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>v1_19_R1</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
 
     <build>
-        <directory>../target</directory>
-        <finalName>SWR-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
+                        <id>version-jar</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
@@ -142,30 +143,26 @@
                                     <include>com.walrusone</include>
                                 </includes>
                             </artifactSet>
+                            <finalName>SWR-${revision}</finalName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>latest-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.walrusone</include>
+                                </includes>
+                            </artifactSet>
+                            <finalName>SWR-latest</finalName>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.8</version>
-                <executions>
-                    <execution>
-                        <id>default-deploy</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <serverId>swr-nexus</serverId>
-                    <nexusUrl>https://nexuslite.gcnt.net/repository/gaagjescraft/</nexusUrl>
-                    <skipStaging>true</skipStaging>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
-
 </project>

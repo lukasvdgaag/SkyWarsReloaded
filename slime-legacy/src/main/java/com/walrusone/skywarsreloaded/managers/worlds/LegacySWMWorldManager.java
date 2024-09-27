@@ -1,6 +1,5 @@
 package com.walrusone.skywarsreloaded.managers.worlds;
 
-import com.grinderwolf.swm.api.exceptions.WorldTooBigException;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 
