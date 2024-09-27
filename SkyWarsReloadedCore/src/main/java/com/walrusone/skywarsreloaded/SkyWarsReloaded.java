@@ -261,11 +261,25 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                     getLogger().info("SlimeWorldManager cannot be used on 1.20 or higher. We expected the server to be running AdvancedSlimePaper.");
                     wm = null;
                 } else if (serverFeatureVersion > 14) {
-                    getLogger().info("Using ASWM World Manager");
-                    wm = new ASWMWorldManager();
+                    try {
+                        getLogger().info("Using ASWM World Manager");
+                        wm = (WorldManager) Class.forName("com.walrusone.skywarsreloaded.managers.worlds.ASWMWorldManager")
+                                .getConstructor()
+                                .newInstance();
+                    } catch (Exception ex) {
+                        getLogger().info("Using Bukkit World Manager");
+                        wm = null;
+                    }
                 } else {
-                    getLogger().info("Using Legacy SWM World Manager");
-                    wm = new LegacySWMWorldManager();
+                    try {
+                        getLogger().info("Using Legacy SWM World Manager");
+                        wm = (WorldManager) Class.forName("com.walrusone.skywarsreloaded.managers.worlds.LegacySWMWorldManager")
+                                .getConstructor()
+                                .newInstance();
+                    } catch (Exception ex) {
+                        getLogger().info("Using Bukkit World Manager");
+                        wm = null;
+                    }
                 }
             }
         }

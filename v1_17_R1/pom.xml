@@ -14,15 +14,7 @@
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>bukkitmc</id>
-            <url>https://nexuslite.gcnt.net/repos/bukkit/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
@@ -34,7 +26,7 @@
         <dependency>
             <groupId>com.walrusone</groupId>
             <artifactId>SkyWarsReloadedCore</artifactId>
-            <version>${project.parent.version}</version>
+            <version>${revision}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

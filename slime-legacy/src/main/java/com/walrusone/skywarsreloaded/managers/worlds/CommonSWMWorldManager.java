@@ -19,7 +19,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 
-public abstract class CommonSWMWorldManager implements WorldManager {
+public abstract class CommonSWMWorldManager implements ASWMWorldManager {
 
     SlimePlugin plugin;
     SlimeLoader loader;
