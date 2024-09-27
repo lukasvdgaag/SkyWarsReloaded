@@ -37,6 +37,7 @@
         <module>v1_17_R1</module>
         <module>v1_18_R2</module>
         <module>v1_19_R1</module>
+        <module>v1_20_R1</module>
         <module>skywars-assembly</module>
     </modules>
 
@@ -93,6 +94,7 @@
                 <module>slime-legacy</module>
                 <module>v1_18_R2</module>
                 <module>v1_19_R1</module>
+                <module>v1_20_R1</module>
             </modules>
         </profile>
     </profiles>

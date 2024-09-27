@@ -5,6 +5,7 @@ import com.walrusone.skywarsreloaded.nms.NMS;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockIterator;
@@ -261,5 +263,27 @@ public class NMSHandler implements NMS {
     @Override
     public void applyTotemEffect(Player player) {
 
+    }
+
+    @Override
+    public PotionEffectType getPotionEffectTypeByName(String... name) {
+        for (String s : name) {
+            PotionEffectType type = PotionEffectType.getByName(s);
+            if (type != null) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Enchantment getEnchantmentByName(String... name) {
+        for (String s : name) {
+            Enchantment enchantment = Enchantment.getByName(s);
+            if (enchantment != null) {
+                return enchantment;
+            }
+        }
+        return null;
     }
 }

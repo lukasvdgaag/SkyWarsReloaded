@@ -5,6 +5,7 @@ import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
@@ -12,6 +13,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -56,8 +58,9 @@ public interface NMS {
 
     /**
      * Send a chest action to players
+     *
      * @param paramBlock the chest block
-     * @param open true to open, false to close
+     * @param open       true to open, false to close
      */
     void playChestAction(Block paramBlock, boolean open);
 
@@ -96,4 +99,25 @@ public interface NMS {
     boolean isHoldingTotem(Player player);
 
     void applyTotemEffect(Player player);
+
+    /**
+     * Get a potion effect type by its name.
+     * To allow for easy backwards compatibility, this method accepts multiple names to check for.
+     * The first name that matches a potion effect type will be returned.
+     *
+     * @param names list of names to check for
+     * @return the potion effect type, or null if not found
+     */
+    PotionEffectType getPotionEffectTypeByName(String... names);
+
+    /**
+     * Get an enchantment by its name.
+     * To allow for easy backwards compatibility, this method accepts multiple names to check for.
+     * The first name that matches an enchantment will be returned.
+     *
+     * @param names list of names to check for
+     * @return the enchantment, or null if not found
+     */
+    Enchantment getEnchantmentByName(String... names);
+
 }

@@ -9,7 +9,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -161,7 +160,7 @@ public class Util {
 
     public void clear(final Player player) {
         player.getInventory().clear();
-        player.getInventory().setArmorContents(new ItemStack[] {null, null, null, null});
+        player.getInventory().setArmorContents(new ItemStack[]{null, null, null, null});
         for (final PotionEffect a1 : player.getActivePotionEffects()) {
             player.removePotionEffect(a1.getType());
         }
@@ -589,23 +588,21 @@ public class Util {
         if (returnFormat.equals("simplified")) {
             if (mins > 0) {
                 return mins + ":" + (secs < 10 ? "0" + secs : secs);
-            }
-            else {
+            } else {
                 return secs + "";
             }
         }
         if (returnFormat.equals("simplified-zeros")) {
             if (mins > 0) {
                 return (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
-            }
-            else {
+            } else {
                 return secs + "";
             }
         }
 
-        returnFormat = returnFormat.replaceAll("(?<!\\\\)mm", mins < 10 ? "0" + mins : mins +"");
+        returnFormat = returnFormat.replaceAll("(?<!\\\\)mm", mins < 10 ? "0" + mins : mins + "");
         returnFormat = returnFormat.replaceAll("(?<!\\\\)m", mins + "");
-        returnFormat = returnFormat.replaceAll("(?<!\\\\)ss", secs < 10 ? "0" + secs : secs +"");
+        returnFormat = returnFormat.replaceAll("(?<!\\\\)ss", secs < 10 ? "0" + secs : secs + "");
         returnFormat = returnFormat.replaceAll("(?<!\\\\)s", secs + "");
 
         return returnFormat;
@@ -620,7 +617,7 @@ public class Util {
         ItemStack item = inv.getItem(slot);
         if (item == null) return;
         ItemMeta meta = item.getItemMeta();
-        meta.addEnchant(Enchantment.DURABILITY,1,true);
+        meta.addEnchant(SkyWarsReloaded.getNMS().getEnchantmentByName("mending", "durability"), 1, true);
         meta.addItemFlags(ItemFlag.values());
         item.setItemMeta(meta);
     }
