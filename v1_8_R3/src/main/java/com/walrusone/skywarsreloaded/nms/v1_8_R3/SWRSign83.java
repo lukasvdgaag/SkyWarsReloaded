@@ -77,7 +77,9 @@ public class SWRSign83 implements com.walrusone.skywarsreloaded.game.signs.SWRSi
         GameMap gMap = SkyWarsReloaded.get().getGameMapManager().getMap(gameName);
         Location loc = location;
 
-        if (loc.getBlock() == null) return;
+        if (loc.getBlock() == null) {
+            return;
+        }
 
         if (loc.getBlock().getType().name().contains("SIGN") || loc.add(0, 1, 0).getBlock().getType().name().contains("SIGN")) {
             Block attachedBlock;
@@ -96,7 +98,7 @@ public class SWRSign83 implements com.walrusone.skywarsreloaded.game.signs.SWRSi
             if (gMap != null) {
                 formatSign(gMap, sign);
             }
-            sign.update();
+            sign.update(true);
         }
     }
 
@@ -127,7 +129,7 @@ public class SWRSign83 implements com.walrusone.skywarsreloaded.game.signs.SWRSi
                     .setVariable("mapname", gMap.getDisplayName().toUpperCase())
                     .setVariable("playercount", "" + playerCount)
                     .setVariable("maxplayers", "" + gMap.getMaxPlayers())
-                    .setVariable("teamsize", "" + gMap.getTeamSize()).format("signs.line" + i + team)
+                    .setVariable("teamsize", "" + gMap.getTeamSize()).format("signs.line" + (i + 1) + team)
             );
         }
     }

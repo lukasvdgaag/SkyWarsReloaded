@@ -4,7 +4,6 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
@@ -40,6 +39,7 @@ public class LobbyListener implements org.bukkit.event.Listener {
             e.setJoinMessage("");
         }
     }
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void onQuit(PlayerQuitEvent e) {
         if (SkyWarsReloaded.getCfg().bungeeMode() && !SkyWarsReloaded.getCfg().isLobbyServer()) {
@@ -81,58 +81,63 @@ public class LobbyListener implements org.bukkit.event.Listener {
         //if (Util.get().isSpawnWorld(event.getBlock().getWorld())) {
         String[] lines = event.getLines();
         if ((lines[0].equalsIgnoreCase("[sw]") || lines[0].equalsIgnoreCase("[swr]") || lines[0].equalsIgnoreCase("[skywars]")) && (lines.length >= 2)) {
-            if (event.getPlayer().hasPermission("sw.signs")) {
-                Location signLocation = event.getBlock().getLocation();
-
-                event.setCancelled(true);
-                String arenaName = lines[1];
-                if (SkyWarsReloaded.getCfg().bungeeMode()) {
-                    SWRServer server = SWRServer.getServer(arenaName);
-                    if (server != null) {
-                        server.addSign(signLocation);
-                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
-                    } else {
-                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
-                    }
-                } else {
-                    GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(arenaName);
-                    if (gMap != null) {
-                        gMap.addSign(signLocation);
-                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
-                    } else {
-                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
-                    }
-                }
-            } else {
+            if (!event.getPlayer().hasPermission("sw.signs")) {
                 event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.signs-no-perm"));
                 event.setCancelled(true);
+                return;
+            }
+
+            Location signLocation = event.getBlock().getLocation();
+
+            event.setCancelled(true);
+            String arenaName = lines[1];
+            if (SkyWarsReloaded.getCfg().bungeeMode()) {
+                SWRServer server = SWRServer.getServer(arenaName);
+                if (server != null) {
+                    server.addSign(signLocation);
+                    event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
+                } else {
+                    event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
+                }
+            } else {
+                GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(arenaName);
+                if (gMap != null) {
+                    gMap.addSign(signLocation);
+                    event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.added"));
+                } else {
+                    event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.no-map"));
+                }
             }
         } else if ((lines[0].equalsIgnoreCase("[swl]")) && (lines.length >= 3)) {
-            if (event.getPlayer().hasPermission("sw.signs")) {
-                Location signLocation = event.getBlock().getLocation();
-                World w = signLocation.getWorld();
-                Block b = w.getBlockAt(signLocation);
-                if (b.getState() instanceof Sign) {
-                    event.setCancelled(true);
-                    if (SkyWarsReloaded.get().getLeaderTypes().contains(lines[1].toUpperCase())) {
-                        LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
-                        if (Util.get().isInteger(lines[2])) {
-                            if (Integer.parseInt(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {
-                                SkyWarsReloaded.getLB().addLeaderSign(Integer.parseInt(lines[2]), type, signLocation);
-                                event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.addedleader"));
-                            } else {
-                                event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-range"));
-                            }
-                        } else {
-                            event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.position"));
-                        }
-                    } else {
-                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-type"));
-                    }
-                }
-            } else {
+            if (!event.getPlayer().hasPermission("sw.signs")) {
                 event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.signs-no-perm"));
                 event.setCancelled(true);
+                return;
+            }
+
+            Location signLocation = event.getBlock().getLocation();
+            World w = signLocation.getWorld();
+            Block b = w.getBlockAt(signLocation);
+
+            if (!(b.getState() instanceof Sign)) {
+                return;
+            }
+
+            event.setCancelled(true);
+            if (SkyWarsReloaded.get().getLeaderTypes().contains(lines[1].toUpperCase())) {
+                LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
+                if (Util.get().isInteger(lines[2])) {
+                    if (Integer.parseInt(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {
+                        SkyWarsReloaded.getLB().addLeaderSign(Integer.parseInt(lines[2]), type, signLocation);
+                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.addedleader"));
+                    } else {
+                        event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-range"));
+                    }
+                } else {
+                    event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("error.position"));
+                }
+            } else {
+                event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-type"));
             }
         }
         //}
@@ -172,8 +177,7 @@ public class LobbyListener implements org.bukkit.event.Listener {
                             server.removeSign(loc);
                             removed = true;
                             event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.remove"));
-                        }
-                        else {
+                        } else {
                             event.setCancelled(true);
                         }
                     }

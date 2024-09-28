@@ -5,15 +5,18 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.config.Config;
-import com.walrusone.skywarsreloaded.enums.*;
+import com.walrusone.skywarsreloaded.enums.ChestPlacementType;
+import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
+import com.walrusone.skywarsreloaded.enums.Vote;
 import com.walrusone.skywarsreloaded.events.SkyWarsJoinEvent;
 import com.walrusone.skywarsreloaded.events.SkyWarsMatchStateChangeEvent;
 import com.walrusone.skywarsreloaded.game.cages.*;
 import com.walrusone.skywarsreloaded.game.signs.SWRSign;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
-import com.walrusone.skywarsreloaded.managers.worlds.FileWorldManager;
 import com.walrusone.skywarsreloaded.managers.worlds.ASWMWorldManager;
+import com.walrusone.skywarsreloaded.managers.worlds.FileWorldManager;
 import com.walrusone.skywarsreloaded.managers.worlds.WorldManager;
 import com.walrusone.skywarsreloaded.managers.worlds.WorldManagerType;
 import com.walrusone.skywarsreloaded.matchevents.*;
@@ -1091,7 +1094,6 @@ public class GameMap {
                 }
             }
             if (teamSize > 1) {
-                // todo test this
                 cage.createSpawnPlatforms(this);
             }
         }
@@ -1313,7 +1315,8 @@ public class GameMap {
     public void addSign(Location loc) {
         signs.add(SkyWarsReloaded.getNMS().createSWRSign(name, loc));
         saveArenaData();
-        updateSigns();
+
+        SkyWarsReloaded.get().getServer().getScheduler().runTask(SkyWarsReloaded.get(), this::updateSigns);
     }
 
     public String getDisplayName() {
