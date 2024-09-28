@@ -44,8 +44,13 @@ public enum CompatibleNMSVersion {
     v1_19_R3(19, "v1_19_R1"),
 
     // 1.20
-    v1_20_R1(20, "v1_19_R1"),
-    v1_20_R2(20, "v1_19_R1"),
+    v1_20_R1(20, "v1_20_R1"),
+    v1_20_R2(20, "v1_20_R1"),
+
+    // 1.21
+    v1_21_R1(21, "v1_21_R1"),
+    v1_21_R2(21, "v1_21_R1"),
+    v1_21_R3(21, "v1_21_R1"),
     ;
 
     private final int featureVersion;

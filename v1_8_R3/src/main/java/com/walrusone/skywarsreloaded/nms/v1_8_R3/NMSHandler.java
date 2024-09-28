@@ -1,10 +1,12 @@
 package com.walrusone.skywarsreloaded.nms.v1_8_R3;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.signs.SWRSign;
 import com.walrusone.skywarsreloaded.nms.NMS;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
@@ -16,6 +18,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BlockIterator;
@@ -112,7 +115,12 @@ public class NMSHandler implements NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(ItemFlag.values());
+
+        if (SkyWarsReloaded.getNMS().getVersion() < 21) {
+            addItemMeta.addItemFlags(ItemFlag.values());
+        } else {
+            addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.valueOf("HIDE_ADDITIONAL_TOOLTIP"));
+        }
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
@@ -261,5 +269,27 @@ public class NMSHandler implements NMS {
     @Override
     public void applyTotemEffect(Player player) {
 
+    }
+
+    @Override
+    public PotionEffectType getPotionEffectTypeByName(String... name) {
+        for (String s : name) {
+            PotionEffectType type = PotionEffectType.getByName(s);
+            if (type != null) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Enchantment getEnchantmentByName(String... name) {
+        for (String s : name) {
+            Enchantment enchantment = Enchantment.getByName(s);
+            if (enchantment != null) {
+                return enchantment;
+            }
+        }
+        return null;
     }
 }

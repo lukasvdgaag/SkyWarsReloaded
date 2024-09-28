@@ -16,9 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class ModifierOption extends GameOption {
     public ModifierOption(GameMap gameMap, String key) {
         itemList = Lists.newArrayList("modifierrandom", "modifierspeed", "modifierjump", "modifierstrength", "modifiernone");
@@ -72,7 +69,7 @@ public class ModifierOption extends GameOption {
             MatchManager.get().message(gameMap, new Messaging.MessageFormatter()
                     .setVariable("player", player.getName())
                     .setVariable("mod", type)
-                    .setVariable("votes", votes+"").format("game.votemodifier"));
+                    .setVariable("votes", votes + "").format("game.votemodifier"));
         }
     }
 
@@ -100,21 +97,21 @@ public class ModifierOption extends GameOption {
     public void completeOption() {
         Vote modifier = gameMap.getModifierOption().getVoted();
         if (modifier == Vote.MODIFIERSPEED) {
-            for (Player player : gameMap.getAlivePlayers()) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, SkyWarsReloaded.getCfg().getSpeed(), true, false));
-            }
+            PotionEffect effect = new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, SkyWarsReloaded.getCfg().getSpeed(), true, false);
+            gameMap.getAlivePlayers().forEach(player -> player.addPotionEffect(effect));
         } else if (modifier == Vote.MODIFIERJUMP) {
-            for (Player player : gameMap.getAlivePlayers()) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, SkyWarsReloaded.getCfg().getJump(), true, false));
-            }
+            PotionEffectType effectType = SkyWarsReloaded.getNMS().getPotionEffectTypeByName("jump_boost", "jump");
+
+            PotionEffect effect = new PotionEffect(effectType, Integer.MAX_VALUE, SkyWarsReloaded.getCfg().getJump(), true, false);
+            gameMap.getAlivePlayers().forEach(player -> player.addPotionEffect(effect));
         } else if (modifier == Vote.MODIFIERSTRENGTH) {
-            for (Player player : gameMap.getAlivePlayers()) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, Integer.MAX_VALUE, SkyWarsReloaded.getCfg().getStrength(), true, false));
-            }
+            PotionEffectType effectType = SkyWarsReloaded.getNMS().getPotionEffectTypeByName("strength", "increase_damage");
+
+            PotionEffect effect = new PotionEffect(effectType, Integer.MAX_VALUE, SkyWarsReloaded.getCfg().getStrength(), true, false);
+            gameMap.getAlivePlayers().forEach(player -> player.addPotionEffect(effect));
         }
 
         if (SkyWarsReloaded.getCfg().isModifierVoteEnabled()) {
-
             String subOptionName = modifier.name().toLowerCase().replace("modifier", "modifier-");
             String optionValue = SkyWarsReloaded.getMessaging().getMessage("items." + subOptionName);
 
