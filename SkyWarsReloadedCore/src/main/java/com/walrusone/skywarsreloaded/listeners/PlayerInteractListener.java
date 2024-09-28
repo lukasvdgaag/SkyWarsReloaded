@@ -60,7 +60,6 @@ public class PlayerInteractListener implements Listener {
             "Multiple functions of this plugin will fail to work properly until the WorldEdit configuration is re-created or the errors are corrected.";
 
     public PlayerInteractListener() {
-
         File f = new File(SkyWarsReloaded.get().getDataFolder().getAbsolutePath().replace("Skywars", "WorldEdit"), "config.yml");
         if (f.exists()) {
             FileConfiguration fc = YamlConfiguration.loadConfiguration(f);
@@ -485,25 +484,6 @@ public class PlayerInteractListener implements Listener {
                                         .format("maps.spawnRemoved"));
                             }
                         }
-                        /*CoordLoc loc = new CoordLoc(e.getBlock().getX(), e.getBlock().getY(), e.getBlock().getZ());
-                        if (map.getTeamSize() == 1) {
-                            List<CoordLoc> locs = map.spawnLocations.getOrDefault(0, Lists.newArrayList());
-                            for (int i = 0; i < locs.size(); i++) {
-                                CoordLoc l = locs.get(i);
-                                if (l.getX() == loc.getX() && l.getY() == loc.getY() && l.getZ() == loc.getZ()) {
-                                    locs.remove(i);
-                                    map.spawnLocations.put(0, locs);
-                                    e.getPlayer().sendMessage(new Messaging.MessageFormatter()
-                                            // 1 because human readable
-                                            .setVariable("num", "" + 1)
-                                            .setVariable("team", "" + i)
-                                            .setVariable("mapname", map.getDisplayName())
-                                            .format("maps.spawnRemoved"));
-                                    break;
-                                }
-                            }
-                        }*/
-
                     } else if (e.getBlock().getType().equals(Material.EMERALD_BLOCK)) {
                         boolean result = map.removeDeathMatchSpawn(blockLoc);
                         if (result) {
@@ -539,40 +519,48 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onBlockPlaced(BlockPlaceEvent e) {
-        GameMap gMap = MatchManager.get().getPlayerMap(e.getPlayer());
-        if (gMap == null) {
-            if (e.getBlockPlaced().getState() instanceof Chest) {
-                GameMap map = SkyWarsReloaded.getGameMapMgr().getMap(e.getPlayer().getWorld().getName());
-                if (map == null) {
-                    return;
-                }
-                if (map.isEditing()) {
-                    Location loc = e.getBlock().getLocation();
-                    Player player = e.getPlayer();
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            map.addChest((Chest) loc.getBlock().getState(), map.getChestPlacementType());
-                            if (map.getChestPlacementType() == ChestPlacementType.NORMAL) {
-                                player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.addChest"));
-                            } else if (map.getChestPlacementType() == ChestPlacementType.CENTER) {
-                                player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.addCenterChest"));
-                            }
-                        }
-                    }.runTaskLater(SkyWarsReloaded.get(), 2L);
+        GameMap gameMap = MatchManager.get().getPlayerMap(e.getPlayer());
+        if (gameMap != null || !(e.getBlockPlaced().getState() instanceof Chest)) {
+            return;
+        }
+
+        GameMap worldMap = SkyWarsReloaded.getGameMapMgr().getMap(e.getPlayer().getWorld().getName());
+        if (worldMap == null || !worldMap.isEditing()) {
+            return;
+        }
+
+        Location loc = e.getBlock().getLocation();
+        Player player = e.getPlayer();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                worldMap.addChest((Chest) loc.getBlock().getState(), worldMap.getChestPlacementType());
+                if (worldMap.getChestPlacementType() == ChestPlacementType.NORMAL) {
+                    player.sendMessage(new Messaging.MessageFormatter()
+                            .setVariable("mapname", worldMap.getDisplayName())
+                            .format("maps.addChest")
+                    );
+                } else if (worldMap.getChestPlacementType() == ChestPlacementType.CENTER) {
+                    player.sendMessage(new Messaging.MessageFormatter()
+                            .setVariable("mapname", worldMap.getDisplayName())
+                            .format("maps.addCenterChest")
+                    );
                 }
             }
-        }
+        }.runTaskLater(SkyWarsReloaded.get(), 2L);
     }
 
     @EventHandler
     public void onPlayerWalk(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        String playerUuid = player.getUniqueId().toString();
         for (GameMap gMap : SkyWarsReloaded.getGameMapMgr().getPlayableArenas(GameType.ALL)) {
-            if (gMap.getDeathMatchWaiters().contains(player.getUniqueId().toString())) {
-                if (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
-                    event.setCancelled(true);
-                }
+            if (!gMap.getDeathMatchWaiters().contains(playerUuid)) {
+                continue;
+            }
+
+            if (event.getFrom().getBlockX() != event.getTo().getBlockX() || event.getFrom().getBlockZ() != event.getTo().getBlockZ()) {
+                event.setCancelled(true);
             }
         }
     }
