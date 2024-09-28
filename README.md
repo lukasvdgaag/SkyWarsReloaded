@@ -1,18 +1,31 @@
-![Logo](https://gcnt.net/inc/img/logo-expanded.png)
-
 # SkyWarsReloaded
+
+*Created by [Devmart](https://devmart.net).*
+
 The most popular Skywars plugin ever built for Spigot and Bukkit!
 
-This plugin is based off the of the old SkywarsReloaded plugin (4.1.3), but adds more features, fixes, and 1.14-1.16 support! You can just update to this version without removing any of your current Skywars files. Everything works the same. Please note that the official/old Skywars plugin is no longer maintained. We will, however, continue to maintain this version until further notice!
+This plugin is a continuation of the original SkyWars plugin created by Walrusone (v4.1.3).
+New features, bug fixes, extensive improvements, and new Minecraft versions support (1.14 - 1.21+) are added to this plugin.
 
-[Link to the SpigotMC download page](https://gcnt.net/swr)<br>
-Check out the extension: [SkyWarsReloaded Extension](https://gcnt.net/swre)
+Please note that the old SkyWarsReloaded plugin is no longer being maintained by the original author and that this is the official replacement.
+We will continue to maintain this version until further notice, and community contributions are always welcome!
 
-*Want to see what we are working on or planning to add? Check out the [SkyWarsReloaded project board](https://github.com/users/lukasvdgaag/projects/2)!
+> [!TIP]  
+> **Want to support our work and help us maintain the plugin?**
+>
+> Donate to our PayPal account: [devmart.net/donate](https://devmart.net/donate)  
+> Or buy the [SkyWarsReloaded Extension](https://devmart.net/swre) to get access to more features for a small price!
 
-## Maven dependency
-**Repository**  
+*Want to see what we are working on or planning to add? Check out the [SkyWarsReloaded project board](https://github.com/users/lukasvdgaag/projects/2)!*
+
+## Development setup
+
+### Maven dependency
+
+**Repository**
+
 ```xml
+
 <repositories>
     <repository>
         <id>gcnt</id>
@@ -20,13 +33,69 @@ Check out the extension: [SkyWarsReloaded Extension](https://gcnt.net/swre)
     </repository>
 </repositories>
 ```
+
 **Dependency**
+
 ```xml
+
 <dependency>
     <groupId>net.gcnt</groupId>
     <artifactId>skywarsreloaded</artifactId>
     <version>5.6.1</version>
 </dependency>
+```
+
+### Toolchains
+
+In the latest versions of the plugin, we require toolchains to be set up in your `~/.m2/toolchains.xml` file.
+This is because we compile the plugin core in Java 8, while some of the NMS handlers require higher Java versions to be compiled.
+
+If your `~/.m2` directory does not yet contain a `toolchains.xml` file, create one.  
+Make sure that you have the following JDK versions installed: `1.8`, `16`, `17`, `22`.
+
+**Example `toolchains.xml` file**  
+*The target paths may differ depending on your operating system and Java installation.*
+
+```xml
+
+<toolchains>
+    <toolchain>
+        <type>jdk</type>
+        <provides>
+            <version>1.8</version>
+        </provides>
+        <configuration>
+            <jdkHome>/Library/Java/JavaVirtualMachines/jdk-1.8.jdk/Contents/Home</jdkHome>
+        </configuration>
+    </toolchain>
+    <toolchain>
+        <type>jdk</type>
+        <provides>
+            <version>16</version>
+        </provides>
+        <configuration>
+            <jdkHome>/Library/Java/JavaVirtualMachines/jdk-16.jdk/Contents/Home</jdkHome>
+        </configuration>
+    </toolchain>
+    <toolchain>
+        <type>jdk</type>
+        <provides>
+            <version>17</version>
+        </provides>
+        <configuration>
+            <jdkHome>/Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home</jdkHome>
+        </configuration>
+    </toolchain>
+    <toolchain>
+        <type>jdk</type>
+        <provides>
+            <version>22</version>
+        </provides>
+        <configuration>
+            <jdkHome>/Library/Java/JavaVirtualMachines/jdk-22.jdk/Contents/Home</jdkHome>
+        </configuration>
+    </toolchain>
+</toolchains>
 ```
 
 ## Installation
@@ -42,6 +111,7 @@ Check out the extension: [SkyWarsReloaded Extension](https://gcnt.net/swre)
 ## Requirements
 
 **Required Plugins**: *Skywars requires the following plugins*
+
 * WorldEdit
 
 **Optional Plugins**: *Skywars can use the following plugins but does not require them for the basic functions*
@@ -73,4 +143,10 @@ When asking for help, provide the necessary context required for people to help 
 3. An image or recording of your problem in-game, if possible.
 4. A description of what you have already tried.. We don't want to waste your time.
 
-[![Discord Logo](https://upload.wikimedia.org/wikipedia/sco/thumb/9/98/Discord_logo.svg/905px-Discord_logo.svg.png)](https://gcnt.net/discord)
+<a href="https://devmart.net/discord">
+<picture>
+    <source media="(prefers-color-scheme: dark)" srcset=" https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/653714c18aeaa62dfe96cd3f_636e0b5493894cf60b300587_full_logo_white_RGB.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/653714c1c624c0d37cd2d328_636e0b5061df290f5892d944_full_logo_black_RGB.svg">
+    <img alt="Discord logo" src="https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/653714c1c2d8d50382c7df8a_636e0b5061df29d55a92d945_full_logo_blurple_RGB.svg">
+</picture>
+</a>
