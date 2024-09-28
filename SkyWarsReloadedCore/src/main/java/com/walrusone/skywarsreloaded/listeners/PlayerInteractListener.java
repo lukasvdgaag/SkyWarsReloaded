@@ -34,7 +34,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -69,26 +72,27 @@ public class PlayerInteractListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInteract(PlayerInteractEvent e) {
         Player player = e.getPlayer();
-        if (MatchManager.get().getPlayerMap(player) != null) {
+        if (MatchManager.get().getPlayerMap(player) == null) {
+            return;
+        }
+        if (e.getItem() == null || !Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
+            return;
+        }
 
-            if (e.getItem() != null && Bukkit.getPluginManager().isPluginEnabled("WorldEdit")) {
-
-                try {
-                    if (navigationWand instanceof Integer) {
-                        if (e.getItem().getType().getId() == (int) navigationWand) e.setCancelled(true);
-                    } else if (e.getItem().getType().name().equalsIgnoreCase((String) navigationWand)) {
-                        e.setCancelled(true);
-                    }
-
-                    if (wandItem instanceof Integer) {
-                        if (e.getItem().getType().getId() == (int) wandItem) e.setCancelled(true);
-                    } else if (e.getItem().getType().name().equalsIgnoreCase((String) wandItem)) {
-                        e.setCancelled(true);
-                    }
-                } catch (IllegalArgumentException ex) {
-                    SkyWarsReloaded.get().getLogger().severe(legacyWEItemsErrorMessage);
-                }
+        try {
+            if (navigationWand instanceof Integer) {
+                if (e.getItem().getType().getId() == (int) navigationWand) e.setCancelled(true);
+            } else if (e.getItem().getType().name().equalsIgnoreCase((String) navigationWand)) {
+                e.setCancelled(true);
             }
+
+            if (wandItem instanceof Integer) {
+                if (e.getItem().getType().getId() == (int) wandItem) e.setCancelled(true);
+            } else if (e.getItem().getType().name().equalsIgnoreCase((String) wandItem)) {
+                e.setCancelled(true);
+            }
+        } catch (IllegalArgumentException ex) {
+            SkyWarsReloaded.get().getLogger().severe(legacyWEItemsErrorMessage);
         }
     }
 
@@ -205,28 +209,6 @@ public class PlayerInteractListener implements Listener {
                             SkyWarsReloaded.getIC().show(player, "spectatemenu");
                         }
                     }
-
-                    // TODO: Fix equip bug
-                    /*// Fix helmet appearing equipped
-                    if (event.isCancelled()) {
-
-                        final PlayerInventory pInv = player.getInventory();
-                        final ItemStack[] armorOriginal = pInv.getArmorContents();
-                        final ItemStack[] armor = pInv.getArmorContents();
-                        final ItemStack clickedItemClone = event.getItem().clone();
-
-                        replaceAllEmptyArmorByItem(pInv, armor, clickedItemClone);
-
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                // Apply for each
-                                //replaceAllEmptyArmorByItem(pInv, armorOriginal, null);
-                                // Update
-                                //player.updateInventory();
-                            }
-                        }.runTaskLater(SkyWarsReloaded.get(), 1);
-                    }*/
 
                     return;
                 }
@@ -352,7 +334,7 @@ public class PlayerInteractListener implements Listener {
                                     }
                                     player.openInventory(crate.getInventory());
                                     SkyWarsReloaded.get().getServer().getScheduler().runTaskLater(SkyWarsReloaded.get(), () -> {
-                                            SkyWarsReloaded.getNMS().playChestAction(block, true);
+                                        SkyWarsReloaded.getNMS().playChestAction(block, true);
                                     }, 1);
                                     return;
                                 }
@@ -483,8 +465,7 @@ public class PlayerInteractListener implements Listener {
                             }.runTaskLater(SkyWarsReloaded.get(), 2L);
                         }
                         player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", map.getDisplayName()).format("maps.removeChest"));
-                    }
-                    else if (e.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
+                    } else if (e.getBlock().getType().equals(Material.DIAMOND_BLOCK)) {
                         // Remove all spawns matching location and collect which ones were removed
                         Map<TeamCard, List<Integer>> result = map.removeSpawnsAtLocation(blockLoc);
 

@@ -38,6 +38,7 @@
         <module>v1_18_R2</module>
         <module>v1_19_R1</module>
         <module>v1_20_R1</module>
+        <module>v1_21_R1</module>
         <module>skywars-assembly</module>
     </modules>
 
@@ -95,6 +96,19 @@
                 <module>v1_18_R2</module>
                 <module>v1_19_R1</module>
                 <module>v1_20_R1</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>java22</id>
+            <properties>
+                <maven.compiler.source>22</maven.compiler.source>
+                <maven.compiler.target>22</maven.compiler.target>
+            </properties>
+            <activation>
+                <jdk>22</jdk>
+            </activation>
+            <modules>
+                <module>v1_21_R1</module>
             </modules>
         </profile>
     </profiles>

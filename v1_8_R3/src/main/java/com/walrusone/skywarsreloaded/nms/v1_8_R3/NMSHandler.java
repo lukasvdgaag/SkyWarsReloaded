@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.nms.v1_8_R3;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.signs.SWRSign;
 import com.walrusone.skywarsreloaded.nms.NMS;
 import org.bukkit.*;
@@ -114,7 +115,12 @@ public class NMSHandler implements NMS {
         ItemMeta addItemMeta = addItem.getItemMeta();
         addItemMeta.setDisplayName(message);
         addItemMeta.setLore(lore);
-        addItemMeta.addItemFlags(ItemFlag.values());
+
+        if (SkyWarsReloaded.getNMS().getVersion() < 21) {
+            addItemMeta.addItemFlags(ItemFlag.values());
+        } else {
+            addItemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.valueOf("HIDE_ADDITIONAL_TOOLTIP"));
+        }
         addItem.setItemMeta(addItemMeta);
         return addItem;
     }
