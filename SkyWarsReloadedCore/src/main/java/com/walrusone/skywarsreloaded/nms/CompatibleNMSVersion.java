@@ -65,9 +65,18 @@ public enum CompatibleNMSVersion {
         return nmsImplVersion;
     }
 
-    static CompatibleNMSVersion getLatestSupported() {
-        CompatibleNMSVersion[] values = CompatibleNMSVersion.values();
-        return values[values.length - 1];
+    static CompatibleNMSVersion getLatestSupported(Integer currentFeatureVersion) {
+        // iterate over the available NMS versions and get the latest one that matches the current feature version (not higher than the current version)
+        if (currentFeatureVersion != null) {
+            for (int i = CompatibleNMSVersion.values().length - 1; i >= 0; i--) {
+                CompatibleNMSVersion version = CompatibleNMSVersion.values()[i];
+                if (version.getFeatureVersion() <= currentFeatureVersion) {
+                    return version;
+                }
+            }
+        }
+
+        return CompatibleNMSVersion.values()[CompatibleNMSVersion.values().length - 1];
     }
 
     public int getFeatureVersion() {

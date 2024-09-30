@@ -7,3 +7,4 @@ SWR.iml
 .flattened-pom.xml
 dependency-reduced-pom.xml
 settings.xml
+.run/

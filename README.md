@@ -51,7 +51,7 @@ In the latest versions of the plugin, we require toolchains to be set up in your
 This is because we compile the plugin core in Java 8, while some of the NMS handlers require higher Java versions to be compiled.
 
 If your `~/.m2` directory does not yet contain a `toolchains.xml` file, create one.  
-Make sure that you have the following JDK versions installed: `1.8`, `16`, `17`, `22`.
+Make sure that you have the following JDK versions installed: `1.8`, `16`, `17`.
 
 **Example `toolchains.xml` file**  
 *The target paths may differ depending on your operating system and Java installation.*
@@ -89,10 +89,10 @@ Make sure that you have the following JDK versions installed: `1.8`, `16`, `17`,
     <toolchain>
         <type>jdk</type>
         <provides>
-            <version>22</version>
+            <version>21</version>
         </provides>
         <configuration>
-            <jdkHome>/Library/Java/JavaVirtualMachines/jdk-22.jdk/Contents/Home</jdkHome>
+            <jdkHome>/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home</jdkHome>
         </configuration>
     </toolchain>
 </toolchains>
