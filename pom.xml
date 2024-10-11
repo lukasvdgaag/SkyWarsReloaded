@@ -108,6 +108,7 @@
                 <jdk>21</jdk>
             </activation>
             <modules>
+                <module>v1_21_R1</module>
             </modules>
         </profile>
     </profiles>
@@ -155,7 +156,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.13.0</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
