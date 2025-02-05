@@ -22,20 +22,29 @@ public class PingListener implements org.bukkit.event.Listener {
         }
         if (SkyWarsReloaded.get().serverLoaded()) {
             ImmutableList<GameMap> mapsCopy = SkyWarsReloaded.getGameMapMgr().getMapsCopy();
-            if (mapsCopy.size() > 0) {
+            if (!mapsCopy.isEmpty()) {
                 GameMap game = mapsCopy.get(0);
-                serverListPingEvent.setMotd(new Messaging.MessageFormatter().setVariable("matchstate", game.getMatchState().toString())
-                        .setVariable("playercount", "" + game.getPlayerCount()).setVariable("maxplayers", "" + game.getMaxPlayers())
-                        .setVariable("displayname", game.getDisplayName()).format("bungee.motd"));
+                serverListPingEvent.setMotd(new Messaging.MessageFormatter()
+                        .setVariable("matchstate", game.getMatchState().toString())
+                        .setVariable("playercount", "" + game.getPlayerCount())
+                        .setVariable("maxplayers", "" + game.getMaxPlayers())
+                        .setVariable("displayname", game.getDisplayName())
+                        .format("bungee.motd"));
             } else {
-                serverListPingEvent.setMotd(new Messaging.MessageFormatter().setVariable("matchstate", MatchState.ENDING.toString())
-                        .setVariable("playercount", "0").setVariable("maxplayers", "0")
-                        .setVariable("displayname", "null").format("bungee.motd"));
+                serverListPingEvent.setMotd(new Messaging.MessageFormatter()
+                        .setVariable("matchstate", MatchState.ENDING.toString())
+                        .setVariable("playercount", "0")
+                        .setVariable("maxplayers", "0")
+                        .setVariable("displayname", "null")
+                        .format("bungee.motd"));
             }
         } else {
-            serverListPingEvent.setMotd(new Messaging.MessageFormatter().setVariable("matchstate", MatchState.ENDING.toString())
-                    .setVariable("playercount", "0").setVariable("maxplayers", "0")
-                    .setVariable("displayname", "null").format("bungee.motd"));
+            serverListPingEvent.setMotd(new Messaging.MessageFormatter()
+                    .setVariable("matchstate", MatchState.ENDING.toString())
+                    .setVariable("playercount", "0")
+                    .setVariable("maxplayers", "0")
+                    .setVariable("displayname", "null")
+                    .format("bungee.motd"));
         }
     }
 

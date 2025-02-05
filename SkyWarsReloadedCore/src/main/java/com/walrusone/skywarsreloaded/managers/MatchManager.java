@@ -274,10 +274,12 @@ public class MatchManager {
             String playerCount = gameMap.getMatchState() == MatchState.WAITINGLOBBY ? gameMap.getWaitingPlayers().size() + "" : String.valueOf(pCard.getJoinIndex() + 1); // String.valueOf(gameMap.getAllPlayers().size());
             // Send join message to all
             for (final Player p : gameMap.getAllPlayers()) {
-                p.sendMessage(new Messaging.MessageFormatter().setVariable("player", player.getDisplayName())
+                p.sendMessage(new Messaging.MessageFormatter()
+                        .setVariable("player", player.getDisplayName())
                         .setVariable("players", playerCount)
                         .setVariable("playercount", playerCount)
-                        .setVariable("maxplayers", "" + gameMap.getMaxPlayers()).format("game.waitstart-joined-the-game"));
+                        .setVariable("maxplayers", "" + gameMap.getMaxPlayers())
+                        .format("game.waitstart-joined-the-game"));
             }
         }
 

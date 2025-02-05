@@ -445,7 +445,7 @@ public class GameMap {
             } else { // Warn console that setup failed
                 SkyWarsReloaded.get().getLogger().warning("Failed to send reservation for " + player.getName());
             }
-        // else if in lobby waiting mode
+            // else if in lobby waiting mode
         } else if (getMatchState() == MatchState.WAITINGLOBBY) {
             PlayerStat.resetScoreboard(player);
             addWaitingPlayer(player);
@@ -645,7 +645,6 @@ public class GameMap {
     }
 
     /**
-     *
      * @param player Player context for the request. Can be null. Not used in SWR by default. API only.
      * @return true if the player can be added to the match
      */
@@ -945,38 +944,41 @@ public class GameMap {
         if (inEditing) {
             saveMap(sender);
         }
-        if (spawnLocations.size() > 1) {
-            int maxPlayers = getMaxPlayers();
-            int actualMaxPlayers = teamCards.size() * teamSize;
 
-            if ((teamSize > 1 && maxPlayers == actualMaxPlayers || !SkyWarsReloaded.getCfg().isUseSeparateCages()) || (teamSize == 1 && maxPlayers > 1)) {
-                if (spectateSpawn == null && SkyWarsReloaded.getCfg().spectateEnable()) {
-                    SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - No spectator spawn has been set. Set it using '/swm spawn spec'");
-                    registered = false;
-                    return 3;
-                }
-                if (waitingLobbySpawn == null && teamSize > 1) {
-                    SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - No waiting lobby spawn has been set. This is required for team games. Set it using '/swm spawn lobby'");
-                    registered = false;
-                    return 4;
-                }
-
-                registered = true;
-                gameboard = new GameBoard(this);
-                refreshMap();
-                getJoinQueue().start();
-                SkyWarsReloaded.get().getLogger().info("Registered Map " + name + "!");
-                return 0;
-            } else {
-                registered = false;
-                SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - Not all teams have enough spawns. There are only " + maxPlayers + "/" + actualMaxPlayers + " spawns set.");
-                return 1;
-            }
-        } else {
+        if (spawnLocations.size() < 2) {
             registered = false;
             SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - Map must have at least 2 Spawn Points");
             return 2;
         }
+
+        int maxPlayers = getMaxPlayers();
+        int actualMaxPlayers = teamCards.size() * teamSize;
+
+        boolean notEnoughSpawns = teamSize > 1 && (maxPlayers != actualMaxPlayers) && SkyWarsReloaded.getCfg().isUseSeparateCages();
+        boolean soloModeInvalid = teamSize == 1 && maxPlayers <= 1;
+
+        if (notEnoughSpawns || soloModeInvalid) {
+            registered = false;
+            SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - Not all teams have enough spawns. There are only " + maxPlayers + "/" + actualMaxPlayers + " spawns set.");
+            return 1;
+        }
+        if (spectateSpawn == null && SkyWarsReloaded.getCfg().spectateEnable()) {
+            SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - No spectator spawn has been set. Set it using '/swm spawn spec'");
+            registered = false;
+            return 3;
+        }
+        if (waitingLobbySpawn == null && teamSize > 1) {
+            SkyWarsReloaded.get().getLogger().info("Could Not Register Map: " + name + " - No waiting lobby spawn has been set. This is required for team games. Set it using '/swm spawn lobby'");
+            registered = false;
+            return 4;
+        }
+
+        registered = true;
+        gameboard = new GameBoard(this);
+        refreshMap();
+        getJoinQueue().start();
+        SkyWarsReloaded.get().getLogger().info("Registered Map " + name + "!");
+        return 0;
     }
 
     /*Inventories*/
@@ -1042,8 +1044,7 @@ public class GameMap {
             File source = new File(maps, name);
 
             worldManager.copyWorld(source, target);
-        }
-        else {
+        } else {
             worldManager.unloadWorld(mapName, false);
         }
 
@@ -1148,7 +1149,7 @@ public class GameMap {
                                 org.bukkit.material.Chest chestData = (org.bukkit.material.Chest) chest.getData();
                                 BlockFace facing = chestData.getFacing();
                                 trappedChestBlock.setType(Material.CHEST);
-                                ((org.bukkit.material.Chest)trappedChestBlock.getState().getData()).setFacingDirection(facing);
+                                ((org.bukkit.material.Chest) trappedChestBlock.getState().getData()).setFacingDirection(facing);
                                 // Add the chest as center
                                 addChest(chest, ChestPlacementType.CENTER);
                             }
@@ -1259,7 +1260,7 @@ public class GameMap {
         if (SkyWarsReloaded.getCfg().bungeeMode()) {
             String playerCount = "" + this.getAlivePlayers().size();
             String maxPlayers = "" + this.getMaxPlayers();
-            String gameStarted = "" + this.matchState.toString();
+            String gameStarted = this.matchState.toString();
             ArrayList<String> messages = new ArrayList<>();
             messages.add("ServerUpdate");
             messages.add(SkyWarsReloaded.get().getServerName());
@@ -1455,11 +1456,13 @@ public class GameMap {
      * Returns the maximum number of players that can join a match
      */
     public int getMaxPlayers() {
-        int i = 0;
+        boolean separateCages = SkyWarsReloaded.getCfg().isUseSeparateCages();
+
+        int spawns = 0;
         for (List<CoordLoc> coords : spawnLocations.values()) {
-            i += coords.size();
+            spawns += coords.size();
         }
-        return i;
+        return spawns * (separateCages ? 1 : teamSize);
     }
 
     public void setThunderStorm(boolean b) {
@@ -1578,6 +1581,7 @@ public class GameMap {
 
     /**
      * Add a team slot to the current GameMap
+     *
      * @param defaultSpawns List of initial CoordLocs to assign to the team card being created
      */
     public TeamCard addTeamCard(ArrayList<CoordLoc> defaultSpawns) {
@@ -1707,11 +1711,11 @@ public class GameMap {
 
     /**
      * Remove team slot by spawn location
+     *
      * @param loc Bukkit location of the spawn
-     * @return
-     *      Map of which, Keys are the teams removed and
-     *      Values are the indexes of the spawn location removed from within that team
-     *          (if no more spawns are left, team is completely removed from the map.)
+     * @return Map of which, Keys are the teams removed and
+     * Values are the indexes of the spawn location removed from within that team
+     * (if no more spawns are left, team is completely removed from the map.)
      */
     public Map<TeamCard, List<Integer>> removeSpawnsAtLocation(Location loc) {
         CoordLoc locToRemove = new CoordLoc(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
@@ -2224,6 +2228,7 @@ public class GameMap {
         public boolean isValidName() {
             return this.validName;
         }
+
         @Nullable
         public World getWorld() {
             return this.world;

@@ -670,7 +670,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                         GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMapsCopy().get(0);
                         String playerCount = "" + gMap.getAlivePlayers().size();
                         String maxPlayers = "" + gMap.getMaxPlayers();
-                        String gameStarted = "" + gMap.getMatchState().toString();
+                        String gameStarted = gMap.getMatchState().toString();
                         ArrayList<String> messages = new ArrayList<>();
                         messages.add("ServerUpdate");
                         messages.add(servername);

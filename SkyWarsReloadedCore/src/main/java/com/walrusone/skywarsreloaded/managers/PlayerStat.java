@@ -258,7 +258,7 @@ public class PlayerStat {
                         .replace("{time}", "" + Util.get().getFormattedTime(gMap.getTimer()))
                         .replace("{aliveplayers}", "" + gMap.getAlivePlayers().size())
                         .replace("{players}", "" + currentPlayers)
-                        .replace("{maxplayers}", "" + gMap.getTeamCards().size() * gMap.getTeamSize())
+                        .replace("{maxplayers}", "" + gMap.getMaxPlayers())
                         .replace("{winner}", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(gMap,0) : getWinningTeamName(gMap))
                         .replace("{winner1}", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(gMap,0) : getWinningTeamName(gMap))
                         .replace("{winner2}", SkyWarsReloaded.getCfg().usePlayerNames() ? getWinnerName(gMap,1) : "remove")
