@@ -546,15 +546,33 @@ public class MatchManager {
     private void selectKit(GameMap gameMap) {
         if (SkyWarsReloaded.getCfg().kitVotingEnabled()) {
             gameMap.getKitVoteOption().getVotedKit();
-            for (final Player player : gameMap.getAlivePlayers()) {
+            for (Player player : gameMap.getAlivePlayers()) {
                 GameKit.giveKit(player, gameMap.getKit());
             }
         } else {
-            for (final Player player : gameMap.getAlivePlayers()) {
-                GameKit.giveKit(player, gameMap.getSelectedKit(player));
+            for (Player player : gameMap.getAlivePlayers()) {
+                GameKit selectedKit = gameMap.getSelectedKit(player);
+
+                if (selectedKit == null) {
+                    // 1. Carga el kit guardado
+                    String savedKitName = KitStorage.getSavedKit(player.getUniqueId());
+                    if (savedKitName != null) {
+                        selectedKit = GameKit.getKitByName(savedKitName);
+                    }
+
+                    // 2. Si no hay guardado, asigna el kit por defecto de la config
+                    if (selectedKit == null) {
+                        selectedKit = GameKit.getKitByName(SkyWarsReloaded.getCfg().getDefaultKit());
+                    }
+                }
+
+                if (selectedKit != null) {
+                    GameKit.giveKit(player, selectedKit);
+                }
             }
         }
     }
+
 
     private void matchCountdown(final GameMap gameMap) {
         if (debug) {

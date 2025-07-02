@@ -66,6 +66,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private MapCmdManager mapCmdManager = null;
     private PartyCmdManager partyCmdManager = null;
     private SWTabCompleter swTabCompleter = null;
+    private KitStorage kitStorage = null;
     private ChestManager cm = null;
     private WorldManager wm = null;
     private Messaging messaging;
@@ -754,6 +755,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     public SWTabCompleter getSwTabCompleter() {
         return this.swTabCompleter;
     }
+
+    public KitStorage getKitStorage() {return this.kitStorage;}
 
     public String getServerName() {
         return servername;

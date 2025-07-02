@@ -67,6 +67,8 @@ clearInventoryOnLobbyJoin: true
 # You can also use 'mm' minutes with leading zero's when <10, and 'm' without leading zero's when <10.
 timeFormat: simplified
 
+default-kit: none #Name of the starter kit
+
 # All SlimeWorldManager Option
 # SlimeWorldManager is an alternate plugin for world loading
 # It loads worlds async, with less lag, and stores worlds more efficient and lightweight

@@ -274,6 +274,8 @@ public class Config {
     private boolean displayTimerOnLevelbar = true;
     private String teamJoinSound;
 
+    private String defaultKit;
+
     public Config() {
         load();
     }
@@ -297,6 +299,8 @@ public class Config {
             promptResource = SkyWarsReloaded.get().getConfig().getBoolean("promptForResourcePackOnJoin");
             clearInventoryOnLobbyJoin = SkyWarsReloaded.get().getConfig().getBoolean("clearInventoryOnLobbyJoin");
             timeFormat = SkyWarsReloaded.get().getConfig().getString("timeFormat");
+
+            defaultKit = SkyWarsReloaded.get().getConfig().getString("default-kit", null);
 
             lobbyBoardEnabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyBoardEnabled");
             protectlobby = SkyWarsReloaded.get().getConfig().getBoolean("enabledLobbyGuard");
@@ -1389,6 +1393,14 @@ public class Config {
     }
 
     public String getTeamJoinSound() { return teamJoinSound; }
+
+    public String getDefaultKit() {
+        if (defaultKit != null && !defaultKit.equalsIgnoreCase("null")) {
+            return defaultKit;
+        } else {
+            return null;
+        }
+    }
 
 }
 

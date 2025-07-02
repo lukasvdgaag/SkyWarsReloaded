@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.events.SkyWarsSelectKitEvent;
 import com.walrusone.skywarsreloaded.game.GameMap;
+import com.walrusone.skywarsreloaded.managers.KitStorage;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -88,6 +89,7 @@ public class KitSelectionMenu {
                     player.closeInventory();
                     Util.get().playSound(player, player.getLocation(), SkyWarsReloaded.getCfg().getConfirmeSelctionSound(), 1, 1);
                     gMap.setKitVote(player, kit);
+                    KitStorage.saveKit(player.getUniqueId(), kit.getName());
                     Bukkit.getPluginManager().callEvent(new SkyWarsSelectKitEvent(player, gMap, kit));
                     player.sendMessage(new Messaging.MessageFormatter().setVariable("kit", kit.getColorName()).format("game.select-kit"));
                 });
