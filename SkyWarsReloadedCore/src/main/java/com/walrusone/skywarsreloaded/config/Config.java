@@ -300,7 +300,7 @@ public class Config {
             clearInventoryOnLobbyJoin = SkyWarsReloaded.get().getConfig().getBoolean("clearInventoryOnLobbyJoin");
             timeFormat = SkyWarsReloaded.get().getConfig().getString("timeFormat");
 
-            defaultKit = SkyWarsReloaded.get().getConfig().getString("default-kit", null);
+            defaultKit = SkyWarsReloaded.get().getConfig().getString("defaultKit", "null");
 
             lobbyBoardEnabled = SkyWarsReloaded.get().getConfig().getBoolean("lobbyBoardEnabled");
             protectlobby = SkyWarsReloaded.get().getConfig().getBoolean("enabledLobbyGuard");

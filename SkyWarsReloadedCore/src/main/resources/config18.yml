@@ -18,7 +18,7 @@ enabledLobbyGuard: false
 economyEnabled: false
 clearInventoryOnLobbyJoin: true
 timeFormat: simplified
-default-kit: none #Name of the starter kit
+defaultKit: "null" #Name of the starter kit
 slimeworldmanager:
   enable: false
   source: file
