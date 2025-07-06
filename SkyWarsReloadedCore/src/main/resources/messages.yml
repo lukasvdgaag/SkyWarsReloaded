@@ -295,6 +295,8 @@ menu:
   joinsinglegame-menu-title: '&8Single SkyWars Games'
   jointeamgame-menu-title: '&8Team SkyWars Games'
   teamselection-menu-title: '&8Choose A Team'
+  teamselection-menu-alredy_in_team: "&cYou are already on that team"
+  teamselection-menu-join: "&eYou joined team {team}"
   teamspectate-menu-title: '&5Spectate Team SkyWars Games'
   viewteams: '&7Right click to view the teams.'
   spectategame-menu-title: '&8Spectate Single SkyWars Games'
