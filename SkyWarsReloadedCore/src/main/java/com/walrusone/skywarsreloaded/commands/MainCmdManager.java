@@ -32,6 +32,7 @@ public class MainCmdManager implements CommandExecutor, SWRCmdManagerAPI {
         admincmds.add(new HoloRemoveCmd("sw"));
 
         pcmds.add(new SWJoinCmd("sw"));
+        pcmds.add(new SWJoinMenuCmd("sw"));
         pcmds.add(new SWQuitCmd("sw"));
         pcmds.add(new SWStatsCmd("sw"));
         pcmds.add(new SWTopCmd("sw"));
