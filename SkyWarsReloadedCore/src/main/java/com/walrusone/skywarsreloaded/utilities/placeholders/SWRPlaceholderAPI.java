@@ -75,8 +75,24 @@ public class SWRPlaceholderAPI extends PlaceholderExpansion {
             } else {
                 return "0";
             }
-        }
-        else {
+        } else if (identifier.equalsIgnoreCase("players_playing")) {
+            int total = 0;
+            for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                if (map.getMatchState() == MatchState.PLAYING) {
+                    total += map.getAlivePlayers().size();
+                }
+            }
+            return String.valueOf(total);
+        } else if (identifier.equalsIgnoreCase("players_waiting")) {
+            int total = 0;
+            for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                MatchState state = map.getMatchState();
+                if (state == MatchState.WAITINGLOBBY || state == MatchState.WAITINGSTART) {
+                    total += map.getAllPlayers().size();
+                }
+            }
+            return String.valueOf(total);
+        } else {
             return null;
         }
 
