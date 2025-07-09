@@ -474,6 +474,7 @@ public class PlayerManager {
         PlayerStat loserData = PlayerStat.getPlayerStats(player.getUniqueId().toString());
         if (loserData != null) {
             loserData.setDeaths(loserData.getDeaths() + 1);
+            loserData.setLosts(loserData.getLosses() + 1); // Añadimos aquí la derrota
         }
     }
 

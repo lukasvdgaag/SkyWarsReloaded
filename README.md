@@ -41,3 +41,4 @@ We will continue to maintain this version until further notice, and community co
 - Added those placeholders by game type `%swr_players_playing_solo%`, `%swr_players_waiting_solo%`, `%swr_players_playing_team%`, `%swr_players_waiting_team%`
 - Spectators can now teleport to players
 - Error "Chat validation error" fixed
+- Losses count fixed
