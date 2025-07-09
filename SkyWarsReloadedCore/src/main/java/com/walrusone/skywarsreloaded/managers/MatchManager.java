@@ -664,22 +664,16 @@ public class MatchManager {
 
                         final PlayerStat loserData = PlayerStat.getPlayerStats(pLoserUuid.toString());
 
-                        // This is ugly and far (furthest) from perfect but better than no attempt at all...
+                        // Aquí se asigna la derrota
                         if (loserData == null) {
                             server.getScheduler().runTaskAsynchronously(plugin, () -> {
-                                // Load player data
                                 PlayerStat pStats = new PlayerStat(pLoserUuid, server.getOfflinePlayer(pLoserUuid).getName());
-                                // Load player data
                                 pStats.loadStats(() -> {
                                     pStats.setLosts(pStats.getLosses() + 1);
                                     pStats.saveStats(() -> PlayerStat.removePlayer(pStats.getId()));
                                 });
                             });
                         } else {
-                            if (debug) {
-                                Util.get().logToFile(getDebugName(gameMap) + ChatColor.YELLOW + "Adding loss to " + pLoserUuid);
-                            }
-
                             loserData.setLosts(loserData.getLosses() + 1);
                         }
                     }

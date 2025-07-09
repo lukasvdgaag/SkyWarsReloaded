@@ -33,7 +33,7 @@ public class SpectateListener implements org.bukkit.event.Listener {
         if ((gameMap == null) || (player.hasPermission("sw.opteleport"))) {
             return;
         }
-        if (e.getCause() != TeleportCause.END_PORTAL) {
+        if (!(e.getCause() == TeleportCause.END_PORTAL || e.getCause() == TeleportCause.SPECTATE)) {
             e.setCancelled(true);
         }
     }

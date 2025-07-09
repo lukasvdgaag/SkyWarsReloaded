@@ -50,7 +50,8 @@ public class ChatListener implements Listener {
     @EventHandler
     public void onAsyncPlayerChatEvent(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        UUID uuid = event.getPlayer().getUniqueId();
+        UUID uuid = player.getUniqueId();
+
         if (chatList.containsKey(uuid)) {
             if (Math.abs((System.currentTimeMillis() - chatList.get(uuid))) < 20000) {
                 ChatListener.chatList.remove(uuid);
@@ -59,9 +60,13 @@ public class ChatListener implements Listener {
                 GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMap(settings[0]);
                 String setting = settings[1];
                 String variable = event.getMessage();
+
                 if (gMap != null && setting.equals("display")) {
                     gMap.setDisplayName(variable);
-                    player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", gMap.getName()).setVariable("displayname", variable).format("maps.name"));
+                    player.sendMessage(new Messaging.MessageFormatter()
+                            .setVariable("mapname", gMap.getName())
+                            .setVariable("displayname", variable)
+                            .format("maps.name"));
                     new BukkitRunnable() {
                         @Override
                         public void run() {
@@ -71,7 +76,10 @@ public class ChatListener implements Listener {
                     SkyWarsReloaded.getIC().show(player, gMap.getArenaKey());
                 } else if (gMap != null && setting.equalsIgnoreCase("creator")) {
                     gMap.setCreator(variable);
-                    player.sendMessage(new Messaging.MessageFormatter().setVariable("mapname", gMap.getName()).setVariable("creator", variable).format("maps.creator"));
+                    player.sendMessage(new Messaging.MessageFormatter()
+                            .setVariable("mapname", gMap.getName())
+                            .setVariable("creator", variable)
+                            .format("maps.creator"));
                     new BukkitRunnable() {
                         @Override
                         public void run() {
@@ -85,8 +93,22 @@ public class ChatListener implements Listener {
                 ChatListener.chatList.remove(uuid);
                 ChatListener.toChange.remove(uuid);
             }
+            return;
         }
+
+        // Solo limpiar el mensaje si NO está editando nada
+        String cleanMessage = cleanMessage(event.getMessage());
+        event.setMessage(cleanMessage);
     }
+
+    private String cleanMessage(String message) {
+        // Elimina caracteres de control y no imprimibles
+        message = message.replaceAll("[\\x00-\\x1F\\x7F]", "");
+        // Opcional: elimina caracteres que no sean UTF-8 estándar (ajusta según necesidad)
+        message = message.replaceAll("[^\\x20-\\x7E\\u00A0-\\uFFFF]", "");
+        return message;
+    }
+
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
@@ -247,6 +269,7 @@ public class ChatListener implements Listener {
             customFormat = PlaceholderAPI.setPlaceholders(player, customFormat);
         }
 
+        customFormat = cleanMessage(customFormat);
         // Apply color
         customFormat = ChatColor.translateAlternateColorCodes('&', customFormat);
 

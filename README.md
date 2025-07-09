@@ -38,3 +38,6 @@ We will continue to maintain this version until further notice, and community co
 - Messages added to config
 - New command `/sw joinmenu <solo/team>`. permission: `sw.joinmenu` (default). Players can open join menu
 - New Placeholders `%swr_players_playing%` (players ingame) `%swr_players_waiting%` (players waiting)
+- Added those placeholders by game type `%swr_players_playing_solo%`, `%swr_players_waiting_solo%`, `%swr_players_playing_team%`, `%swr_players_waiting_team%`
+- Spectators can now teleport to players
+- Error "Chat validation error" fixed

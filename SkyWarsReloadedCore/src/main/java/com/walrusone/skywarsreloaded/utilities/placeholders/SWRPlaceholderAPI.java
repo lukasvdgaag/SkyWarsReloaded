@@ -92,6 +92,47 @@ public class SWRPlaceholderAPI extends PlaceholderExpansion {
                 }
             }
             return String.valueOf(total);
+        } else if (identifier.equalsIgnoreCase("players_playing_solo")) {
+            int total = 0;
+            for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                if (map.getTeamSize() == 1 && map.getMatchState() == MatchState.PLAYING) {
+                    total += map.getAlivePlayers().size();
+                }
+            }
+            return String.valueOf(total);
+
+        } else if (identifier.equalsIgnoreCase("players_playing_team")) {
+            int total = 0;
+            for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                if (map.getTeamSize() > 1 && map.getMatchState() == MatchState.PLAYING) {
+                    total += map.getAlivePlayers().size();
+                }
+            }
+            return String.valueOf(total);
+
+        } else if (identifier.equalsIgnoreCase("players_waiting_solo")) {
+            int total = 0;
+            for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                if (map.getTeamSize() == 1) {
+                    MatchState state = map.getMatchState();
+                    if (state == MatchState.WAITINGLOBBY || state == MatchState.WAITINGSTART) {
+                        total += map.getAllPlayers().size();
+                    }
+                }
+            }
+            return String.valueOf(total);
+
+        } else if (identifier.equalsIgnoreCase("players_waiting_team")) {
+            int total = 0;
+            for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                if (map.getTeamSize() > 1) {
+                    MatchState state = map.getMatchState();
+                    if (state == MatchState.WAITINGLOBBY || state == MatchState.WAITINGSTART) {
+                        total += map.getAllPlayers().size();
+                    }
+                }
+            }
+            return String.valueOf(total);
         } else {
             return null;
         }
