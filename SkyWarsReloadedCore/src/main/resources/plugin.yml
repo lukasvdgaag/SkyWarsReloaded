@@ -3,7 +3,7 @@ main: com.walrusone.skywarsreloaded.SkyWarsReloaded
 version: ${revision}
 api-version: 1.13
 website: https://gcnt.net/
-author: GaagjesCraft Network Team (GCNT)
+author: Forked by Rexi666
 softdepend:
   - Vault
   - PlaceholderAPI
@@ -115,6 +115,9 @@ permissions:
       sw.quit: true
   sw.join:
     description: Allows a player to use sw join command.
+    default: true
+  sw.joinmenu:
+    description: Allows a player to use sw joinmenu command.
     default: true
   sw.spectate:
     description: Allows a player to use spectate using the spectate menu and the spectate command.

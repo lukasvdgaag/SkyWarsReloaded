@@ -352,4 +352,14 @@ public class GameKit {
         this.lockedLore = lore;
     }
 
+    public static GameKit getKitByName(String name) {
+        for (GameKit kit : kits) {
+            if (kit.getName().equalsIgnoreCase(name)) {
+                return kit;
+            }
+        }
+        return null;
+    }
+
+
 }

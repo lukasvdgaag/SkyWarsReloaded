@@ -2229,5 +2229,4 @@ public class GameMap {
             return this.world;
         }
     }
-
 }

@@ -176,7 +176,7 @@ public class TeamSelectionMenu {
                     if (tc != null) {
                         if (tc.getPosition() == event.getSlot()) {
                             // send same team error message
-                            player.sendMessage(ChatColor.RED + "You are already in that team!");
+                            player.sendMessage(new Messaging.MessageFormatter().format("menu.teamselection-menu-alredy_in_team"));
                             return;
                         }
                         PlayerCard pc = gMap.getPlayerCard(player);
@@ -208,7 +208,8 @@ public class TeamSelectionMenu {
 
                     Bukkit.getPluginManager().callEvent(new SkyWarsSelectTeamEvent(player, gMap, tCard));
                     // +1 position for index to be human readable
-                    player.sendMessage(ChatColor.YELLOW + "You joined team " + (tCard.getPosition()+1));
+                    int realTeam = tCard.getPosition()+1;
+                    player.sendMessage(new Messaging.MessageFormatter().setVariable("team", "" + realTeam).format("menu.teamselection-menu-join"));
                     player.playSound(player.getLocation(), Sound.valueOf(SkyWarsReloaded.getCfg().getTeamJoinSound()), 1, 1);
                     player.closeInventory();
                     SkyWarsReloaded.getIC().getMenu(gMap.getName() + "teamselect").update();

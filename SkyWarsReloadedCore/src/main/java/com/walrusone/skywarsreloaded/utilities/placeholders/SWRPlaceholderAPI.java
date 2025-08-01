@@ -2,6 +2,8 @@ package com.walrusone.skywarsreloaded.utilities.placeholders;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
+import com.walrusone.skywarsreloaded.enums.MatchState;
+import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.managers.Leaderboard;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Util;
@@ -66,8 +68,72 @@ public class SWRPlaceholderAPI extends PlaceholderExpansion {
         } else if (identifier.equalsIgnoreCase("win_loss")) {
             double stat1 = (double) stat.getWins() / (double) stat.getLosses();
             return String.format("%1$,.2f", stat1);
-        }
-        else {
+        } else if (identifier.equalsIgnoreCase("time")) {
+            GameMap gameMap = SkyWarsReloaded.get().getMatchManager().getPlayerMap(p);
+            if (gameMap != null && gameMap.getMatchState() == MatchState.PLAYING) {
+                return "" + gameMap.getTimer();
+            } else {
+                return "0";
+            }
+        } else if (identifier.equalsIgnoreCase("players_playing")) {
+            int total = 0;
+            for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                if (map.getMatchState() == MatchState.PLAYING) {
+                    total += map.getAlivePlayers().size();
+                }
+            }
+            return String.valueOf(total);
+        } else if (identifier.equalsIgnoreCase("players_waiting")) {
+            int total = 0;
+            for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                MatchState state = map.getMatchState();
+                if (state == MatchState.WAITINGLOBBY || state == MatchState.WAITINGSTART) {
+                    total += map.getAllPlayers().size();
+                }
+            }
+            return String.valueOf(total);
+        } else if (identifier.equalsIgnoreCase("players_playing_solo")) {
+            int total = 0;
+            for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                if (map.getTeamSize() == 1 && map.getMatchState() == MatchState.PLAYING) {
+                    total += map.getAlivePlayers().size();
+                }
+            }
+            return String.valueOf(total);
+
+        } else if (identifier.equalsIgnoreCase("players_playing_team")) {
+            int total = 0;
+            for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                if (map.getTeamSize() > 1 && map.getMatchState() == MatchState.PLAYING) {
+                    total += map.getAlivePlayers().size();
+                }
+            }
+            return String.valueOf(total);
+
+        } else if (identifier.equalsIgnoreCase("players_waiting_solo")) {
+            int total = 0;
+            for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                if (map.getTeamSize() == 1) {
+                    MatchState state = map.getMatchState();
+                    if (state == MatchState.WAITINGLOBBY || state == MatchState.WAITINGSTART) {
+                        total += map.getAllPlayers().size();
+                    }
+                }
+            }
+            return String.valueOf(total);
+
+        } else if (identifier.equalsIgnoreCase("players_waiting_team")) {
+            int total = 0;
+            for (GameMap map : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
+                if (map.getTeamSize() > 1) {
+                    MatchState state = map.getMatchState();
+                    if (state == MatchState.WAITINGLOBBY || state == MatchState.WAITINGSTART) {
+                        total += map.getAllPlayers().size();
+                    }
+                }
+            }
+            return String.valueOf(total);
+        } else {
             return null;
         }
 

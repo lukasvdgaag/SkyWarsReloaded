@@ -284,6 +284,9 @@ menu:
   usewin-playermsg: '&aYou selected the win sound {sound}'
   no-use: '&cUnlocked at Level {level}'
   cost: '&cCost to Unlock: ${cost}'
+  joingame-menu-no-arenas: "&cNo arenas available"
+  joingame-menu-join-noname: "&aJoining arena"
+  joingame-menu-join: "&aJoining arena {arena}"
   joingame-menu-title: '&8Join Game Menu'
   joinloresingle1: '&7Left click to view the'
   joinloresingle2: '&7solo player arenas.'
@@ -292,6 +295,8 @@ menu:
   joinsinglegame-menu-title: '&8Single SkyWars Games'
   jointeamgame-menu-title: '&8Team SkyWars Games'
   teamselection-menu-title: '&8Choose A Team'
+  teamselection-menu-alredy_in_team: "&cYou are already on that team"
+  teamselection-menu-join: "&eYou joined team {team}"
   teamspectate-menu-title: '&5Spectate Team SkyWars Games'
   viewteams: '&7Right click to view the teams.'
   spectategame-menu-title: '&8Spectate Single SkyWars Games'
@@ -501,7 +506,8 @@ helpList:
     setspawn: '&a/sw setspawn &e- &2Sets the spawn at your current location'
     reload: '&a/sw reload &e- &2Reloads SkyWars'
     clearstats: '&a/sw clearstats &e[playername] &e- &2Clears a SkyWars players stats'
-    join: '&a/sw join &e- &2Join a SkyWars match'
+    join: '&a/sw join <solo/team> &e- &2Join a SkyWars match'
+    joinmenu: '&a/sw joinmenu <solo/team> &e- &2Open map select menu'
     quit: '&a/sw quit &e- &2Quits from the current game'
     spectate: '&a/sw spectate &e[playername/mapname] &e- &2Spectates a match'
     stats: '&a/sw stats &e[playername] &e- &2Shows a players stats'
