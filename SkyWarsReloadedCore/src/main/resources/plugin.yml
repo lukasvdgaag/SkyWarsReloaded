@@ -2,13 +2,14 @@ name: Skywars
 main: com.walrusone.skywarsreloaded.SkyWarsReloaded
 version: ${revision}
 api-version: 1.13
-website: https://gcnt.net/
-author: GaagjesCraft Network Team (GCNT)
+website: https://devmart.net/
+author: Devmart (GCNT)
 softdepend:
   - Vault
   - PlaceholderAPI
   - MVdWPlaceholderAPI
   - HolographicDisplays
+  - DecentHolograms
   - Multiverse-Core
   - PerWorldInventory
   - WorldEdit

@@ -18,6 +18,7 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.listeners.*;
 import com.walrusone.skywarsreloaded.managers.*;
+import com.walrusone.skywarsreloaded.managers.holograms.DecentHologramManager;
 import com.walrusone.skywarsreloaded.managers.holograms.HologramManager;
 import com.walrusone.skywarsreloaded.managers.holograms.HolographicHologramManager;
 import com.walrusone.skywarsreloaded.managers.worlds.ASPWorldManager;
@@ -231,8 +232,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
         // PAF
 //        if (getCfg().bungeeMode() && getCfg().isUsePartyAndFriends()) {
-            // Currently disabled due to inability to access bungeecord PAF from spigot
-            // this.getServer().getPluginManager().registerEvents(new PartyAndFriendsHook(), this);
+        // Currently disabled due to inability to access bungeecord PAF from spigot
+        // this.getServer().getPluginManager().registerEvents(new PartyAndFriendsHook(), this);
 //        }
         // SLIME WORLD MANAGER
         if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldManager") && getCfg().isUseSlimeWorldManager()) {
@@ -828,7 +829,9 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
     protected void loadHologramManager() {
         hologramManager = null;
-        if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+        if (Bukkit.getPluginManager().isPluginEnabled("DecentHolograms")) {
+            hologramManager = new DecentHologramManager(this);
+        } else if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
             hologramManager = new HolographicHologramManager(this);
         }
 

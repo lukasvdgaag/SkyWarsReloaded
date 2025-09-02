@@ -21,10 +21,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public abstract class AbstractHologramsManager implements HologramManager {
+public abstract class AbstractHologramsManager<T> implements HologramManager {
 
     protected final SkyWarsReloaded plugin;
     protected FileConfiguration config;
+    protected final Map<LeaderType, Map<String, List<T>>> holograms = new HashMap<>();
+
     private final Map<LeaderType, List<String>> formats = new HashMap<>();
 
     public AbstractHologramsManager(SkyWarsReloaded plugin) {
@@ -169,4 +171,111 @@ public abstract class AbstractHologramsManager implements HologramManager {
             }
         }
     }
+
+    @Override
+    public void createLeaderboardHologram(Location loc, LeaderType type, String formatKey) {
+        T hologram = createHologram(loc, type, formatKey);
+
+        holograms.computeIfAbsent(type, k -> new HashMap<>())
+                .computeIfAbsent(formatKey, k -> new ArrayList<>())
+                .add(hologram);
+
+        saveHologramLocation(loc, type, formatKey);
+        updateLeaderboardHolograms(type);
+    }
+
+    @Override
+    public void updateLeaderboardHolograms(LeaderType type) {
+        LeaderboardManager lbManager = plugin.getLeaderboardManager();
+        if (lbManager == null || !plugin.serverLoaded() || !SkyWarsReloaded.getCfg().isTypeEnabled(type)) {
+            return;
+        }
+
+        Map<String, List<T>> typeHolograms = holograms.get(type);
+        if (typeHolograms == null) {
+            return;
+        }
+
+        // Iterate through all registered holograms of the given type
+        for (Map.Entry<String, List<T>> entry : typeHolograms.entrySet()) {
+            String key = entry.getKey();
+            List<String> format = config.getStringList("leaderboard." + type.toString().toLowerCase() + "." + key + ".format");
+
+            if (format.isEmpty()) {
+                continue;
+            }
+
+            for (T hologram : entry.getValue()) {
+                clearHologramLines(hologram);
+                for (int i = 0; i < format.size(); i++) {
+                    String line = getFormattedString(format.get(i), type);
+                    // Handle item lines (e.g., player heads)
+                    if (line.startsWith("item:")) {
+                        ItemStack item = createItemFromFormat(line, type, lbManager);
+                        if (item != null) {
+                            insertItemLine(hologram, i, item);
+                        } else {
+                            // Insert a blank line if item creation fails
+                            insertTextLine(hologram, i, " ");
+                        }
+                    } else {
+                        // Handle standard text lines
+                        insertTextLine(hologram, i, ChatColor.translateAlternateColorCodes('&', line));
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public boolean removeHologram(Location loc) {
+        T hologramToRemove = null;
+        LeaderType typeToRemove = null;
+        String keyToRemove = null;
+        double minDistanceSquared = Double.MAX_VALUE;
+
+        // Find the closest hologram to the specified location
+        for (Map.Entry<LeaderType, Map<String, List<T>>> typeEntry : holograms.entrySet()) {
+            if (!SkyWarsReloaded.getCfg().isTypeEnabled(typeEntry.getKey())) continue;
+
+            for (Map.Entry<String, List<T>> keyEntry : typeEntry.getValue().entrySet()) {
+                for (T hologram : keyEntry.getValue()) {
+                    if (isDeleted(hologram)) continue;
+
+                    double distanceSquared = loc.distanceSquared(getHologramLocation(hologram));
+                    if (distanceSquared < minDistanceSquared) {
+                        minDistanceSquared = distanceSquared;
+                        hologramToRemove = hologram;
+                        typeToRemove = typeEntry.getKey();
+                        keyToRemove = keyEntry.getKey();
+                    }
+                }
+            }
+        }
+
+        // Remove the hologram if it's within a 2-block radius to prevent accidental removals
+        if (hologramToRemove == null || minDistanceSquared >= 4) {
+            return false;
+        }
+
+        deleteHologram(hologramToRemove);
+        holograms.get(typeToRemove).get(keyToRemove).remove(hologramToRemove);
+        removeHologramLocation(getHologramLocation(hologramToRemove), typeToRemove, keyToRemove);
+        return true;
+    }
+
+    protected abstract void clearHologramLines(T hologram);
+
+    protected abstract void insertTextLine(T hologram, int index, String text);
+
+    protected abstract void insertItemLine(T hologram, int index, ItemStack item);
+
+    protected abstract boolean isDeleted(T hologram);
+
+    protected abstract void deleteHologram(T hologram);
+
+    protected abstract Location getHologramLocation(T hologram);
+
+    protected abstract T createHologram(Location loc, LeaderType type, String formatKey);
 }
