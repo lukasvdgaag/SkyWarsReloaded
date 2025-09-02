@@ -8,7 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ChestTypeCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public ChestTypeCmd(String t) {
+    public ChestTypeCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = false;
         cmdName = "chesttype";

@@ -6,8 +6,9 @@ import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RefreshData extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public RefreshData(String t) {
+public class RefreshDataCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
+    public RefreshDataCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         this.type = t;
         this.forcePlayer = false;
         this.cmdName = "refresh";

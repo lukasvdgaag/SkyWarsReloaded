@@ -16,6 +16,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -27,11 +28,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
-public class LobbyListener implements org.bukkit.event.Listener {
-
-
-    public LobbyListener() {
-    }
+public class LobbyListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
@@ -128,7 +125,7 @@ public class LobbyListener implements org.bukkit.event.Listener {
                 LeaderType type = LeaderType.valueOf(lines[1].toUpperCase());
                 if (Util.get().isInteger(lines[2])) {
                     if (Integer.parseInt(lines[2]) <= SkyWarsReloaded.getCfg().getLeaderSize()) {
-                        SkyWarsReloaded.getLB().addLeaderSign(Integer.parseInt(lines[2]), type, signLocation);
+                        SkyWarsReloaded.get().getLeaderboardManager().addLeaderSign(Integer.parseInt(lines[2]), type, signLocation);
                         event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.addedleader"));
                     } else {
                         event.getPlayer().sendMessage(new Messaging.MessageFormatter().format("signs.invalid-range"));
@@ -185,7 +182,7 @@ public class LobbyListener implements org.bukkit.event.Listener {
 
                 if (!removed) {
                     if (event.getPlayer().hasPermission("sw.signs")) {
-                        removed = SkyWarsReloaded.getLB().removeLeaderSign(loc);
+                        removed = SkyWarsReloaded.get().getLeaderboardManager().removeLeaderSign(loc);
                     }
                 }
                 if (removed) {

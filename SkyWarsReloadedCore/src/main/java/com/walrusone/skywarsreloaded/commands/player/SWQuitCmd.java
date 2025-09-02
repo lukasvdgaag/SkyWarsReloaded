@@ -9,7 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SWQuitCmd extends BaseCmd {
-    public SWQuitCmd(String t) {
+    public SWQuitCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "quit";
@@ -22,14 +23,11 @@ public class SWQuitCmd extends BaseCmd {
         if (map == null) {
             return true;
         }
-        if (map.getTeamCard(player) == null && map.getSpectators().contains(player.getUniqueId())) {
-            SkyWarsReloaded.get().getPlayerManager().removePlayer(
-                    player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, false);
-        }
-        else {
-            SkyWarsReloaded.get().getPlayerManager().removePlayer(
-                    player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, true);
-        }
+
+        final boolean announceToOthers = map.getTeamCard(player) != null || !map.getSpectators().contains(player.getUniqueId());
+        SkyWarsReloaded.get().getPlayerManager().removePlayer(
+                player, PlayerRemoveReason.PLAYER_QUIT_GAME, null, announceToOthers
+        );
         return true;
     }
 }

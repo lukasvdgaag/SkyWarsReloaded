@@ -10,7 +10,8 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class ListCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public ListCmd(String t) {
+    public ListCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = false;
         cmdName = "list";

@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands.admin;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
@@ -8,12 +9,12 @@ import com.walrusone.skywarsreloaded.menus.playeroptions.ProjectileEffectOption;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.ChatColor;
-import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SetStatsCmd extends BaseCmd {
-    public SetStatsCmd(String t) {
+    public SetStatsCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = false;
         cmdName = "stat";
@@ -147,7 +148,6 @@ public class SetStatsCmd extends BaseCmd {
                         }
                     } else if (args[2].equalsIgnoreCase("killsound")) {
                         try {
-                            Sound sound = Sound.valueOf(args[3].toUpperCase());
                             pStat.setKillSound(args[3].toUpperCase());
                             DataStorage.get().saveStats(pStat);
                             sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])
@@ -157,7 +157,6 @@ public class SetStatsCmd extends BaseCmd {
                         }
                     } else if (args[2].equalsIgnoreCase("winsound")) {
                         try {
-                            Sound sound = Sound.valueOf(args[3].toUpperCase());
                             pStat.setWinSound(args[3].toUpperCase());
                             DataStorage.get().saveStats(pStat);
                             sender.sendMessage(new Messaging.MessageFormatter().setVariable("player", args[1])

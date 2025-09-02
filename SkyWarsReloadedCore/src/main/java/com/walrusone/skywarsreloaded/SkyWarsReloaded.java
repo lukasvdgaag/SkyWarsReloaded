@@ -18,16 +18,18 @@ import com.walrusone.skywarsreloaded.game.GameMap;
 import com.walrusone.skywarsreloaded.game.PlayerData;
 import com.walrusone.skywarsreloaded.listeners.*;
 import com.walrusone.skywarsreloaded.managers.*;
-import com.walrusone.skywarsreloaded.managers.worlds.*;
+import com.walrusone.skywarsreloaded.managers.holograms.HologramManager;
+import com.walrusone.skywarsreloaded.managers.holograms.HolographicHologramManager;
+import com.walrusone.skywarsreloaded.managers.worlds.ASPWorldManager;
+import com.walrusone.skywarsreloaded.managers.worlds.FileWorldManager;
+import com.walrusone.skywarsreloaded.managers.worlds.WorldManager;
 import com.walrusone.skywarsreloaded.menus.*;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.nms.NMS;
-import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.nms.NMSUtils;
+import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.SWRServer;
 import com.walrusone.skywarsreloaded.utilities.Util;
-import com.walrusone.skywarsreloaded.utilities.holograms.HoloDisUtil;
-import com.walrusone.skywarsreloaded.utilities.holograms.HologramsUtil;
 import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPing;
 import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPingOptions;
 import com.walrusone.skywarsreloaded.utilities.minecraftping.MinecraftPingReply;
@@ -53,7 +55,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
     private static SkyWarsReloaded instance;
     private final ArrayList<String> leaderTypes = new ArrayList<>();
-    private final Object leaderboardLock = new Object();
     private String servername;
     private Database db;
     private NMS nmsHandler;
@@ -69,7 +70,8 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private ChestManager cm = null;
     private WorldManager wm = null;
     private Messaging messaging;
-    private Leaderboard leaderboard = null;
+    private final LeaderboardManager leaderboardManager = null;
+    private HologramManager hologramManager = null;
     private IconMenuController ic;
     private ItemsManager im;
     private GameMapManager gameMapManager;
@@ -78,7 +80,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
     private Config config;
 
-    private HologramsUtil hu;
     private boolean loaded;
     private BukkitTask specObserver;
 
@@ -97,13 +98,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
     public static Messaging getMessaging() {
         return instance.messaging;
-    }
-
-    public static Leaderboard getLB() {
-        // TODO: Make non static
-        synchronized (instance.leaderboardLock) {
-            return instance.leaderboard;
-        }
     }
 
     public static Config getCfg() {
@@ -132,10 +126,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
     public static NMS getNMS() {
         return instance.nmsHandler;
-    }
-
-    public static HologramsUtil getHoloManager() {
-        return instance.hu;
     }
 
     public static PlayerOptionsManager getOM() {
@@ -240,10 +230,10 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             this.getServer().getPluginManager().registerEvents(new PerWorldInventoryListener(), this);
         }
         // PAF
-        if (getCfg().bungeeMode() && getCfg().isUsePartyAndFriends()) {
+//        if (getCfg().bungeeMode() && getCfg().isUsePartyAndFriends()) {
             // Currently disabled due to inability to access bungeecord PAF from spigot
             // this.getServer().getPluginManager().registerEvents(new PartyAndFriendsHook(), this);
-        }
+//        }
         // SLIME WORLD MANAGER
         if (Bukkit.getPluginManager().isPluginEnabled("SlimeWorldManager") && getCfg().isUseSlimeWorldManager()) {
             getLogger().info("SlimeWorldManager option enabled. Checking for AdvancedSlimePaper...");
@@ -315,17 +305,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         new ArenasMenu();
 
         // Holograms
-        if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
-            hu = null;
-            if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
-                hu = new HoloDisUtil();
-                hu.load();
-            }
-            if (hu == null) {
-                config.setHologramsEnabled(false);
-                config.save();
-            }
-        }
+        this.loadHologramManager();
 
         // Taunts
         if (SkyWarsReloaded.getCfg().tauntsEnabled()) {
@@ -517,9 +497,6 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                         pStats.loadStats(null);
                     }
                 }
-                synchronized (leaderboardLock) {
-                    leaderboard = new Leaderboard();
-                }
             }
         }.runTaskAsynchronously(this);
 
@@ -544,22 +521,22 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
             new SpectateTeamMenu();
         }
 
-        swTabCompleter = new SWTabCompleter();
+        swTabCompleter = new SWTabCompleter(this);
 
-        mainCmdManager = new MainCmdManager();
+        mainCmdManager = new MainCmdManager(this);
         getCommand("skywars").setExecutor(mainCmdManager);
         getCommand("skywars").setTabCompleter(swTabCompleter);
 
-        kitCmdManager = new KitCmdManager();
+        kitCmdManager = new KitCmdManager(this);
         getCommand("swkit").setExecutor(kitCmdManager);
         getCommand("swkit").setTabCompleter(swTabCompleter);
 
-        mapCmdManager = new MapCmdManager();
+        mapCmdManager = new MapCmdManager(this);
         getCommand("swmap").setExecutor(mapCmdManager);
         getCommand("swmap").setTabCompleter(swTabCompleter);
 
         if (config.partyEnabled()) {
-            partyCmdManager = new PartyCmdManager();
+            partyCmdManager = new PartyCmdManager(this);
             getCommand("swparty").setExecutor(partyCmdManager);
         }
         if (getCfg().borderEnabled()) {
@@ -631,7 +608,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                         }.runTask(this);
                     } else {
                         if (player != null) {
-                            ArrayList<String> messages = new ArrayList<String>();
+                            ArrayList<String> messages = new ArrayList<>();
                             messages.add("RequestUpdate");
                             messages.add(servername);
                             sendSWRMessage(player, server, messages);
@@ -670,7 +647,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
                         GameMap gMap = SkyWarsReloaded.getGameMapMgr().getMapsCopy().get(0);
                         String playerCount = "" + gMap.getAlivePlayers().size();
                         String maxPlayers = "" + gMap.getMaxPlayers();
-                        String gameStarted = "" + gMap.getMatchState().toString();
+                        String gameStarted = gMap.getMatchState().toString();
                         ArrayList<String> messages = new ArrayList<>();
                         messages.add("ServerUpdate");
                         messages.add(servername);
@@ -849,6 +826,17 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
         }
     }
 
+    protected void loadHologramManager() {
+        hologramManager = null;
+        if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+            hologramManager = new HolographicHologramManager(this);
+        }
+
+        if (hologramManager != null) {
+            hologramManager.load();
+        }
+    }
+
     public GameMapManager getGameMapManager() {
         return this.gameMapManager;
     }
@@ -859,5 +847,13 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
     public static GameMapManager getGameMapMgr() {
         return instance.gameMapManager;
+    }
+
+    public LeaderboardManager getLeaderboardManager() {
+        return this.leaderboardManager;
+    }
+
+    public HologramManager getHologramManager() {
+        return this.hologramManager;
     }
 }

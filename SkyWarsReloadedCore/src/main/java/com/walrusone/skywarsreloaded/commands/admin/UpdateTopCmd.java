@@ -9,7 +9,8 @@ import org.bukkit.entity.Player;
 
 public class UpdateTopCmd extends BaseCmd {
 
-    public UpdateTopCmd(String t) {
+    public UpdateTopCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = false;
         cmdName = "updatetop";

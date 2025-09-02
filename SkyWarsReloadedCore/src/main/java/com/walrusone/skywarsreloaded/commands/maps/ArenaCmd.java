@@ -7,9 +7,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class ArenaCmd
-        extends BaseCmd {
-    public ArenaCmd(String t) {
+public class ArenaCmd extends BaseCmd {
+    public ArenaCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "arenas";

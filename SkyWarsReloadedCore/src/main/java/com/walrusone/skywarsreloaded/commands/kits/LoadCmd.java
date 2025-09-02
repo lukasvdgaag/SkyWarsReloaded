@@ -1,11 +1,14 @@
 package com.walrusone.skywarsreloaded.commands.kits;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class LoadCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public LoadCmd(String t) {
+public class LoadCmd extends BaseCmd {
+    public LoadCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "load";

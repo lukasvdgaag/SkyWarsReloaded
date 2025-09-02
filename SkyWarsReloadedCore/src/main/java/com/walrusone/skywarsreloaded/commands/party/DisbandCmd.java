@@ -1,12 +1,14 @@
 package com.walrusone.skywarsreloaded.commands.party;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class DisbandCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public DisbandCmd(String t) {
+    public DisbandCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "disband";

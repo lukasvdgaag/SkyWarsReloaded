@@ -1,7 +1,6 @@
 package com.walrusone.skywarsreloaded.commands;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.ChatColor;
@@ -10,15 +9,16 @@ import org.bukkit.entity.Player;
 
 public abstract class BaseCmd {
 
-    public String[] alias;
-    public String cmdName;
-    public int argLength = 0;
-    public boolean forcePlayer = true;
-    public String type;
-    public int maxArgs = -1;
-    protected GameMapManager gameMapManager;
+    protected SkyWarsReloaded plugin;
+    protected String[] alias;
+    protected String cmdName;
+    protected int argLength = 0;
+    protected boolean forcePlayer = true;
+    protected String type;
+    protected int maxArgs = -1;
 
-    public BaseCmd() {
+    public BaseCmd(SkyWarsReloaded plugin) {
+        this.plugin = plugin;
     }
 
     void processCmd(CommandSender sender, String[] args) {

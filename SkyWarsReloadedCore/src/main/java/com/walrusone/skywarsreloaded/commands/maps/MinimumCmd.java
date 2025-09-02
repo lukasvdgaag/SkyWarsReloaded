@@ -7,7 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class MinimumCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public MinimumCmd(String t) {
+    public MinimumCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = false;
         cmdName = "minimum";

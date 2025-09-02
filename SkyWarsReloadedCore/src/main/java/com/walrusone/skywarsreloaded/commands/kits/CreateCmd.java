@@ -1,12 +1,14 @@
 package com.walrusone.skywarsreloaded.commands.kits;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CreateCmd extends BaseCmd {
-    public CreateCmd(String t) {
+    public CreateCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "create";

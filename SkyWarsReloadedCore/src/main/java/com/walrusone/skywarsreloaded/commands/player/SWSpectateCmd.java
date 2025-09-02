@@ -4,7 +4,6 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.Bukkit;
@@ -14,7 +13,8 @@ import org.bukkit.entity.Player;
 
 public class SWSpectateCmd extends BaseCmd {
 
-    public SWSpectateCmd(String t) {
+    public SWSpectateCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         this.type = t;
         this.forcePlayer = true;
         this.cmdName = "spectate";

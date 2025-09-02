@@ -2,6 +2,7 @@ package com.walrusone.skywarsreloaded.database;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
+import com.walrusone.skywarsreloaded.managers.LeaderboardManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -243,7 +244,6 @@ public class DataStorage {
         }
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void removePlayerData(String uuid) {
         boolean sqlEnabled = SkyWarsReloaded.get().getConfig().getBoolean("sqldatabase.enabled");
         if (!sqlEnabled) {
@@ -296,6 +296,7 @@ public class DataStorage {
             @Override
             public void run() {
                 boolean sqlEnabled = SkyWarsReloaded.get().getConfig().getBoolean("sqldatabase.enabled");
+                final LeaderboardManager leaderboardManager = SkyWarsReloaded.get().getLeaderboardManager();
                 if (sqlEnabled) {
                     Database database = SkyWarsReloaded.getDb();
 
@@ -313,7 +314,7 @@ public class DataStorage {
 
                         preparedStatement = connection.prepareStatement(query);
                         resultSet = preparedStatement.executeQuery();
-                        SkyWarsReloaded.getLB().resetLeader(type);
+                        leaderboardManager.resetLeader(type);
                         while (resultSet.next()) {
                             String uuid = resultSet.getString("uuid");
                             String name = Bukkit.getOfflinePlayer(UUID.fromString(uuid)).getName();
@@ -323,7 +324,7 @@ public class DataStorage {
                             int kills = resultSet.getInt("kills");
                             int deaths = resultSet.getInt( "deaths");
                             int xp = resultSet.getInt("xp");
-                            SkyWarsReloaded.getLB().addLeader(type, uuid, name, wins, losses, kills, deaths, xp);
+                            leaderboardManager.addLeader(type, uuid, name, wins, losses, kills, deaths, xp);
                         }
 
                     } catch (final SQLException sqlException) {
@@ -345,7 +346,7 @@ public class DataStorage {
                         return;
                     }
 
-                    SkyWarsReloaded.getLB().resetLeader(type);
+                    leaderboardManager.resetLeader(type);
                     for (File playerFile : playerFiles) {
                         if (!playerFile.getName().endsWith(".yml")) {
                             continue;
@@ -361,10 +362,10 @@ public class DataStorage {
                         int kills = fc.getInt("kills", 0);
                         int deaths = fc.getInt("deaths", 0);
                         int xp = fc.getInt("xp", 0);
-                        SkyWarsReloaded.getLB().addLeader(type, uuid, name, wins, losses, kills, deaths, xp);
+                        leaderboardManager.addLeader(type, uuid, name, wins, losses, kills, deaths, xp);
                     }
                 }
-                SkyWarsReloaded.getLB().finishedLoading(type);
+                leaderboardManager.finishedLoading(type);
             }
         }.runTaskLaterAsynchronously(SkyWarsReloaded.get(), 10L);
     }
@@ -470,7 +471,7 @@ public class DataStorage {
                         SkyWarsReloaded.get().getLogger().severe("Failed to load player " + playerStat.getPlayerName() + ": " + ioException.getMessage());
                     }
                 } else {
-                    if (playerStat.getPerms().getPermissions().size() > 0) {
+                    if (!playerStat.getPerms().getPermissions().isEmpty()) {
                         Database database = SkyWarsReloaded.getDb();
                         if (database.checkConnection()) {
                             return;
@@ -478,7 +479,7 @@ public class DataStorage {
                         Connection connection = database.getConnection();
                         PreparedStatement preparedStatement = null;
                         try {
-                            if (playerStat.getPerms().getPermissions().size() >= 1) {
+                            if (!playerStat.getPerms().getPermissions().isEmpty()) {
                                 for (String perm : playerStat.getPerms().getPermissions().keySet()) {
                                     String query = "INSERT INTO `sw_permissions` (`uuid`, `playername`, `permissions`) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE " +
                                             "`uuid`=`uuid`, `playername`=`playername`, `permissions`=`permissions` ";

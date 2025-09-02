@@ -7,7 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class LegacyLoadCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public LegacyLoadCmd(String t) {
+    public LegacyLoadCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "legacyload";

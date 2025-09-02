@@ -18,13 +18,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class Leaderboard {
-    private static HashMap<LeaderType, List<LeaderData>> topLeaders = new HashMap<>();
-    private static HashMap<LeaderType, ArrayList<LeaderData>> leaders = new HashMap<>();
-    private static HashMap<LeaderType, Boolean> loaded = new HashMap<>();
-    private static HashMap<LeaderType, HashMap<Integer, ArrayList<Location>>> signs = new HashMap<>();
+public class LeaderboardManager {
+    private final SkyWarsReloaded plugin;
+    private final HashMap<LeaderType, List<LeaderData>> topLeaders = new HashMap<>();
+    private final HashMap<LeaderType, ArrayList<LeaderData>> leaders = new HashMap<>();
+    private final HashMap<LeaderType, Boolean> loaded = new HashMap<>();
+    private final HashMap<LeaderType, HashMap<Integer, ArrayList<Location>>> signs = new HashMap<>();
 
-    public Leaderboard() {
+    public LeaderboardManager(SkyWarsReloaded plugin) {
+        this.plugin = plugin;
         loaded.put(LeaderType.DEATHS, false);
         loaded.put(LeaderType.WINS, false);
         loaded.put(LeaderType.KILLS, false);
@@ -47,7 +49,7 @@ public class Leaderboard {
                     DataStorage.get().updateTop(type, SkyWarsReloaded.getCfg().getLeaderSize());
                 }
             }
-        }, 0, SkyWarsReloaded.getCfg().getUpdateTime() * 20);
+        }, 0, SkyWarsReloaded.getCfg().getUpdateTime() * 20L);
     }
 
     public void addLeader(LeaderType type, String uuid, String name, int wins, int loses, int kills, int deaths, int xp) {
@@ -76,12 +78,12 @@ public class Leaderboard {
 
         // Update holograms if enabled
         if (SkyWarsReloaded.get().serverLoaded() &&
-                SkyWarsReloaded.getCfg().hologramsEnabled() &&
+                plugin.getHologramManager() != null &&
                 SkyWarsReloaded.get().isEnabled()) {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    SkyWarsReloaded.getHoloManager().updateLeaderHolograms(type);
+                    plugin.getHologramManager().updateLeaderboardHolograms(type);
                 }
             }.runTaskLater(SkyWarsReloaded.get(), 1);
         }
@@ -94,7 +96,7 @@ public class Leaderboard {
     private List<LeaderData> getTop(final int top, LeaderType type) {
         final ArrayList<LeaderData> pData = new ArrayList<>(leaders.get(type));
         pData.sort(new RankComparator(type));
-        return pData.subList(0, (top > pData.size()) ? pData.size() : top);
+        return pData.subList(0, Math.min(top, pData.size()));
     }
 
     public List<LeaderData> getTopList(LeaderType type) {
@@ -235,8 +237,8 @@ public class Leaderboard {
         }
     }
 
-    public class RankComparator implements Comparator<LeaderData> {
-        private LeaderType type;
+    public static class RankComparator implements Comparator<LeaderData> {
+        private final LeaderType type;
 
         RankComparator(LeaderType deaths) {
             type = deaths;
@@ -258,14 +260,14 @@ public class Leaderboard {
         }
     }
 
-    public class LeaderData {
-        private String uuid;
-        private String name;
-        private int wins;
-        private int loses;
-        private int kills;
-        private int deaths;
-        private int xp;
+    public static class LeaderData {
+        private final String uuid;
+        private final String name;
+        private final int wins;
+        private final int loses;
+        private final int kills;
+        private final int deaths;
+        private final int xp;
 
         LeaderData(String uuid, String name, int wins, int loses, int kills, int deaths, int xp) {
             this.uuid = uuid;

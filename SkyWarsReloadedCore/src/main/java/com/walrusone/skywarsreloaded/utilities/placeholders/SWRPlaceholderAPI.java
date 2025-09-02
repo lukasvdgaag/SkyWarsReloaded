@@ -2,11 +2,12 @@ package com.walrusone.skywarsreloaded.utilities.placeholders;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
-import com.walrusone.skywarsreloaded.managers.Leaderboard;
+import com.walrusone.skywarsreloaded.managers.LeaderboardManager;
 import com.walrusone.skywarsreloaded.managers.PlayerStat;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -18,16 +19,19 @@ public class SWRPlaceholderAPI extends PlaceholderExpansion {
         return true;
     }
 
+    @NotNull
     @Override
     public String getIdentifier() {
         return "swr";
     }
 
+    @NotNull
     @Override
     public String getAuthor() {
         return "Devmart";
     }
 
+    @NotNull
     @Override
     public String getVersion() {
         return SkyWarsReloaded.get().getDescription().getVersion();
@@ -39,7 +43,7 @@ public class SWRPlaceholderAPI extends PlaceholderExpansion {
     }
 
     @Override
-    public String onPlaceholderRequest(Player p, String identifier) {
+    public String onPlaceholderRequest(Player p, @NotNull String identifier) {
         if (p == null) {
             return "";
         }
@@ -75,8 +79,8 @@ public class SWRPlaceholderAPI extends PlaceholderExpansion {
 
     public static String getLeaderBoardVariable(String var, @Nullable LeaderType type) {
         String[] parts = var.split("_");
-        if (SkyWarsReloaded.getLB() != null) {
-            List<Leaderboard.LeaderData> topList = SkyWarsReloaded.getLB().getTopList(type);
+        if (SkyWarsReloaded.get().getLeaderboardManager() != null) {
+            List<LeaderboardManager.LeaderData> topList = SkyWarsReloaded.get().getLeaderboardManager().getTopList(type);
 
             if (topList != null && Util.get().isInteger(parts[1])) {
                 int playerLeaderboardRank;
@@ -106,7 +110,7 @@ public class SWRPlaceholderAPI extends PlaceholderExpansion {
                         case "xp":
                             return "" + topList.get(playerLeaderboardIndex).getXp();
                         case "player":
-                            return "" + topList.get(playerLeaderboardIndex).getName();
+                            return topList.get(playerLeaderboardIndex).getName();
                         case "games_played":
                             return "" + (topList.get(playerLeaderboardIndex).getLoses() + topList.get(playerLeaderboardIndex).getWins());
                         case "kill_death": {

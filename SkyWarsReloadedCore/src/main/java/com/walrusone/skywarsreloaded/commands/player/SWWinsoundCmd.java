@@ -1,12 +1,15 @@
 package com.walrusone.skywarsreloaded.commands.player;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
+import com.walrusone.skywarsreloaded.enums.PlayerOptions;
 import com.walrusone.skywarsreloaded.menus.playeroptions.OptionSelectionMenu;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SWWinsoundCmd extends BaseCmd {
-    public SWWinsoundCmd(String t) {
+    public SWWinsoundCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "winsound";
@@ -15,7 +18,7 @@ public class SWWinsoundCmd extends BaseCmd {
     }
 
     public boolean run(CommandSender sender, Player player, String[] args) {
-        new OptionSelectionMenu(player, com.walrusone.skywarsreloaded.enums.PlayerOptions.WINSOUND, true);
+        new OptionSelectionMenu(player, PlayerOptions.WINSOUND, true);
         return true;
     }
 }

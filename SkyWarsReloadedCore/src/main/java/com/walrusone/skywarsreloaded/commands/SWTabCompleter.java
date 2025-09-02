@@ -5,7 +5,6 @@ import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.enums.ChestType;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Util;
 import org.bukkit.Bukkit;
@@ -14,12 +13,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SWTabCompleter implements TabCompleter {
 
+    private final SkyWarsReloaded plugin;
 
-    public SWTabCompleter() {
+    public SWTabCompleter(SkyWarsReloaded plugin) {
+        this.plugin = plugin;
     }
 
     @Override
@@ -29,7 +31,7 @@ public class SWTabCompleter implements TabCompleter {
 
         if (command.getName().equalsIgnoreCase("swmap")) {
             if (args.length == 1) {
-                for (BaseCmd cmd : MapCmdManager.getCommands()) {
+                for (BaseCmd cmd : plugin.getMapCmdManager().getCommands()) {
                     if (Util.get().hasPerm(cmd.getType(), commandSender, cmd.cmdName)) {
                         possibilities.add(cmd.cmdName);
                     }
@@ -50,7 +52,7 @@ public class SWTabCompleter implements TabCompleter {
         }
         else if (command.getName().equalsIgnoreCase("swkit")) {
             if (args.length == 1) {
-                for (BaseCmd cmd : KitCmdManager.getCommands()) {
+                for (BaseCmd cmd : plugin.getKitCmdManager().getCommands()) {
                     if (Util.get().hasPerm(cmd.getType(), commandSender, cmd.cmdName)) {
                         possibilities.add(cmd.cmdName);
                     }
@@ -76,7 +78,7 @@ public class SWTabCompleter implements TabCompleter {
         else if (command.getName().equalsIgnoreCase("skywars")) {
 
             if (args.length == 1) {
-                for (BaseCmd cmd : MainCmdManager.getCommands()) {
+                for (BaseCmd cmd : plugin.getMainCmdManager().getCommands()) {
                     if (Util.get().hasPerm(cmd.getType(), commandSender, cmd.cmdName)) {
                         possibilities.add(cmd.cmdName);
                     }
@@ -102,10 +104,12 @@ public class SWTabCompleter implements TabCompleter {
                 } else if (args[0].equalsIgnoreCase("stat") && Util.get().hasPerm("sw", commandSender, "stat")) {
                     possibilities = Lists.newArrayList("wins", "losses", "kills", "deaths", "xp", "pareffect", "proeffect", "glasscolor", "killsound", "winsound");
                 } else if (args[0].equalsIgnoreCase("hologram") && Util.get().hasPerm("sw", commandSender, "hologram")) {
-                    LeaderType lt = LeaderType.matchType(args[1].toUpperCase());
-                    if (lt != null) {
-                        possibilities = SkyWarsReloaded.getHoloManager().getFormats(lt);
+                    if (plugin.getHologramManager() != null) {
+                        LeaderType lt = LeaderType.matchType(args[1].toUpperCase());
+                        return plugin.getHologramManager().getFormats(lt);
                     }
+
+                    return new ArrayList<>();
                 }
             } else if (args.length == 4) {
                 if (args[0].equalsIgnoreCase("stat") && Util.get().hasPerm("sw", commandSender, "stat")) {
@@ -118,7 +122,7 @@ public class SWTabCompleter implements TabCompleter {
         }
 
         String currentUserInput = args[args.length - 1].toLowerCase();
-        if (currentUserInput.equals("")) {
+        if (currentUserInput.isEmpty()) {
             responses = possibilities;
         } else {
             for (String possibility : possibilities) {

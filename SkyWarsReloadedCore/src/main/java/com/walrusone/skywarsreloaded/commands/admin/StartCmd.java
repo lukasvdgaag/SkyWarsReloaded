@@ -1,12 +1,14 @@
 package com.walrusone.skywarsreloaded.commands.admin;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.managers.MatchManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class StartCmd extends BaseCmd {
-    public StartCmd(String t) {
+    public StartCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "start";

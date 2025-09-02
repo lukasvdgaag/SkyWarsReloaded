@@ -10,7 +10,8 @@ import org.bukkit.entity.Player;
 
 public class ChestEditCmd extends BaseCmd {
 
-    public ChestEditCmd(String t) {
+    public ChestEditCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "chestedit";

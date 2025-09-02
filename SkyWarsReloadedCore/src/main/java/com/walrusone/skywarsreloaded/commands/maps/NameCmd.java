@@ -7,7 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class NameCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public NameCmd(String t) {
+    public NameCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = false;
         cmdName = "name";
@@ -24,7 +25,7 @@ public class NameCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
         }
         String displayName = b.toString();
 
-        if (displayName.length() == 0) {
+        if (displayName.isEmpty()) {
             sender.sendMessage(new Messaging.MessageFormatter().format("error.map-name-too-short"));
             return true;
         }

@@ -9,7 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CheckChestTypeCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public CheckChestTypeCmd(String t) {
+    public CheckChestTypeCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "checkchest";

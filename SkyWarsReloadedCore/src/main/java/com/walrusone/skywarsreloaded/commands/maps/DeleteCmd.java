@@ -7,7 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class DeleteCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public DeleteCmd(String t) {
+    public DeleteCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = false;
         cmdName = "delete";

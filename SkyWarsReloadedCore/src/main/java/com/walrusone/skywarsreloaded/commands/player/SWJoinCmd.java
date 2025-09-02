@@ -9,7 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SWJoinCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public SWJoinCmd(String t) {
+    public SWJoinCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "join";

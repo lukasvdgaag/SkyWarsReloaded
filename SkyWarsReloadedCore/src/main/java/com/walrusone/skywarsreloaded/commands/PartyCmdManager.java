@@ -17,15 +17,15 @@ public class PartyCmdManager implements CommandExecutor, SWRCmdManagerAPI {
     private final List<BaseCmd> partycmds = new ArrayList<>();
 
     //Add New Commands Here
-    public PartyCmdManager() {
-        partycmds.add(new AcceptCmd("party"));
-        partycmds.add(new CreateCmd("party"));
-        partycmds.add(new DisbandCmd("party"));
-        partycmds.add(new InviteCmd("party"));
-        partycmds.add(new LeaveCmd("party"));
-        partycmds.add(new NameCmd("party"));
-        partycmds.add(new InfoCmd("party"));
-        partycmds.add(new DeclineCmd("party"));
+    public PartyCmdManager(SkyWarsReloaded plugin) {
+        partycmds.add(new AcceptCmd(plugin, "party"));
+        partycmds.add(new CreateCmd(plugin, "party"));
+        partycmds.add(new DisbandCmd(plugin, "party"));
+        partycmds.add(new InviteCmd(plugin, "party"));
+        partycmds.add(new LeaveCmd(plugin, "party"));
+        partycmds.add(new NameCmd(plugin, "party"));
+        partycmds.add(new InfoCmd(plugin, "party"));
+        partycmds.add(new DeclineCmd(plugin, "party"));
     }
 
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {

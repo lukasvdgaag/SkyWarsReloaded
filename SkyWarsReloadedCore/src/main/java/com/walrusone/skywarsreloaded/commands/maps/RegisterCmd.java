@@ -2,7 +2,6 @@ package com.walrusone.skywarsreloaded.commands.maps;
 
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.game.GameMap;
-import com.walrusone.skywarsreloaded.managers.GameMapManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -10,7 +9,8 @@ import org.bukkit.entity.Player;
 
 public class RegisterCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
 
-    public RegisterCmd(String t) {
+    public RegisterCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = false;
         cmdName = "register";

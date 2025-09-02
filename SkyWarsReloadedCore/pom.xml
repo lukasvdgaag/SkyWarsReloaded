@@ -106,6 +106,12 @@
             <version>2.11.5</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.decentsoftware-eu</groupId>
+            <artifactId>decentholograms</artifactId>
+            <version>2.9.7</version>
+        </dependency>
+
         <!-- SLIME WORLDS: ASWM DEPENDENCY -->
 
         <!-- SLIME WORLDS: USE THESE DEPENDENCIES TO GET LEGACY SWM SUPPORT IN THE IDEA DURING DEVELOPMENT-->

@@ -3,7 +3,7 @@ package com.walrusone.skywarsreloaded.commands.player;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.enums.LeaderType;
-import com.walrusone.skywarsreloaded.managers.Leaderboard;
+import com.walrusone.skywarsreloaded.managers.LeaderboardManager;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public class SWTopCmd extends BaseCmd {
-    public SWTopCmd(String t) {
+    public SWTopCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         this.type = t;
         this.forcePlayer = true;
         this.cmdName = "top";
@@ -30,21 +31,21 @@ public class SWTopCmd extends BaseCmd {
         }
 
         if (SkyWarsReloaded.get().getLeaderTypes().contains(leaderType)) {
-            if (!SkyWarsReloaded.getLB().loaded(LeaderType.valueOf(args[1].toUpperCase()))) {
+            if (!SkyWarsReloaded.get().getLeaderboardManager().loaded(LeaderType.valueOf(args[1].toUpperCase()))) {
                 player.sendMessage(new Messaging.MessageFormatter().format("leaderboard.updating"));
                 return true;
             }
 
-            List<Leaderboard.LeaderData> top = SkyWarsReloaded.getLB().getTopList(LeaderType.valueOf(args[1].toUpperCase()));
+            List<LeaderboardManager.LeaderData> top = SkyWarsReloaded.get().getLeaderboardManager().getTopList(LeaderType.valueOf(args[1].toUpperCase()));
 
             player.sendMessage(new Messaging.MessageFormatter().format("leaderboard.header"));
             player.sendMessage(new Messaging.MessageFormatter().format("leaderboard.header2"));
-            if (top.size() == 0) {
+            if (top.isEmpty()) {
                 player.sendMessage(new Messaging.MessageFormatter().format("leaderboard.no-data"));
             }
 
             for (int i = 0; i < top.size(); i++) {
-                Leaderboard.LeaderData playerData = top.get(i);
+                LeaderboardManager.LeaderData playerData = top.get(i);
                 player.sendMessage(new Messaging.MessageFormatter().setVariable("rank", "" + (i + 1))
                         .setVariable("player", playerData.getName())
                         .setVariable("wins", "" + playerData.getWins())

@@ -14,62 +14,60 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainCmdManager implements CommandExecutor, SWRCmdManagerAPI {
-    private List<BaseCmd> admincmds = new ArrayList<>();
-    private List<BaseCmd> pcmds = new ArrayList<>();
-    private static MainCmdManager cm;
+    private final List<BaseCmd> adminCommands = new ArrayList<>();
+    private final List<BaseCmd> playerCommands = new ArrayList<>();
 
-    public MainCmdManager() {
-        cm = this;
-        admincmds.add(new ReloadCmd("sw"));
-        admincmds.add(new ChestAddCmd("sw"));
-        admincmds.add(new ChestEditCmd("sw"));
-        admincmds.add(new SetStatsCmd("sw"));
-        admincmds.add(new ClearStatsCmd("sw"));
-        admincmds.add(new SetSpawnCmd("sw"));
-        admincmds.add(new StartCmd("sw"));
-        admincmds.add(new UpdateTopCmd("sw"));
-        admincmds.add(new HoloAddCmd("sw"));
-        admincmds.add(new HoloRemoveCmd("sw"));
+    public MainCmdManager(SkyWarsReloaded plugin) {
+        adminCommands.add(new ReloadCmd(plugin, "sw"));
+        adminCommands.add(new ChestAddCmd(plugin, "sw"));
+        adminCommands.add(new ChestEditCmd(plugin, "sw"));
+        adminCommands.add(new SetStatsCmd(plugin, "sw"));
+        adminCommands.add(new ClearStatsCmd(plugin, "sw"));
+        adminCommands.add(new SetSpawnCmd(plugin, "sw"));
+        adminCommands.add(new StartCmd(plugin, "sw"));
+        adminCommands.add(new UpdateTopCmd(plugin, "sw"));
+        adminCommands.add(new HoloAddCmd(plugin, "sw"));
+        adminCommands.add(new HoloRemoveCmd(plugin, "sw"));
 
-        pcmds.add(new SWJoinCmd("sw"));
-        pcmds.add(new SWQuitCmd("sw"));
-        pcmds.add(new SWStatsCmd("sw"));
-        pcmds.add(new SWTopCmd("sw"));
-        pcmds.add(new SWOptionsCmd("sw"));
-        pcmds.add(new SWSpectateCmd("sw"));
-        pcmds.add(new SWLobbyTeleportCmd("sw"));
+        playerCommands.add(new SWJoinCmd(plugin, "sw"));
+        playerCommands.add(new SWQuitCmd(plugin, "sw"));
+        playerCommands.add(new SWStatsCmd(plugin, "sw"));
+        playerCommands.add(new SWTopCmd(plugin, "sw"));
+        playerCommands.add(new SWOptionsCmd(plugin, "sw"));
+        playerCommands.add(new SWSpectateCmd(plugin, "sw"));
+        playerCommands.add(new SWLobbyTeleportCmd(plugin, "sw"));
 
         if (SkyWarsReloaded.getCfg().winsoundMenuEnabled()) {
-            pcmds.add(new SWWinsoundCmd("sw"));
+            playerCommands.add(new SWWinsoundCmd(plugin, "sw"));
         }
         if (SkyWarsReloaded.getCfg().killsoundMenuEnabled()) {
-            pcmds.add(new SWKillsoundCmd("sw"));
+            playerCommands.add(new SWKillsoundCmd(plugin, "sw"));
         }
         if (SkyWarsReloaded.getCfg().tauntsMenuEnabled()) {
-            pcmds.add(new SWTauntCmd("sw"));
+            playerCommands.add(new SWTauntCmd(plugin, "sw"));
         }
         if (SkyWarsReloaded.getCfg().projectileMenuEnabled()) {
-            pcmds.add(new SWProjectileCmd("sw"));
+            playerCommands.add(new SWProjectileCmd(plugin, "sw"));
         }
         if (SkyWarsReloaded.getCfg().particleMenuEnabled()) {
-            pcmds.add(new SWParticleCmd("sw"));
+            playerCommands.add(new SWParticleCmd(plugin, "sw"));
         }
         if (SkyWarsReloaded.getCfg().glassMenuEnabled()) {
-            pcmds.add(new SWGlassCmd("sw"));
+            playerCommands.add(new SWGlassCmd(plugin, "sw"));
         }
     }
 
-    public static List<BaseCmd> getCommands() {
-        List<BaseCmd> a = cm.admincmds;
-        a.addAll(cm.pcmds);
+    public List<BaseCmd> getCommands() {
+        List<BaseCmd> a = adminCommands;
+        a.addAll(playerCommands);
         return a;
     }
 
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
         if (args.length == 0 || getCommand(args[0]) == null) {
             s.sendMessage(new Messaging.MessageFormatter().format("helpList.header"));
-            sendHelp(admincmds, s, "1");
-            sendHelp(pcmds, s, "2");
+            sendHelp(adminCommands, s, "1");
+            sendHelp(playerCommands, s, "2");
             s.sendMessage(new Messaging.MessageFormatter().format("helpList.footer"));
         } else getCommand(args[0]).processCmd(s, args);
         return true;
@@ -91,8 +89,8 @@ public class MainCmdManager implements CommandExecutor, SWRCmdManagerAPI {
 
     public BaseCmd getCommand(String s) {
         BaseCmd cmd;
-        cmd = getCmd(admincmds, s);
-        if (cmd == null) cmd = getCmd(pcmds, s);
+        cmd = getCmd(adminCommands, s);
+        if (cmd == null) cmd = getCmd(playerCommands, s);
         return cmd;
     }
 
@@ -118,10 +116,10 @@ public class MainCmdManager implements CommandExecutor, SWRCmdManagerAPI {
         if (commandIn == null || type < 0 || type > 1) return;
         switch (type) {
             case 0:
-                pcmds.add(commandIn);
+                playerCommands.add(commandIn);
                 break;
             case 1:
-                admincmds.add(commandIn);
+                adminCommands.add(commandIn);
                 break;
         }
     }
@@ -140,10 +138,10 @@ public class MainCmdManager implements CommandExecutor, SWRCmdManagerAPI {
         if (commandIn == null || type < 0 || type > 1) return;
         switch (type) {
             case 0:
-                pcmds.remove(commandIn);
+                playerCommands.remove(commandIn);
                 break;
             case 1:
-                admincmds.remove(commandIn);
+                adminCommands.remove(commandIn);
                 break;
         }
     }

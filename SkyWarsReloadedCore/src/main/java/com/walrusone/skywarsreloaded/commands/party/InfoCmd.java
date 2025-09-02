@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands.party;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
@@ -11,7 +12,8 @@ import java.util.StringJoiner;
 import java.util.UUID;
 
 public class InfoCmd extends BaseCmd {
-    public InfoCmd(String t) {
+    public InfoCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "info";

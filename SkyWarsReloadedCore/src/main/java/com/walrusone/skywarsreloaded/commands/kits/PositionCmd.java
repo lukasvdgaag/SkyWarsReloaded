@@ -1,12 +1,15 @@
 package com.walrusone.skywarsreloaded.commands.kits;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
+import com.walrusone.skywarsreloaded.commands.BaseCmd;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class PositionCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public PositionCmd(String t) {
+public class PositionCmd extends BaseCmd {
+    public PositionCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "position";

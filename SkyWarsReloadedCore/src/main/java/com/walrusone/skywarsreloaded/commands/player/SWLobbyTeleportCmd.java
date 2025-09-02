@@ -7,7 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SWLobbyTeleportCmd extends BaseCmd {
-    public SWLobbyTeleportCmd(String t) {
+    public SWLobbyTeleportCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "lobby";

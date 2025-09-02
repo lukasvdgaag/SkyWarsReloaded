@@ -15,7 +15,8 @@ import java.util.List;
 
 public class ChestAddCmd extends BaseCmd {
 
-    public ChestAddCmd(String t) {
+    public ChestAddCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "chestadd";

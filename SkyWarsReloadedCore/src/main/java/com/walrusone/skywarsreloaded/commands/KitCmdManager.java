@@ -1,5 +1,6 @@
 package com.walrusone.skywarsreloaded.commands;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.api.command.SWRCmdManagerAPI;
 import com.walrusone.skywarsreloaded.commands.kits.*;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
@@ -12,31 +13,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KitCmdManager implements CommandExecutor, SWRCmdManagerAPI {
-    private List<BaseCmd> kitcmds = new ArrayList<>();
-    private static KitCmdManager kcm;
+    private final List<BaseCmd> commands = new ArrayList<>();
 
-    //Add New Commands Here
-    public KitCmdManager() {
-        kcm = this;
-        kitcmds.add(new CreateCmd("kit"));
-        kitcmds.add(new EnableCmd("kit"));
-        kitcmds.add(new IconCmd("kit"));
-        kitcmds.add(new LockedIconCmd("kit"));
-        kitcmds.add(new LoadCmd("kit"));
-        kitcmds.add(new LoreCmd("kit"));
-        kitcmds.add(new NameCmd("kit"));
-        kitcmds.add(new PositionCmd("kit"));
-        kitcmds.add(new PermCmd("kit"));
-        kitcmds.add(new UpdateCmd("kit"));
-        kitcmds.add(new ListCmd("kit"));
+    public KitCmdManager(SkyWarsReloaded plugin) {
+        commands.add(new CreateCmd(plugin, "kit"));
+        commands.add(new EnableCmd(plugin, "kit"));
+        commands.add(new IconCmd(plugin, "kit"));
+        commands.add(new LockedIconCmd(plugin, "kit"));
+        commands.add(new LoadCmd(plugin, "kit"));
+        commands.add(new LoreCmd(plugin, "kit"));
+        commands.add(new NameCmd(plugin, "kit"));
+        commands.add(new PositionCmd(plugin, "kit"));
+        commands.add(new PermCmd(plugin, "kit"));
+        commands.add(new UpdateCmd(plugin, "kit"));
+        commands.add(new ListCmd(plugin, "kit"));
     }
 
-    public static List<BaseCmd> getCommands() { return kcm.kitcmds; }
+    public List<BaseCmd> getCommands() {
+        return commands;
+    }
 
     public boolean onCommand(CommandSender s, Command command, String label, String[] args) {
         if (args.length == 0 || getCommand(args[0]) == null) {
             s.sendMessage(new Messaging.MessageFormatter().format("helpList.header"));
-            sendHelp(kitcmds, s);
+            sendHelp(commands, s);
             s.sendMessage(new Messaging.MessageFormatter().format("helpList.footer"));
         } else getCommand(args[0]).processCmd(s, args);
         return true;
@@ -57,7 +57,7 @@ public class KitCmdManager implements CommandExecutor, SWRCmdManagerAPI {
     }
 
     public BaseCmd getCommand(String s) {
-        return getCmd(kitcmds, s);
+        return getCmd(commands, s);
     }
 
     private BaseCmd getCmd(List<BaseCmd> cmds, String s) {
@@ -76,13 +76,13 @@ public class KitCmdManager implements CommandExecutor, SWRCmdManagerAPI {
     @Override
     public void registerCommand(BaseCmd commandIn) {
         if (commandIn == null) return;
-        kitcmds.add(commandIn);
+        commands.add(commandIn);
     }
 
     @Override
     public void unregisterCommand(BaseCmd commandIn) {
         if (commandIn == null) return;
-        kitcmds.remove(commandIn);
+        commands.remove(commandIn);
     }
 
     @Override

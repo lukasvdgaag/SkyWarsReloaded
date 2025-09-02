@@ -1,12 +1,14 @@
 package com.walrusone.skywarsreloaded.commands.kits;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.menus.gameoptions.objects.GameKit;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class NameCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public NameCmd(String t) {
+    public NameCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "name";

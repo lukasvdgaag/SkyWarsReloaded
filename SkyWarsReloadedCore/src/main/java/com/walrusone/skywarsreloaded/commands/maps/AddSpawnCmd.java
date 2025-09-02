@@ -13,7 +13,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class AddSpawnCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public AddSpawnCmd(String t) {
+    public AddSpawnCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "spawn";

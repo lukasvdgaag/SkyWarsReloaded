@@ -7,7 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SaveCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public SaveCmd(String t) {
+    public SaveCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "save";

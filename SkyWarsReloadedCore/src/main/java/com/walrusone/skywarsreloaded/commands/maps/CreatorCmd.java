@@ -9,7 +9,8 @@ import org.bukkit.entity.Player;
 import java.util.StringJoiner;
 
 public class CreatorCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public CreatorCmd(String t) {
+    public CreatorCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = false;
         cmdName = "creator";

@@ -7,7 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class TeamSizeCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public TeamSizeCmd(String t) {
+    public TeamSizeCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = false;
         cmdName = "teamsize";

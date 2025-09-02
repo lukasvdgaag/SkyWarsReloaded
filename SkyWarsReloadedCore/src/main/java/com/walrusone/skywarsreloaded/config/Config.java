@@ -194,7 +194,6 @@ public class Config {
     private boolean loadTrappedChestsAsCenter;
     private int maxChest;
     private int maxDoubleChest;
-    private boolean useHolograms;
     private int cooldown;
     private int kitMenuSize;
     private int randPos;
@@ -249,7 +248,7 @@ public class Config {
     private boolean limitGameChat;
     private boolean limitSpecChat;
     private boolean limitLobbyChat;
-    private Map<String, String> materials = new HashMap<>();
+    private final Map<String, String> materials = new HashMap<>();
     private boolean loading = false;
 
     private boolean enableWinMessage = true;
@@ -381,8 +380,6 @@ public class Config {
             loadTrappedChestsAsCenter = SkyWarsReloaded.get().getConfig().getBoolean("chests.loadTrappedChestsAsCenter", true);
             maxChest =                  SkyWarsReloaded.get().getConfig().getInt("chests.maxItemsChest");
             maxDoubleChest =            SkyWarsReloaded.get().getConfig().getInt("chests.maxItemsDoubleChest");
-
-            useHolograms =              SkyWarsReloaded.get().getConfig().getBoolean("holograms.enabled");
 
             boolean requireSave = false;
 
@@ -533,7 +530,6 @@ public class Config {
             if (t1) return;
             boolean t2 = getSpawn().getWorld() == null;
             log.info("[DEBUG] spawn.world null? " + t2);
-            if (t2) return;
         }
     }
 
@@ -656,9 +652,6 @@ public class Config {
         SkyWarsReloaded.get().getConfig().set("chests.loadTrappedChestsAsCenter", loadTrappedChestsAsCenter);
         SkyWarsReloaded.get().getConfig().set("chests.maxItemsChest", maxChest);
         SkyWarsReloaded.get().getConfig().set("chests.maxItemsDoubleChest", maxDoubleChest);
-
-
-        SkyWarsReloaded.get().getConfig().set("holograms.enabled", useHolograms);
 
         SkyWarsReloaded.get().getConfig().set("items.randomVoteEnabled", randomOptionVoteEnabled);
         SkyWarsReloaded.get().getConfig().set("items.scavengerChestEnabled", scavengerChestEnabled);
@@ -1169,14 +1162,6 @@ public class Config {
 
     public void setEconomyEnabled(boolean b) {
         economyEnabled = b;
-    }
-
-    public boolean hologramsEnabled() {
-        return useHolograms;
-    }
-
-    public void setHologramsEnabled(boolean b) {
-        useHolograms = b;
     }
 
     public boolean isTypeEnabled(LeaderType type) {

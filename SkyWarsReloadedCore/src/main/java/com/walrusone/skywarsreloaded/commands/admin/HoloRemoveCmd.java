@@ -6,7 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class HoloRemoveCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public HoloRemoveCmd(String t) {
+    public HoloRemoveCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "holoremove";
@@ -15,16 +16,17 @@ public class HoloRemoveCmd extends com.walrusone.skywarsreloaded.commands.BaseCm
     }
 
     public boolean run(CommandSender sender, Player player, String[] args) {
-        if (SkyWarsReloaded.getCfg().hologramsEnabled()) {
-            boolean result = SkyWarsReloaded.getHoloManager().removeHologram(player.getLocation());
-            if (result) {
-                player.sendMessage(new Messaging.MessageFormatter().format("command.hologram-removed"));
-                return true;
-            }
-            player.sendMessage(new Messaging.MessageFormatter().format("error.no-holograms-found"));
+        if (plugin.getHologramManager() == null) {
+            player.sendMessage(new Messaging.MessageFormatter().format("error.holograms-not-enabled"));
             return true;
         }
-        player.sendMessage(new Messaging.MessageFormatter().format("error.holograms-not-enabled"));
+
+        boolean result = plugin.getHologramManager().removeHologram(player.getLocation());
+        if (result) {
+            player.sendMessage(new Messaging.MessageFormatter().format("command.hologram-removed"));
+            return true;
+        }
+        player.sendMessage(new Messaging.MessageFormatter().format("error.no-holograms-found"));
         return true;
     }
 }

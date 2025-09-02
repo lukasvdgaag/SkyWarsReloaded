@@ -1,12 +1,14 @@
 package com.walrusone.skywarsreloaded.commands.party;
 
+import com.walrusone.skywarsreloaded.SkyWarsReloaded;
 import com.walrusone.skywarsreloaded.utilities.Messaging;
 import com.walrusone.skywarsreloaded.utilities.Party;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class AcceptCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public AcceptCmd(String t) {
+    public AcceptCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = true;
         cmdName = "accept";

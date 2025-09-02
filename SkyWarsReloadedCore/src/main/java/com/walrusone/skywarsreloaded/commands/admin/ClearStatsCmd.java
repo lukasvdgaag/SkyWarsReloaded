@@ -12,7 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ClearStatsCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public ClearStatsCmd(String t) {
+    public ClearStatsCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = false;
         cmdName = "clearstats";

@@ -14,7 +14,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ReloadCmd extends com.walrusone.skywarsreloaded.commands.BaseCmd {
-    public ReloadCmd(String t) {
+    public ReloadCmd(SkyWarsReloaded plugin, String t) {
+        super(plugin);
         type = t;
         forcePlayer = false;
         cmdName = "reload";
