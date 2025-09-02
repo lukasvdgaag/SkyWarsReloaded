@@ -83,8 +83,6 @@ parties:
   enablePartyAndFriendsSupport: false
   maxPartySize: 4
   lobbyWorlds: []
-holograms: 
-  enabled: false
 chests:
   loadTrappedChestsAsCenter: false
   maxItemsChest: 26

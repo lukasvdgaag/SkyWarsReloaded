@@ -243,19 +243,6 @@ parties:
   # ----------- This option is not used for anything in the plugin
   lobbyWorlds: []
 
-#####################
-# Hologram Settings #
-#####################
-#
-# Please know that you will need to have the HolographicsDisplay plugin installed to make this work
-# You can find it here: https://dev.bukkit.org/projects/holographic-displays
-holograms:
-  # Whether you want to enable holograms in your server
-  # Please know that after enabling this option you will have to RESTART your server!
-  # Want to learn how to create holograms? Read this: https://gcnt.net/skywars/creating-holograms
-  enabled: false
-
-
 ##################
 # Chest Settings #
 ##################
