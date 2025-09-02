@@ -41,7 +41,7 @@ We will continue to maintain this version until further notice, and community co
 <dependency>
     <groupId>net.gcnt</groupId>
     <artifactId>skywarsreloaded</artifactId>
-    <version>5.6.1</version>
+    <version>5.6.33</version>
 </dependency>
 ```
 
