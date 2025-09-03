@@ -20,12 +20,20 @@ public class DecentHologramManager extends AbstractHologramsManager<Hologram> {
 
     @Override
     protected void insertTextLine(Hologram hologram, int index, String text) {
-        DHAPI.insertHologramLine(hologram, index, text);
+        if (hologram.getPages().isEmpty()) {
+            DHAPI.addHologramPage(hologram);
+        }
+
+        DHAPI.addHologramLine(hologram, text);
     }
 
     @Override
     protected void insertItemLine(Hologram hologram, int index, ItemStack item) {
-        DHAPI.insertHologramLine(hologram, index, item);
+        if (hologram.getPages().isEmpty()) {
+            DHAPI.addHologramPage(hologram);
+        }
+
+        DHAPI.addHologramLine(hologram, item);
     }
 
     @Override
@@ -46,7 +54,28 @@ public class DecentHologramManager extends AbstractHologramsManager<Hologram> {
     @Override
     protected Hologram createHologram(Location loc, LeaderType type, String formatKey) {
         final String hologramId = getHologramIdentifier(loc, type, formatKey);
+
+        if (DHAPI.getHologram(hologramId) != null) {
+            DHAPI.removeHologram(hologramId);
+        }
+
         return DHAPI.createHologram(hologramId, loc);
+    }
+
+    @Override
+    public boolean isHologramAtLocation(Location loc) {
+        return holograms.values()
+                .stream()
+                .anyMatch(map -> map.values()
+                        .stream()
+                        .anyMatch(holograms -> holograms.stream()
+                                .anyMatch(hologram -> {
+                                    final Location location = hologram.getLocation();
+
+                                    return loc.getWorld().getName().equals(location.getWorld().getName()) && location.distance(loc) <= 2;
+                                })
+                        )
+                );
     }
 
     private String getHologramIdentifier(Location loc, LeaderType type, String formatKey) {

@@ -44,6 +44,22 @@ public class HolographicHologramManager extends AbstractHologramsManager<Hologra
     }
 
     @Override
+    public boolean isHologramAtLocation(Location loc) {
+        return holograms.values()
+                .stream()
+                .anyMatch(map -> map.values()
+                        .stream()
+                        .anyMatch(holograms -> holograms.stream()
+                                .anyMatch(hologram -> {
+                                    final Location location = hologram.getLocation();
+
+                                    return loc.getWorld() == location.getWorld() && location.distance(loc) <= 0.5;
+                                })
+                        )
+                );
+    }
+
+    @Override
     protected Location getHologramLocation(Hologram hologram) {
         return hologram.getLocation();
     }

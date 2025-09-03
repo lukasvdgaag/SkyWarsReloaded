@@ -44,7 +44,8 @@ command:
   stat-types: '&cThe stat could either be "wins", "losses", "kills", "deaths",
     "xp", "pareffect", "proeffect", "glasscolor", "killsound", or "winsound"'
   hologram-removed: '&cThe nearest hologram has been removed!'
-  hologram-created: '&aYou successfully created a &b%type% %format% &ahologram!'
+  hologram-created: '&aYou successfully created a &b{type} {format} &ahologram!'
+  hologram-already-exists: '&cThere is already a hologram within 0.5 block radius of your location!'
 kit:
   vote-random: '&cRandom'
   rand-lore: '&7Selects a random kit.'

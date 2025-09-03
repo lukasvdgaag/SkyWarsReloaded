@@ -18,6 +18,8 @@ public interface HologramManager {
 
     boolean removeHologram(Location loc);
 
+    boolean isHologramAtLocation(Location loc);
+
     List<String> getFormats(LeaderType type);
 
 }

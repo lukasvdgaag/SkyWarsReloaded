@@ -71,7 +71,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
     private ChestManager cm = null;
     private WorldManager wm = null;
     private Messaging messaging;
-    private final LeaderboardManager leaderboardManager = null;
+    private LeaderboardManager leaderboardManager = null;
     private HologramManager hologramManager = null;
     private IconMenuController ic;
     private ItemsManager im;
@@ -307,6 +307,7 @@ public class SkyWarsReloaded extends JavaPlugin implements PluginMessageListener
 
         // Holograms
         this.loadHologramManager();
+        this.leaderboardManager = new LeaderboardManager(this);
 
         // Taunts
         if (SkyWarsReloaded.getCfg().tauntsEnabled()) {

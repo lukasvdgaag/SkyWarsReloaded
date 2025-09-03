@@ -33,13 +33,25 @@ public class HoloAddCmd extends BaseCmd {
             for (String add : SkyWarsReloaded.get().getLeaderTypes()) {
                 types.add(add);
             }
-            player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", types.toString()).format("leaderboard.invalidtype"));
+            player.sendMessage(new Messaging.MessageFormatter()
+                    .setVariable("validtypes", types.toString())
+                    .format("leaderboard.invalidtype")
+            );
             return true;
         }
         String format = args[2];
         if (plugin.getHologramManager().getFormats(type).contains(format)) {
+            if (plugin.getHologramManager().isHologramAtLocation(player.getLocation())) {
+                player.sendMessage(new Messaging.MessageFormatter().format("command.hologram-already-exists"));
+                return true;
+            }
+
             plugin.getHologramManager().createLeaderboardHologram(player.getEyeLocation(), type, format);
-            player.sendMessage(new Messaging.MessageFormatter().setVariable("type", type.name()).setVariable("format", format).format("command.hologram-created"));
+            player.sendMessage(new Messaging.MessageFormatter()
+                    .setVariable("type", type.name())
+                    .setVariable("format", format)
+                    .format("command.hologram-created")
+            );
             return true;
         }
 
@@ -47,7 +59,10 @@ public class HoloAddCmd extends BaseCmd {
         for (String add : plugin.getHologramManager().getFormats(type)) {
             formats.add(add);
         }
-        player.sendMessage(new Messaging.MessageFormatter().setVariable("validtypes", formats.toString()).format("leaderboard.invalidformat"));
+        player.sendMessage(new Messaging.MessageFormatter()
+                .setVariable("validtypes", formats.toString())
+                .format("leaderboard.invalidformat")
+        );
         return true;
     }
 }
