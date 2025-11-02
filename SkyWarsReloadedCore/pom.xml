@@ -32,16 +32,12 @@
             <url>https://nexuslite.gcnt.net/repos/gcnt/</url>
         </repository>
         <repository>
-            <id>paf</id>
-            <url>https://nexuslite.gcnt.net/repository/paf/</url>
-        </repository>
-        <repository>
             <id>codemc-repo</id>
             <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
         <repository>
             <id>placeholderapi</id>
-            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+            <url>https://repo.extendedclip.com/releases/</url>
         </repository>
         <repository>
             <id>enginehub-maven</id>
@@ -107,7 +103,7 @@
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
-            <version>2.10.9</version>
+            <version>2.11.5</version>
             <scope>provided</scope>
         </dependency>
         <!-- SLIME WORLDS: ASWM DEPENDENCY -->
@@ -159,12 +155,6 @@
                     <artifactId>spigot-api</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>net.minidev</groupId>
-            <artifactId>json-smart</artifactId>
-            <version>1.1.1</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.dumptruckman</groupId>
