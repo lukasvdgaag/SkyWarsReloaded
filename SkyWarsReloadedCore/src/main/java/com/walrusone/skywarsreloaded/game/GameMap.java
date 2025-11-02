@@ -427,7 +427,7 @@ public class GameMap {
                     }
                     if (tCard.getEmptySlots() > 0) { // If space available
                         reservedTeamCard = tCard.sendReservation(player, ps);
-                        break;
+                        if (reservedTeamCard != null) break;
                     }
                 }
             } else { // In party mode
