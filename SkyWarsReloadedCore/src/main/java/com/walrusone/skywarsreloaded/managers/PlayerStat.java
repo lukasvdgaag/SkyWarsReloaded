@@ -154,12 +154,7 @@ public class PlayerStat {
 
     public static PlayerStat getPlayerStats(final Player player) {
         String uuid = player.getUniqueId().toString();
-        for (final PlayerStat pData : getPlayers()) {
-            if (pData.getId().equals(uuid)) {
-                return pData;
-            }
-        }
-        return null;
+        return getPlayerStats(uuid);
     }
 
     public static PlayerStat getPlayerStats(final UUID uuid) {

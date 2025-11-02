@@ -423,15 +423,15 @@ public class GameMap {
                 for (TeamCard tCard : teamCards) {
                     if (SkyWarsReloaded.getCfg().debugEnabled()) {
                         Bukkit.getLogger().log(Level.WARNING, "#addPlayers: --teamCard: " + (tCard.getPlace() + 1));
-                        Bukkit.getLogger().log(Level.WARNING, "#addPlayers: (" + (tCard.getPlace() + 1) + ") fullCount: " + tCard.getFullCount());
+                        Bukkit.getLogger().log(Level.WARNING, "#addPlayers: (" + (tCard.getPlace() + 1) + ") fullCount: " + tCard.getEmptySlots());
                     }
-                    if (tCard.getFullCount() > 0) { // If space available
+                    if (tCard.getEmptySlots() > 0) { // If space available
                         reservedTeamCard = tCard.sendReservation(player, ps);
                         break;
                     }
                 }
             } else { // In party mode
-                if (teamToTry.getFullCount() > 0) {
+                if (teamToTry.getEmptySlots() > 0) {
                     reservedTeamCard = teamToTry.sendReservation(player, ps);
                 } else {
                     SkyWarsReloaded.get().getLogger().warning("Player attempted to join party team but the team referenced is empty (" + player.getName() + ", " + teamToTry.getTeamName() + ")");
@@ -479,7 +479,7 @@ public class GameMap {
                     PlayerStat ps = PlayerStat.getPlayerStats(uuid);
                     if (ps != null && player != null && ps.isInitialized()) {
                         for (TeamCard tCard : teamCards) {
-                            if (tCard.getFullCount() > 0) {
+                            if (tCard.getEmptySlots() > 0) {
                                 Util.get().ejectPassengers(player);
                                 TeamCard reserve = tCard.sendReservation(player, ps);
                                 if (reserve != null) {
@@ -496,7 +496,7 @@ public class GameMap {
             if (teamToTry == null) {
                 teamCards.sort(new TeamCardComparator());
                 for (TeamCard tCard : teamCards) {
-                    if (tCard.getFullCount() >= party.getSize()) {
+                    if (tCard.getEmptySlots() >= party.getSize()) {
                         for (int i = 0; i < party.getSize(); i++) {
                             Player player = Bukkit.getPlayer(party.getMembers().get(i));
                             PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
@@ -515,7 +515,7 @@ public class GameMap {
                     }
                 }
             } else {
-                if (teamToTry.getFullCount() >= party.getSize()) {
+                if (teamToTry.getEmptySlots() >= party.getSize()) {
                     for (int i = 0; i < party.getSize(); i++) {
                         Player player = Bukkit.getPlayer(party.getMembers().get(i));
                         PlayerStat ps = PlayerStat.getPlayerStats(player.getUniqueId());
@@ -654,7 +654,7 @@ public class GameMap {
             return false;
         }
         for (TeamCard tCard : teamCards) {
-            if (tCard.getFullCount() > 0) {
+            if (tCard.getEmptySlots() > 0) {
                 return true;
             }
         }
@@ -670,7 +670,7 @@ public class GameMap {
             return playerCount + party.getSize() - 1 < teamCards.size();
         } else {
             for (TeamCard tCard : teamCards) {
-                if (tCard.getFullCount() >= party.getSize()) {
+                if (tCard.getEmptySlots() >= party.getSize()) {
                     return true;
                 }
             }
@@ -2207,7 +2207,7 @@ public class GameMap {
     public static class TeamCardComparator implements Comparator<TeamCard> {
         @Override
         public int compare(TeamCard f1, TeamCard f2) {
-            return Integer.compare(f1.getFullCount(), f2.getFullCount());
+            return Integer.compare(f1.getEmptySlots(), f2.getEmptySlots());
         }
     }
 

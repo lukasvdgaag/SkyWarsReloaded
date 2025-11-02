@@ -75,7 +75,7 @@ public class TeamCard {
         return playerCards.size();
     }
 
-    public int getFullCount() {
+    public int getEmptySlots() {
         int x = 0;
         for (PlayerCard pCard : playerCards) {
             if (pCard.getUUID() == null) {
@@ -190,7 +190,7 @@ public class TeamCard {
     }
 
     boolean isFull() {
-        return getFullCount() == getGameMap().getTeamSize();
+        return getEmptySlots() == getGameMap().getTeamSize();
     }
 
     public int getPlayersSize() {

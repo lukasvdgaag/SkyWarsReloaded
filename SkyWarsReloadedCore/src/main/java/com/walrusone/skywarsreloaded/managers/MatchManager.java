@@ -2,7 +2,6 @@ package com.walrusone.skywarsreloaded.managers;
 
 import com.google.common.collect.ImmutableList;
 import com.walrusone.skywarsreloaded.SkyWarsReloaded;
-import com.walrusone.skywarsreloaded.database.DataStorage;
 import com.walrusone.skywarsreloaded.enums.GameType;
 import com.walrusone.skywarsreloaded.enums.MatchState;
 import com.walrusone.skywarsreloaded.enums.PlayerRemoveReason;
@@ -443,7 +442,7 @@ public class MatchManager {
                                     int lowest = 0;
                                     for (TeamCard card : cards) {
                                         // If team has a "lone" player AND
-                                        if (card.getFullCount() > 0 && card.getPlayersSize() <= lowest) {
+                                        if (card.getEmptySlots() > 0 && card.getPlayersSize() <= lowest) {
                                             // Add player to team
                                             card.sendReservation(player, PlayerStat.getPlayerStats(player));
                                             break;

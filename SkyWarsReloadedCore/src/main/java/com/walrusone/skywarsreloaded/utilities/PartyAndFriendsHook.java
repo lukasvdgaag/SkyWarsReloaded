@@ -46,7 +46,7 @@ public class PartyAndFriendsHook implements Listener {
                 if (map != null) {
                     TeamCard tc = map.getTeamCard(owner);
                     if (tc != null) {
-                        if (tc.getFullCount() != 0) {
+                        if (tc.getEmptySlots() != 0) {
                             tc.sendReservation(target, PlayerStat.getPlayerStats(target));
                             return;
                         }
@@ -61,7 +61,7 @@ public class PartyAndFriendsHook implements Listener {
                     if (map != null && map.getTeamCard(player) == null) {
                         int size = 0;
                         for (TeamCard tc : map.getTeamCards()) {
-                            if (tc.getPlayersSize() <= size && tc.getFullCount() != 0) {
+                            if (tc.getPlayersSize() <= size && tc.getEmptySlots() != 0) {
                                 tc.sendReservation(player, PlayerStat.getPlayerStats(player));
                                 break;
                             }
