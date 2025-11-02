@@ -75,23 +75,23 @@ public class SWRSign83 implements com.walrusone.skywarsreloaded.game.signs.SWRSi
     @Override
     public void update() {
         GameMap gMap = SkyWarsReloaded.get().getGameMapManager().getMap(gameName);
-        Location loc = location;
+        Location loc = location.clone();
 
         if (loc.getBlock() == null) {
             return;
         }
 
-        if (loc.getBlock().getType().name().contains("SIGN") || loc.add(0, 1, 0).getBlock().getType().name().contains("SIGN")) {
+        if (loc.getBlock().getType().name().contains("SIGN") || loc.clone().add(0, 1, 0).getBlock().getType().name().contains("SIGN")) {
             Block attachedBlock;
             Sign sign = (Sign) loc.getBlock().getState();
             if (sign == null) return;
 
             if (loc.getBlock().getType().name().contains("HANGING")) {
-                attachedBlock = loc.add(0, 1, 0).getBlock();
+                attachedBlock = loc.clone().add(0, 1, 0).getBlock();
             } else if (loc.getBlock().getType().name().contains("WALL")) {
                 attachedBlock = getAttachedBlock(loc.getBlock());
             } else {
-                attachedBlock = loc.add(0, -1, 0).getBlock();
+                attachedBlock = loc.clone().add(0, -1, 0).getBlock();
             }
 
             setMaterial(gMap, attachedBlock);

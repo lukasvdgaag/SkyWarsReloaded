@@ -222,7 +222,7 @@ public class PlayerInteractListener implements Listener {
                 boolean joined;
                 if (!SkyWarsReloaded.getCfg().bungeeMode()) {
                     for (GameMap gMap : SkyWarsReloaded.getGameMapMgr().getMapsCopy()) {
-                        if ((gMap.hasSign(loc) || (!event.getClickedBlock().getType().name().contains("WALL") && gMap.hasSign(loc.add(0, -1, 0)))) && (gMap.getMatchState().equals(MatchState.WAITINGSTART) || gMap.getMatchState().equals(MatchState.WAITINGLOBBY))) {
+                        if ((gMap.hasSign(loc) || (!event.getClickedBlock().getType().name().contains("WALL") && gMap.hasSign(loc.clone().add(0, -1, 0)))) && (gMap.getMatchState().equals(MatchState.WAITINGSTART) || gMap.getMatchState().equals(MatchState.WAITINGLOBBY))) {
                             if (player.hasPermission("sw.signs") && player.isSneaking()) {
                                 return;
                             }
