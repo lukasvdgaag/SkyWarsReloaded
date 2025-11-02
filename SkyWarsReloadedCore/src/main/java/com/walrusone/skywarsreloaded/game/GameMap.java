@@ -423,7 +423,7 @@ public class GameMap {
                 for (TeamCard tCard : teamCards) {
                     if (SkyWarsReloaded.getCfg().debugEnabled()) {
                         Bukkit.getLogger().log(Level.WARNING, "#addPlayers: --teamCard: " + (tCard.getPlace() + 1));
-                        Bukkit.getLogger().log(Level.WARNING, "#addPlayers: (" + (tCard.getPlace() + 1) + ") fullCount: " + tCard.getEmptySlots());
+                        Bukkit.getLogger().log(Level.WARNING, "#addPlayers: (" + (tCard.getPlace() + 1) + ") emptySlots: " + tCard.getEmptySlots());
                     }
                     if (tCard.getEmptySlots() > 0) { // If space available
                         reservedTeamCard = tCard.sendReservation(player, ps);
